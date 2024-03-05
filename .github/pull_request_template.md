@@ -62,7 +62,7 @@ Example:
 - [ ] The branch name follows our branch naming rules
 - [ ] The PR title follows our PR title rules
 - [ ] My code follows our coding style
-- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have commented on my code, particularly in hard-to-understand areas
 - [ ] My changes generate no new warnings or errors in the console
 
 ## Reviewer Checklist:
