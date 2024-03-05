@@ -65,7 +65,7 @@ Example:
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] My changes generate no new warnings or errors in the console
 
-## Reviewer Checklist
+## Reviewer Checklist:
 
 <!-- Tick the checkboxes if you have done the following: -->
 
