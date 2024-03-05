@@ -37,16 +37,16 @@ _Note: `<issue_number>-` can be omitted if the modification is not based on an i
 - `feature/`:
 
     - **Purpose**: Branches for developing new features or improvements.
-    - **Rule**: After completion and testing, submit a pull request to merge into `main`.
+    - **Rule**: After completion and testing, submit a pull request to merge into `develop`.
 
 - `hotfix/`:
 
     - **Purpose**: Branches for urgent fixes.
-    - **Rule**: After fixing, submit a pull request to merge into `main`.
+    - **Rule**: After fixing, submit a pull request to merge into `develop`. Also, merge the changes into `main` to ensure the fix is present in the production environment.
 
 - `docs/`:
     - **Purpose**: Branches for documentation updates.
-    - **Rule**: Submit a pull request to merge updates into `main`.
+    - **Rule**: Submit a pull request to merge updates into `develop`.
 
 ### Examples of Branches
 
