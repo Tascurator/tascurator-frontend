@@ -17,10 +17,6 @@ Example:
 - Implement POST /api/v1/users
 - Fix navigation bar overlap issue
 
-
-Note: This template is adapted from a version originally created by @uskayyyyy, with modifications to suit our project's needs.
-Reference: https://github.com/M-0923/wad202-final-project-nick/blob/main/.github/ISSUE_TEMPLATE/task.md
-
 -->
 
 ## Description
