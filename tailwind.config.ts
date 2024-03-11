@@ -24,10 +24,6 @@ module.exports = {
           DEFAULT: 'rgb(var(--color-accent))',
         },
       },
-
-      fontFamily: {
-        sans: ['Roboto', 'sans-serif'],
-      },
     },
   },
   plugins: [],
