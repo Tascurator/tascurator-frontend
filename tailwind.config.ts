@@ -23,6 +23,8 @@ module.exports = {
         accent: {
           DEFAULT: 'rgb(var(--color-accent))',
         },
+        black: 'rgb(var(--color-black))',
+        overlay: 'rgb(var(--color-overlay))',
       },
     },
   },
