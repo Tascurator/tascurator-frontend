@@ -22,9 +22,11 @@
     --input: 148, 163, 184;
     --ring: 148, 163, 184;
     --placeholder: 203, 213, 225; /* slate-300 */
-    --radius: 0.75rem;
   }
-
+  * {
+    @apply text-lg;
+    box-sizing: border-box;
+  }
   body {
     @apply text-black relative;
     text-size-adjust: 100%;

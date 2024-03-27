@@ -38,6 +38,7 @@ module.exports = {
         input: 'rgb(var(--input))',
         border: 'rgb(var(--border))',
         ring: 'rgb(var(--ring))',
+        placeholder: 'rgb(var(--placeholder))',
       },
     },
   },
