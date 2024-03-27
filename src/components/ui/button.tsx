@@ -11,9 +11,9 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-primary text-white hover:opacity-80',
         secondary:
-          'border border-primary bg-white text-[#333] hover:bg-[#CBD5E1] hover:border-none ',
+          'border border-primary bg-white hover:bg-slate-300 hover:opacity-50 hover:border-none ',
         disable: 'bg-white border border-color-gray-500 text-gray-500',
-        danger: 'bg-rose-600 text-white hover:opacity-80',
+        destructive: 'bg-rose-600 text-white hover:opacity-80',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
