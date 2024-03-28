@@ -12,6 +12,7 @@ module.exports = {
         primary: {
           DEFAULT: 'rgb(var(--color-primary))',
           light: 'rgb(var(--color-primary-light))',
+          lightest: 'rgb(var(--color-primary-lightest))',
         },
         secondary: {
           DEFAULT: 'rgb(var(--color-secondary))',
