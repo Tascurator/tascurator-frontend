@@ -27,9 +27,13 @@
     @apply text-lg;
     box-sizing: border-box;
   }
+  html {
+    font-size: 100%;
+  }
   body {
     @apply text-black relative;
     text-size-adjust: 100%;
+    font-size: 1.8rem;
     -webkit-text-size-adjust: 100%;
   }
 }
