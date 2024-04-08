@@ -16,12 +16,12 @@ const buttonVariants = cva(
         destructive: 'bg-rose-600 text-white hover:opacity-80',
         link: ' text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
         floating:
-          'border border-transparent bg-white text-primary rounded-full shadow-md hover:text-primary/50 hover:shadow',
+          'border border-transparent bg-white rounded-full shadow-md hover:shadow',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
         sm: 'w-40 h-12 px-3',
-        icon: 'w-14 h-14',
+        floating: 'w-14 h-14',
       },
     },
     defaultVariants: {
