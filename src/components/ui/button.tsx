@@ -16,7 +16,7 @@ const buttonVariants = cva(
         destructive: 'bg-rose-600 text-white hover:opacity-80',
         link: ' text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
         floating:
-          'border border-transparent bg-white rounded-full shadow-md hover:shadow',
+          'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
