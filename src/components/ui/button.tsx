@@ -15,10 +15,16 @@ const buttonVariants = cva(
         disable: 'bg-white border border-color-gray-500 text-gray-500',
         destructive: 'bg-rose-600 text-white hover:opacity-80',
         link: 'text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
+        floating:
+          'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
+        outline:
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
         sm: 'w-40 h-12 px-3',
+        floating: 'w-14 h-14',
       },
     },
     defaultVariants: {
