@@ -1,8 +1,8 @@
-function Progress({ progressPercent }: { progressPercent: number }) {
+const Progress = ({ progressPercent }: { progressPercent: number }) => {
   // size of the circle
-  const size = 210;
+  const size = 128;
   // radius of the circle
-  const radius = 50;
+  const radius = 40;
   // circumference of the circle
   const circumference = 2 * Math.PI * radius;
   // strokeDashoffset
@@ -53,7 +53,7 @@ function Progress({ progressPercent }: { progressPercent: number }) {
             fill="transparent"
             strokeDasharray={circumference}
             style={{
-              animation: 'circleStroke 3s ease forwards',
+              animation: 'circleStroke 2s ease forwards',
             }}
           />
         </svg>
@@ -65,9 +65,8 @@ function Progress({ progressPercent }: { progressPercent: number }) {
             animation: 'rotationObject 3s ease forwards',
           }}
         ></div>
-        <div className="absolute text-black"></div>
         <div
-          className="absolute top-1/2 left-1/2 text-4xl font-copperplate text-black italic whitespace-nowrap"
+          className="absolute top-1/2 left-1/2 text-5xl text-black whitespace-nowrap"
           style={{
             translate: '-50% -50%',
           }}
@@ -77,6 +76,6 @@ function Progress({ progressPercent }: { progressPercent: number }) {
       </div>
     </>
   );
-}
+};
 
 export { Progress };
