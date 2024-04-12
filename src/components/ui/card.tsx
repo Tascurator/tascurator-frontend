@@ -15,6 +15,18 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
   isComplete: boolean;
 }
 
+/**
+ * @example
+ * ```ts
+ * return (
+ * <Card>
+ *  <CardHeader startDate={startDate} endDate={endDate} />
+ *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
+ *  <CardFooter category={category} tenant={tenant} isComplete={isComplete} />
+ * </Card>
+ * )
+ * ```
+ */
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
