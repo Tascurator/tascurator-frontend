@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { forwardRef, ElementRef, ComponentPropsWithoutRef } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown } from 'lucide-react';
 
@@ -8,9 +8,13 @@ import { cn } from '@/lib/utils';
 
 const Accordion = AccordionPrimitive.Root;
 
-const AccordionItem = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
+type AccordionTriggerProps = {
+  scheduleDate?: string;
+} & ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>;
+
+const AccordionItem = forwardRef<
+  ElementRef<typeof AccordionPrimitive.Item>,
+  ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
@@ -23,10 +27,10 @@ const AccordionItem = React.forwardRef<
 ));
 AccordionItem.displayName = 'AccordionItem';
 
-const AccordionTrigger = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+const AccordionTrigger = forwardRef<
+  ElementRef<typeof AccordionPrimitive.Trigger>,
+  AccordionTriggerProps
+>(({ className, children, scheduleDate, ...props }, ref) => (
   <AccordionPrimitive.Header className="flex">
     <AccordionPrimitive.Trigger
       ref={ref}
@@ -37,15 +41,20 @@ const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
+      <div className="flex-1" />
+      {/* display only scheduleDate is set*/}
+      {scheduleDate && (
+        <p className="text-sm leading-7 text-gray-500">{scheduleDate}</p>
+      )}
       <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 ml-auto" />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
 
-const AccordionContent = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
+const AccordionContent = forwardRef<
+  ElementRef<typeof AccordionPrimitive.Content>,
+  ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
@@ -57,5 +66,24 @@ const AccordionContent = React.forwardRef<
 ));
 
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
-
+/**
+   * display date on the right side of the accordion trigger
+   *
+   * @example
+   * for example, the schedule is from 12/31 to 01/07
+   * props.scheduleDate = "12/31-01/07"
+   * 
+   * for example, the schedule is not set
+   * props.scheduleDate = ""
+   * 
+   *  <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1">
+          <AccordionTrigger scheduleDate={""}>Bathroom
+          <CircleEllipsis className='ml-4'/> 
+          </AccordionTrigger >
+          <AccordionContent>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+   */
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
