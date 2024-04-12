@@ -1,15 +1,26 @@
 import { forwardRef, HTMLAttributes } from 'react';
 
+import { CalendarDays, CircleCheck } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
-import { CalendarDays } from 'lucide-react';
+interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
+  startDate: string;
+  endDate: string;
+}
+
+interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
+  category: string;
+  tenant: string;
+  isComplete: boolean;
+}
 
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'rounded-xl bg-card text-card-foreground shadow-[0_4px_8px_0_rgb(0,0,0,0.25)] text-purple-300',
+        'rounded-xl bg-card text-card-foreground shadow-[0_4px_8px_0_rgb(0,0,0,0.25)]',
         className,
       )}
       {...props}
@@ -18,8 +29,8 @@ const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 );
 Card.displayName = 'Card';
 
-const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
+  ({ className, startDate, endDate, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
@@ -27,7 +38,12 @@ const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         className,
       )}
       {...props}
-    />
+    >
+      <CardTitle>Task Assignment</CardTitle>
+      <CardDescription>
+        {startDate} - {endDate}
+      </CardDescription>
+    </div>
   ),
 );
 CardHeader.displayName = 'CardHeader';
@@ -48,7 +64,7 @@ const CardDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center">
+  <div className="flex items-center gap-1">
     <CalendarDays className="" size={16} />
     <p
       ref={ref}
@@ -59,27 +75,63 @@ const CardDescription = forwardRef<
 ));
 CardDescription.displayName = 'CardDescription';
 
-const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
+  ({ className, category, tenant, isComplete, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        'p-[14px] text-indigo-400 border-b border-slate-300',
-        className,
-      )}
+      className={cn('p-[14px] border-b border-slate-300', className)}
       {...props}
-    />
+    >
+      <CardContentDescription
+        tenant={tenant}
+        category={category}
+        isComplete={isComplete}
+      />
+    </div>
   ),
 );
 CardContent.displayName = 'CardContent';
 
-const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
+const CardContentDescription = forwardRef<
+  HTMLParagraphElement,
+  CardContentProps
+>(({ className, tenant, category, isComplete, ...props }, ref) => (
+  <div className="flex items-center">
+    <p
       ref={ref}
-      className={cn('flex items-center p-[14px]', className)}
+      className={cn('text-base text-muted-foreground', className)}
       {...props}
     />
+    <div
+      className={cn(
+        'flex justify-between items-center w-full',
+        isComplete && 'text-gray-500',
+      )}
+    >
+      <div>
+        <p>{category}</p>
+        <div>{tenant}</div>
+      </div>
+      <CircleCheck
+        className={cn(
+          'text-primary w-7 h-7 stroke-white fill-secondary-light hidden',
+          isComplete && 'block',
+        )}
+      />
+    </div>
+  </div>
+));
+CardContentDescription.displayName = 'CardContentDescription';
+
+const CardFooter = forwardRef<HTMLDivElement, CardContentProps>(
+  ({ className, tenant, category, isComplete, ...props }, ref) => (
+    <div ref={ref} className={cn('p-[14px]', className)} {...props}>
+      <CardContentDescription
+        tenant={tenant}
+        category={category}
+        isComplete={isComplete}
+      />
+    </div>
   ),
 );
 CardFooter.displayName = 'CardFooter';
