@@ -1,22 +1,29 @@
 'use client';
 
-import * as React from 'react';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { forwardRef, ElementRef, ComponentPropsWithoutRef } from 'react';
+import {
+  Root,
+  Trigger,
+  Group,
+  Content,
+  Portal,
+  Item,
+} from '@radix-ui/react-dropdown-menu';
 
 import { cn } from '@/lib/utils';
 
-const DropdownMenu = DropdownMenuPrimitive.Root;
+const DropdownMenu = Root;
 
-const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+const DropdownMenuTrigger = Trigger;
 
-const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+const DropdownMenuGroup = Group;
 
-const DropdownMenuContent = React.forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+const DropdownMenuContent = forwardRef<
+  ElementRef<typeof Content>,
+  ComponentPropsWithoutRef<typeof Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
-    <DropdownMenuPrimitive.Content
+  <Portal>
+    <Content
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
@@ -25,17 +32,17 @@ const DropdownMenuContent = React.forwardRef<
       )}
       {...props}
     />
-  </DropdownMenuPrimitive.Portal>
+  </Portal>
 ));
-DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+DropdownMenuContent.displayName = Content.displayName;
 
-const DropdownMenuItem = React.forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+const DropdownMenuItem = forwardRef<
+  ElementRef<typeof Item>,
+  ComponentPropsWithoutRef<typeof Item> & {
     inset?: boolean;
   }
 >(({ className, inset, ...props }, ref) => (
-  <DropdownMenuPrimitive.Item
+  <Item
     ref={ref}
     className={cn(
       'relative flex cursor-default select-none items-center rounded-sm px-2.5 py-2 text-sm outline-none transition-colors focus:bg-gray-100 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
@@ -45,7 +52,7 @@ const DropdownMenuItem = React.forwardRef<
     {...props}
   />
 ));
-DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+DropdownMenuItem.displayName = Item.displayName;
 
 export {
   DropdownMenu,
