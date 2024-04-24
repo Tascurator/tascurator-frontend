@@ -13,6 +13,7 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
   category: string;
   tenant: string;
   isComplete: boolean;
+  isLast?: boolean;
 }
 
 /**
@@ -22,7 +23,8 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
  * <Card>
  *  <CardHeader startDate={startDate} endDate={endDate} />
  *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
- *  <CardFooter category={category} tenant={tenant} isComplete={isComplete} />
+ *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
+ *  <CardContent category={category} tenant={tenant} isComplete={isComplete} isLast={true} />
  * </Card>
  * )
  * ```
@@ -42,16 +44,16 @@ const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 Card.displayName = 'Card';
 
 const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className, startDate, endDate, ...props }, ref) => (
+  ({ className, startDate, endDate, title, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'flex flex-col space-y-1.5  p-[14px] border-b-2 border-slate-300',
+        'flex flex-col space-y-2 pt-3.5 pl-3.5 pb-3 border-b-2 border-slate-300',
         className,
       )}
       {...props}
     >
-      <CardTitle>Task Assignment</CardTitle>
+      <CardTitle>{title}</CardTitle>
       <CardDescription>
         {startDate} - {endDate}
       </CardDescription>
@@ -77,7 +79,7 @@ const CardDescription = forwardRef<
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
   <div className="flex items-center gap-1">
-    <CalendarDays className="" size={16} />
+    <CalendarDays className="w-4 h-4" />
     <p
       ref={ref}
       className={cn('text-base text-muted-foreground', className)}
@@ -88,10 +90,14 @@ const CardDescription = forwardRef<
 CardDescription.displayName = 'CardDescription';
 
 const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ className, category, tenant, isComplete, ...props }, ref) => (
+  ({ className, category, tenant, isComplete, isLast, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('p-[14px] border-b border-slate-300', className)}
+      className={cn(
+        'pl-3.5 pt-2 pb-2.5 pr-4 border-b border-slate-300',
+        isLast && 'border-0',
+        className,
+      )}
       {...props}
     >
       <CardContentDescription
@@ -121,8 +127,8 @@ const CardContentDescription = forwardRef<
       )}
     >
       <div>
-        <p>{category}</p>
-        <div>{tenant}</div>
+        <p className="pb-[7px] text-xl font-medium">{category}</p>
+        <p>{tenant}</p>
       </div>
       <CircleCheck
         className={cn(
@@ -135,24 +141,4 @@ const CardContentDescription = forwardRef<
 ));
 CardContentDescription.displayName = 'CardContentDescription';
 
-const CardFooter = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ className, tenant, category, isComplete, ...props }, ref) => (
-    <div ref={ref} className={cn('p-[14px]', className)} {...props}>
-      <CardContentDescription
-        tenant={tenant}
-        category={category}
-        isComplete={isComplete}
-      />
-    </div>
-  ),
-);
-CardFooter.displayName = 'CardFooter';
-
-export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-};
+export { Card, CardHeader, CardContent };
