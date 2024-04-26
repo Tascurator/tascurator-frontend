@@ -7,6 +7,35 @@ interface IStep {
   maxSteps: number;
 }
 
+/**
+ * @example
+ * ```ts
+ *  const INITIAL_STEP = 1;
+ *  const MAX_STEPS = 4;
+ *  const [currentStep, setCurrentStep] = useState(INITIAL_STEP);
+ *
+ *  return (
+ *    <Stepper currentStep={currentStep} maxSteps={MAX_STEPS} />
+ *      <div className="flex mt-10 gap-4">
+ *        <Button
+ *          size="sm"
+ *          onClick={() => setCurrentStep((prev) => prev - 1)}
+ *          disabled={currentStep === INITIAL_STEP}
+ *        >
+ *          Previous
+ *        </Button>
+ *        <Button
+ *          size="sm"
+ *          onClick={() => setCurrentStep((prev) => prev + 1)}
+ *          disabled={currentStep === MAX_STEPS}
+ *        >
+ *          Next
+ *        </Button>
+ *     </div>
+ * )
+ * ```
+ */
+
 const Stepper: React.FC<IStep> = ({ currentStep, maxSteps }: IStep) => {
   const steps: number[] = Array.from(
     { length: maxSteps },
@@ -30,7 +59,7 @@ const Stepper: React.FC<IStep> = ({ currentStep, maxSteps }: IStep) => {
               )}
             >
               <span
-                className={cn({
+                className={cn('font-medium', {
                   'text-white text-xs': currentStep >= step,
                   'text-slate-300 text-xs': currentStep < step,
                 })}
