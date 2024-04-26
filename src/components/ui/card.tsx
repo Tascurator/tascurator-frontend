@@ -21,8 +21,7 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
  * ```ts
  * return (
  * <Card>
- *  <CardHeader startDate={startDate} endDate={endDate} />
- *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
+ *  <CardHeader startDate={startDate} endDate={endDate} title={title} />
  *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
  *  <CardContent category={category} tenant={tenant} isComplete={isComplete} isLast={true} />
  * </Card>
