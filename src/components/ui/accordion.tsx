@@ -12,6 +12,23 @@ import { ChevronDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+/**
+   * display date on the right side of the accordion trigger
+   *
+   * @example
+   * for example, the schedule is from 12/31 to 01/07
+   * props.scheduleDate = "12/31-01/07"
+   * 
+   *  <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1">
+          <AccordionTrigger scheduleDate={"12/31-01/07"}>Bathroom
+          <CircleEllipsis className='ml-4'/> 
+          </AccordionTrigger >
+          <AccordionContent>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+   */
 const Accordion = Root;
 
 type AccordionTriggerProps = {
@@ -50,9 +67,9 @@ const AccordionTrigger = forwardRef<
       <div className="flex-1" />
       {/* display only scheduleDate is set*/}
       {scheduleDate && (
-        <p className="text-sm leading-7 text-gray-500">{scheduleDate}</p>
+        <p className="text-base leading-7 text-black">{scheduleDate}</p>
       )}
-      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 ml-auto" />
+      <ChevronDown className="h-4 w-4 ml-1.5 shrink-0 transition-transform duration-200" />
     </Trigger>
   </Header>
 ));
@@ -72,21 +89,5 @@ const AccordionContent = forwardRef<
 ));
 
 AccordionContent.displayName = Content.displayName;
-/**
-   * display date on the right side of the accordion trigger
-   *
-   * @example
-   * for example, the schedule is from 12/31 to 01/07
-   * props.scheduleDate = "12/31-01/07"
-   * 
-   *  <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger scheduleDate={"12/31-01/07"}>Bathroom
-          <CircleEllipsis className='ml-4'/> 
-          </AccordionTrigger >
-          <AccordionContent>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-   */
+
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
