@@ -24,14 +24,14 @@ export function PasswordValidationItem({
   isValid = false,
 }: PasswordValidationItemProps) {
   return (
-    <p className={cn('flex', { 'items-center text-sm gap-1': !isValid })}>
+    <p className={cn('flex items-center gap-1', { 'text-gray-500': !isValid })}>
       <CircleCheck
-        className={cn('stroke-white', {
-          'fill-primary': isValid,
-          'fill-slate-400': !isValid,
+        className={cn('stroke-white w-5', {
+          'fill-primary-light': isValid,
+          'fill-slate-400 ': !isValid,
         })}
       />
-      <span>{text}</span>
+      <span className="text-sm">{text}</span>
     </p>
   );
 }
