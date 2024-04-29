@@ -37,3 +37,7 @@
     -webkit-text-size-adjust: 100%;
   }
 }
+
+.lucide {
+  color: var(--color-black);
+}
