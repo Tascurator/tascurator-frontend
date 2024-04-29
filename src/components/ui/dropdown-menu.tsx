@@ -45,7 +45,7 @@ const DropdownMenuItem = forwardRef<
   <Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-sm px-2.5 py-2 text-sm outline-none transition-colors focus:bg-gray-100 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex cursor-default select-none items-center rounded-sm px-2.5 py-2 text-sm text-black font-bold outline-none transition-colors focus:bg-gray-100 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       inset && 'pl-8',
       className,
     )}
@@ -54,10 +54,24 @@ const DropdownMenuItem = forwardRef<
 ));
 DropdownMenuItem.displayName = Item.displayName;
 
+const DropdownMenuItemWithIcon = forwardRef<
+  ElementRef<typeof Item>,
+  ComponentPropsWithoutRef<typeof Item> & {
+    icon: React.ReactNode;
+  }
+>(({ icon, ...props }, ref) => (
+  <DropdownMenuItem ref={ref} {...props}>
+    <div className="mr-2 text-black">{icon}</div>
+    {props.children}
+  </DropdownMenuItem>
+));
+DropdownMenuItemWithIcon.displayName = 'DropdownMenuItemWithIcon';
+
 export {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuGroup,
+  DropdownMenuItemWithIcon,
 };
