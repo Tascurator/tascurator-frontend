@@ -31,46 +31,27 @@ const Progress = ({ progressPercent }: { progressPercent: number }) => {
         `}
       </style>
       <div className="relative">
-        <svg
-          viewBox={`0 0 ${size} ${size}`}
-          style={{ transform: 'rotate(-90deg)' }}
-        >
+        <svg viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
           <circle
             r={radius}
             cx={size / 2}
             cy={size / 2}
-            stroke="#CBD5E1"
-            strokeWidth="15"
-            fill="transparent"
             strokeDasharray={circumference}
+            className="stroke-slate-300 stroke-[25px] fill-transparent"
           />
           <circle
             r={radius}
             cx={size / 2}
             cy={size / 2}
-            stroke="#06B6D4"
-            strokeWidth="15"
-            fill="transparent"
             strokeDasharray={circumference}
+            className="stroke-primary-light stroke-[25px] fill-transparent"
             style={{
               animation: 'circleStroke 2s ease forwards',
             }}
           />
         </svg>
-        <div
-          className="absolute top-0 left-1/2 "
-          style={{
-            translate: '-50% -50%',
-            transformOrigin: `center ${256 + 126 / 2}px`,
-            animation: 'rotationObject 3s ease forwards',
-          }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/2 text-5xl text-black whitespace-nowrap"
-          style={{
-            translate: '-50% -50%',
-          }}
-        >
+
+        <div className="absolute top-1/2 left-1/2 text-5xl text-black whitespace-nowrap -translate-x-1/2 -translate-y-1/2">
           {progressPercent}%
         </div>
       </div>
