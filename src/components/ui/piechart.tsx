@@ -37,21 +37,21 @@ const Progress = ({ progressPercent }: { progressPercent: number }) => {
             cx={size / 2}
             cy={size / 2}
             strokeDasharray={circumference}
-            className="stroke-slate-300 stroke-[25px] fill-transparent"
+            className="stroke-slate-300 stroke-[20px] fill-transparent"
           />
           <circle
             r={radius}
             cx={size / 2}
             cy={size / 2}
             strokeDasharray={circumference}
-            className="stroke-primary-light stroke-[25px] fill-transparent"
+            className="stroke-primary-light stroke-[20px] fill-transparent"
             style={{
               animation: 'circleStroke 2s ease forwards',
             }}
           />
         </svg>
 
-        <div className="absolute top-1/2 left-1/2 text-5xl text-black whitespace-nowrap -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-1/2 left-1/2 text-4xl text-black whitespace-nowrap -translate-x-1/2 -translate-y-1/2">
           {progressPercent}%
         </div>
       </div>
