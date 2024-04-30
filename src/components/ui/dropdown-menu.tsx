@@ -12,6 +12,26 @@ import {
 
 import { cn } from '@/lib/utils';
 
+/**
+ * @see https://ui.shadcn.com/docs/components/dropdown-menu
+ * @example
+ * ```tsx
+ * return (
+ *   <DropdownMenu>
+ *     <DropdownMenuTrigger asChild>
+ *       <button className="p-4">
+ *         <Citrus />
+ *       </button>
+ *     </DropdownMenuTrigger>
+ *     <DropdownMenuContent>
+ *       <DropdownMenuGroup>
+ *         <DropdownMenuItemWithIcon icon={<Citrus />}> Item 1 </DropdownMenuItemWithIcon>
+ *         <DropdownMenuItemWithIcon icon={<Citrus />}> Item 2 </DropdownMenuItemWithIcon>
+ *       </DropdownMenuGroup>
+ *     </DropdownMenuContent>
+ *   </DropdownMenu>
+ * )
+ */
 const DropdownMenu = Root;
 
 const DropdownMenuTrigger = Trigger;
