@@ -13,6 +13,36 @@ import {
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 
+/**
+ * @example
+ * ```ts
+ * import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+ * import { Input } from "@/components/ui/input";
+ * import { useForm } from "react-hook-form";
+ *
+ * const form = useForm();
+ * return (
+ *  <Form {...form}>
+ *   <FormField
+ *    control={form.control}
+ *     name="username"
+ *     render={({ field }) => (
+ *      <FormItem>
+ *       <FormLabel>Username</FormLabel>
+ *       <FormControl>
+ *        <Input placeholder="shadcn" {...field} />
+ *       </FormControl>
+ *       <FormDescription>This is your public display name.</FormDescription>
+ *       <FormMessage />
+ *      </FormItem>
+ *     )}
+ *   />
+ *  </Form>
+ * )
+ * ```
+ *
+ * @see {@link https://ui.shadcn.com/docs/components/form | React Hook Form}
+ */
 const Form = FormProvider;
 
 type FormFieldContextValue<
