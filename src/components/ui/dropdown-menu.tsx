@@ -55,7 +55,6 @@ const DropdownMenuContent = forwardRef<
   </Portal>
 ));
 DropdownMenuContent.displayName = Content.displayName;
-
 const DropdownMenuItem = forwardRef<
   ElementRef<typeof Item>,
   ComponentPropsWithoutRef<typeof Item> & {
@@ -65,7 +64,7 @@ const DropdownMenuItem = forwardRef<
   <Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm text-black font-bold outline-none transition-colors focus:bg-gray-100 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex cursor-default select-none items-center rounded-sm p-2 text-black outline-none transition-colors focus:bg-gray-100 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 border border-b-slate-100 last:border-b-none',
       inset && 'pl-8',
       className,
     )}
