@@ -80,7 +80,7 @@ const DropdownMenuItemWithIcon = forwardRef<
   }
 >(({ icon, ...props }, ref) => (
   <DropdownMenuItem ref={ref} {...props}>
-    <div className="mx-2 text-black">{icon}</div>
+    <div className="mx-2 text-black *:w-5">{icon}</div>
     {props.children}
   </DropdownMenuItem>
 ));
