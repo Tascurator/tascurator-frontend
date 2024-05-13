@@ -25,9 +25,9 @@ This document describes the coding standards for the project. The guidelines are
 
 ### Files
 
-- Use **PascalCase** for naming component files
+- Use **PascalCase** for component files
   - Example: `Button.tsx`, `TestModal.tsx`
-- Use **camelCase** for naming non-component files
+- Use **camelCase** for non-component files
   - Example: `page.tsx`, `layout.tsx`, `actionSomething.ts`, `arrowLeft.svg`
 
 ### Imports and exports
