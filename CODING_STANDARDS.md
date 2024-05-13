@@ -2,6 +2,19 @@
 
 This document describes the coding standards for the project. The guidelines are intended to ensure consistency and readability in the codebase.
 
+## Table of Contents
+
+1. [Naming Conventions](#naming-conventions)
+   - [Folders](#folders)
+   - [Files](#files)
+   - [Imports and exports](#imports-and-exports)
+   - [Interfaces](#interfaces)
+2. [CSS Classes Management](#css-classes-management)
+   - [Dynamic styles](#dynamic-styles)
+   - [Colors](#colors)
+   - [Hardcoded values](#hardcoded-values)
+   - [Icons](#icons)
+
 ## Naming Conventions
 
 ### Folders
@@ -10,7 +23,7 @@ This document describes the coding standards for the project. The guidelines are
   - `password-reset/`
   - `login/`
 
-### Files:
+### Files
 
 - Use **PascalCase** for naming component files
   - Example: `Button.tsx`, `TestModal.tsx`
@@ -32,7 +45,9 @@ This document describes the coding standards for the project. The guidelines are
     ```
 
 - Avoid wildcard (\*) imports and import only the necessary modules
+
   - Example:
+
     ```jsx
     // Bad
     import * as Icons from '@/components/icons';
