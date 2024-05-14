@@ -1,5 +1,5 @@
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Ellipsis, Trash2, SquarePen } from 'lucide-react';
+import { Avatar } from '@/components/ui/avatar';
+import { Ellipsis, Trash2, SquarePen, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 interface TenantListProps {
-  fallback: string;
   name: string;
 }
 
@@ -17,16 +16,15 @@ interface TenantListProps {
  * @example
  * ```tsx
  * return (
- * <TenantList fallback='MM' name='Momo'/>
+ * <TenantList name='Momo'/>
  * )
  */
-const TenantList = ({ fallback, name }: TenantListProps) => {
+const TenantList = ({ name }: TenantListProps) => {
   return (
     <div className="flex items-center justify-between w-full h-full mx-5 my-3">
       <div>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>{fallback}</AvatarFallback>
+          <User />
         </Avatar>
       </div>
       <div className="ml-4">{name}</div>
