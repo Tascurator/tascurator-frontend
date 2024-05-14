@@ -8,6 +8,7 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
+import { TriangleAlert } from 'lucide-react';
 
 export function Toaster() {
   const { toasts } = useToast();
@@ -17,7 +18,8 @@ export function Toaster() {
       {toasts.map(({ id, description, ...props }) => {
         return (
           <Toast key={id} {...props}>
-            <div className="grid gap-1">
+            <div className="flex items-center justify-center gap-1">
+              <TriangleAlert className="size-3.5" />
               {description && (
                 <ToastDescription>{description}</ToastDescription>
               )}
