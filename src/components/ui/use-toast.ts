@@ -168,6 +168,9 @@ function toast({ ...props }: Toast) {
   };
 }
 
+/**
+ * @see {@link https://ui.shadcn.com/docs/components/toast | Toast}
+ */
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
