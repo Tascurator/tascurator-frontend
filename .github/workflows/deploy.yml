@@ -1,13 +1,15 @@
-name: Test on Pull Request
+name: Deploy
+
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - develop
 
 permissions:
   contents: write
 
 jobs:
-  test-typedoc:
+  deploy-typedoc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
