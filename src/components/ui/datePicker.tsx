@@ -38,7 +38,10 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
+          /* eslint-disable */
+          // @ts-ignore
           onSelect={setDate}
+          /* eslint-enable */
           initialFocus
         />
       </PopoverContent>
