@@ -14,7 +14,9 @@ import {
 } from '@/components/ui/popover';
 
 export function DatePicker() {
-  const [date, setDate] = useState<Date>(() => startOfDay(new Date()));
+  const [date, setDate] = useState<Date | undefined>(() =>
+    startOfDay(new Date()),
+  );
 
   return (
     <Popover>
@@ -38,10 +40,7 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
-          /* eslint-disable */
-          // @ts-ignore
           onSelect={setDate}
-          /* eslint-enable */
           initialFocus
         />
       </PopoverContent>
