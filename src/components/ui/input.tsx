@@ -25,6 +25,17 @@ export interface IInputProps
   icon?: ReactNode;
 }
 
+/**
+ * An input component
+ *
+ * @example
+ * // A default input
+ * <Input type="text" placeholder="Enter your name" />
+ * // A destructive input
+ * <Input variant="destructive" type="text" placeholder="Enter your name" />
+ * // An input with an icon
+ * <Input icon={<SearchIcon />} type="text" placeholder="Search" />
+ */
 const Input = forwardRef<HTMLInputElement, IInputProps>(
   ({ className, variant, type, icon, ...props }, ref) => {
     return (
