@@ -1,0 +1,20 @@
+name: Test on Pull Request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test-typedoc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./package-lock.json
+      - name: Install packages
+        run: npm ci
+      - name: Run typedoc
+        run: npm run typedoc
