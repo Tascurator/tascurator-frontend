@@ -1,13 +1,13 @@
 import { forwardRef, InputHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  icon?: JSX.Element;
+  variant: 'primary' | 'secondary';
   icon?: ReactNode;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, IInputProps>(
   ({ className, type, icon, ...props }, ref) => {
     return (
       <div className="relative">
