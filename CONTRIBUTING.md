@@ -7,7 +7,7 @@ This document outlines the guidelines for contributing to the project.
 1. [Branching Rules](#branching-rules)
    - [Types](#types-of-branch)
    - [Examples](#examples-of-branches)
-2. [Commit Message Guidelines](#commit-message-guidelines)
+2. [Commit Message Rules](#commit-message-rules)
    - [Types](#types-of-commit)
    - [Examples](#examples-of-commit-messages)
 3. [Pull Requests](#pull-requests)
@@ -55,7 +55,7 @@ _Note: `<issue_number>-` can be omitted if the modification is not based on an i
 - hotfix/56-security-vulnerability-fix
 - docs/108-update-installation-guide
 
-## Commit Message Guidelines
+## Commit Message Rules
 
 This project follows a following conventional commit message format.
 
@@ -96,7 +96,7 @@ When merging pull requests into the `main` branch, we use the "squash and merge"
 
 ### PR Title Rules
 
-- Follow the same convention rules as the [Commit Message Guidelines](#commit-message-guidelines)
+- Follow the same convention rules as the [Commit Message Rules](#commit-message-rules)
 - Format: `<type>(optional scope): <description>` in lowercase
 
 Examples:
@@ -111,7 +111,7 @@ Examples:
 1. Create a new branch from the `main` branch.
 2. Follow the [Branch Rules](#branching-rules) while naming your branch.
 3. Work on your changes locally.
-4. Commit your changes, ensuring to follow the project's [commit message guidelines](#commit-message-guidelines).
+4. Commit your changes, ensuring to follow the project's [commit message rules](#commit-message-rules).
 5. Push your branch to the repository.
 6. Create a Pull Request against the original branch you branched from.
 7. Await code review, and address any comments as necessary.
@@ -123,7 +123,7 @@ Examples:
 3. Create a new branch from the `main` branch on your fork.
 4. Follow the [Branching Rules](#branching-rules) while naming your branch.
 5. Work on your changes locally.
-6. Commit your changes, ensuring to follow the project's [commit message guidelines](#commit-message-guidelines).
+6. Commit your changes, ensuring to follow the project's [commit message rules](#commit-message-rules).
 7. Push your branch to your forked repository.
 8. Create a Pull Request against the `main` branch of the original repository.
 9. Await code review, and address any comments as necessary.
