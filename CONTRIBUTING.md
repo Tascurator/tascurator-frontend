@@ -5,14 +5,15 @@ This document outlines the guidelines for contributing to the project.
 ## Table of Contents
 
 1. [Branching Rules](#branching-rules)
-    - [Types](#types-of-branch)
-    - [Examples](#examples-of-branches)
+   - [Types](#types-of-branch)
+   - [Examples](#examples-of-branches)
 2. [Commit Message Guidelines](#commit-message-guidelines)
-    - [Types](#types-of-commit)
-    - [Examples](#examples-of-commit-messages)
+   - [Types](#types-of-commit)
+   - [Examples](#examples-of-commit-messages)
 3. [Pull Requests](#pull-requests)
-    - [For Team Members](#for-team-members)
-    - [For External Contributors](#for-external-contributors)
+   - [PR Title Rules](#pr-title-rules)
+   - [For Team Members](#for-team-members)
+   - [For External Contributors](#for-external-contributors)
 
 ## Branching Rules
 
@@ -26,27 +27,27 @@ _Note: `<issue_number>-` can be omitted if the modification is not based on an i
 
 - `main`:
 
-    - **Purpose**: For production use.
-    - **Rule**: Direct commits are restricted. Changes arrive via pull requests from `develop` or `hotfix/` branches.
-  
+  - **Purpose**: For production use.
+  - **Rule**: Direct commits are restricted. Changes arrive via pull requests from `develop` or `hotfix/` branches.
+
 - `develop`:
-  
+
   - **Purpose**: For development use.
   - **Rule**: Direct commits are restricted. Changes arrive via pull requests from `feature/`, `hotfix/`, or `docs/` branches.
 
 - `feature/`:
 
-    - **Purpose**: Branches for developing new features or improvements.
-    - **Rule**: After completion and testing, submit a pull request to merge into `develop`.
+  - **Purpose**: Branches for developing new features or improvements.
+  - **Rule**: After completion and testing, submit a pull request to merge into `develop`.
 
 - `hotfix/`:
 
-    - **Purpose**: Branches for urgent fixes.
-    - **Rule**: After fixing, submit a pull request to merge into `develop`. Also, merge the changes into `main` to ensure the fix is present in the production environment.
+  - **Purpose**: Branches for urgent fixes.
+  - **Rule**: After fixing, submit a pull request to merge into `develop`. Also, merge the changes into `main` to ensure the fix is present in the production environment.
 
 - `docs/`:
-    - **Purpose**: Branches for documentation updates.
-    - **Rule**: Submit a pull request to merge updates into `develop`.
+  - **Purpose**: Branches for documentation updates.
+  - **Rule**: Submit a pull request to merge updates into `develop`.
 
 ### Examples of Branches
 
@@ -75,13 +76,13 @@ This project follows a following conventional commit message format.
 
 - Bad: `Made changes to login`
 - Good examples:
-    - `feat: introduce user profiles`
-    - `fix: resolve memory leak in user sessions`
-    - `docs(api): enhance API endpoint documentation`
-    - `style(widgets): adjust widget styling for consistency`
-    - `refactor: improve query efficiency`
-    - `test: cover user deletion scenarios`
-    - `chore: upgrade to webpack 5`
+  - `feat: introduce user profiles`
+  - `fix: resolve memory leak in user sessions`
+  - `docs(api): enhance API endpoint documentation`
+  - `style(widgets): adjust widget styling for consistency`
+  - `refactor: improve query efficiency`
+  - `test: cover user deletion scenarios`
+  - `chore: upgrade to webpack 5`
 
 If you are interested in the detailed specification you can visit:
 
@@ -92,6 +93,18 @@ If you are interested in the detailed specification you can visit:
 ## Pull Requests
 
 When merging pull requests into the `main` branch, we use the "squash and merge" strategy. This approach combines all commits from the branch into a single commit in the `main` branch, ensuring our commit history remains clean and easy to follow.
+
+### PR Title Rules
+
+- Follow the same convention rules as the [Commit Message Guidelines](#commit-message-guidelines)
+- Format: `<type>(optional scope): <description>` in lowercase
+
+Examples:
+
+- `feat: add user authentication system`
+- `fix: resolve navigation bar overlap issue`
+- `refactor: improve error handling in payment gateway`
+- `test(API): increase coverage for user authentication tests`
 
 ### For Team Members:
 
