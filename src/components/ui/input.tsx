@@ -39,7 +39,7 @@ export interface IInputProps
 const Input = forwardRef<HTMLInputElement, IInputProps>(
   ({ className, variant, type, icon, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className="relative w-full">
         {icon && (
           <div className="absolute inset-y-0 right-3 flex items-center">
             {icon}
