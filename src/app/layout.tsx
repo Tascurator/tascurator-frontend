@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          'flex justify-center items-start w-screen h-screen bg-primary-lightest',
+          'flex justify-center items-start w-screen min-h-screen bg-primary-lightest',
           roboto.className,
         )}
       >
