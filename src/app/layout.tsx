@@ -20,11 +20,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          'flex justify-center items-start w-screen h-screen',
+          'flex justify-center items-start w-screen h-screen bg-primary-lightest',
           roboto.className,
         )}
       >
-        <main className={'max-w-screen-sm w-full h-full px-6 border'}>
+        <main className={'max-w-screen-sm w-full h-full bg-white px-6 border'}>
           {children}
         </main>
       </body>
