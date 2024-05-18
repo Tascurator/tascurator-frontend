@@ -24,7 +24,7 @@ export const FormMessage = ({
 }: IFormMessageProps) => {
   return (
     <p
-      className={cn('text-base text-destructive pt-1.5', className)}
+      className={cn('w-full text-base text-destructive pt-1.5', className)}
       {...props}
     >
       {message}
