@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
+import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 const roboto = Roboto({ weight: ['400', '500'], subsets: ['latin'] });
 
@@ -12,11 +14,20 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>{children}</body>
+      <body
+        className={cn(
+          'flex justify-center items-start w-screen h-screen',
+          roboto.className,
+        )}
+      >
+        <main className={'max-w-screen-sm w-full h-full px-6 border'}>
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
