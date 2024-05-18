@@ -24,7 +24,7 @@ export default function RootLayout({
           roboto.className,
         )}
       >
-        <main className={'max-w-screen-sm w-full h-full bg-white px-6 border'}>
+        <main className={'max-w-screen-sm w-full h-full bg-white px-6'}>
           {children}
         </main>
       </body>
