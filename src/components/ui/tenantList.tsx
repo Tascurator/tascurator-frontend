@@ -8,7 +8,7 @@ import {
   DropdownMenuItemWithIcon,
 } from '@/components/ui/dropdown-menu';
 
-interface TenantListProps {
+interface ITenantListItemProps {
   name: string;
 }
 
@@ -16,12 +16,12 @@ interface TenantListProps {
  * @example
  * ```tsx
  * return (
- * <TenantList name='Momo'/>
+ * <TenantListItem name='Momo'/>
  * )
  */
-const TenantList = ({ name }: TenantListProps) => {
+export const TenantListItem = ({ name }: ITenantListItemProps) => {
   return (
-    <div className="flex items-center justify-between w-full h-full mx-5 my-3">
+    <div className="flex items-center justify-between w-full h-full">
       <div>
         <Avatar>
           <User />
@@ -38,12 +38,10 @@ const TenantList = ({ name }: TenantListProps) => {
           <DropdownMenuContent>
             <DropdownMenuGroup>
               <DropdownMenuItemWithIcon icon={<SquarePen />}>
-                {' '}
-                Edit name{' '}
+                Edit name
               </DropdownMenuItemWithIcon>
               <DropdownMenuItemWithIcon icon={<Trash2 />}>
-                {' '}
-                Delete{' '}
+                Delete
               </DropdownMenuItemWithIcon>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -52,5 +50,3 @@ const TenantList = ({ name }: TenantListProps) => {
     </div>
   );
 };
-
-export default TenantList;
