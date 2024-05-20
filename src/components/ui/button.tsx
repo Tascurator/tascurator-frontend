@@ -18,6 +18,8 @@ const buttonVariants = cva(
           'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
         outline:
           'border border-gray-500 bg-background hover:bg-slate-100 hover:text-accent-foreground',
+        'outline-destructive':
+          'border border-rose-600 bg-background text-rose-600 font-medium hover:bg-slate-100',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
