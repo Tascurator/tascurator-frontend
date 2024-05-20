@@ -31,9 +31,7 @@ export const TenantListItem = ({ name }: ITenantListItemProps) => {
       <div className="ml-auto">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="p-4">
-              <Ellipsis />
-            </button>
+            <Ellipsis />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
