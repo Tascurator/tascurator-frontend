@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
+import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 
 const roboto = Roboto({ weight: ['400', '500'], subsets: ['latin'] });
@@ -13,12 +15,19 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>
-        <main>{children}</main>
+      <body
+        className={cn(
+          'flex justify-center items-start w-screen min-h-screen bg-primary-lightest',
+          roboto.className,
+        )}
+      >
+        <main className={'max-w-screen-sm w-full h-full bg-white px-6'}>
+          {children}
+        </main>
         <Toaster />
       </body>
     </html>

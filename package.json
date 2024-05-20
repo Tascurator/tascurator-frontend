@@ -11,15 +11,16 @@
     "format": "prettier . --write",
     "format-file-patterns": "prettier \"./src/**/*.{js,jsx,ts,tsx,json,css}\" --write",
     "format-ignore-path": "prettier . --write --ignore-path {any file}",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typedoc": "typedoc"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
-    "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
@@ -59,6 +60,8 @@
     "postcss": "^8",
     "prettier": "3.2.5",
     "tailwindcss": "^3.3.0",
+    "typedoc": "^0.25.13",
+    "typedoc-theme-hierarchy": "^4.1.2",
     "typescript": "^5"
   }
 }
