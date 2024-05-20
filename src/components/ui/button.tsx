@@ -17,7 +17,7 @@ const buttonVariants = cva(
         floating:
           'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'border border-gray-500 bg-background hover:bg-slate-100 hover:text-accent-foreground',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
       },
       size: {
