@@ -139,6 +139,9 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, 'id'>;
 
+/**
+ * @see {@link https://ui.shadcn.com/docs/components/toast | Toast}
+ */
 function toast({ ...props }: Toast) {
   const id = genId();
 
@@ -168,9 +171,6 @@ function toast({ ...props }: Toast) {
   };
 }
 
-/**
- * @see {@link https://ui.shadcn.com/docs/components/toast | Toast}
- */
 function useToast() {
   const [state, setState] = useState<State>(memoryState);
 
