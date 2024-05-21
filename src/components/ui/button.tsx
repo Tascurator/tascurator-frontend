@@ -12,7 +12,6 @@ const buttonVariants = cva(
         default: 'bg-primary text-white hover:opacity-80',
         secondary: 'border border-primary bg-white hover:bg-slate-100',
         tertiary: 'bg-gray-500 text-white hover:bg-gray-500/50',
-        disable: 'bg-white border border-color-gray-500 text-gray-500',
         destructive: 'bg-rose-600 text-white hover:opacity-80',
         link: 'text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
         floating:
