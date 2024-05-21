@@ -1,6 +1,7 @@
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
+import { forwardRef, InputHTMLAttributes, ReactNode, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 const inputVariants = cva(
   'w-full h-12 rounded-xl border px-3 py-2 ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
@@ -18,12 +19,23 @@ const inputVariants = cva(
   },
 );
 
-export interface IInputProps
-  extends InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
-  className?: string;
+type TInputPropsBase = InputHTMLAttributes<HTMLInputElement> &
+  VariantProps<typeof inputVariants> & {
+    className?: string;
+  };
+
+type TInputPropsWithIcon = TInputPropsBase & {
+  type?: 'text' | 'email' | 'number' | 'url';
   icon?: ReactNode;
-}
+};
+
+// Ensure no icon is passed when type is password
+type TInputPropsWithoutIcon = TInputPropsBase & {
+  type: 'password';
+  icon?: never;
+};
+
+export type TInputProps = TInputPropsWithIcon | TInputPropsWithoutIcon;
 
 /**
  * An input component
@@ -36,18 +48,43 @@ export interface IInputProps
  * // An input with an icon
  * <Input icon={<SearchIcon />} type="text" placeholder="Search" />
  */
-const Input = forwardRef<HTMLInputElement, IInputProps>(
+const Input = forwardRef<HTMLInputElement, TInputProps>(
   ({ className, variant, type, icon, ...props }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+      setShowPassword((prev) => !prev);
+    };
+
+    const inputType = type === 'password' && showPassword ? 'text' : type;
+
     return (
       <div className="relative w-full">
-        {icon && (
+        {type === 'password' ? (
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-3 flex items-center"
+          >
+            {showPassword ? (
+              <EyeOffIcon className="size-5" />
+            ) : (
+              <EyeIcon className="size-5" />
+            )}
+          </button>
+        ) : (
           <div className="absolute inset-y-0 right-3 flex items-center">
             {icon}
           </div>
         )}
+
         <input
-          type={type}
-          className={cn(inputVariants({ variant, className }))}
+          type={inputType}
+          className={cn(
+            inputVariants({ variant, className }),
+            // Add padding to the right to avoid input text being hidden by the icon
+            (type === 'password' || icon) && 'pr-11',
+          )}
           ref={ref}
           {...props}
         />
