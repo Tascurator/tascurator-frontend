@@ -47,6 +47,8 @@ export type TInputProps = TInputPropsWithIcon | TInputPropsWithoutIcon;
  * <Input variant="destructive" type="text" placeholder="Enter your name" />
  * // An input with an icon
  * <Input icon={<SearchIcon />} type="text" placeholder="Search" />
+ * // A password input with toggle visibility, no need to pass icons
+ * <Input type="password" placeholder="Enter your password" />
  */
 const Input = forwardRef<HTMLInputElement, TInputProps>(
   ({ className, variant, type, icon, ...props }, ref) => {
