@@ -93,8 +93,6 @@ export const TaskCreationDrawer = ({
     reset();
   };
 
-  const handleCancelClick = () => setOpen(false);
-
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
@@ -171,17 +169,14 @@ export const TaskCreationDrawer = ({
             )}
           </DrawerDescription>
           <DrawerFooter>
-            <Button
-              type={'button'}
-              variant={'secondary'}
-              onClick={handleCancelClick}
-            >
-              Cancel
-            </Button>
+            <DrawerClose>
+              <Button type={'button'} variant={'secondary'}>
+                Cancel
+              </Button>
+            </DrawerClose>
             <Button type={'submit'}>Save</Button>
           </DrawerFooter>
         </form>
-        <DrawerClose />
       </DrawerContent>
     </Drawer>
   );
