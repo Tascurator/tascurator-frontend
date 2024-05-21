@@ -22,6 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 
+// The list of toolbar icons to be displayed in the task description input field
 const toolbarIcons = [
   {
     name: 'bold',
@@ -41,6 +42,7 @@ const toolbarIcons = [
   },
 ];
 
+// Define the schema for the task creation form
 const schema = z.object({
   category: z
     .string()
@@ -56,6 +58,7 @@ const schema = z.object({
     .max(1000, "Description can't be more than 1000 characters"),
 });
 
+// Infer the type from the schema
 type TScheme = z.infer<typeof schema>;
 
 interface ITaskCreationDrawer {
@@ -67,6 +70,18 @@ interface ITaskCreationDrawer {
   setOpen: (value: boolean) => void;
 }
 
+/**
+ * TaskCreationDrawer component
+ *
+ * This component is used to create a new task or edit an existing task.
+ *
+ * @param taskId - The ID will be used to update the task
+ * @param category - The category of the task (e.g. Kitchen, Bathroom)
+ * @param title - The title of the task (e.g. Mop the floor)
+ * @param description - The description of the task (e.g. Mop the floor with a wet mop)
+ * @param open - The state of the drawer
+ * @param setOpen - The function to set the state of the drawer
+ */
 export const TaskCreationDrawer = ({
   taskId,
   category,
@@ -84,6 +99,7 @@ export const TaskCreationDrawer = ({
     resolver: zodResolver(schema),
   });
 
+  // This function will be called when the validation is successful after form submission
   const onSubmit: SubmitHandler<TScheme> = async (data) => {
     // Handle form submission
     console.log('submitting data');
@@ -107,6 +123,7 @@ export const TaskCreationDrawer = ({
           <DrawerDescription
             className={'flex-1 flex flex-col justify-center items-start'}
           >
+            {/* Category input field */}
             <p className={'font-medium'}>Category</p>
             <Input
               {...register('category')}
@@ -122,6 +139,7 @@ export const TaskCreationDrawer = ({
               <FormMessage message={errors.category.message} />
             )}
 
+            {/* Task title input field */}
             <p className={'pt-4 font-medium'}>Task title</p>
             <Input
               {...register('title')}
@@ -135,6 +153,7 @@ export const TaskCreationDrawer = ({
               <FormMessage message={errors.title.message} />
             )}
 
+            {/* Task description input field */}
             <p className={'pt-4 font-medium'}>Task description</p>
             <div
               className={cn(
