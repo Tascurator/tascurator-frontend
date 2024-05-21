@@ -20,6 +20,7 @@ const buttonVariants = cva(
           'border border-gray-500 bg-background hover:bg-slate-100 hover:text-accent-foreground',
         'outline-destructive':
           'border border-rose-600 bg-background text-rose-600 font-medium hover:bg-slate-100',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
