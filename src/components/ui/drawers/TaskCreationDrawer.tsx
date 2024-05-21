@@ -143,7 +143,7 @@ export const TaskCreationDrawer = ({
             <p className={'pt-4 font-medium'}>Task title</p>
             <Input
               {...register('title')}
-              variant={errors.category ? 'destructive' : 'default'}
+              variant={errors.title ? 'destructive' : 'default'}
               type="text"
               defaultValue={title}
               placeholder="Task name"
