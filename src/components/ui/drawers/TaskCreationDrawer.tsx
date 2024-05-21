@@ -22,22 +22,29 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 
+enum Syntax {
+  BOLD = 'bold',
+  UNDERLINE = 'underline',
+  LIST = 'list',
+  LIST_ORDERED = 'listOrdered',
+}
+
 // The list of toolbar icons to be displayed in the task description input field
 const toolbarIcons = [
   {
-    name: 'bold',
+    name: Syntax.BOLD,
     icon: <BoldIcon className={'size-5'} />,
   },
   {
-    name: 'underline',
+    name: Syntax.UNDERLINE,
     icon: <UnderlineIcon className={'size-5'} />,
   },
   {
-    name: 'list',
+    name: Syntax.LIST,
     icon: <ListIcon className={'size-5'} />,
   },
   {
-    name: 'listOrdered',
+    name: Syntax.LIST_ORDERED,
     icon: <ListOrderedIcon className={'size-5'} />,
   },
 ];
@@ -98,6 +105,11 @@ export const TaskCreationDrawer = ({
   } = useForm<TScheme>({
     resolver: zodResolver(schema),
   });
+
+  const handleToolbarClick = (name: Syntax) => {
+    // TODO: Implement the toolbar click functionality
+    console.log('Toolbar icon clicked:', name);
+  };
 
   // This function will be called when the validation is successful after form submission
   const onSubmit: SubmitHandler<TScheme> = async (data) => {
@@ -168,6 +180,7 @@ export const TaskCreationDrawer = ({
                   <button
                     type={'button'}
                     key={`${taskId}-${name}`}
+                    onClick={() => handleToolbarClick(name)}
                     className="size-12 flex justify-center items-center focus:outline-none"
                   >
                     {icon}
