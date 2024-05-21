@@ -59,6 +59,12 @@ interface IAccordionTaskItemProps {
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
+/**
+ * Use this component to display a task item in an accordion.
+ *
+ * @param title - The title of the task
+ * @param description - The description of the task
+ */
 export const AccordionTaskItem = ({
   title,
   description,
