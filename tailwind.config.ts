@@ -10,36 +10,36 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: 'rgb(var(--color-primary))',
-          light: 'rgb(var(--color-primary-light))',
-          lightest: 'rgb(var(--color-primary-lightest))',
+          DEFAULT: 'rgba(var(--color-primary), <alpha-value>)',
+          light: 'rgba(var(--color-primary-light), <alpha-value>)',
+          lightest: 'rgba(var(--color-primary-lightest), <alpha-value>)',
         },
         secondary: {
-          DEFAULT: 'rgb(var(--color-secondary))',
-          light: 'rgb(var(--color-secondary-light))',
+          DEFAULT: 'rgba(var(--color-secondary), <alpha-value>)',
+          light: 'rgba(var(--color-secondary-light), <alpha-value>)',
         },
         destructive: {
-          DEFAULT: 'rgb(var(--color-destructive))',
+          DEFAULT: 'rgba(var(--color-destructive), <alpha-value>)',
         },
         accent: {
-          DEFAULT: 'rgb(var(--color-accent))',
+          DEFAULT: 'rgba(var(--color-accent), <alpha-value>)',
         },
         muted: {
-          DEFAULT: 'rgb(var(--muted))',
+          DEFAULT: 'rgba(var(--muted), <alpha-value>)',
         },
         popover: {
-          DEFAULT: 'rgb(var(--popover))',
+          DEFAULT: 'rgba(var(--popover), <alpha-value>)',
         },
         card: {
-          DEFAULT: 'rgb(var(--card))',
+          DEFAULT: 'rgba(var(--card), <alpha-value>)',
         },
-        background: 'rgb(var(--background))',
-        black: 'rgb(var(--color-black))',
-        overlay: 'rgb(var(--color-overlay))',
-        input: 'rgb(var(--input))',
-        border: 'rgb(var(--border))',
-        ring: 'rgb(var(--ring))',
-        placeholder: 'rgb(var(--placeholder))',
+        background: 'rgba(var(--background), <alpha-value>)',
+        black: 'rgba(var(--color-black), <alpha-value>)',
+        overlay: 'rgba(var(--color-overlay), <alpha-value>)',
+        input: 'rgba(var(--input), <alpha-value>)',
+        border: 'rgba(var(--border), <alpha-value>)',
+        ring: 'rgba(var(--ring), <alpha-value>)',
+        placeholder: 'rgba(var(--placeholder), <alpha-value>)',
       },
       keyframes: {
         'accordion-down': {
