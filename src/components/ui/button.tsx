@@ -13,7 +13,7 @@ const buttonVariants = cva(
         secondary: 'border border-primary bg-white hover:bg-slate-100',
         tertiary: 'bg-gray-500 text-white hover:bg-gray-500/50',
         destructive: 'bg-rose-600 text-white hover:opacity-80',
-        link: 'text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
+        link: 'text-sky-600 hover:text-[#0084C580] text-base',
         floating:
           'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
         outline:
