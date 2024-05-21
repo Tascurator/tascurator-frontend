@@ -113,12 +113,15 @@ export const TaskCreationDrawer = ({
 
   // This function will be called when the validation is successful after form submission
   const onSubmit: SubmitHandler<TScheme> = async (data) => {
-    // Handle form submission
-    console.log('submitting data');
+    // TODO: Implement the form submission functionality
+    console.log('Form data submitted:', data);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(data);
+    // Reset the form after submission
     reset();
+
+    // Close the drawer after submission
+    setOpen(false);
   };
 
   return (
