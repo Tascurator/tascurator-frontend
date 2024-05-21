@@ -16,6 +16,11 @@ import {
   ListOrderedIcon,
   UnderlineIcon,
 } from 'lucide-react';
+import { z } from 'zod';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormMessage } from '@/components/ui/formMessage';
+import { cn } from '@/lib/utils';
 
 const toolbarIcons = [
   {
@@ -36,6 +41,23 @@ const toolbarIcons = [
   },
 ];
 
+const schema = z.object({
+  category: z
+    .string()
+    .min(1, "Category can't be empty")
+    .max(15, "Category can't be more than 15 characters"),
+  title: z
+    .string()
+    .min(1, "Title can't be empty")
+    .max(20, "Title can't be more than 20 characters"),
+  description: z
+    .string()
+    .min(10, "Description can't be empty")
+    .max(1000, "Description can't be more than 1000 characters"),
+});
+
+type TScheme = z.infer<typeof schema>;
+
 interface ITaskCreationDrawer {
   taskId?: string;
   category?: string;
@@ -53,7 +75,23 @@ export const TaskCreationDrawer = ({
   open,
   setOpen,
 }: ITaskCreationDrawer) => {
-  const handleSaveClick = () => {};
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TScheme>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<TScheme> = async (data) => {
+    // Handle form submission
+    console.log('submitting data');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log(data);
+    reset();
+  };
 
   const handleCancelClick = () => setOpen(false);
 
@@ -64,54 +102,85 @@ export const TaskCreationDrawer = ({
         <DrawerHeader>
           <DrawerTitle>Edit Task</DrawerTitle>
         </DrawerHeader>
-        <DrawerDescription
-          className={'flex-1 flex flex-col justify-center items-start'}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={'flex-1 flex flex-col'}
         >
-          <p className={'font-medium'}>Category</p>
-          <Input
-            type="text"
-            defaultValue={category}
-            placeholder="Category name"
-            className={'mt-1.5'}
-            // Disable the input field if category is present
-            disabled={!!category}
-          />
-
-          <p className={'pt-4 font-medium'}>Task title</p>
-          <Input
-            type="text"
-            defaultValue={title}
-            placeholder="Task name"
-            className={'mt-1.5'}
-          />
-
-          <p className={'pt-4 font-medium'}>Task description</p>
-          <div className="flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-input border-slate-400 bg-white ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-            <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
-              {toolbarIcons.map(({ name, icon }) => (
-                <button
-                  key={`${taskId}-${name}`}
-                  className="size-12 flex justify-center items-center focus:outline-none"
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-            <textarea
-              placeholder="Task description"
-              defaultValue={description}
-              className={
-                'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
-              }
+          <DrawerDescription
+            className={'flex-1 flex flex-col justify-center items-start'}
+          >
+            <p className={'font-medium'}>Category</p>
+            <Input
+              {...register('category')}
+              variant={errors.category ? 'destructive' : 'default'}
+              type="text"
+              defaultValue={category}
+              placeholder="Category name"
+              className={'mt-1.5'}
+              // Disable the input field if category is present
+              disabled={!!category}
             />
-          </div>
-        </DrawerDescription>
-        <DrawerFooter>
-          <Button variant={'secondary'} onClick={handleCancelClick}>
-            Cancel
-          </Button>
-          <Button onClick={handleSaveClick}>Save</Button>
-        </DrawerFooter>
+            {errors.category?.message && (
+              <FormMessage message={errors.category.message} />
+            )}
+
+            <p className={'pt-4 font-medium'}>Task title</p>
+            <Input
+              {...register('title')}
+              variant={errors.category ? 'destructive' : 'default'}
+              type="text"
+              defaultValue={title}
+              placeholder="Task name"
+              className={'mt-1.5'}
+            />
+            {errors.title?.message && (
+              <FormMessage message={errors.title.message} />
+            )}
+
+            <p className={'pt-4 font-medium'}>Task description</p>
+            <div
+              className={cn(
+                'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+                errors.description
+                  ? 'border-destructive focus-within:ring-destructive'
+                  : 'border-input focus-within:ring-ring',
+              )}
+            >
+              <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
+                {toolbarIcons.map(({ name, icon }) => (
+                  <button
+                    type={'button'}
+                    key={`${taskId}-${name}`}
+                    className="size-12 flex justify-center items-center focus:outline-none"
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                {...register('description')}
+                placeholder="Task description"
+                defaultValue={description}
+                className={
+                  'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
+                }
+              />
+            </div>
+            {errors.description?.message && (
+              <FormMessage message={errors.description.message} />
+            )}
+          </DrawerDescription>
+          <DrawerFooter>
+            <Button
+              type={'button'}
+              variant={'secondary'}
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </Button>
+            <Button type={'submit'}>Save</Button>
+          </DrawerFooter>
+        </form>
         <DrawerClose />
       </DrawerContent>
     </Drawer>
