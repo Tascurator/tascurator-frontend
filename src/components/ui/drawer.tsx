@@ -9,6 +9,29 @@ import {
 import { Drawer as DrawerPrimitive } from 'vaul';
 import { cn } from '@/lib/utils';
 
+/**
+ * The root component of the Drawer.
+ * It should be used as a wrapper for the DrawerTrigger, DrawerContent, and DrawerOverlay components.
+ *
+ * @example
+ * <Drawer>
+ *   <DrawerTrigger asChild>
+ *     <Button>Open Drawer</Button>
+ *   </DrawerTrigger>
+ *   <DrawerContent>
+ *     <DrawerTitle>Login</DrawerTitle>
+ *     <DrawerDescription>
+ *       // Your content here
+ *     </DrawerDescription>
+ *     <DrawerFooter>
+ *       <DrawerClose asChild>
+ *         <Button>Close</Button>
+ *       </DrawerClose>
+ *       <Button>Save</Button>
+ *     </DrawerFooter>
+ *   </DrawerContent>
+ * </Drawer>
+ */
 const Drawer = ({
   shouldScaleBackground = true,
   ...props
@@ -20,12 +43,43 @@ const Drawer = ({
 );
 Drawer.displayName = 'Drawer';
 
+/**
+ * The trigger component to open the Drawer.
+ *
+ * @example
+ * <DrawerTrigger asChild>
+ *   <Button>Open Drawer</Button>
+ * </DrawerTrigger>
+ */
 const DrawerTrigger = DrawerPrimitive.Trigger;
 
+/**
+ * The portal component to render the Drawer.
+ * It should be used as a wrapper for the DrawerOverlay and DrawerContent components.
+ *
+ * @example
+ * <DrawerPortal>
+ *   <DrawerOverlay />
+ *  <DrawerContent>
+ */
 const DrawerPortal = DrawerPrimitive.Portal;
 
+/**
+ * The close component to close the Drawer.
+ *
+ * @example
+ * <DrawerClose asChild>
+ *   <Button>Close</Button>
+ * </DrawerClose>
+ */
 const DrawerClose = DrawerPrimitive.Close;
 
+/**
+ * The overlay component to display the overlay when the Drawer is open.
+ *
+ * @example
+ * <DrawerOverlay />
+ */
 const DrawerOverlay = forwardRef<
   ElementRef<typeof DrawerPrimitive.Overlay>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
@@ -38,6 +92,23 @@ const DrawerOverlay = forwardRef<
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
+/**
+ * The content component to wrap the content of the Drawer.
+ * Commonly used to display the title, description, and footer content inside this component.
+ *
+ * @example
+ * <DrawerContent>
+ *   <DrawerTitle>
+ *     // Your title here
+ *   </DrawerTitle>
+ *   <DrawerDescription>
+ *     // Your content here
+ *   </DrawerDescription>
+ *   <DrawerFooter>
+ *     // Your footer content here
+ *   </DrawerFooter>
+ * </DrawerContent>
+ */
 const DrawerContent = forwardRef<
   ElementRef<typeof DrawerPrimitive.Content>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
@@ -59,6 +130,18 @@ const DrawerContent = forwardRef<
 ));
 DrawerContent.displayName = 'DrawerContent';
 
+/**
+ * The footer component to wrap the footer content of the Drawer.
+ * Commonly used to display the actions buttons like save, close, etc. in this component.
+ *
+ * @example
+ * <DrawerFooter>
+ *   <DrawerClose asChild>
+ *     <Button>Close</Button>
+ *   </DrawerClose>
+ *   <Button>Save</Button>
+ * </DrawerFooter>
+ */
 const DrawerFooter = ({
   className,
   ...props
@@ -73,6 +156,12 @@ const DrawerFooter = ({
 );
 DrawerFooter.displayName = 'DrawerFooter';
 
+/**
+ * The title component to display the title of the Drawer.
+ *
+ * @example
+ * <DrawerTitle>Hello world</DrawerTitle>
+ */
 const DrawerTitle = forwardRef<
   ElementRef<typeof DrawerPrimitive.Title>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
@@ -94,6 +183,14 @@ const DrawerTitle = forwardRef<
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
+/**
+ * The description component to display the description of the Drawer.
+ *
+ * @example
+ * <DrawerDescription>
+ *   // Your content here
+ * </DrawerDescription>
+ */
 const DrawerDescription = forwardRef<
   ElementRef<typeof DrawerPrimitive.Description>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
