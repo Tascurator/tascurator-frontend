@@ -59,14 +59,6 @@ const DrawerContent = forwardRef<
 ));
 DrawerContent.displayName = 'DrawerContent';
 
-const DrawerHeader = ({
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('grid text-left', className)} {...props} />
-);
-DrawerHeader.displayName = 'DrawerHeader';
-
 const DrawerFooter = ({
   className,
   ...props
@@ -112,7 +104,6 @@ export {
   DrawerTrigger,
   DrawerClose,
   DrawerContent,
-  DrawerHeader,
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
