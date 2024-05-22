@@ -47,7 +47,7 @@ const DrawerContent = forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl border bg-background',
+        'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col items-center rounded-t-xl border bg-background',
         className,
       )}
       {...props}
@@ -64,7 +64,10 @@ const DrawerFooter = ({
   ...props
 }: HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex justify-center gap-x-6 px-6 pb-8', className)}
+    className={cn(
+      'w-full flex justify-center gap-x-6 px-6 pb-8 max-w-screen-sm',
+      className,
+    )}
     {...props}
   />
 );
@@ -74,14 +77,20 @@ const DrawerTitle = forwardRef<
   ElementRef<typeof DrawerPrimitive.Title>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Title
-    ref={ref}
-    className={cn(
-      'flex items-center border-b border-b-slate-300 text-2xl px-6 py-2.5',
-      className,
-    )}
-    {...props}
-  />
+  <div
+    className={
+      'w-full flex justify-center items-center text-left border-b border-b-slate-300'
+    }
+  >
+    <DrawerPrimitive.Title
+      ref={ref}
+      className={cn(
+        'w-full flex items-center text-2xl px-6 py-2.5 max-w-screen-sm',
+        className,
+      )}
+      {...props}
+    />
+  </div>
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
@@ -91,7 +100,7 @@ const DrawerDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
     ref={ref}
-    className={cn('px-6 pt-5 pb-10', className)}
+    className={cn('w-full px-6 pt-5 pb-10 max-w-screen-sm', className)}
     {...props}
   />
 ));
