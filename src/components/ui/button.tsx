@@ -20,6 +20,8 @@ const buttonVariants = cva(
           'border border-gray-500 bg-background hover:bg-slate-100 hover:text-accent-foreground',
         'outline-destructive':
           'border border-rose-600 bg-background text-rose-600 font-medium hover:bg-slate-100',
+
+        // This only used for the calendar component. We normally don't use this variant.
         ghost: 'hover:bg-accent hover:text-accent-foreground',
       },
       size: {
