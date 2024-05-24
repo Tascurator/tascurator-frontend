@@ -113,7 +113,7 @@ const EditTaskDrawer = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent className={'h-5/6'}>
+      <DrawerContent className={'h-[90%]'}>
         <DrawerHeader>
           <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
         </DrawerHeader>
