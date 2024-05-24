@@ -23,6 +23,13 @@ import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
+interface ITask {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+}
+
 enum Syntax {
   BOLD = 'bold',
   UNDERLINE = 'underline',
@@ -70,8 +77,7 @@ const schema = z.object({
 type TScheme = z.infer<typeof schema>;
 
 interface IEditTaskDrawer {
-  taskId?: string;
-  category?: string;
+  task?: ITask;
   formControls: UseFormReturn<TScheme>;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -82,8 +88,7 @@ interface IEditTaskDrawer {
  * A drawer component to create or edit a task
  */
 const EditTaskDrawer = ({
-  taskId,
-  category,
+  task,
   formControls,
   open,
   setOpen,
@@ -110,7 +115,7 @@ const EditTaskDrawer = ({
       <DrawerTrigger />
       <DrawerContent className={'h-5/6'}>
         <DrawerHeader>
-          <DrawerTitle>{taskId ? 'Edit Task' : 'Create Task'}</DrawerTitle>
+          <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
         </DrawerHeader>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -128,7 +133,7 @@ const EditTaskDrawer = ({
               placeholder="Category name"
               className={'mt-1.5'}
               // Disable the input field if category is present
-              disabled={!!category}
+              disabled={!!task?.category}
             />
             {errors.category?.message && (
               <FormMessage message={errors.category.message} />
@@ -161,7 +166,7 @@ const EditTaskDrawer = ({
                 {toolbarIcons.map(({ name, icon }) => (
                   <button
                     type={'button'}
-                    key={`${taskId}-${name}`}
+                    key={`${task?.id}-${name}`}
                     onClick={() => handleToolbarClick(name)}
                     className="size-12 flex justify-center items-center focus:outline-none"
                   >
@@ -266,10 +271,7 @@ const ConfirmTaskDrawer = ({
 };
 
 interface ITaskCreationDrawer {
-  taskId?: string;
-  category?: string;
-  title?: string;
-  description?: string;
+  task?: ITask;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
@@ -277,18 +279,12 @@ interface ITaskCreationDrawer {
 /**
  * A drawer component to create a new task or edit an existing task
  *
- * @param taskId - The ID will be used to update the task
- * @param category - The category of the task (e.g. Kitchen, Bathroom)
- * @param title - The title of the task (e.g. Mop the floor)
- * @param description - The description of the task (e.g. Mop the floor with a wet mop)
+ * @param task - The task object to be edited
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
  */
 export const TaskCreationDrawer = ({
-  taskId,
-  category,
-  title,
-  description,
+  task,
   open,
   setOpen,
 }: ITaskCreationDrawer) => {
@@ -297,9 +293,9 @@ export const TaskCreationDrawer = ({
   const formControls = useForm<TScheme>({
     resolver: zodResolver(schema),
     defaultValues: {
-      category: category || '',
-      title: title || '',
-      description: description || '',
+      category: task?.category || '',
+      title: task?.title || '',
+      description: task?.description || '',
     },
   });
 
@@ -316,8 +312,7 @@ export const TaskCreationDrawer = ({
   return (
     <>
       <EditTaskDrawer
-        taskId={taskId}
-        category={category}
+        task={task}
         formControls={formControls}
         open={open}
         setOpen={setOpen}
@@ -325,7 +320,7 @@ export const TaskCreationDrawer = ({
       />
 
       <ConfirmTaskDrawer
-        taskId={taskId}
+        taskId={task?.id}
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
         formControls={formControls}
