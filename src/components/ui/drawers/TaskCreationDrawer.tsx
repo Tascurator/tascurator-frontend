@@ -61,16 +61,16 @@ const toolbarIcons = [
 const schema = z.object({
   category: z
     .string()
-    .min(1, "Category can't be empty")
-    .max(15, "Category can't be more than 15 characters"),
+    .min(1, 'Category must be at least 1 character')
+    .max(15, 'Category must be at most 15 characters'),
   title: z
     .string()
-    .min(1, "Title can't be empty")
-    .max(20, "Title can't be more than 20 characters"),
+    .min(1, 'Title must be at least 1 character')
+    .max(20, 'Title must be at most 20 characters'),
   description: z
     .string()
-    .min(10, "Description can't be empty")
-    .max(1000, "Description can't be more than 1000 characters"),
+    .min(10, 'Description must be at least 10 characters')
+    .max(1000, 'Description must be at most 1000 characters'),
 });
 
 // Infer the type from the schema
