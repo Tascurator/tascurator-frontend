@@ -279,6 +279,9 @@ interface ITaskCreationDrawer {
 /**
  * A drawer component to create a new task or edit an existing task
  *
+ * If task is passed, the drawer will be in edit mode.
+ * Otherwise, the drawer will be in create mode.
+ *
  * @param task - The task object to be edited
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
