@@ -17,7 +17,7 @@ import {
   UnderlineIcon,
 } from 'lucide-react';
 import { z } from 'zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
@@ -68,60 +68,34 @@ const schema = z.object({
 // Infer the type from the schema
 type TScheme = z.infer<typeof schema>;
 
-interface ITaskCreationDrawer {
+interface IEditTaskDrawer {
   taskId?: string;
   category?: string;
-  title?: string;
-  description?: string;
+  formControls: UseFormReturn<TScheme>;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
 
-/**
- * TaskCreationDrawer component
- *
- * This component is used to create a new task or edit an existing task.
- *
- * @param taskId - The ID will be used to update the task
- * @param category - The category of the task (e.g. Kitchen, Bathroom)
- * @param title - The title of the task (e.g. Mop the floor)
- * @param description - The description of the task (e.g. Mop the floor with a wet mop)
- * @param open - The state of the drawer
- * @param setOpen - The function to set the state of the drawer
- */
-export const TaskCreationDrawer = ({
+const EditTaskDrawer = ({
   taskId,
   category,
-  title,
-  description,
+  formControls,
   open,
   setOpen,
-}: ITaskCreationDrawer) => {
+}: IEditTaskDrawer) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm<TScheme>({
-    resolver: zodResolver(schema),
-  });
+  } = formControls;
 
   const handleToolbarClick = (name: Syntax) => {
     // TODO: Implement the toolbar click functionality
     console.log('Toolbar icon clicked:', name);
   };
 
-  // This function will be called when the validation is successful after form submission
-  const onSubmit: SubmitHandler<TScheme> = async (data) => {
-    // TODO: Implement the form submission functionality
-    console.log('Form data submitted:', data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Reset the form after submission
-    reset();
-
-    // Close the drawer after submission
-    setOpen(false);
+  const onSubmit: SubmitHandler<TScheme> = () => {
+    // Open the confirmation drawer
   };
 
   return (
@@ -129,7 +103,7 @@ export const TaskCreationDrawer = ({
       <DrawerTrigger />
       <DrawerContent className={'h-5/6'}>
         <DrawerHeader>
-          <DrawerTitle>Edit Task</DrawerTitle>
+          <DrawerTitle>{taskId ? 'Edit Task' : 'Create Task'}</DrawerTitle>
         </DrawerHeader>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -144,7 +118,6 @@ export const TaskCreationDrawer = ({
               {...register('category')}
               variant={errors.category ? 'destructive' : 'default'}
               type="text"
-              defaultValue={category}
               placeholder="Category name"
               className={'mt-1.5'}
               // Disable the input field if category is present
@@ -160,7 +133,6 @@ export const TaskCreationDrawer = ({
               {...register('title')}
               variant={errors.title ? 'destructive' : 'default'}
               type="text"
-              defaultValue={title}
               placeholder="Task name"
               className={'mt-1.5'}
             />
@@ -193,7 +165,6 @@ export const TaskCreationDrawer = ({
               <textarea
                 {...register('description')}
                 placeholder="Task description"
-                defaultValue={description}
                 className={
                   'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
                 }
@@ -214,5 +185,58 @@ export const TaskCreationDrawer = ({
         </form>
       </DrawerContent>
     </Drawer>
+  );
+};
+
+interface ITaskCreationDrawer {
+  taskId?: string;
+  category?: string;
+  title?: string;
+  description?: string;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}
+
+/**
+ * TaskCreationDrawer component
+ *
+ * This component is used to create a new task or edit an existing task.
+ *
+ * @param taskId - The ID will be used to update the task
+ * @param category - The category of the task (e.g. Kitchen, Bathroom)
+ * @param title - The title of the task (e.g. Mop the floor)
+ * @param description - The description of the task (e.g. Mop the floor with a wet mop)
+ * @param open - The state of the drawer
+ * @param setOpen - The function to set the state of the drawer
+ */
+export const TaskCreationDrawer = ({
+  taskId,
+  category,
+  title,
+  description,
+  open,
+  setOpen,
+}: ITaskCreationDrawer) => {
+  const formControls = useForm<TScheme>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      category: category || '',
+      title: title || '',
+      description: description || '',
+    },
+  });
+
+  return (
+    <>
+      <EditTaskDrawer
+        taskId={taskId}
+        category={category}
+        formControls={formControls}
+        open={open}
+        setOpen={setOpen}
+      />
+
+      {/*// Display the confirmation drawer here*/}
+    </>
   );
 };
