@@ -78,6 +78,9 @@ interface IEditTaskDrawer {
   openConfirmationDrawer: () => void;
 }
 
+/**
+ * A drawer component to create or edit a task
+ */
 const EditTaskDrawer = ({
   taskId,
   category,
@@ -98,7 +101,7 @@ const EditTaskDrawer = ({
   };
 
   const onSubmit: SubmitHandler<TScheme> = () => {
-    // Open the confirmation drawer
+    // Open the confirmation drawer after passing the validation
     openConfirmationDrawer();
   };
 
@@ -199,6 +202,9 @@ interface ITasksCreationConfirmationDrawer {
   closeConfirmationDrawer: () => void;
 }
 
+/**
+ * A confirmation drawer component to confirm the task creation or update
+ */
 const ConfirmTaskDrawer = ({
   open,
   setOpen,
@@ -261,9 +267,7 @@ interface ITaskCreationDrawer {
 }
 
 /**
- * TaskCreationDrawer component
- *
- * This component is used to create a new task or edit an existing task.
+ * A drawer component to create a new task or edit an existing task
  *
  * @param taskId - The ID will be used to update the task
  * @param category - The category of the task (e.g. Kitchen, Bathroom)
