@@ -239,7 +239,24 @@ const ConfirmTaskDrawer = ({
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer
+      open={open}
+      onOpenChange={(state) => {
+        // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit
+        if (!open && !state) {
+          setOpen(false);
+          return;
+        }
+
+        // Call custom close function to open the edit drawer while closing the confirmation drawer
+        if (!state) {
+          closeConfirmationDrawer();
+          return;
+        }
+
+        setOpen(true);
+      }}
+    >
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'}>
         <DrawerHeader>
