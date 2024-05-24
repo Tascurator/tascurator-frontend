@@ -19,9 +19,17 @@ const inputVariants = cva(
   },
 );
 
-type TInputPropsBase = InputHTMLAttributes<HTMLInputElement> &
+// Omit className from InputHTMLAttributes as classNames (plural) is used instead
+type TInputPropsBase = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'className'
+> &
   VariantProps<typeof inputVariants> & {
-    className?: string;
+    classNames?: {
+      input?: string;
+      label?: string;
+    };
+    label?: string;
   };
 
 type TInputPropsWithIcon = TInputPropsBase & {
@@ -51,7 +59,7 @@ export type TInputProps = TInputPropsWithIcon | TInputPropsWithoutIcon;
  * <Input type="password" placeholder="Enter your password" />
  */
 const Input = forwardRef<HTMLInputElement, TInputProps>(
-  ({ className, variant, type, icon, ...props }, ref) => {
+  ({ classNames, label, variant, type, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
@@ -60,9 +68,9 @@ const Input = forwardRef<HTMLInputElement, TInputProps>(
 
     const inputType = type === 'password' && showPassword ? 'text' : type;
 
-    return (
+    const InputField = (
       <div className="relative w-full">
-        {type === 'password' ? (
+        {type === 'password' && (
           <button
             type="button"
             onClick={togglePasswordVisibility}
@@ -74,7 +82,9 @@ const Input = forwardRef<HTMLInputElement, TInputProps>(
               <EyeIcon className="size-5" />
             )}
           </button>
-        ) : (
+        )}
+
+        {icon && (
           <div className="absolute inset-y-0 right-3 flex items-center">
             {icon}
           </div>
@@ -83,15 +93,32 @@ const Input = forwardRef<HTMLInputElement, TInputProps>(
         <input
           type={inputType}
           className={cn(
-            inputVariants({ variant, className }),
+            inputVariants({ variant }),
             // Add padding to the right to avoid input text being hidden by the icon
             (type === 'password' || icon) && 'pr-11',
+            classNames?.input,
           )}
           ref={ref}
           {...props}
         />
       </div>
     );
+
+    // If label is passed, wrap the input field with a div.
+    // This is to avoid unnecessary nesting when label is not passed.
+    if (label) {
+      return (
+        <div className="w-full flex flex-col space-y-1.5">
+          <label className={cn('w-full text-base', classNames?.label)}>
+            {label}
+          </label>
+          {InputField}
+        </div>
+      );
+    }
+
+    // Return the input field if label is not passed
+    return InputField;
   },
 );
 Input.displayName = 'Input';
