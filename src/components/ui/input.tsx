@@ -47,6 +47,7 @@ export type TInputProps = TInputPropsWithIcon | TInputPropsWithoutIcon;
 
 /**
  * An input component
+ * Use `classNames` to pass custom classes to the input or label
  *
  * @example
  * // A default input
@@ -55,8 +56,14 @@ export type TInputProps = TInputPropsWithIcon | TInputPropsWithoutIcon;
  * <Input variant="destructive" type="text" placeholder="Enter your name" />
  * // An input with an icon
  * <Input icon={<SearchIcon />} type="text" placeholder="Search" />
+ * // An input with a label
+ * <Input type="email" placeholder="Enter your email" label="Email" />
  * // A password input with toggle visibility, no need to pass icons
  * <Input type="password" placeholder="Enter your password" />
+ *
+ * // Custom styles
+ * // "input" is for the input field, and "label" is for the label
+ * <Input classNames={{ input: 'custom-style', label: 'custom-style' }} />
  */
 const Input = forwardRef<HTMLInputElement, TInputProps>(
   ({ classNames, label, variant, type, icon, ...props }, ref) => {
