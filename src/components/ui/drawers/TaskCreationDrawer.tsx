@@ -196,6 +196,7 @@ const EditTaskDrawer = ({
 };
 
 interface ITasksCreationConfirmationDrawer {
+  taskId?: string;
   open: boolean;
   setOpen: (value: boolean) => void;
   formControls: UseFormReturn<TScheme>;
@@ -206,6 +207,7 @@ interface ITasksCreationConfirmationDrawer {
  * A confirmation drawer component to confirm the task creation or update
  */
 const ConfirmTaskDrawer = ({
+  taskId,
   open,
   setOpen,
   formControls,
@@ -216,7 +218,13 @@ const ConfirmTaskDrawer = ({
   const onSubmit: SubmitHandler<TScheme> = async (data) => {
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Submitting the form data:', data);
+
+    // Update or create the task based on the taskId
+    if (taskId) {
+      console.log('Updating the task:', data);
+    } else {
+      console.log('Creating a new task:', data);
+    }
 
     // Clear the form data
     reset();
@@ -317,6 +325,7 @@ export const TaskCreationDrawer = ({
       />
 
       <ConfirmTaskDrawer
+        taskId={taskId}
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
         formControls={formControls}
