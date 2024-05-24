@@ -21,6 +21,7 @@ import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 enum Syntax {
   BOLD = 'bold',
@@ -74,6 +75,7 @@ interface IEditTaskDrawer {
   formControls: UseFormReturn<TScheme>;
   open: boolean;
   setOpen: (value: boolean) => void;
+  openConfirmationDrawer: () => void;
 }
 
 const EditTaskDrawer = ({
@@ -82,6 +84,7 @@ const EditTaskDrawer = ({
   formControls,
   open,
   setOpen,
+  openConfirmationDrawer,
 }: IEditTaskDrawer) => {
   const {
     register,
@@ -96,6 +99,7 @@ const EditTaskDrawer = ({
 
   const onSubmit: SubmitHandler<TScheme> = () => {
     // Open the confirmation drawer
+    openConfirmationDrawer();
   };
 
   return (
@@ -188,6 +192,65 @@ const EditTaskDrawer = ({
   );
 };
 
+interface ITasksCreationConfirmationDrawer {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  formControls: UseFormReturn<TScheme>;
+  closeConfirmationDrawer: () => void;
+}
+
+const ConfirmTaskDrawer = ({
+  open,
+  setOpen,
+  formControls,
+  closeConfirmationDrawer,
+}: ITasksCreationConfirmationDrawer) => {
+  const { handleSubmit, watch, reset } = formControls;
+
+  const onSubmit: SubmitHandler<TScheme> = async (data) => {
+    // Submit the form data
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log('Submitting the form data:', data);
+
+    // Clear the form data
+    reset();
+
+    // Close the confirmation drawer
+    setOpen(false);
+  };
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger />
+      <DrawerContent className={'h-[90%]'}>
+        <DrawerHeader>
+          <DrawerTitle>{watch('title')}</DrawerTitle>
+        </DrawerHeader>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={'flex flex-col h-full'}
+        >
+          <DrawerDescription
+            className={'flex-1 overflow-hidden break-words text-wrap'}
+          >
+            {watch('description')}
+          </DrawerDescription>
+          <DrawerFooter className={'flex-none'}>
+            <Button
+              type={'button'}
+              variant={'secondary'}
+              onClick={closeConfirmationDrawer}
+            >
+              Cancel
+            </Button>
+            <Button type={'submit'}>Save</Button>
+          </DrawerFooter>
+        </form>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
 interface ITaskCreationDrawer {
   taskId?: string;
   category?: string;
@@ -217,6 +280,8 @@ export const TaskCreationDrawer = ({
   open,
   setOpen,
 }: ITaskCreationDrawer) => {
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+
   const formControls = useForm<TScheme>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -226,6 +291,16 @@ export const TaskCreationDrawer = ({
     },
   });
 
+  const openConfirmationDrawer = () => {
+    setOpen(false);
+    setConfirmationOpen(true);
+  };
+
+  const closeConfirmationDrawer = () => {
+    setConfirmationOpen(false);
+    setOpen(true);
+  };
+
   return (
     <>
       <EditTaskDrawer
@@ -234,9 +309,15 @@ export const TaskCreationDrawer = ({
         formControls={formControls}
         open={open}
         setOpen={setOpen}
+        openConfirmationDrawer={openConfirmationDrawer}
       />
 
-      {/*// Display the confirmation drawer here*/}
+      <ConfirmTaskDrawer
+        open={confirmationOpen}
+        setOpen={setConfirmationOpen}
+        formControls={formControls}
+        closeConfirmationDrawer={closeConfirmationDrawer}
+      />
     </>
   );
 };
