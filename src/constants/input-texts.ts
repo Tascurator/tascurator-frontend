@@ -20,8 +20,8 @@ export const INPUT_TEXTS = {
 
   // ShareHouse
   SHAREHOUSE_NAME: {
-    label: 'Share House Name',
-    placeholder: 'Share House Name',
+    label: 'Name',
+    placeholder: 'Sample share house',
   },
 
   // Category
@@ -42,11 +42,11 @@ export const INPUT_TEXTS = {
 
   // Tenant
   TENANT_NAME: {
-    label: 'Tenant Name',
+    label: 'Name',
     placeholder: 'Tenant Name',
   },
   TENANT_EMAIL: {
-    label: "Tenant's Email",
-    placeholder: "Tenant's Email",
+    label: 'Email',
+    placeholder: 'tenants.email@example.com',
   },
 };
