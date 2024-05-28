@@ -9,6 +9,28 @@ import { ChevronRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * The Breadcrumb component that allows users to navigate between pages.
+ * The usage is the same as the official documentation of shadcn/ui.
+ *
+ * @example
+ * <Breadcrumb>
+ *   <BreadcrumbList>
+ *     <BreadcrumbItem>
+ *       <BreadcrumbLink href="/">Home</BreadcrumbLink>
+ *     </BreadcrumbItem>
+ *     <BreadcrumbSeparator />
+ *     <BreadcrumbItem>
+ *       <BreadcrumbLink href="/components">Components</BreadcrumbLink>
+ *     </BreadcrumbItem>
+ *     <BreadcrumbSeparator />
+ *     <BreadcrumbItem>
+ *       <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+ *     </BreadcrumbItem>
+ *   </BreadcrumbList>
+ * </Breadcrumb>
+ * @see {@link https://ui.shadcn.com/docs/components/breadcrumb | Breadcrumb}
+ */
 const Breadcrumb = forwardRef<
   HTMLElement,
   ComponentPropsWithoutRef<'nav'> & {
@@ -17,6 +39,25 @@ const Breadcrumb = forwardRef<
 >(({ ...props }, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />);
 Breadcrumb.displayName = 'Breadcrumb';
 
+/**
+ * The BreadcrumbList component is used to create a list of breadcrumbs.
+ * It should be used to wrap the BreadcrumbItem components.
+ *
+ * @example
+ * <BreadcrumbList>
+ *   <BreadcrumbItem>
+ *     <BreadcrumbLink href="/">Home</BreadcrumbLink>
+ *   </BreadcrumbItem>
+ *   <BreadcrumbSeparator />
+ *   <BreadcrumbItem>
+ *     <BreadcrumbLink href="/components">Components</BreadcrumbLink>
+ *   </BreadcrumbItem>
+ *   <BreadcrumbSeparator />
+ *   <BreadcrumbItem>
+ *     <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+ *   </BreadcrumbItem>
+ * </BreadcrumbList>
+ */
 const BreadcrumbList = forwardRef<
   HTMLOListElement,
   ComponentPropsWithoutRef<'ol'>
@@ -32,6 +73,14 @@ const BreadcrumbList = forwardRef<
 ));
 BreadcrumbList.displayName = 'BreadcrumbList';
 
+/**
+ * The BreadcrumbItem component is used to create a breadcrumb item.
+ *
+ * @example
+ * <BreadcrumbItem>
+ *   <BreadcrumbLink href="/">Home</BreadcrumbLink>
+ * </BreadcrumbItem>
+ */
 const BreadcrumbItem = forwardRef<
   HTMLLIElement,
   ComponentPropsWithoutRef<'li'>
@@ -44,6 +93,12 @@ const BreadcrumbItem = forwardRef<
 ));
 BreadcrumbItem.displayName = 'BreadcrumbItem';
 
+/**
+ * The BreadcrumbLink component is used to create a breadcrumb link.
+ *
+ * @example
+ * <BreadcrumbLink href="/">Home</BreadcrumbLink>
+ */
 const BreadcrumbLink = forwardRef<
   HTMLAnchorElement,
   ComponentPropsWithoutRef<'a'> & {
@@ -58,6 +113,12 @@ const BreadcrumbLink = forwardRef<
 });
 BreadcrumbLink.displayName = 'BreadcrumbLink';
 
+/**
+ * The BreadcrumbPage component is used to create a breadcrumb page.
+ *
+ * @example
+ * <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+ */
 const BreadcrumbPage = forwardRef<
   HTMLSpanElement,
   ComponentPropsWithoutRef<'span'>
@@ -73,6 +134,12 @@ const BreadcrumbPage = forwardRef<
 ));
 BreadcrumbPage.displayName = 'BreadcrumbPage';
 
+/**
+ * The BreadcrumbSeparator component is used to create a breadcrumb separator.
+ *
+ * @example
+ * <BreadcrumbSeparator />
+ */
 const BreadcrumbSeparator = ({
   children,
   className,
