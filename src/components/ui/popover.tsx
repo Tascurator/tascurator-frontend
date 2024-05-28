@@ -4,10 +4,33 @@ import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
 import { Root, Trigger, Content, Portal } from '@radix-ui/react-popover';
 import { cn } from '@/lib/utils';
 
+/**
+ * The root component of the Popover.
+ * The usage is the same as the official documentation of shadcn/ui.
+ *
+ * @example
+ * <Popover>
+ *   <PopoverTrigger>Open</PopoverTrigger>
+ *   <PopoverContent>Place content for the popover here.</PopoverContent>
+ * </Popover>
+ * @see {@link https://ui.shadcn.com/docs/components/popover | Popover}
+ */
 const Popover = Root;
 
+/**
+ * The trigger component of the Popover.
+ *
+ * @example
+ * <PopoverTrigger>Open</PopoverTrigger>
+ */
 const PopoverTrigger = Trigger;
 
+/**
+ * The content component of the Popover.
+ *
+ * @example
+ * <PopoverContent>Place content for the popover here.</PopoverContent>
+ */
 const PopoverContent = forwardRef<
   ElementRef<typeof Content>,
   ComponentPropsWithoutRef<typeof Content>
