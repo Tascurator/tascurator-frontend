@@ -43,6 +43,17 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
+/**
+ * The button component
+ *
+ * @example
+ * // A default button
+ * <Button>Click me</Button>
+ * // A secondary button
+ * <Button variant="secondary">Click me</Button>
+ * // A destructive button with md size
+ * <Button variant="destructive" size="md">Click me</Button>
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
