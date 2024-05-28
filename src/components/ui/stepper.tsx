@@ -1,6 +1,5 @@
-import React from 'react';
-
 import { cn } from '@/lib/utils';
+import { FC } from 'react';
 
 interface IStep {
   currentStep: number;
@@ -36,7 +35,7 @@ interface IStep {
  * ```
  */
 
-const Stepper: React.FC<IStep> = ({ currentStep, maxSteps }: IStep) => {
+const Stepper: FC<IStep> = ({ currentStep, maxSteps }: IStep) => {
   const steps: number[] = Array.from(
     { length: maxSteps },
     (_, index) => index + 1,
