@@ -198,7 +198,7 @@ const DrawerDescription = forwardRef<
   <DrawerPrimitive.Description
     ref={ref}
     className={cn(
-      'w-full h-full px-6 mt-5 mb-10 max-w-screen-sm overflow-y-auto',
+      'w-full h-full px-6 mt-5 mb-10 max-w-screen-sm overflow-y-auto break-words text-wrap',
       className,
     )}
     {...props}
