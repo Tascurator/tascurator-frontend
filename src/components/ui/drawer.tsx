@@ -112,7 +112,7 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 const DrawerContent = forwardRef<
   ElementRef<typeof DrawerPrimitive.Content>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
@@ -122,10 +122,7 @@ const DrawerContent = forwardRef<
         className,
       )}
       {...props}
-    >
-      <div className="mx-auto my-4 h-2 w-24 rounded-full bg-primary-lightest" />
-      {children}
-    </DrawerPrimitive.Content>
+    />
   </DrawerPortal>
 ));
 DrawerContent.displayName = 'DrawerContent';
@@ -166,20 +163,23 @@ const DrawerTitle = forwardRef<
   ElementRef<typeof DrawerPrimitive.Title>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <div
-    className={
-      'w-full flex justify-center items-center text-left border-b border-b-slate-300'
-    }
-  >
-    <DrawerPrimitive.Title
-      ref={ref}
-      className={cn(
-        'w-full flex items-center text-2xl px-6 py-2.5 max-w-screen-sm',
-        className,
-      )}
-      {...props}
-    />
-  </div>
+  <>
+    <div className="mx-auto my-4 h-2 w-24 rounded-full bg-primary-lightest" />
+    <div
+      className={
+        'w-full flex justify-center items-center text-left border-b border-b-slate-300'
+      }
+    >
+      <DrawerPrimitive.Title
+        ref={ref}
+        className={cn(
+          'w-full flex items-center text-2xl px-6 py-2.5 max-w-screen-sm',
+          className,
+        )}
+        {...props}
+      />
+    </div>
+  </>
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
