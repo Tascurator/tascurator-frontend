@@ -36,7 +36,9 @@ enum Syntax {
   LIST_ORDERED = 'listOrdered',
 }
 
-// The list of toolbar icons to be displayed in the task description input field
+/**
+ * The list of toolbar icons to be displayed in the task description input field
+ */
 const toolbarIcons = [
   {
     name: Syntax.BOLD,
@@ -303,7 +305,7 @@ export const TaskCreationDrawer = ({
 
   const formControls = useForm<TTaskCreationSchema>({
     resolver: zodResolver(taskCreationSchema),
-    mode: 'all',
+    mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
       category: task?.category || '',
       title: task?.title || '',
