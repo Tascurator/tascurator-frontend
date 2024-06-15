@@ -300,7 +300,7 @@ const ConfirmTaskDrawer = ({
               Cancel
             </Button>
             <Button type={'submit'} className={'flex-1'}>
-              Save
+              Publish
             </Button>
           </DrawerFooter>
         </form>
