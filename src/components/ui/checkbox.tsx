@@ -6,6 +6,14 @@ import { Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * The Checkbox component that allows users to toggle between checked and unchecked states.
+ * The usage is the same as the official documentation of shadcn/ui.
+ *
+ * @example
+ * <Checkbox />
+ * @see {@link https://ui.shadcn.com/docs/components/checkbox | Checkbox}
+ */
 const Checkbox = forwardRef<
   ElementRef<typeof Root>,
   ComponentPropsWithoutRef<typeof Root>

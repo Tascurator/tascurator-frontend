@@ -13,28 +13,41 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
-   * display date on the right side of the accordion trigger
-   *
-   * @example
-   * for example, the schedule is from 12/31 to 01/07
-   * props.scheduleDate = "12/31-01/07"
-   * 
-   *  <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger scheduleDate={"12/31-01/07"}>Bathroom
-          <CircleEllipsis className='ml-4'/> 
-          </AccordionTrigger >
-          <AccordionContent>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-   */
+ * Display date on the right side of the accordion trigger
+ *
+ * @example
+ * // for example, the schedule is from 12/31 to 01/07
+ * props.scheduleDate = "12/31-01/07"
+ *
+ * <Accordion type="single" collapsible className="w-full">
+ *   <AccordionItem value="item-1">
+ *     <AccordionTrigger scheduleDate={"12/31-01/07"}>Bathroom
+ *        <CircleEllipsis className='ml-4'/>
+ *     </AccordionTrigger>
+ *     <AccordionContent>
+ *        // content
+ *     </AccordionContent>
+ *   </AccordionItem>
+ * </Accordion>
+ */
 const Accordion = Root;
 
 type AccordionTriggerProps = {
   scheduleDate?: string;
 } & ComponentPropsWithoutRef<typeof Trigger>;
 
+/**
+ * The AccordionItem component is used to create the container for the accordion trigger and content.
+ * It should be used to wrap the AccordionTrigger and AccordionContent components.
+ *
+ * @example
+ * <AccordionItem value="item-1">
+ *   <AccordionTrigger>Bathroom</AccordionTrigger>
+ *   <AccordionContent>
+ *     // content
+ *   </AccordionContent>
+ * </AccordionItem>
+ */
 const AccordionItem = forwardRef<
   ElementRef<typeof Item>,
   ComponentPropsWithoutRef<typeof Item>
@@ -50,6 +63,12 @@ const AccordionItem = forwardRef<
 ));
 AccordionItem.displayName = 'AccordionItem';
 
+/**
+ * The AccordionTrigger component is used to create an accordion trigger.
+ *
+ * @example
+ * <AccordionTrigger>Bathroom</AccordionTrigger>
+ */
 const AccordionTrigger = forwardRef<
   ElementRef<typeof Trigger>,
   AccordionTriggerProps
@@ -75,6 +94,14 @@ const AccordionTrigger = forwardRef<
 ));
 AccordionTrigger.displayName = Trigger.displayName;
 
+/**
+ * The AccordionContent component is used to place the content of the accordion that will be displayed when the trigger is clicked.
+ *
+ * @example
+ * <AccordionContent>
+ *   // content
+ * </AccordionContent>
+ */
 const AccordionContent = forwardRef<
   ElementRef<typeof Content>,
   ComponentPropsWithoutRef<typeof Content>

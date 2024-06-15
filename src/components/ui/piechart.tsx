@@ -1,3 +1,11 @@
+/**
+ * The Progress component to display the progress of tasks have been completed in a share house
+ *
+ * @param progressPercent - percentage of the progress
+ *
+ * @example
+ * <Progress progressPercent={50} />
+ */
 const Progress = ({ progressPercent }: { progressPercent: number }) => {
   // size of the circle
   const size = 128;
