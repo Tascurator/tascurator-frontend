@@ -183,11 +183,17 @@ const EditTaskDrawer = ({
           </DrawerDescription>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button type={'button'} variant={'secondary'}>
+              <Button
+                type={'button'}
+                variant={'secondary'}
+                className={'flex-1'}
+              >
                 Cancel
               </Button>
             </DrawerClose>
-            <Button type={'submit'}>Save</Button>
+            <Button type={'submit'} className={'flex-1'}>
+              Save
+            </Button>
           </DrawerFooter>
         </form>
       </DrawerContent>
@@ -259,15 +265,18 @@ const ConfirmTaskDrawer = ({
           <DrawerDescription className={'flex-1'}>
             {watch('description')}
           </DrawerDescription>
-          <DrawerFooter className={'flex-none'}>
+          <DrawerFooter>
             <Button
               type={'button'}
               variant={'secondary'}
               onClick={closeConfirmationDrawer}
+              className={'flex-1'}
             >
               Cancel
             </Button>
-            <Button type={'submit'}>Save</Button>
+            <Button type={'submit'} className={'flex-1'}>
+              Save
+            </Button>
           </DrawerFooter>
         </form>
       </DrawerContent>
