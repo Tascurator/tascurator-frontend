@@ -298,6 +298,21 @@ interface ITaskCreationDrawer {
  * @param task - The task object to be edited
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
+ *
+ * @example
+ * const [open, setOpen] = useState(false);
+ *
+ * // To create a new task
+ * <TaskCreationDrawer open={open} setOpen={setOpen} />
+ *
+ * // To edit an existing task
+ * const task = {
+ *  id: '1',
+ *  category: 'Kitchen',
+ *  title: 'Clean the kitchen',
+ *  description: 'Clean the kitchen and make it shine.',
+ * };
+ * <TaskCreationDrawer task={task} open={open} setOpen={setOpen} />
  */
 export const TaskCreationDrawer = ({
   task,
