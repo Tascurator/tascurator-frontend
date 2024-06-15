@@ -101,7 +101,9 @@ const EditTaskDrawer = ({
       <DrawerContent className={'h-[90%]'}>
         <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
         <DrawerDescription
-          className={'flex-1 flex flex-col justify-center items-start'}
+          className={
+            'flex-1 flex flex-col justify-center items-start overflow-visible'
+          }
         >
           {/* Category input field */}
           <Input
@@ -136,7 +138,7 @@ const EditTaskDrawer = ({
           <p className={'pt-4 text-base'}>Task description</p>
           <div
             className={cn(
-              'flex-1 w-full flex flex-col pt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+              'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
               errors.description
                 ? 'border-destructive focus-within:ring-destructive'
                 : 'border-input focus-within:ring-ring',
