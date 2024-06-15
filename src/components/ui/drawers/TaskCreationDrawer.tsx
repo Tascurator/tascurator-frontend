@@ -15,16 +15,11 @@ import {
   ListOrderedIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import {
-  SubmitHandler,
-  useForm,
-  UseFormReturn,
-  useWatch,
-} from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 
 interface ITask {
@@ -79,39 +74,13 @@ const EditTaskDrawer = ({
   setOpen,
   openConfirmationDrawer,
 }: IEditTaskDrawer) => {
-  const [saveClicked, setSaveClicked] = useState(false);
-
   const {
-    control,
     register,
-    formState: { errors, isSubmitted },
+    formState: { errors },
     trigger,
   } = formControls;
-  const allFields = useWatch({ control });
-
-  /**
-   * To display the confirmation drawer, all validations must pass.
-   * The `handleSaveClick` function verifies input data.
-   * However, the `trigger` method validates once, not dynamically updating errors on re-entry.
-   * Yes. The `handleSubmit` method auto-updates errors but can't be used here.
-   * The useEffect below mimics this behavior programmatically.
-   */
-  useEffect(() => {
-    /**
-     * No need to validate if the save button is not clicked or the form is submitted.
-     * Once the `handleSubmit` is called in the confirmation drawer, this will be unnecessary.
-     */
-    if (!saveClicked || isSubmitted) return;
-
-    const validateFields = async () =>
-      await trigger(['category', 'title', 'description']);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    validateFields();
-  }, [allFields]);
 
   const handleSaveClick = async () => {
-    // Set the save button clicked state. Now the useEffect will validate the fields.
-    setSaveClicked(true);
     // Check if all the fields are valid
     const isValid = await trigger(['category', 'title', 'description']);
 
@@ -333,6 +302,7 @@ export const TaskCreationDrawer = ({
 
   const formControls = useForm<TTaskCreationSchema>({
     resolver: zodResolver(taskCreationSchema),
+    mode: 'all',
     defaultValues: {
       category: task?.category || '',
       title: task?.title || '',
