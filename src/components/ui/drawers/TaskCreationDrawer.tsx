@@ -101,7 +101,7 @@ const EditTaskDrawer = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'}>
-        <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
+        <DrawerTitle>{task?.id ? 'Edit task' : 'Create task'}</DrawerTitle>
         <DrawerDescription
           className={
             'flex-1 flex flex-col justify-center items-start overflow-visible'
