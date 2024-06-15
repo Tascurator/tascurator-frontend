@@ -182,7 +182,7 @@ const EditTaskDrawer = ({
             )}
           </DrawerDescription>
           <DrawerFooter>
-            <DrawerClose>
+            <DrawerClose asChild>
               <Button type={'button'} variant={'secondary'}>
                 Cancel
               </Button>
