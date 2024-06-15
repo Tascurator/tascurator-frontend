@@ -288,7 +288,14 @@ const ConfirmTaskDrawer = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>{watch('title')}</DrawerTitle>
           <DrawerDescription className={'flex-1'}>
-            {watch('description')}
+            <div
+              className={
+                'w-fit text-base px-2 py-1 rounded-full text-gray-500 bg-slate-100'
+              }
+            >
+              {watch('category')}
+            </div>
+            <p className={'mt-2.5'}>{watch('description')}</p>
           </DrawerDescription>
           <DrawerFooter>
             <Button
