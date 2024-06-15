@@ -15,14 +15,12 @@ import {
   ListOrderedIcon,
   UnderlineIcon,
 } from 'lucide-react';
-import { z } from 'zod';
 import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { CONSTRAINTS } from '@/constants/constraints';
-import { ERROR_MESSAGES } from '@/constants/error-messages';
+import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 
 interface ITask {
   id: string;
@@ -58,51 +56,9 @@ const toolbarIcons = [
   },
 ];
 
-const {
-  TASK_TITLE_MIN_LENGTH,
-  TASK_TITLE_MAX_LENGTH,
-  TASK_DESCRIPTION_MIN_LENGTH,
-  TASK_DESCRIPTION_MAX_LENGTH,
-  CATEGORY_NAME_MIN_LENGTH,
-  CATEGORY_NAME_MAX_LENGTH,
-} = CONSTRAINTS;
-
-const { minLength, maxLength } = ERROR_MESSAGES;
-
-// Define the schema for the task creation form
-const schema = z.object({
-  category: z
-    .string()
-    .min(
-      CATEGORY_NAME_MIN_LENGTH,
-      minLength('Category', CATEGORY_NAME_MIN_LENGTH),
-    )
-    .max(
-      CATEGORY_NAME_MAX_LENGTH,
-      maxLength('Category', CATEGORY_NAME_MAX_LENGTH),
-    ),
-  title: z
-    .string()
-    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
-    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z
-    .string()
-    .min(
-      TASK_DESCRIPTION_MIN_LENGTH,
-      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-    )
-    .max(
-      TASK_DESCRIPTION_MAX_LENGTH,
-      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-    ),
-});
-
-// Infer the type from the schema
-type TScheme = z.infer<typeof schema>;
-
 interface IEditTaskDrawer {
   task?: ITask;
-  formControls: UseFormReturn<TScheme>;
+  formControls: UseFormReturn<TTaskCreationSchema>;
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
@@ -129,7 +85,7 @@ const EditTaskDrawer = ({
     console.log('Toolbar icon clicked:', name);
   };
 
-  const onSubmit: SubmitHandler<TScheme> = () => {
+  const onSubmit: SubmitHandler<TTaskCreationSchema> = () => {
     // Open the confirmation drawer after passing the validation
     openConfirmationDrawer();
   };
@@ -230,7 +186,7 @@ interface ITasksCreationConfirmationDrawer {
   taskId?: string;
   open: boolean;
   setOpen: (value: boolean) => void;
-  formControls: UseFormReturn<TScheme>;
+  formControls: UseFormReturn<TTaskCreationSchema>;
   closeConfirmationDrawer: () => void;
 }
 
@@ -246,7 +202,7 @@ const ConfirmTaskDrawer = ({
 }: ITasksCreationConfirmationDrawer) => {
   const { handleSubmit, watch, reset } = formControls;
 
-  const onSubmit: SubmitHandler<TScheme> = async (data) => {
+  const onSubmit: SubmitHandler<TTaskCreationSchema> = async (data) => {
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -339,8 +295,8 @@ export const TaskCreationDrawer = ({
 }: ITaskCreationDrawer) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
-  const formControls = useForm<TScheme>({
-    resolver: zodResolver(schema),
+  const formControls = useForm<TTaskCreationSchema>({
+    resolver: zodResolver(taskCreationSchema),
     defaultValues: {
       category: task?.category || '',
       title: task?.title || '',
