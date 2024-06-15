@@ -256,9 +256,7 @@ const ConfirmTaskDrawer = ({
       <DrawerContent className={'h-[90%]'} asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>{watch('title')}</DrawerTitle>
-          <DrawerDescription
-            className={'flex-1 overflow-hidden break-words text-wrap'}
-          >
+          <DrawerDescription className={'flex-1'}>
             {watch('description')}
           </DrawerDescription>
           <DrawerFooter className={'flex-none'}>
