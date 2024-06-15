@@ -21,6 +21,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { CONSTRAINTS } from '@/constants/constraints';
+import { ERROR_MESSAGES } from '@/constants/error-messages';
 
 interface ITask {
   id: string;
@@ -56,20 +58,43 @@ const toolbarIcons = [
   },
 ];
 
+const {
+  TASK_TITLE_MIN_LENGTH,
+  TASK_TITLE_MAX_LENGTH,
+  TASK_DESCRIPTION_MIN_LENGTH,
+  TASK_DESCRIPTION_MAX_LENGTH,
+  CATEGORY_NAME_MIN_LENGTH,
+  CATEGORY_NAME_MAX_LENGTH,
+} = CONSTRAINTS;
+
+const { minLength, maxLength } = ERROR_MESSAGES;
+
 // Define the schema for the task creation form
 const schema = z.object({
   category: z
     .string()
-    .min(1, 'Category must be at least 1 character')
-    .max(15, 'Category must be at most 15 characters'),
+    .min(
+      CATEGORY_NAME_MIN_LENGTH,
+      minLength('Category', CATEGORY_NAME_MIN_LENGTH),
+    )
+    .max(
+      CATEGORY_NAME_MAX_LENGTH,
+      maxLength('Category', CATEGORY_NAME_MAX_LENGTH),
+    ),
   title: z
     .string()
-    .min(1, 'Title must be at least 1 character')
-    .max(20, 'Title must be at most 20 characters'),
+    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
   description: z
     .string()
-    .min(10, 'Description must be at least 10 characters')
-    .max(1000, 'Description must be at most 1000 characters'),
+    .min(
+      TASK_DESCRIPTION_MIN_LENGTH,
+      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+    )
+    .max(
+      TASK_DESCRIPTION_MAX_LENGTH,
+      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+    ),
 });
 
 // Infer the type from the schema
