@@ -4,7 +4,6 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
-  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
@@ -114,9 +113,7 @@ const EditTaskDrawer = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'}>
-        <DrawerHeader>
-          <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
-        </DrawerHeader>
+        <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className={'flex-1 flex flex-col'}
@@ -125,13 +122,12 @@ const EditTaskDrawer = ({
             className={'flex-1 flex flex-col justify-center items-start'}
           >
             {/* Category input field */}
-            <p className={'font-medium'}>Category</p>
             <Input
               {...register('category')}
               variant={errors.category ? 'destructive' : 'default'}
               type="text"
               placeholder="Category name"
-              className={'mt-1.5'}
+              label={'Category'}
               // Disable the input field if category is present
               disabled={!!task?.category}
             />
@@ -140,13 +136,15 @@ const EditTaskDrawer = ({
             )}
 
             {/* Task title input field */}
-            <p className={'pt-4 font-medium'}>Task title</p>
             <Input
               {...register('title')}
               variant={errors.title ? 'destructive' : 'default'}
               type="text"
               placeholder="Task name"
-              className={'mt-1.5'}
+              label={'Task title'}
+              classNames={{
+                label: 'mt-4',
+              }}
             />
             {errors.title?.message && (
               <FormMessage message={errors.title.message} />
@@ -259,9 +257,7 @@ const ConfirmTaskDrawer = ({
     >
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'}>
-        <DrawerHeader>
-          <DrawerTitle>{watch('title')}</DrawerTitle>
-        </DrawerHeader>
+        <DrawerTitle>{watch('title')}</DrawerTitle>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className={'flex flex-col h-full'}
