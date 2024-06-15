@@ -21,6 +21,9 @@ import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
+import { INPUT_TEXTS } from '@/constants/input-texts';
+
+const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
 interface ITask {
   id: string;
@@ -112,8 +115,8 @@ const EditTaskDrawer = ({
             {...register('category')}
             variant={errors.category ? 'destructive' : 'default'}
             type="text"
-            placeholder="Category name"
-            label={'Category'}
+            placeholder={CATEGORY_NAME.placeholder}
+            label={CATEGORY_NAME.label}
             // Disable the input field if category is present
             disabled={!!task?.category}
           />
@@ -126,8 +129,8 @@ const EditTaskDrawer = ({
             {...register('title')}
             variant={errors.title ? 'destructive' : 'default'}
             type="text"
-            placeholder="Task name"
-            label={'Task title'}
+            placeholder={TASK_TITLE.placeholder}
+            label={TASK_TITLE.label}
             classNames={{
               label: 'mt-4',
             }}
@@ -137,7 +140,7 @@ const EditTaskDrawer = ({
           )}
 
           {/* Task description input field */}
-          <p className={'pt-4 text-base'}>Task description</p>
+          <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
           <div
             className={cn(
               'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
@@ -160,7 +163,7 @@ const EditTaskDrawer = ({
             </div>
             <textarea
               {...register('description')}
-              placeholder="Task description"
+              placeholder={TASK_DESCRIPTION.placeholder}
               className={
                 'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
               }
