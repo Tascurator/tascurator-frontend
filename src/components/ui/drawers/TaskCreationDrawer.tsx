@@ -151,7 +151,7 @@ const EditTaskDrawer = ({
             )}
 
             {/* Task description input field */}
-            <p className={'pt-4 font-medium'}>Task description</p>
+            <p className={'pt-4 text-base'}>Task description</p>
             <div
               className={cn(
                 'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
