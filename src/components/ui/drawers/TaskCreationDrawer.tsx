@@ -112,12 +112,9 @@ const EditTaskDrawer = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent className={'h-[90%]'}>
-        <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={'flex-1 flex flex-col'}
-        >
+      <DrawerContent className={'h-[90%]'} asChild>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
           <DrawerDescription
             className={'flex-1 flex flex-col justify-center items-start'}
           >
@@ -256,12 +253,9 @@ const ConfirmTaskDrawer = ({
       }}
     >
       <DrawerTrigger />
-      <DrawerContent className={'h-[90%]'}>
-        <DrawerTitle>{watch('title')}</DrawerTitle>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className={'flex flex-col h-full'}
-        >
+      <DrawerContent className={'h-[90%]'} asChild>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DrawerTitle>{watch('title')}</DrawerTitle>
           <DrawerDescription
             className={'flex-1 overflow-hidden break-words text-wrap'}
           >
