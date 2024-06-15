@@ -13,6 +13,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
+/**
+ * The DatePicker component is used to create a date picker component.
+ *
+ * @example
+ * <DatePicker />
+ */
 export function DatePicker() {
   const [date, setDate] = useState<Date | undefined>(() =>
     startOfDay(new Date()),
