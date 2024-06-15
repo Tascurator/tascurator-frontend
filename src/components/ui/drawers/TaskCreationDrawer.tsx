@@ -76,8 +76,8 @@ const EditTaskDrawer = ({
 }: IEditTaskDrawer) => {
   const {
     register,
-    handleSubmit,
     formState: { errors },
+    trigger,
   } = formControls;
 
   const handleToolbarClick = (name: Syntax) => {
@@ -85,16 +85,21 @@ const EditTaskDrawer = ({
     console.log('Toolbar icon clicked:', name);
   };
 
-  const onSubmit: SubmitHandler<TTaskCreationSchema> = () => {
-    // Open the confirmation drawer after passing the validation
-    openConfirmationDrawer();
+  const handleSaveClick = async () => {
+    // Check if all the fields are valid
+    const isValid = await trigger(['category', 'title', 'description']);
+
+    // Open the confirmation drawer if all the fields are valid
+    if (isValid) {
+      openConfirmationDrawer();
+    }
   };
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'} asChild>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <DrawerTitle>{task?.id ? 'Edit Task' : 'Create Task'}</DrawerTitle>
           <DrawerDescription
             className={'flex-1 flex flex-col justify-center items-start'}
@@ -172,7 +177,11 @@ const EditTaskDrawer = ({
                 Cancel
               </Button>
             </DrawerClose>
-            <Button type={'submit'} className={'flex-1'}>
+            <Button
+              type={'button'}
+              className={'flex-1'}
+              onClick={handleSaveClick}
+            >
               Save
             </Button>
           </DrawerFooter>
