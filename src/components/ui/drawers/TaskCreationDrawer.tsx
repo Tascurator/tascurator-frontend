@@ -76,7 +76,7 @@ const EditTaskDrawer = ({
 }: IEditTaskDrawer) => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     trigger,
   } = formControls;
 
@@ -177,6 +177,7 @@ const EditTaskDrawer = ({
           <Button
             type={'button'}
             className={'flex-1'}
+            disabled={!isValid}
             onClick={handleSaveClick}
           >
             Save
