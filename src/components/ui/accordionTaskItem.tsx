@@ -12,7 +12,7 @@ import {
 
 type TUserAction = 'edit' | 'delete';
 
-interface IDropdownProps {
+interface IUserActionsDropdownMenuProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   setDrawerOpen: (value: boolean) => void;
@@ -28,7 +28,7 @@ const UserActionsDropdownMenu = ({
   setOpen,
   setDrawerOpen,
   setUserAction,
-}: IDropdownProps) => {
+}: IUserActionsDropdownMenuProps) => {
   const handleItemClick = (item: TUserAction) => {
     setUserAction(item);
     setDrawerOpen(true);
