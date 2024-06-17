@@ -1,6 +1,11 @@
 'use client';
 
-import { forwardRef, ElementRef, ComponentPropsWithoutRef } from 'react';
+import {
+  forwardRef,
+  ElementRef,
+  ComponentPropsWithoutRef,
+  ReactNode,
+} from 'react';
 import {
   Root,
   Trigger,
@@ -13,10 +18,11 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
+ * The root component of the DropdownMenu.
+ * The usage is the same as the official documentation of shadcn/ui.
+ *
  * @see https://ui.shadcn.com/docs/components/dropdown-menu
  * @example
- * ```tsx
- * return (
  *   <DropdownMenu>
  *     <DropdownMenuTrigger asChild>
  *       <button className="p-4">
@@ -30,14 +36,44 @@ import { cn } from '@/lib/utils';
  *       </DropdownMenuGroup>
  *     </DropdownMenuContent>
  *   </DropdownMenu>
- * )
  */
 const DropdownMenu = Root;
 
+/**
+ * The trigger component of the DropdownMenu.
+ *
+ * @example
+ * <DropdownMenuTrigger asChild>
+ *   <button className="p-4">
+ *     <Citrus />
+ *   </button>
+ * </DropdownMenuTrigger>
+ */
 const DropdownMenuTrigger = Trigger;
 
+/**
+ * The group component of the DropdownMenu.
+ * It can group multiple DropdownMenuItem components.
+ *
+ * @example
+ * <DropdownMenuGroup>
+ *   <DropdownMenuItem> Item 1 </DropdownMenuItem>
+ *   <DropdownMenuItemWithIcon icon={<Citrus />}> Item 2 </DropdownMenuItemWithIcon>
+ * </DropdownMenuGroup>
+ */
 const DropdownMenuGroup = Group;
 
+/**
+ * The content component of the DropdownMenu.
+ *
+ * @example
+ * <DropdownMenuContent>
+ *   <DropdownMenuGroup>
+ *     <DropdownMenuItem> Item 1 </DropdownMenuItem>
+ *     <DropdownMenuItemWithIcon icon={<Citrus />}> Item 2 </DropdownMenuItemWithIcon>
+ *   </DropdownMenuGroup>
+ * </DropdownMenuContent>
+ */
 const DropdownMenuContent = forwardRef<
   ElementRef<typeof Content>,
   ComponentPropsWithoutRef<typeof Content>
@@ -55,6 +91,13 @@ const DropdownMenuContent = forwardRef<
   </Portal>
 ));
 DropdownMenuContent.displayName = Content.displayName;
+
+/**
+ * The dropdown menu item component.
+ *
+ * @example
+ * <DropdownMenuItem> Item 1 </DropdownMenuItem>
+ */
 const DropdownMenuItem = forwardRef<
   ElementRef<typeof Item>,
   ComponentPropsWithoutRef<typeof Item> & {
@@ -73,10 +116,17 @@ const DropdownMenuItem = forwardRef<
 ));
 DropdownMenuItem.displayName = Item.displayName;
 
+/**
+ * The dropdown menu item component with an icon on the left side.
+ * This can be used as the alternative to the DropdownMenuItem component.
+ *
+ * @example
+ * <DropdownMenuItemWithIcon icon={<Citrus />}> Item 1 </DropdownMenuItemWithIcon>
+ */
 const DropdownMenuItemWithIcon = forwardRef<
   ElementRef<typeof Item>,
   ComponentPropsWithoutRef<typeof Item> & {
-    icon: React.ReactNode;
+    icon: ReactNode;
   }
 >(({ icon, ...props }, ref) => (
   <DropdownMenuItem ref={ref} {...props}>

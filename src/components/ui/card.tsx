@@ -17,16 +17,15 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /**
+ * The Card component is the root component for the Card component.
+ * It should be used to wrap the CardHeader and CardContent components.
+ *
  * @example
- * ```ts
- * return (
  * <Card>
  *  <CardHeader startDate={startDate} endDate={endDate} title={title} />
  *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
  *  <CardContent category={category} tenant={tenant} isComplete={isComplete} isLast={true} />
  * </Card>
- * )
- * ```
  */
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -42,6 +41,12 @@ const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 );
 Card.displayName = 'Card';
 
+/**
+ * The CardHeader component is used to display the title and date range of the card.
+ *
+ * @example
+ * <CardHeader startDate={startDate} endDate={endDate} title={title} />
+ */
 const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, startDate, endDate, title, ...props }, ref) => (
     <div
@@ -61,6 +66,12 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
 );
 CardHeader.displayName = 'CardHeader';
 
+/**
+ * The CardTitle component is used to display the title of the card.
+ *
+ * @example
+ * <CardTitle>Your title</CardTitle>
+ */
 const CardTitle = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLHeadingElement>
@@ -73,6 +84,12 @@ const CardTitle = forwardRef<
 ));
 CardTitle.displayName = 'CardTitle';
 
+/**
+ * The CardDescription component is used to display the date range of the card.
+ *
+ * @example
+ * <CardDescription>Your description</CardDescription>
+ */
 const CardDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
@@ -88,6 +105,12 @@ const CardDescription = forwardRef<
 ));
 CardDescription.displayName = 'CardDescription';
 
+/**
+ * The CardContent component is used to display the category and tenant of the card.
+ *
+ * @example
+ * <CardContent category={category} tenant={tenant} isComplete={isComplete} />
+ */
 const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, category, tenant, isComplete, isLast, ...props }, ref) => (
     <div
@@ -109,6 +132,13 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
 );
 CardContent.displayName = 'CardContent';
 
+/**
+ * The CardContentDescription component is used to display the category and tenant of the card.
+ * This is only used internally by the CardContent component.
+ *
+ * @example
+ * <CardContentDescription tenant={tenant} category={category} isComplete={isComplete} />
+ */
 const CardContentDescription = forwardRef<
   HTMLParagraphElement,
   CardContentProps
