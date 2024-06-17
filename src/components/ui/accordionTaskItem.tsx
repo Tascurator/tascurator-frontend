@@ -19,6 +19,10 @@ interface IDropdownProps {
   setUserAction: (value: TUserAction) => void;
 }
 
+/**
+ * Display a dropdown menu with edit and delete options.
+ * When a dropdown item is clicked, the user action is set and the corresponding drawer is opened.
+ */
 const UserActionsDropdownMenu = ({
   open,
   setOpen,
@@ -35,12 +39,15 @@ const UserActionsDropdownMenu = ({
       <DropdownMenuTrigger />
       <DropdownMenuContent align={'end'} className={'-mt-10'}>
         <DropdownMenuGroup>
+          {/* Edit option */}
           <DropdownMenuItemWithIcon
             icon={<SquarePenIcon />}
             onClick={() => handleItemClick('edit')}
           >
             Edit
           </DropdownMenuItemWithIcon>
+
+          {/* Delete option */}
           <DropdownMenuItemWithIcon
             icon={<Trash2Icon />}
             onClick={() => handleItemClick('delete')}
@@ -60,17 +67,26 @@ interface IAccordionTaskItemProps {
 }
 
 /**
- * Use this component to display a task item in an accordion.
- *
- * @param title - The title of the task
- * @param description - The description of the task
+ * Display a task's title and description with a dropdown menu icon.
  */
 export const AccordionTaskItem = ({
   title,
   description,
 }: IAccordionTaskItemProps) => {
+  /**
+   * State to manage the dropdown menu open state.
+   */
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  /**
+   * State to manage the drawer open state.
+   */
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  /**
+   * State to manage the user action whether the user wants to edit or delete the task.
+   * This state is used to determine which drawer to open.
+   */
   const [userAction, setUserAction] = useState<TUserAction>('edit');
 
   return (
