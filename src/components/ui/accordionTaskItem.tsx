@@ -10,6 +10,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+/**
+ * User action type to determine whether the user wants to edit or delete a task.
+ * This type is used to determine which drawer to open.
+ */
 type TUserAction = 'edit' | 'delete';
 
 interface IUserActionsDropdownMenuProps {
