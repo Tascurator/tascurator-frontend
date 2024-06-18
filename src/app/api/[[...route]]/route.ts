@@ -5,7 +5,7 @@ export const runtime = 'edge';
 
 const app = new Hono().basePath('/api');
 
-app.get('/routes', (c) => {
+app.get('/hello', (c) => {
   return c.json({
     message: 'Hello Next.js!',
   });
