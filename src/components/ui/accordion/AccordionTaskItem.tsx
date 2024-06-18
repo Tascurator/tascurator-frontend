@@ -100,6 +100,9 @@ export const AccordionTaskItem = ({
   /**
    * State to manage the user action whether the user wants to edit or delete the task.
    * This state is used to determine which drawer to open.
+   *
+   * edit: The drawer to edit a task
+   * delete: The drawer to delete a task
    */
   const [userAction, setUserAction] = useState<TUserAction>('edit');
 
