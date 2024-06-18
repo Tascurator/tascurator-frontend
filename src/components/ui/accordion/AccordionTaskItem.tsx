@@ -80,6 +80,9 @@ interface IAccordionTaskItemProps {
 
 /**
  * Display a task's title and description with a dropdown menu icon.
+ *
+ * @example
+ * <AccordionTaskItem id="1" category="Category" title="Task title" description="Task description" />
  */
 export const AccordionTaskItem = ({
   id,
