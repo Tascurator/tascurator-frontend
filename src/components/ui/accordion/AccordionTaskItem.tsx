@@ -26,7 +26,7 @@ interface IUserActionsDropdownMenuProps {
 
 /**
  * Display a dropdown menu with edit and delete options.
- * When a dropdown item is clicked, the user action is set and the corresponding drawer is opened.
+ * When this dropdown menu is opened is handled by the parent component.
  */
 const UserActionsDropdownMenu = ({
   open,
