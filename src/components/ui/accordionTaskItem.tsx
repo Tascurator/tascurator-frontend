@@ -1,7 +1,7 @@
 'use client';
 
 import { EllipsisIcon, SquarePenIcon, Trash2Icon } from 'lucide-react';
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +9,7 @@ import {
   DropdownMenuItemWithIcon,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { TaskCreationDrawer } from '@/components/ui/drawers/TaskCreationDrawer';
 
 /**
  * User action type to determine whether the user wants to edit or delete a task.
@@ -65,15 +66,18 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionTaskItemProps {
+  id: string;
+  category: string;
   title: string;
   description: string;
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**
  * Display a task's title and description with a dropdown menu icon.
  */
 export const AccordionTaskItem = ({
+  id,
+  category,
   title,
   description,
 }: IAccordionTaskItemProps) => {
@@ -113,8 +117,19 @@ export const AccordionTaskItem = ({
         setUserAction={setUserAction}
       />
 
-      {/* TODO: Implement drawers here  */}
-      {isDrawerOpen && userAction === 'edit' && <div>Edit</div>}
+      {/* Task creation drawer */}
+      <TaskCreationDrawer
+        task={{
+          id,
+          category,
+          title,
+          description,
+        }}
+        open={isDrawerOpen && userAction === 'edit'}
+        setOpen={setIsDrawerOpen}
+      />
+
+      {/* TODO: Task deletion drawer */}
       {isDrawerOpen && userAction === 'delete' && <div>Delete</div>}
     </div>
   );
