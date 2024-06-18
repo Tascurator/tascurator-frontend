@@ -1,6 +1,6 @@
 'use client';
 
-import { EllipsisIcon, SquarePenIcon, Trash2Icon } from 'lucide-react';
+import { EllipsisIcon } from 'lucide-react';
 import { useState } from 'react';
 import {
   DropdownMenu,
@@ -10,6 +10,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TaskCreationDrawer } from '@/components/ui/drawers/TaskCreationDrawer';
+import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+
+/**
+ * Constants used in the dropdown menu.
+ */
+const { EDIT_TASK, DELETE_TASK } = DROPDOWN_ITEMS;
 
 /**
  * User action type to determine whether the user wants to edit or delete a task.
@@ -46,18 +52,18 @@ const UserActionsDropdownMenu = ({
         <DropdownMenuGroup>
           {/* Edit option */}
           <DropdownMenuItemWithIcon
-            icon={<SquarePenIcon />}
+            icon={EDIT_TASK.icon}
             onClick={() => handleItemClick('edit')}
           >
-            Edit
+            {EDIT_TASK.text}
           </DropdownMenuItemWithIcon>
 
           {/* Delete option */}
           <DropdownMenuItemWithIcon
-            icon={<Trash2Icon />}
+            icon={DELETE_TASK.icon}
             onClick={() => handleItemClick('delete')}
           >
-            Delete
+            {DELETE_TASK.text}
           </DropdownMenuItemWithIcon>
         </DropdownMenuGroup>
       </DropdownMenuContent>
