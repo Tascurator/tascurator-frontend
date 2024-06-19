@@ -9,7 +9,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 
-interface IDeleteTaskDrawerProps {
+interface ITaskDeletionDrawer {
   title: string;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -18,20 +18,22 @@ interface IDeleteTaskDrawerProps {
 /**
  * A drawer component to delete a task
  */
-export const DeleteTaskDrawer = ({
+export const TaskDeletionDrawer = ({
   title,
   open,
   setOpen,
-}: IDeleteTaskDrawerProps) => {
+}: ITaskDeletionDrawer) => {
   const { handleSubmit } = useForm();
 
   // TODO: Implement the delete click functionality
   const onSubmit = () => {
-    setOpen(false);
+    setTimeout(() => {
+      setOpen(false);
+    }, 1000);
   };
 
   return (
-    <Drawer open={open}>
+    <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
       <DrawerContent asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
