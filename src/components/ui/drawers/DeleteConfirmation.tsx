@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Drawer,
   DrawerClose,
@@ -15,11 +16,18 @@ export interface IDeleteConfirmationProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
+
 export const DeleteConfirmation = ({
   deleteItem,
   open,
   setOpen,
 }: IDeleteConfirmationProps) => {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked((prevChecked) => !prevChecked);
+  };
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
@@ -29,7 +37,10 @@ export const DeleteConfirmation = ({
         <DrawerDescription>
           {`Are you sure you want to delete ${deleteItem}?`}
           <div className="flex items-center content-start pt-4">
-            <Checkbox />
+            <Checkbox
+              checked={isChecked}
+              onCheckedChange={handleCheckboxChange}
+            />
             <p>{`Yes, I want to delete ${deleteItem}.`}</p>
           </div>
         </DrawerDescription>
@@ -46,7 +57,9 @@ export const DeleteConfirmation = ({
             </DrawerClose>
           </div>
           <div className="flex-1">
-            <Button variant="destructive">Delete</Button>
+            <Button variant="destructive" disabled={!isChecked}>
+              Delete
+            </Button>
           </div>
         </DrawerFooter>
       </DrawerContent>
