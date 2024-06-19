@@ -63,12 +63,8 @@ interface IAuthenticationChildrenDrawer {
   setOpen: (value: boolean) => void;
 }
 
-//TODO:: modify tsdoc for the email and password drawer
 /**
- * A drawer component to create a new task or edit an existing task
- *
- * If task is passed, the drawer will be in edit mode.
- * Otherwise, the drawer will be in create mode.
+ * A drawer component to show the email sent message or password changed message
  *
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
@@ -76,17 +72,11 @@ interface IAuthenticationChildrenDrawer {
  * @example
  * const [open, setOpen] = useState(false);
  *
- * // To create a new task
- * <TaskCreationDrawer open={open} setOpen={setOpen} />
+ * // To show the email sent message
+ * <EmailSentDrawer open={emailOpen} setOpen={setEmailOpen} />
  *
- * // To edit an existing task
- * const task = {
- *  id: '1',
- *  category: 'Kitchen',
- *  title: 'Clean the kitchen',
- *  description: 'Clean the kitchen and make it shine.',
- * };
- * <TaskCreationDrawer task={task} open={open} setOpen={setOpen} />
+ * // To show the password changed message
+ * <PasswordChangedDrawer open={open} setOpen={setOpen} />
  */
 
 /**
