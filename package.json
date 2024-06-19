@@ -13,8 +13,10 @@
     "format-ignore-path": "prettier . --write --ignore-path {any file}",
     "prepare": "husky",
     "typedoc": "typedoc",
-    "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
-    "db:push": "dotenv -e .env.local -- prisma db push"
+    "prisma": "dotenv -e .env.local -- prisma studio",
+    "prisma:migrate": "dotenv -e .env.local -- prisma migrate dev",
+    "prisma:push": "dotenv -e .env.local -- prisma db push",
+    "prisma:generate": "dotenv -e .env.local -- prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
