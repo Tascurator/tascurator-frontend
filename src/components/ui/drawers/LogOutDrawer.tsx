@@ -50,7 +50,7 @@ export const LogOutDrawer = ({ open, setOpen }: ILogOutDrawer) => {
             <DrawerClose asChild>
               <Button
                 type={'button'}
-                variant={'secondary'}
+                variant={'outline'}
                 onClick={handleClose}
                 className={'flex-1'}
               >
