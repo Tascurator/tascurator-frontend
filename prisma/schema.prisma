@@ -39,7 +39,7 @@ model AssignmentSheet {
   id           String      @id @default(uuid())
   startDate    DateTime
   endDate      DateTime
-  assignedData Json
+  assignedData String      @db.Text
   ShareHouse   ShareHouse?
 }
 
