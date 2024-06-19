@@ -8,24 +8,24 @@ app.get('/', (c) => {
   return c.json({ message: 'share house route' });
 });
 
-app.get('/:share_house_id', (c) => {
-  const share_house_id = c.req.param('share_house_id');
-  return c.json({ message: `Share house id: ${share_house_id}` });
+app.get('/:shareHouseId', (c) => {
+  const shareHouseId = c.req.param('shareHouseId');
+  return c.json({ message: `Share house id: ${shareHouseId}` });
 });
 
-app.patch('/:share_house_id', (c) => {
-  const share_house_id = c.req.param('share_house_id');
-  return c.json({ message: `Updating share house id: ${share_house_id}` });
+app.patch('/:shareHouseId', (c) => {
+  const shareHouseId = c.req.param('shareHouseId');
+  return c.json({ message: `Updating share house id: ${shareHouseId}` });
 });
 
-app.delete('/:share_house_id', (c) => {
-  const share_house_id = c.req.param('share_house_id');
-  return c.json({ message: `Deleting share house id: ${share_house_id}` });
+app.delete('/:shareHouseId', (c) => {
+  const shareHouseId = c.req.param('shareHouseId');
+  return c.json({ message: `Deleting share house id: ${shareHouseId}` });
 });
 
-app.post('/:landlord_id', (c) => {
-  const landlord_id = c.req.param('landlord_id');
+app.post('/:landlordId', (c) => {
+  const landlordId = c.req.param('landlordId');
   return c.json({
-    message: `Landlord id for creating new share hose: ${landlord_id}`,
+    message: `Landlord id for creating new share hose: ${landlordId}`,
   });
 });

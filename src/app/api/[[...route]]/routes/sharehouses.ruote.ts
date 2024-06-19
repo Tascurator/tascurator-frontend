@@ -8,7 +8,7 @@ app.get('/', (c) => {
   return c.json({ message: 'Share houses route' });
 });
 
-app.get('/:landlord_id', (c) => {
-  const landlord_id = c.req.param('landlord_id');
-  return c.json({ message: `Landlord id: ${landlord_id}` });
+app.get('/:landlordId', (c) => {
+  const landlordId = c.req.param('landlordId');
+  return c.json({ message: `Landlord id: ${landlordId}` });
 });
