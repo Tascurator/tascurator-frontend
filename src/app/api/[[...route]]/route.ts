@@ -3,6 +3,7 @@ import { handle } from 'hono/vercel';
 
 import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
+import rotationRoute from './routes/rotation.route';
 
 export const runtime = 'edge';
 
@@ -11,6 +12,7 @@ const app = new Hono().basePath('/api');
 const defaultRoutes = [
   { path: '/sharehouse', route: sharehouseRoute },
   { path: '/sharehouses', route: sharehousesRoute },
+  { path: '/rotation', route: rotationRoute },
 ];
 
 app.get('/hello', (c) => {
