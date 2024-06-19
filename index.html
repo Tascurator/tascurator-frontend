@@ -4,6 +4,15 @@
 <p>Second, run Docker container:</p>
 <pre><code class="language-bash"><span class="hl-0">docker</span><span class="hl-1"> </span><span class="hl-2">compose</span><span class="hl-1"> </span><span class="hl-2">up</span>
 </code><button>Copy</button></pre>
+<p>Third, copy the <code>.env.local.example</code> to <code>.env.local</code> and fill the environment variables.</p>
+<pre><code class="language-bash"><span class="hl-0">cp</span><span class="hl-1"> </span><span class="hl-2">.env.local.example</span><span class="hl-1"> </span><span class="hl-2">.env.local</span>
+</code><button>Copy</button></pre>
+<p>Fourth, push the schema to the database:</p>
+<pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">prisma:push</span>
+</code><button>Copy</button></pre>
+<p>Fifth, generate the Prisma client:</p>
+<pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">prisma:generate</span>
+</code><button>Copy</button></pre>
 <p>Lastly, run the development server:</p>
 <pre><code class="language-bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">dev</span>
 </code><button>Copy</button></pre>
