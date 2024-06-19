@@ -44,3 +44,15 @@ export const taskCreationSchema = z.object({
 });
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
+
+const { TENANT_NAME_MIN_LENGTH, TENANT_NAME_MAX_LENGTH } = CONSTRAINTS;
+
+export const tenantInvitationSchema = z.object({
+  name: z
+    .string()
+    .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
+    .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+});
+
+export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
