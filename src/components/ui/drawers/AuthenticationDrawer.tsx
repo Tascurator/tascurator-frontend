@@ -72,8 +72,8 @@ interface IAuthenticationChildrenDrawer {
  * @example
  * const [open, setOpen] = useState(false);
  *
- * // To show the email sent message
- * <EmailSentDrawer open={emailOpen} setOpen={setEmailOpen} />
+ * // To show the email sent message and resend email button
+ * <EmailSentDrawer open={open} setOpen={setOpen} />
  *
  * // To show the password changed message
  * <PasswordChangedDrawer open={open} setOpen={setOpen} />
@@ -121,7 +121,7 @@ export const PasswordChangedDrawer = ({
 }: IAuthenticationChildrenDrawer) => {
   const button = (
     <Link href="/">
-      <Button>Log In</Button>
+      <Button type={'button'}>Log In</Button>
     </Link>
   );
 
