@@ -4,6 +4,7 @@ import { handle } from 'hono/vercel';
 import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
 import rotationRoute from './routes/rotation.route';
+import categoryRoute from './routes/category.route';
 
 export const runtime = 'edge';
 
@@ -13,6 +14,7 @@ const defaultRoutes = [
   { path: '/sharehouse', route: sharehouseRoute },
   { path: '/sharehouses', route: sharehousesRoute },
   { path: '/rotation', route: rotationRoute },
+  { path: '/category', route: categoryRoute },
 ];
 
 app.get('/hello', (c) => {
