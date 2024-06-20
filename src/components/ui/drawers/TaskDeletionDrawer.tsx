@@ -18,7 +18,32 @@ interface ITaskDeletionDrawer {
 
 /**
  * A drawer component to delete a task
+ *
+ * @param title - The title to be edited
+ * @param open - The state of the drawer
+ * @param setOpen - The function to set the state of the drawer
+ *
+ * @example
+ * AccordionTaskItem.tsx
+ *
+ * <TaskCreationDrawer
+ *   task={{
+ *     id,
+ *     category,
+ *     title,
+ *     description,
+ *   }}
+ *   open={isDrawerOpen && userAction === 'edit'}
+ *   setOpen={setIsDrawerOpen}
+ * />
+ *
+ * <TaskDeletionDrawer
+ *   title={title}
+ *   open={isDrawerOpen && userAction === 'delete'}
+ *   setOpen={setIsDrawerOpen}
+ * />
  */
+
 export const TaskDeletionDrawer = ({
   title,
   open,
@@ -39,8 +64,8 @@ export const TaskDeletionDrawer = ({
       <DrawerContent asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>Delete</DrawerTitle>
-          <DrawerDescription className={'text-base mt-4'}>
-            You want to delete &quot;{title}&quot; ?
+          <DrawerDescription asChild>
+            <p className={'mt-8'}>You want to delete &quot;{title}&quot; ?</p>
           </DrawerDescription>
           <DrawerFooter className={'flex justify-between'}>
             <DrawerClose asChild>
