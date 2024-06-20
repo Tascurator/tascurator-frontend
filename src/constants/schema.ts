@@ -9,6 +9,8 @@ const {
   TASK_DESCRIPTION_MAX_LENGTH,
   CATEGORY_NAME_MIN_LENGTH,
   CATEGORY_NAME_MAX_LENGTH,
+  SHAREHOUSE_NAME_MIN_LENGTH,
+  SHAREHOUSE_NAME_MAX_LENGTH,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
@@ -43,4 +45,40 @@ export const taskCreationSchema = z.object({
     ),
 });
 
+/**
+ * The schema for the sharehouse edit or update form
+ */
+
+export const shareHouseNameSchema = z.object({
+  name: z
+    .string()
+    .min(
+      SHAREHOUSE_NAME_MIN_LENGTH,
+      minLength('ShareHouse name', SHAREHOUSE_NAME_MIN_LENGTH),
+    )
+    .max(
+      SHAREHOUSE_NAME_MAX_LENGTH,
+      maxLength('ShareHouse name', SHAREHOUSE_NAME_MAX_LENGTH),
+    ),
+});
+
+/**
+ * The schema for the category edit or update form
+ */
+
+export const categoryNameSchema = z.object({
+  name: z
+    .string()
+    .min(
+      CATEGORY_NAME_MIN_LENGTH,
+      minLength('Category name', CATEGORY_NAME_MIN_LENGTH),
+    )
+    .max(
+      CATEGORY_NAME_MAX_LENGTH,
+      maxLength('Category name', CATEGORY_NAME_MAX_LENGTH),
+    ),
+});
+
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
+export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
+export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
