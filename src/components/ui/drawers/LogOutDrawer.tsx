@@ -44,7 +44,9 @@ export const LogOutDrawer = ({ open, setOpen }: ILogOutDrawer) => {
         <form onSubmit={handleLogout}>
           <DrawerTitle>Log out?</DrawerTitle>
           <DrawerDescription>
-            <p className={'mt-2.5'}>Are you sure you want to log out?</p>
+            <span className={'mt-2.5 block'}>
+              Are you sure you want to log out?
+            </span>
           </DrawerDescription>
           <DrawerFooter>
             <DrawerClose asChild>
