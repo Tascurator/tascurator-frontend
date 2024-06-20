@@ -33,10 +33,6 @@ export const LogOutDrawer = ({ open, setOpen }: ILogOutDrawer) => {
     setOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
@@ -50,12 +46,7 @@ export const LogOutDrawer = ({ open, setOpen }: ILogOutDrawer) => {
           </DrawerDescription>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button
-                type={'button'}
-                variant={'outline'}
-                onClick={handleClose}
-                className={'flex-1'}
-              >
+              <Button type={'button'} variant={'outline'} className={'flex-1'}>
                 Cancel
               </Button>
             </DrawerClose>
