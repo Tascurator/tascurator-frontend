@@ -12,14 +12,14 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
 
-export interface IDeleteConfirmationProps {
+export interface IDeleteConfirmationDrawerProps {
   deleteItem: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
 /**
- * The DeleteConfirmation component is used to confirm the deletion of an item.
+ * The DeleteConfirmationDrawer component is used to confirm the deletion of an item.
  *
  * @example
  * const [open, setOpen] = useState(false);
@@ -29,17 +29,17 @@ export interface IDeleteConfirmationProps {
  * @param {boolean} open - The state of the drawer.
  * @param {function} setOpen - The function to set the state of the drawer.
  *
- * <DeleteConfirmation
+ * <DeleteConfirmationDrawer
  *   deleteItem={'item'}
  *   open={open}
  *   setOpen={setOpen}
  * />
  */
-export const DeleteConfirmation = ({
+export const DeleteConfirmationDrawer = ({
   deleteItem,
   open,
   setOpen,
-}: IDeleteConfirmationProps) => {
+}: IDeleteConfirmationDrawerProps) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = () => {
@@ -58,11 +58,10 @@ export const DeleteConfirmation = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent asChild>
+      <DrawerContent>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* <DrawerClose /> */}
           <DrawerTitle>Confirm delete</DrawerTitle>
-          <DrawerDescription>
+          <DrawerDescription asChild>
             <div className={'mt-8'}>
               {`Are you sure you want to delete ${deleteItem}?`}
               <div>
