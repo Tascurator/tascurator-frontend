@@ -17,7 +17,7 @@
     "prisma:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "prisma:push": "dotenv -e .env.local -- prisma db push",
     "prisma:generate": "dotenv -e .env.local -- prisma generate",
-    "prisma:reset": "dotenv -e .env.local -- prisma migrate reset --force",
+    "prisma:reset": "dotenv -e .env.local -- prisma migrate reset",
     "prisma:seed": "dotenv -e .env.local -- prisma db seed"
   },
   "prisma": {
