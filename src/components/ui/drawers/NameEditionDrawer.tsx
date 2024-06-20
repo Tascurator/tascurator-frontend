@@ -51,16 +51,16 @@ const getSchema = (type: 'sharehouse' | 'category') => {
  * // To edit the sharehouse name
  * <NameEditionDrawer
  *  name={'sample name'}
- *  open={isDrawerOpen}
- *  setOpen={setIsDrawerOpen}
+ *  open={open}
+ *  setOpen={setOpen}
  *  type={'sharehouse'}
  * />
  *
  * // To edit the category name
  * <NameEditionDrawer
  *  name={'sample name'}
- *  open={isDrawerOpen}
- *  setOpen={setIsDrawerOpen}
+ *  open={open}
+ *  setOpen={setOpen}
  *  type={'category'}
  * />
  */
