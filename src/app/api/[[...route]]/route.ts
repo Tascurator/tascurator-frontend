@@ -5,6 +5,7 @@ import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
 import rotationRoute from './routes/rotation.route';
 import categoryRoute from './routes/category.route';
+import taskRoute from './routes/task.route';
 
 export const runtime = 'edge';
 
@@ -15,6 +16,7 @@ const defaultRoutes = [
   { path: '/sharehouses', route: sharehousesRoute },
   { path: '/rotation', route: rotationRoute },
   { path: '/category', route: categoryRoute },
+  { path: '/task', route: taskRoute },
 ];
 
 app.get('/hello', (c) => {
