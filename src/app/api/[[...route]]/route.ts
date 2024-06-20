@@ -7,7 +7,6 @@ import rotationRoute from './routes/rotation.route';
 import categoryRoute from './routes/category.route';
 import taskRoute from './routes/task.route';
 import tenantRoute from './routes/tenant.route';
-import rotationCycleRoute from './routes/rotationCycle.route';
 
 export const runtime = 'edge';
 
@@ -20,7 +19,6 @@ const defaultRoutes = [
   { path: '/category', route: categoryRoute },
   { path: '/task', route: taskRoute },
   { path: '/tenant', route: tenantRoute },
-  { path: '/rotation-cycle', route: rotationCycleRoute },
 ];
 
 app.get('/hello', (c) => {
