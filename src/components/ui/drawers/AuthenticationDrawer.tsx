@@ -40,14 +40,16 @@ const AuthenticationDrawer = ({
         <form onSubmit={handleSubmit}>
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>
-            <div className={'w-20 h-20 mx-auto'}>{icon}</div>
-            <div className={'mt-2.5'}>
-              {Array.isArray(description) ? (
-                description.map((desc, index) => <p key={index}>{desc}</p>)
-              ) : (
-                <p>{description}</p>
-              )}
-            </div>
+            <span className={'w-20 h-20 mx-auto block mb-2.5'}>{icon}</span>
+            {Array.isArray(description) ? (
+              description.map((desc, index) => (
+                <span key={index} className={'block'}>
+                  {desc}
+                </span>
+              ))
+            ) : (
+              <span>{description}</span>
+            )}
           </DrawerDescription>
           <DrawerFooter>
             <DrawerClose asChild>{button}</DrawerClose>
