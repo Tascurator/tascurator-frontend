@@ -23,11 +23,19 @@ interface ITenantListItemProps {
 }
 
 /**
+ *
+ * Display a tenant list item with a dropdown menu to edit or delete the tenant.
+ *
  * @example
  * ```tsx
- * return (
- * <TenantListItem name='Momo'/>
- * )
+ * const tenant = {
+ *  id: '1',
+ * name: 'Akio Matio',
+ * email: 'akio@matio.com',
+ * };
+ *
+ * <TenantListItem tenant={tenant} />
+ * ```
  */
 const TenantListItem = ({ tenant }: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
