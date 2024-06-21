@@ -36,19 +36,19 @@ const createShareHouse = async (
   });
 };
 
-interface Task {
+interface ITask {
   title: string;
   description: string;
 }
 
-interface Category {
+interface ICategory {
   name: string;
-  tasks: Task[];
+  tasks: ITask[];
 }
 
 const createRotationAssignment = async (
   shareHouseId: string,
-  categories: Category[],
+  categories: ICategory[],
   placeholderCount: number,
 ) => {
   const tenantPlaceholders = Array.from(
@@ -134,7 +134,7 @@ const main = async () => {
   const landlord = await createLandlord();
   console.log('✅ Created landlord\n');
 
-  const categories: Category[] = [
+  const categories: ICategory[] = [
     {
       name: 'Cleaning',
       tasks: [
