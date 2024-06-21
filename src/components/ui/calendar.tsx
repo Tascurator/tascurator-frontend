@@ -9,6 +9,15 @@ import { buttonVariants } from '@/components/ui/button';
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
+/**
+ * The Calendar component is used to create a calendar component.
+ * The usage is the same as the official documentation of shadcn/ui.
+ *
+ * @example
+ * const [date, setDate] = useState<Date | undefined>(new Date());
+ * <Calendar mode="single" selected={date} onSelect={setDate} lassName="rounded-md border" />
+ * @see {@link https://ui.shadcn.com/docs/components/calendar | Calendar}
+ */
 /*eslint no-empty-pattern: ["error", { "allowObjectPatternsAsParameters": true }]*/
 function Calendar({
   className,

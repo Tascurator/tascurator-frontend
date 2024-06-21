@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
+import { Toaster } from '@/components/ui/toaster';
 
 const roboto = Roboto({ weight: ['400', '500'], subsets: ['latin'] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
         >
           {children}
         </main>
+        <Toaster />
       </body>
     </html>
   );

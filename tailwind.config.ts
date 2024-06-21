@@ -35,7 +35,7 @@ module.exports = {
         },
         background: 'rgba(var(--background), <alpha-value>)',
         black: 'rgba(var(--color-black), <alpha-value>)',
-        overlay: 'rgba(var(--color-overlay), <alpha-value>)',
+        overlay: 'rgba(var(--color-overlay))',
         input: 'rgba(var(--input), <alpha-value>)',
         border: 'rgba(var(--border), <alpha-value>)',
         ring: 'rgba(var(--ring), <alpha-value>)',
@@ -57,5 +57,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 };

@@ -112,20 +112,17 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 const DrawerContent = forwardRef<
   ElementRef<typeof DrawerPrimitive.Content>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col items-center rounded-t-xl border bg-background',
+        'fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-full flex-col items-center rounded-t-xl border bg-background',
         className,
       )}
       {...props}
-    >
-      <div className="mx-auto my-4 h-2 w-24 rounded-full bg-primary-lightest" />
-      {children}
-    </DrawerPrimitive.Content>
+    />
   </DrawerPortal>
 ));
 DrawerContent.displayName = 'DrawerContent';
@@ -166,20 +163,23 @@ const DrawerTitle = forwardRef<
   ElementRef<typeof DrawerPrimitive.Title>,
   ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <div
-    className={
-      'w-full flex justify-center items-center text-left border-b border-b-slate-300'
-    }
-  >
-    <DrawerPrimitive.Title
-      ref={ref}
-      className={cn(
-        'w-full flex items-center text-2xl px-6 py-2.5 max-w-screen-sm',
-        className,
-      )}
-      {...props}
-    />
-  </div>
+  <>
+    <div className="mx-auto my-4 h-2 w-24 rounded-full bg-primary-lightest" />
+    <div
+      className={
+        'w-full flex justify-center items-center text-left border-b border-b-slate-300'
+      }
+    >
+      <DrawerPrimitive.Title
+        ref={ref}
+        className={cn(
+          'w-full flex items-center text-2xl px-6 py-2.5 max-w-screen-sm',
+          className,
+        )}
+        {...props}
+      />
+    </div>
+  </>
 ));
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName;
 
@@ -197,7 +197,10 @@ const DrawerDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Description
     ref={ref}
-    className={cn('w-full px-6 pt-5 pb-10 max-w-screen-sm', className)}
+    className={cn(
+      'w-full h-full px-6 mt-5 mb-10 max-w-screen-sm overflow-y-auto break-words text-wrap',
+      className,
+    )}
     {...props}
   />
 ));
