@@ -32,10 +32,28 @@ Fifth, generate the Prisma client:
 npm run prisma:generate
 ```
 
+Sixth, seed the database:
+
+```bash
+npm run prisma:seed
+```
+
 Lastly, run the development server:
 
 ```bash
 npm run dev
+```
+
+## Custom Scripts
+
+### Prisma
+
+#### Reset the database
+
+If you want to reset the database with the initial seed data, you can run the following command:
+
+```bash
+npm run prisma:reset
 ```
 
 ## Document
