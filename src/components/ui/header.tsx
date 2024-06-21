@@ -16,44 +16,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-/**
- * HeaderItemForTop
- * @description
- * This component is used to render the top header item.
- * @example
- * ```tsx
- * return (
- *  <HeaderContainer>
- *   <HeaderItemForTop />
- * </HeaderContainer>
- * );
- * ```
- *
- * HeaderItemWithDropDown
- * @example
- * ```tsx
- * const menuItems = [
- * {title: 'Edit', icon: <SquarePen />},
- * {title: 'Delete', icon: <Trash2 />},
- * ];
- *
- * return (
- * <HeaderContainer>
- *   <HeaderItemWithDropDown pageTitle="Sample Share House" menuItems={menuItems} />
- * </HeaderContainer>
- * );
- * ```
- *
- * HeaderItemOnlyBreadcrumb
- * @example
- * ```tsx
- * return (
- * <HeaderContainer>
- *  <HeaderItemOnlyBreadcrumb pageTitle="Setup" />
- * </HeaderContainer>
- * );
- */
+import { ReactNode } from 'react';
 
+// Header Item for Landload top page
 function HeaderItemForTop() {
   return (
     <>
@@ -69,13 +34,14 @@ function HeaderItemForTop() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <button className="p-2">
+      <button type={'button'} className="p-2">
         <LogOutIcon />
       </button>
     </>
   );
 }
 
+// TODO: Implement DropDown menu
 function HeaderItemWithDropDown({
   pageTitle,
   menuItems,
@@ -135,5 +101,72 @@ function HeaderItemOnlyBreadcrumb({ pageTitle }: { pageTitle: string }) {
     </Breadcrumb>
   );
 }
+interface IHeaderContainerProps {
+  type:
+    | 'HeaderItemForTop'
+    | 'HeaderItemWithDropDown'
+    | 'HeaderItemOnlyBreadcrumb';
+  pageTitle: string;
+  menuItems: { title: string; icon: ReactNode }[];
+}
 
-export { HeaderItemForTop, HeaderItemWithDropDown, HeaderItemOnlyBreadcrumb };
+/**
+ * HeaderContainer
+ * @description
+ * This component is used to render the top header item.
+ * @param {string} type - The type of the header item.
+ * @param {string} pageTitle - The title of the page.
+ * @param {ReactNode[]} menuItems - The list of menu items.
+ *
+ *
+ * HeaderItemForTop
+ * @example
+ * ```
+ * return (
+ *  <Header type={'HeaderItemForTop'} pageTitle={''} />
+ * );
+ * ```
+ *
+ * HeaderItemWithDropDown
+ * @example
+ * ```tsx
+ * const pageTitle = 'Setup';
+ * const menuItems = [
+ * {title: 'Edit', icon: <SquarePen />},
+ * {title: 'Delete', icon: <Trash2 />},
+ * ];
+ *
+ * return (
+ *  <Header type={'HeaderItemWithDropDown'} pageTitle={'test'} />
+ * );
+ * ```
+ *
+ * HeaderItemOnlyBreadcrumb
+ * @example
+ * ```tsx
+ * return (
+ * <Header type={'HeaderItemOnlyBreadcrumb'} pageTitle={'test'} />
+ * );
+ */
+
+// TODO: If menuItems is not needed as a prop, remove it from the interface and the component
+export default function Header({
+  type,
+  pageTitle,
+  menuItems,
+}: IHeaderContainerProps) {
+  return (
+    <header className="sticky top-0 z-10 bg-primary text-white max-w-screen-sm w-full">
+      <div className="container flex items-center justify-between h-14 py-4 px-4">
+        {type === 'HeaderItemForTop' ? (
+          <HeaderItemForTop />
+        ) : type === 'HeaderItemWithDropDown' ? (
+          // TODO: Implement DropDown menu
+          <HeaderItemWithDropDown pageTitle={pageTitle} menuItems={menuItems} />
+        ) : (
+          <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />
+        )}
+      </div>
+    </header>
+  );
+}
