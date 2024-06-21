@@ -9,12 +9,6 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  BoldIcon,
-  ListIcon,
-  ListOrderedIcon,
-  UnderlineIcon,
-} from 'lucide-react';
 import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
@@ -22,6 +16,19 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+
+import { useEditor, Editor, EditorContent } from '@tiptap/react';
+
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import Bold from '@tiptap/extension-bold';
+import Underline from '@tiptap/extension-underline';
+import ListItem from '@tiptap/extension-list-item';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+
+import { TaskDescriptionEditor } from '@/components/ui/TaskDescriptionEditor';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -32,41 +39,13 @@ interface ITask {
   description: string;
 }
 
-enum Syntax {
-  BOLD = 'bold',
-  UNDERLINE = 'underline',
-  LIST = 'list',
-  LIST_ORDERED = 'listOrdered',
-}
-
-/**
- * The list of toolbar icons to be displayed in the task description input field
- */
-const toolbarIcons = [
-  {
-    name: Syntax.BOLD,
-    icon: <BoldIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.UNDERLINE,
-    icon: <UnderlineIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.LIST,
-    icon: <ListIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.LIST_ORDERED,
-    icon: <ListOrderedIcon className={'size-5'} />,
-  },
-];
-
 interface IEditTaskDrawer {
   task?: ITask;
   formControls: UseFormReturn<TTaskCreationSchema>;
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
+  editor: Editor;
 }
 
 /**
@@ -78,6 +57,7 @@ const EditTaskDrawer = ({
   open,
   setOpen,
   openConfirmationDrawer,
+  editor,
 }: IEditTaskDrawer) => {
   const {
     register,
@@ -93,11 +73,6 @@ const EditTaskDrawer = ({
     if (isValid) {
       openConfirmationDrawer();
     }
-  };
-
-  const handleToolbarClick = (name: Syntax) => {
-    // TODO: Implement the toolbar click functionality
-    console.log('Toolbar icon clicked:', name);
   };
 
   return (
@@ -149,25 +124,7 @@ const EditTaskDrawer = ({
                 : 'border-input focus-within:ring-ring',
             )}
           >
-            <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
-              {toolbarIcons.map(({ name, icon }) => (
-                <button
-                  type={'button'}
-                  key={`${task?.id}-${name}`}
-                  onClick={() => handleToolbarClick(name)}
-                  className="size-12 flex justify-center items-center focus:outline-none"
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-            <textarea
-              {...register('description')}
-              placeholder={TASK_DESCRIPTION.placeholder}
-              className={
-                'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
-              }
-            />
+            <TaskDescriptionEditor editor={editor} />
           </div>
           {errors.description?.message && (
             <FormMessage message={errors.description.message} />
@@ -199,6 +156,7 @@ interface ITasksCreationConfirmationDrawer {
   setOpen: (value: boolean) => void;
   formControls: UseFormReturn<TTaskCreationSchema>;
   closeConfirmationDrawer: () => void;
+  editor: Editor;
 }
 
 /**
@@ -210,6 +168,7 @@ const ConfirmTaskDrawer = ({
   setOpen,
   formControls,
   closeConfirmationDrawer,
+  editor,
 }: ITasksCreationConfirmationDrawer) => {
   const { handleSubmit, watch, reset } = formControls;
 
@@ -230,6 +189,10 @@ const ConfirmTaskDrawer = ({
     // Close the confirmation drawer
     setOpen(false);
   };
+
+  // TODO: delete
+  console.log('editor:', editor);
+  console.log('description:', watch('description'));
 
   return (
     <Drawer
@@ -262,12 +225,13 @@ const ConfirmTaskDrawer = ({
             >
               {watch('category')}
             </div>
-            <p className={'mt-2.5'}>{watch('description')}</p>
+            <EditorContent editor={editor} className={'mt-2.5'} />
+            {/* <p className={'mt-2.5'}>{watch('description')}</p> */}
           </DrawerDescription>
           <DrawerFooter>
             <Button
               type={'button'}
-              variant={'secondary'}
+              variant={'outline'}
               onClick={closeConfirmationDrawer}
               className={'flex-1'}
             >
@@ -341,6 +305,34 @@ export const TaskCreationDrawer = ({
     setOpen(true);
   };
 
+  const { setValue } = formControls;
+
+  const editor = useEditor({
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      Bold,
+      Underline,
+      ListItem,
+      BulletList,
+      OrderedList,
+    ],
+    content: task?.description || '',
+    onUpdate: ({ editor }) => {
+      if (!confirmationOpen) {
+        const descriptionData = editor.getHTML();
+        console.log('description:', descriptionData);
+        setValue('description', descriptionData);
+      }
+    },
+    editable: false,
+  });
+
+  if (!editor) {
+    return null;
+  }
+
   return (
     <>
       <EditTaskDrawer
@@ -349,6 +341,7 @@ export const TaskCreationDrawer = ({
         open={open}
         setOpen={setOpen}
         openConfirmationDrawer={openConfirmationDrawer}
+        editor={editor}
       />
 
       <ConfirmTaskDrawer
@@ -357,6 +350,7 @@ export const TaskCreationDrawer = ({
         setOpen={setConfirmationOpen}
         formControls={formControls}
         closeConfirmationDrawer={closeConfirmationDrawer}
+        editor={editor}
       />
     </>
   );
