@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TaskCreationDrawer } from '@/components/ui/drawers/TaskCreationDrawer';
+import { TaskDeletionDrawer } from '../drawers/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 
 /**
@@ -141,8 +142,12 @@ export const AccordionTaskItem = ({
         setOpen={setIsDrawerOpen}
       />
 
-      {/* TODO: Task deletion drawer */}
-      {isDrawerOpen && userAction === 'delete' && <div>Delete</div>}
+      {/* Task deletion drawer */}
+      <TaskDeletionDrawer
+        title={title}
+        open={isDrawerOpen && userAction === 'delete'}
+        setOpen={setIsDrawerOpen}
+      />
     </div>
   );
 };
