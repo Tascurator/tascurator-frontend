@@ -58,7 +58,7 @@ export const DeleteConfirmationDrawer = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent>
+      <DrawerContent asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>Confirm delete</DrawerTitle>
           <DrawerDescription asChild>
