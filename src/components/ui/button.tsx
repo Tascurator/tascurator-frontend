@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -9,21 +9,24 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white hover:opacity-80',
-        secondary:
-          'border border-primary bg-white hover:bg-slate-300 hover:opacity-50 hover:border-slate-300 ',
-        disable: 'bg-white border border-color-gray-500 text-gray-500',
-        destructive: 'bg-rose-600 text-white hover:opacity-80',
-        link: 'text-sky-600 hover:text-[#0084C580] hover:opacity-50 text-base',
+        default: 'bg-primary text-white hover:bg-primary/80',
+        secondary: 'border border-primary bg-white hover:bg-slate-100',
+        tertiary: 'bg-gray-500 text-white hover:bg-gray-500/50',
+        destructive: 'bg-rose-600 text-white hover:bg-rose-600/80',
+        link: 'text-sky-600 hover:text-[#0084C580] text-base',
         floating:
           'border border-transparent bg-white rounded-full shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25),0px_-4px_4px_0px_rgba(0,0,0,0.05)] hover:shadow-md',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'border border-gray-500 bg-background hover:bg-slate-100 hover:text-accent-foreground',
+        'outline-destructive':
+          'border border-rose-600 bg-background text-rose-600 font-medium hover:bg-slate-100',
+
+        // This only used for the calendar component. We normally don't use this variant.
         ghost: 'hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         default: 'w-64 h-12 px-4 py-2',
-        sm: 'w-40 h-12 px-3',
+        md: 'w-40 h-12 px-4 py-2',
         floating: 'w-14 h-14',
       },
     },
@@ -35,11 +38,22 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
+/**
+ * The button component
+ *
+ * @example
+ * // A default button
+ * <Button>Click me</Button>
+ * // A secondary button
+ * <Button variant="secondary">Click me</Button>
+ * // A destructive button with md size
+ * <Button variant="destructive" size="md">Click me</Button>
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
