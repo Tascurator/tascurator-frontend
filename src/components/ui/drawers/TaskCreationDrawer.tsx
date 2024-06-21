@@ -17,7 +17,7 @@ import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 
-import { useEditor, Editor, EditorContent } from '@tiptap/react';
+import { useEditor, Editor } from '@tiptap/react';
 
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -29,6 +29,7 @@ import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 
 import { TaskDescriptionEditor } from '@/components/ui/TaskDescriptionEditor';
+import { TaskDescription } from '@/components/ui/taskDescription';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -74,7 +75,6 @@ const EditTaskDrawer = ({
       openConfirmationDrawer();
     }
   };
-
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
@@ -190,10 +190,6 @@ const ConfirmTaskDrawer = ({
     setOpen(false);
   };
 
-  // TODO: delete
-  console.log('editor:', editor);
-  console.log('description:', watch('description'));
-
   return (
     <Drawer
       open={open}
@@ -225,7 +221,7 @@ const ConfirmTaskDrawer = ({
             >
               {watch('category')}
             </div>
-            <EditorContent editor={editor} className={'mt-2.5'} />
+            <TaskDescription editor={editor} />
             {/* <p className={'mt-2.5'}>{watch('description')}</p> */}
           </DrawerDescription>
           <DrawerFooter>
@@ -318,15 +314,12 @@ export const TaskCreationDrawer = ({
       BulletList,
       OrderedList,
     ],
-    content: task?.description || '',
+    content: task?.description || '<p>test</p>',
     onUpdate: ({ editor }) => {
-      if (!confirmationOpen) {
-        const descriptionData = editor.getHTML();
-        console.log('description:', descriptionData);
-        setValue('description', descriptionData);
-      }
+      const descriptionData = editor.getHTML();
+      setValue('description', descriptionData);
     },
-    editable: false,
+    editable: !confirmationOpen,
   });
 
   if (!editor) {

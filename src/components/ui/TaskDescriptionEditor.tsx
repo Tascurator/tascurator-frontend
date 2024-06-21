@@ -70,7 +70,7 @@ export const TaskDescriptionEditor = (
 
       <EditorContent
         editor={editor}
-        className="h-[300px] overflow-scroll resize-none"
+        className="h-full max-h-72 overflow-visible resize-none"
       />
     </>
   );
