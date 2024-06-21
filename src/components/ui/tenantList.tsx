@@ -8,8 +8,18 @@ import {
   DropdownMenuItemWithIcon,
 } from '@/components/ui/dropdown-menu';
 
-interface ITenantListItemProps {
+import { TenantInvitationDrawer } from '@/components/ui/drawers/TenantInvitationDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
+import { useState } from 'react';
+
+interface ITenant {
+  id: string;
   name: string;
+  email: string;
+}
+
+interface ITenantListItemProps {
+  tenant: ITenant;
 }
 
 /**
@@ -19,7 +29,10 @@ interface ITenantListItemProps {
  * <TenantListItem name='Momo'/>
  * )
  */
-export const TenantListItem = ({ name }: ITenantListItemProps) => {
+const TenantListItem = ({ tenant }: ITenantListItemProps) => {
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
   return (
     <div className="flex items-center justify-between w-full h-full">
       <div>
@@ -27,8 +40,8 @@ export const TenantListItem = ({ name }: ITenantListItemProps) => {
           <User />
         </Avatar>
       </div>
-      <div className="ml-4">{name}</div>
-      <div className="ml-auto">
+      <div className="ml-4">{tenant.name}</div>
+      <div className="ml-auto flex">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Ellipsis />
@@ -36,15 +49,27 @@ export const TenantListItem = ({ name }: ITenantListItemProps) => {
           <DropdownMenuContent>
             <DropdownMenuGroup>
               <DropdownMenuItemWithIcon icon={<SquarePen />}>
-                Edit name
+                <button onClick={() => setOpenEdit(true)}>Edit name</button>
               </DropdownMenuItemWithIcon>
               <DropdownMenuItemWithIcon icon={<Trash2 />}>
-                Delete
+                <button onClick={() => setOpenDelete(true)}>Delete</button>
               </DropdownMenuItemWithIcon>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        <TenantInvitationDrawer
+          tenant={tenant}
+          open={openEdit}
+          setOpen={setOpenEdit}
+        />
+        <DeleteConfirmationDrawer
+          deleteItem={tenant.name}
+          open={openDelete}
+          setOpen={setOpenDelete}
+        />
       </div>
     </div>
   );
 };
+
+export { TenantListItem };
