@@ -8,8 +8,6 @@ import categoryRoute from './routes/category.route';
 import taskRoute from './routes/task.route';
 import tenantRoute from './routes/tenant.route';
 
-export const runtime = 'edge';
-
 const app = new Hono().basePath('/api');
 
 const defaultRoutes = [
