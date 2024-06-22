@@ -39,7 +39,7 @@ model AssignmentSheet {
   id           String      @id @default(uuid())
   startDate    DateTime
   endDate      DateTime
-  assignedData String      @db.Text
+  assignedData Json
   ShareHouse   ShareHouse?
 }
 
@@ -55,7 +55,7 @@ model Category {
 model Task {
   id          String @id @default(uuid())
   title       String
-  description String
+  description String @db.Text
   categoryId  String
 
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
