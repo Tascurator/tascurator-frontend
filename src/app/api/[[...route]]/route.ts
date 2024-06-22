@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
+import { auth } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
@@ -22,6 +24,26 @@ const defaultRoutes = [
 app.get('/hello', (c) => {
   return c.json({
     message: 'Hello Next.js!',
+  });
+});
+
+app.get('/whoami', async (c) => {
+  const session = await auth();
+
+  if (!session) {
+    return c.json({
+      message: 'You are not logged in!',
+    });
+  }
+
+  const landlord = await prisma.landlord.findUnique({
+    where: { id: session.user.id },
+  });
+
+  return c.json({
+    message: 'You are logged in!',
+    session,
+    landlord,
   });
 });
 
