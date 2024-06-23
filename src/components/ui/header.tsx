@@ -1,4 +1,5 @@
-import { Ellipsis, Home, LogOutIcon } from 'lucide-react';
+'use client';
+import { Ellipsis, Home, LogOutIcon, SquarePen, Trash2 } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,28 +16,36 @@ import {
   DropdownMenuItemWithIcon,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { ReactNode } from 'react';
+import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
+import { LogOutDrawer } from '@/components/ui/drawers/LogOutDrawer';
+import { useState } from 'react';
 
 // Header Item for Landload top page
 function HeaderItemForTop() {
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink className="p-2" href="/">
-              <Home className="w-6 h-6" />
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <button type={'button'} className="p-2">
-        <LogOutIcon />
-      </button>
+      <div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink className="p-2" href="/">
+                <Home className="w-6 h-6" />
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <div>
+        <button type={'button'} className="p-2" onClick={() => setOpen(true)}>
+          <LogOutIcon />
+        </button>
+        <LogOutDrawer open={open} setOpen={setOpen} />
+      </div>
     </>
   );
 }
@@ -44,42 +53,65 @@ function HeaderItemForTop() {
 // TODO: Implement DropDown menu
 function HeaderItemWithDropDown({
   pageTitle,
-  menuItems,
+  // menuItems,
 }: {
   pageTitle: string;
-  menuItems: { title: string; icon: React.ReactNode }[];
+  // menuItems: { title: string; icon: React.ReactNode }[];
 }) {
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
   return (
     <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem className="pl-1">
-            <BreadcrumbLink className="p-1" href="/">
-              <Home className="w-6 h-6" />
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="pl-1">{pageTitle}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="p-2">
-            <Ellipsis />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuGroup>
-            {menuItems.map((item, index) => (
-              <DropdownMenuItemWithIcon key={index} icon={item.icon}>
-                {item.title}
+      <div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem className="pl-1">
+              <BreadcrumbLink className="p-1" href="/">
+                <Home className="w-6 h-6" />
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="pl-1">{pageTitle}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2">
+              <Ellipsis />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuItemWithIcon icon={<SquarePen />}>
+                <button onClick={() => setOpenEdit(true)}>
+                  Edit share house name
+                </button>
               </DropdownMenuItemWithIcon>
-            ))}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <DropdownMenuItemWithIcon icon={<Trash2 />}>
+                <button onClick={() => setOpenDelete(true)}>
+                  Delete share house
+                </button>
+              </DropdownMenuItemWithIcon>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <NameEditionDrawer
+          name={'sample name'}
+          open={openEdit}
+          setOpen={setOpenEdit}
+          type={'sharehouse'}
+        />
+        <DeleteConfirmationDrawer
+          deleteItem={'sample name'}
+          open={openDelete}
+          setOpen={setOpenDelete}
+        />
+      </div>
     </>
   );
 }
@@ -107,7 +139,7 @@ interface IHeaderContainerProps {
     | 'HeaderItemWithDropDown'
     | 'HeaderItemOnlyBreadcrumb';
   pageTitle: string;
-  menuItems: { title: string; icon: ReactNode }[];
+  // menuItems: { title: string; icon: ReactNode }[];
 }
 
 /**
@@ -116,7 +148,7 @@ interface IHeaderContainerProps {
  * This component is used to render the top header item.
  * @param {string} type - The type of the header item.
  * @param {string} pageTitle - The title of the page.
- * @param {ReactNode[]} menuItems - The list of menu items.
+//  * @param {ReactNode[]} menuItems - The list of menu items.
  *
  *
  * HeaderItemForTop
@@ -153,7 +185,7 @@ interface IHeaderContainerProps {
 export default function Header({
   type,
   pageTitle,
-  menuItems,
+  // menuItems,
 }: IHeaderContainerProps) {
   return (
     <header className="sticky top-0 z-10 bg-primary text-white max-w-screen-sm w-full">
@@ -162,7 +194,7 @@ export default function Header({
           <HeaderItemForTop />
         ) : type === 'HeaderItemWithDropDown' ? (
           // TODO: Implement DropDown menu
-          <HeaderItemWithDropDown pageTitle={pageTitle} menuItems={menuItems} />
+          <HeaderItemWithDropDown pageTitle={pageTitle} />
         ) : (
           <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />
         )}
