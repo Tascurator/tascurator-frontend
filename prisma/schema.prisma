@@ -8,10 +8,11 @@ datasource db {
 }
 
 model Landlord {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  password    String
-  shareHouses ShareHouse[]
+  id            String       @id @default(uuid())
+  email         String       @unique
+  password      String
+  emailVerified DateTime?
+  shareHouses   ShareHouse[]
 }
 
 model ShareHouse {
