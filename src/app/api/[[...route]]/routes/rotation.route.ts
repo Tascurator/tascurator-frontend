@@ -48,9 +48,4 @@ app.get('/next/:shareHouseId', async (c) => {
     console.error(error);
     return c.json({ error: 'An error occurred while fetching data' }, 500);
   }
-
-  // const shareHouseId = c.req.param('shareHouseId');
-  // return c.json({
-  //   message: `Share house id for current rotation for next rotation: ${shareHouseId}`,
-  // });
 });
