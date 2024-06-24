@@ -21,6 +21,10 @@ const defaultRoutes = [
   { path: '/tenant', route: tenantRoute },
 ];
 
+/**
+ * This is a test route to check if the user is logged in.
+ * TODO: Remove this route before deploying to production.
+ */
 app.get('/whoami', async (c) => {
   const session = await auth();
 
