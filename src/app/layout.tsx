@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { Toaster } from '@/components/ui/toaster';
+import { SessionProvider } from 'next-auth/react';
 
 const roboto = Roboto({ weight: ['400', '500'], subsets: ['latin'] });
 
@@ -18,20 +19,24 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          'flex justify-center items-start w-screen min-h-screen bg-primary-lightest',
-          roboto.className,
-        )}
-      >
-        <main
-          className={'max-w-screen-sm min-h-screen w-full h-full bg-white px-6'}
+    <SessionProvider>
+      <html lang="en">
+        <body
+          className={cn(
+            'flex justify-center items-start w-screen min-h-screen bg-primary-lightest',
+            roboto.className,
+          )}
         >
-          {children}
-        </main>
-        <Toaster />
-      </body>
-    </html>
+          <main
+            className={
+              'max-w-screen-sm min-h-screen w-full h-full bg-white px-6'
+            }
+          >
+            {children}
+          </main>
+          <Toaster />
+        </body>
+      </html>
+    </SessionProvider>
   );
 }
