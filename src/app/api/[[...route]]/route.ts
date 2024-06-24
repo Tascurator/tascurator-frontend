@@ -21,12 +21,6 @@ const defaultRoutes = [
   { path: '/tenant', route: tenantRoute },
 ];
 
-app.get('/hello', (c) => {
-  return c.json({
-    message: 'Hello Next.js!',
-  });
-});
-
 app.get('/whoami', async (c) => {
   const session = await auth();
 
