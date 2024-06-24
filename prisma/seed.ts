@@ -1,13 +1,30 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { generateAssignedData } from '../src/utils/assigned-data';
+import bcrypt, { genSaltSync } from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 const createLandlord = async () => {
+  let salt: number | string | undefined = process.env.PASSWORD_SALT_ROUNDS;
+
+  if (!salt) {
+    throw new Error('PASSWORD_SALT_ROUNDS environment variable is not set');
+  }
+
+  if (Number.isNaN(Number(salt))) {
+    throw new Error(
+      'PASSWORD_SALT_ROUNDS environment variable is not a number',
+    );
+  }
+
+  salt = Number(salt);
+
+  const hashedPassword = await bcrypt.hash('password', genSaltSync(salt));
+
   return prisma.landlord.create({
     data: {
       email: 'hoge@tascurator.com',
-      password: 'password',
+      password: hashedPassword,
     },
   });
 };
