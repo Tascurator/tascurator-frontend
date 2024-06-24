@@ -45,7 +45,6 @@ app.get('/:shareHouseId', async (c) => {
     console.error(error);
     return c.json({ error: 'An error occurred while fetching data' }, 500);
   }
-  // return c.json({ message: `Share house id: ${shareHouseId}` });
 });
 
 app.patch('/:shareHouseId', (c) => {
