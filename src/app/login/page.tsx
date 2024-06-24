@@ -10,6 +10,10 @@ import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 import { useSession } from 'next-auth/react';
 
+/**
+ * This login page was created just for backend development purposes.
+ * TODO: Improve and implement the proper login page with the proper logic.
+ */
 const LoginPage = () => {
   const session = useSession();
   const {
