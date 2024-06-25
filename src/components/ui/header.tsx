@@ -1,5 +1,5 @@
 'use client';
-import { Ellipsis, Home, LogOutIcon, SquarePen, Trash2 } from 'lucide-react';
+import { Ellipsis, Home, LogOutIcon } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,6 +20,9 @@ import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { LogOutDrawer } from '@/components/ui/drawers/LogOutDrawer';
 import { useState } from 'react';
+import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+
+const { EDIT_SHAREHOUSE_NAME, DELETE_SHAREHOUSE } = DROPDOWN_ITEMS;
 
 // Header Item for Landload top page
 function HeaderItemForTop() {
@@ -50,14 +53,7 @@ function HeaderItemForTop() {
   );
 }
 
-// TODO: Implement DropDown menu
-function HeaderItemWithDropDown({
-  pageTitle,
-  // menuItems,
-}: {
-  pageTitle: string;
-  // menuItems: { title: string; icon: React.ReactNode }[];
-}) {
+function HeaderItemWithDropDown({ pageTitle }: { pageTitle: string }) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -87,27 +83,29 @@ function HeaderItemWithDropDown({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
-              <DropdownMenuItemWithIcon icon={<SquarePen />}>
-                <button onClick={() => setOpenEdit(true)}>
-                  Edit share house name
-                </button>
+              <DropdownMenuItemWithIcon
+                icon={EDIT_SHAREHOUSE_NAME.icon}
+                onClick={() => setOpenEdit(true)}
+              >
+                {EDIT_SHAREHOUSE_NAME.text}
               </DropdownMenuItemWithIcon>
-              <DropdownMenuItemWithIcon icon={<Trash2 />}>
-                <button onClick={() => setOpenDelete(true)}>
-                  Delete share house
-                </button>
+              <DropdownMenuItemWithIcon
+                icon={DELETE_SHAREHOUSE.icon}
+                onClick={() => setOpenDelete(true)}
+              >
+                {DELETE_SHAREHOUSE.text}
               </DropdownMenuItemWithIcon>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <NameEditionDrawer
-          name={'sample name'}
+          name={pageTitle}
           open={openEdit}
           setOpen={setOpenEdit}
           type={'sharehouse'}
         />
         <DeleteConfirmationDrawer
-          deleteItem={'sample name'}
+          deleteItem={pageTitle}
           open={openDelete}
           setOpen={setOpenDelete}
         />
@@ -139,7 +137,6 @@ interface IHeaderContainerProps {
     | 'HeaderItemWithDropDown'
     | 'HeaderItemOnlyBreadcrumb';
   pageTitle: string;
-  // menuItems: { title: string; icon: ReactNode }[];
 }
 
 /**
@@ -148,8 +145,6 @@ interface IHeaderContainerProps {
  * This component is used to render the top header item.
  * @param {string} type - The type of the header item.
  * @param {string} pageTitle - The title of the page.
-//  * @param {ReactNode[]} menuItems - The list of menu items.
- *
  *
  * HeaderItemForTop
  * @example
@@ -162,38 +157,30 @@ interface IHeaderContainerProps {
  * HeaderItemWithDropDown
  * @example
  * ```tsx
- * const pageTitle = 'Setup';
- * const menuItems = [
- * {title: 'Edit', icon: <SquarePen />},
- * {title: 'Delete', icon: <Trash2 />},
- * ];
+ * const pageTitle = 'Sample Share House';
  *
  * return (
- *  <Header type={'HeaderItemWithDropDown'} pageTitle={'test'} />
+ *  <Header type={'HeaderItemWithDropDown'} pageTitle={pageTitle} />
  * );
  * ```
  *
  * HeaderItemOnlyBreadcrumb
  * @example
  * ```tsx
+ * const pageTitle = 'Setup';
+ *
  * return (
- * <Header type={'HeaderItemOnlyBreadcrumb'} pageTitle={'test'} />
+ * <Header type={'HeaderItemOnlyBreadcrumb'} pageTitle={pageTitle} />
  * );
  */
 
-// TODO: If menuItems is not needed as a prop, remove it from the interface and the component
-export default function Header({
-  type,
-  pageTitle,
-  // menuItems,
-}: IHeaderContainerProps) {
+export default function Header({ type, pageTitle }: IHeaderContainerProps) {
   return (
     <header className="sticky top-0 z-10 bg-primary text-white max-w-screen-sm w-full">
       <div className="container flex items-center justify-between h-14 py-4 px-4">
         {type === 'HeaderItemForTop' ? (
           <HeaderItemForTop />
         ) : type === 'HeaderItemWithDropDown' ? (
-          // TODO: Implement DropDown menu
           <HeaderItemWithDropDown pageTitle={pageTitle} />
         ) : (
           <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />
