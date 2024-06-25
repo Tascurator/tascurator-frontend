@@ -1,5 +1,5 @@
 import { Avatar } from '@/components/ui/avatar';
-import { Ellipsis, Trash2, SquarePen, User } from 'lucide-react';
+import { Ellipsis, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,6 +11,9 @@ import {
 import { TenantInvitationDrawer } from '@/components/ui/drawers/TenantInvitationDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { useState } from 'react';
+import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+
+const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
 
 interface ITenant {
   id: string;
@@ -56,11 +59,16 @@ const TenantListItem = ({ tenant }: ITenantListItemProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
-              <DropdownMenuItemWithIcon icon={<SquarePen />}>
-                <button onClick={() => setOpenEdit(true)}>Edit name</button>
+              <DropdownMenuItemWithIcon icon={EDIT_TENANT.icon}>
+                <button onClick={() => setOpenEdit(true)}>
+                  {' '}
+                  {EDIT_TENANT.text}
+                </button>
               </DropdownMenuItemWithIcon>
-              <DropdownMenuItemWithIcon icon={<Trash2 />}>
-                <button onClick={() => setOpenDelete(true)}>Delete</button>
+              <DropdownMenuItemWithIcon icon={DELETE_TENANT.icon}>
+                <button onClick={() => setOpenDelete(true)}>
+                  {DELETE_TENANT.text}
+                </button>
               </DropdownMenuItemWithIcon>
             </DropdownMenuGroup>
           </DropdownMenuContent>
