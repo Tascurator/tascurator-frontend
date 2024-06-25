@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
+import { PrismaClient } from '@prisma/client';
 
 const app = new Hono();
+const prisma = new PrismaClient();
 
 export default app;
 
@@ -21,12 +23,43 @@ app.post('/:shareHouseId', (c) => {
   });
 });
 
-app.get('/:assignmentSheetId/:tenantId', (c) => {
+app.get('/:assignmentSheetId/:tenantId', async (c) => {
   const assignmentSheetId = c.req.param('assignmentSheetId');
   const tenantId = c.req.param('tenantId');
-  return c.json({
-    message: `Assignment sheet id: ${assignmentSheetId}, tenant id: ${tenantId}`,
-  });
+
+  try {
+    const tenantWithOtherTables = await prisma.tenant.findUnique({
+      where: {
+        id: tenantId,
+      },
+      include: {
+        tenantPlaceholders: {
+          include: {
+            rotationAssignment: {
+              include: {
+                categories: {
+                  include: {
+                    tasks: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const assignmentSheet = await prisma.assignmentSheet.findUnique({
+      where: {
+        id: assignmentSheetId,
+      },
+    });
+
+    return c.json({ tenantWithOtherTables, assignmentSheet });
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: 'An error occurred while fetching data' }, 500);
+  }
 });
 
 app.patch('/:assignmentSheetId/:tenantId', (c) => {
