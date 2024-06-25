@@ -11,6 +11,8 @@ const {
   CATEGORY_NAME_MAX_LENGTH,
   SHAREHOUSE_NAME_MIN_LENGTH,
   SHAREHOUSE_NAME_MAX_LENGTH,
+  PASSWORD_MIN_NUMBERS,
+  PASSWORD_MAX_LENGTH,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
@@ -95,3 +97,13 @@ export const tenantInvitationSchema = z.object({
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
+
+export const loginSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
+    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH)),
+});
+
+export type TLoginSchema = z.infer<typeof loginSchema>;
