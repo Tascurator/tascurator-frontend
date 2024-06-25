@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { Hono } from 'hono';
 
 const app = new Hono();
-const prisma = new PrismaClient();
 
 export default app;
 
@@ -25,7 +24,7 @@ app.get('/current/:shareHouseId', async (c) => {
       return c.json({ error: 'ShareHouse or AssignmentSheet not found' }, 404);
     }
 
-    return c.json(shareHouseWithAssignmentSheet?.assignmentSheet);
+    return c.json(shareHouseWithAssignmentSheet.assignmentSheet);
   } catch (error) {
     console.error(error);
     return c.json({ error: 'An error occurred while fetching data' }, 500);
