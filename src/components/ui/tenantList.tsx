@@ -44,6 +44,14 @@ const TenantListItem = ({ tenant }: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
+  const handleDropdownClick = (action: string) => {
+    if (action === 'edit') {
+      setOpenEdit(true);
+    } else if (action === 'delete') {
+      setOpenDelete(true);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between w-full h-full">
       <div>
@@ -59,16 +67,17 @@ const TenantListItem = ({ tenant }: ITenantListItemProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuGroup>
-              <DropdownMenuItemWithIcon icon={EDIT_TENANT.icon}>
-                <button onClick={() => setOpenEdit(true)}>
-                  {' '}
-                  {EDIT_TENANT.text}
-                </button>
+              <DropdownMenuItemWithIcon
+                icon={EDIT_TENANT.icon}
+                onClick={() => handleDropdownClick('edit')}
+              >
+                {EDIT_TENANT.text}
               </DropdownMenuItemWithIcon>
-              <DropdownMenuItemWithIcon icon={DELETE_TENANT.icon}>
-                <button onClick={() => setOpenDelete(true)}>
-                  {DELETE_TENANT.text}
-                </button>
+              <DropdownMenuItemWithIcon
+                icon={DELETE_TENANT.icon}
+                onClick={() => handleDropdownClick('delete')}
+              >
+                {DELETE_TENANT.text}
               </DropdownMenuItemWithIcon>
             </DropdownMenuGroup>
           </DropdownMenuContent>
