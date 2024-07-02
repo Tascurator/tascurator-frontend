@@ -1,3 +1,4 @@
+'use client';
 import { Avatar } from '@/components/ui/avatar';
 import { Ellipsis, User } from 'lucide-react';
 import {
