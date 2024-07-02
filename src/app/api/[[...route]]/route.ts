@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
+import { auth } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
@@ -7,8 +9,6 @@ import rotationRoute from './routes/rotation.route';
 import categoryRoute from './routes/category.route';
 import taskRoute from './routes/task.route';
 import tenantRoute from './routes/tenant.route';
-
-export const runtime = 'edge';
 
 const app = new Hono().basePath('/api');
 
@@ -21,9 +21,27 @@ const defaultRoutes = [
   { path: '/tenant', route: tenantRoute },
 ];
 
-app.get('/hello', (c) => {
+/**
+ * This is a test route to check if the user is logged in.
+ * TODO: Remove this route before deploying to production.
+ */
+app.get('/whoami', async (c) => {
+  const session = await auth();
+
+  if (!session) {
+    return c.json({
+      message: 'You are not logged in!',
+    });
+  }
+
+  const landlord = await prisma.landlord.findUnique({
+    where: { id: session.user.id },
+  });
+
   return c.json({
-    message: 'Hello Next.js!',
+    message: 'You are logged in!',
+    session,
+    landlord,
   });
 });
 
