@@ -27,6 +27,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@tiptap/extension-list-item": "^2.4.0",
     "@tiptap/extension-ordered-list": "^2.4.0",
+    "@tiptap/extension-placeholder": "^2.4.0",
     "@tiptap/extension-underline": "^2.4.0",
     "@tiptap/pm": "^2.4.0",
     "@tiptap/react": "^2.4.0",

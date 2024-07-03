@@ -17,8 +17,7 @@ import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 
-import { useEditor, Editor } from '@tiptap/react';
-
+import { useEditor } from '@tiptap/react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -27,11 +26,39 @@ import Underline from '@tiptap/extension-underline';
 import ListItem from '@tiptap/extension-list-item';
 import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
+import Placeholder from '@tiptap/extension-placeholder';
 
-import { TaskDescriptionEditor } from '@/components/ui/TaskDescriptionEditor';
-import { TaskDescription } from '@/components/ui/taskDescription';
+import { TaskDescriptionEditor } from '@/components/ui/drawers/taskDescriptionEditor';
+import { TaskDescriptionRenderer } from '@/components/ui/drawers/taskDescriptionRenderer';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
+export const editorExtensions = [
+  Document,
+  Paragraph,
+  Text,
+  Bold,
+  Underline,
+  ListItem.configure({
+    HTMLAttributes: {
+      class: '[&>p]:inline',
+    },
+  }),
+  BulletList.configure({
+    HTMLAttributes: {
+      class: 'list-disc pl-6',
+    },
+  }),
+  OrderedList.configure({
+    HTMLAttributes: {
+      class: 'list-decimal pl-6',
+    },
+  }),
+  Placeholder.configure({
+    placeholder: 'Task description',
+    emptyEditorClass:
+      'first:before:content-[attr(data-placeholder)] first:before:text-slate-400 first:before:float-left first:before:h-0 first:before:left-0 first:before:pointer-events-none',
+  }),
+];
 
 interface ITask {
   id: string;
@@ -46,7 +73,6 @@ interface IEditTaskDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
-  editor: Editor;
 }
 
 /**
@@ -58,13 +84,31 @@ const EditTaskDrawer = ({
   open,
   setOpen,
   openConfirmationDrawer,
-  editor,
 }: IEditTaskDrawer) => {
   const {
     register,
     formState: { errors, isValid },
     trigger,
+    setValue,
   } = formControls;
+
+  const editor = useEditor({
+    extensions: editorExtensions,
+    editorProps: {
+      attributes: {
+        class: 'p-2 w-full h-full overflow-auto resize-none focus:outline-none',
+      },
+    },
+    content: task?.description || '',
+    onUpdate: ({ editor }) => {
+      const descriptionData = editor.getHTML();
+      setValue('description', descriptionData);
+    },
+  });
+
+  if (!editor) {
+    return null;
+  }
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
@@ -75,6 +119,7 @@ const EditTaskDrawer = ({
       openConfirmationDrawer();
     }
   };
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
@@ -118,7 +163,7 @@ const EditTaskDrawer = ({
           <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
           <div
             className={cn(
-              'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+              'group flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
               errors.description
                 ? 'border-destructive focus-within:ring-destructive'
                 : 'border-input focus-within:ring-ring',
@@ -156,7 +201,6 @@ interface ITasksCreationConfirmationDrawer {
   setOpen: (value: boolean) => void;
   formControls: UseFormReturn<TTaskCreationSchema>;
   closeConfirmationDrawer: () => void;
-  editor: Editor;
 }
 
 /**
@@ -168,7 +212,6 @@ const ConfirmTaskDrawer = ({
   setOpen,
   formControls,
   closeConfirmationDrawer,
-  editor,
 }: ITasksCreationConfirmationDrawer) => {
   const { handleSubmit, watch, reset } = formControls;
 
@@ -221,8 +264,7 @@ const ConfirmTaskDrawer = ({
             >
               {watch('category')}
             </div>
-            <TaskDescription editor={editor} />
-            {/* <p className={'mt-2.5'}>{watch('description')}</p> */}
+            <TaskDescriptionRenderer formControls={formControls} />
           </DrawerDescription>
           <DrawerFooter>
             <Button
@@ -301,31 +343,6 @@ export const TaskCreationDrawer = ({
     setOpen(true);
   };
 
-  const { setValue } = formControls;
-
-  const editor = useEditor({
-    extensions: [
-      Document,
-      Paragraph,
-      Text,
-      Bold,
-      Underline,
-      ListItem,
-      BulletList,
-      OrderedList,
-    ],
-    content: task?.description || '<p>test</p>',
-    onUpdate: ({ editor }) => {
-      const descriptionData = editor.getHTML();
-      setValue('description', descriptionData);
-    },
-    editable: !confirmationOpen,
-  });
-
-  if (!editor) {
-    return null;
-  }
-
   return (
     <>
       <EditTaskDrawer
@@ -334,7 +351,6 @@ export const TaskCreationDrawer = ({
         open={open}
         setOpen={setOpen}
         openConfirmationDrawer={openConfirmationDrawer}
-        editor={editor}
       />
 
       <ConfirmTaskDrawer
@@ -343,7 +359,6 @@ export const TaskCreationDrawer = ({
         setOpen={setConfirmationOpen}
         formControls={formControls}
         closeConfirmationDrawer={closeConfirmationDrawer}
-        editor={editor}
       />
     </>
   );

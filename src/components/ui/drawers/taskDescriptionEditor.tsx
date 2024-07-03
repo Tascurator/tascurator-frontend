@@ -33,7 +33,7 @@ export const TaskDescriptionEditor = (
           className={cn(
             buttonCommonStyle,
             'rounded-tl-xl',
-            editor.isActive('bold') && 'bg-slate-300',
+            editor.isActive('bold') && 'group-focus-within:bg-slate-300',
           )}
         >
           <BoldIcon className={'size-5'} />
@@ -42,7 +42,7 @@ export const TaskDescriptionEditor = (
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={cn(
             buttonCommonStyle,
-            editor.isActive('underline') && 'bg-slate-300',
+            editor.isActive('underline') && 'group-focus-within:bg-slate-300',
           )}
         >
           <UnderlineIcon className={'size-5'} />
@@ -51,7 +51,7 @@ export const TaskDescriptionEditor = (
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={cn(
             buttonCommonStyle,
-            editor.isActive('bulletList') && 'bg-slate-300',
+            editor.isActive('bulletList') && 'group-focus-within:bg-slate-300',
           )}
         >
           <ListIcon className={'size-5'} />
@@ -61,7 +61,7 @@ export const TaskDescriptionEditor = (
           className={cn(
             buttonCommonStyle,
             'rounded-tr-xl',
-            editor.isActive('orderedList') && 'bg-slate-300',
+            editor.isActive('orderedList') && 'group-focus-within:bg-slate-300',
           )}
         >
           <ListOrderedIcon className={'size-5'} />
