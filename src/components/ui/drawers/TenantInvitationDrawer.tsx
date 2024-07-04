@@ -17,14 +17,9 @@ import {
   TTenantInvitationSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+import { ITenant } from '@/types/commons';
 
 const { TENANT_NAME, TENANT_EMAIL } = INPUT_TEXTS;
-
-interface ITenant {
-  id: string;
-  name: string;
-  email: string;
-}
 
 interface IEditTenantDrawer {
   tenant?: ITenant;

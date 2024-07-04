@@ -29,6 +29,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 
 import { TaskDescriptionEditor } from '@/components/ui/drawers/taskDescriptionEditor';
 import { TaskDescriptionRenderer } from '@/components/ui/drawers/taskDescriptionRenderer';
+import type { ITask as ITaskType } from '@/types/commons';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -61,11 +62,8 @@ export const editorExtensions = [
   }),
 ];
 
-interface ITask {
-  id: string;
+interface ITask extends ITaskType {
   category: string;
-  title: string;
-  description: string;
 }
 
 interface IEditTaskDrawer {

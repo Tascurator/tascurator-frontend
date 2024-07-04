@@ -1,27 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-
-interface ITenant {
-  id: string;
-  name: string;
-}
-
-interface IAssignedTask {
-  id: string;
-  name: string;
-  description: string;
-  isCompleted: boolean;
-}
-
-interface IAssignedCategory {
-  category: { id: string; name: string } | null;
-  tenantPlaceholderId: number | null;
-  tenant: ITenant | null;
-  tasks: IAssignedTask[] | null;
-}
-
-export interface IAssignedData {
-  assignments: IAssignedCategory[];
-}
+import type {
+  IAssignedCategory,
+  IAssignedData,
+  IAssignedTask,
+} from '@/types/commons';
 
 /**
  * Generate assigned data based on the rotation assignment and tenant placeholders
@@ -153,12 +135,14 @@ export const generateAssignedData = async (
         ? foundPlaceholder?.index ?? null
         : null,
       tenant: tenant ? { id: tenant.id, name: tenant.name } : null,
-      tasks: category.tasks.map((task) => ({
-        id: task.id,
-        name: task.title,
-        description: task.description,
-        isCompleted: Boolean(Math.round(Math.random())), // 1/2 chance of being completed
-      })),
+      tasks: category.tasks.map(
+        (task): IAssignedTask => ({
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          isCompleted: Boolean(Math.round(Math.random())), // 1/2 chance of being completed
+        }),
+      ),
     };
 
     /**
