@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Landlord {
+  id            String       @id @default(uuid())
+  email         String       @unique
+  password      String
+  emailVerified DateTime?
+  shareHouses   ShareHouse[]
+}
+
+model ShareHouse {
+  id                String @id @default(uuid())
+  name              String
+  landlordId        String
+  assignmentSheetId String @unique
+
+  landlord           Landlord            @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+  assignmentSheet    AssignmentSheet     @relation(fields: [assignmentSheetId], references: [id], onDelete: Cascade)
+  RotationAssignment RotationAssignment?
+}
+
+model RotationAssignment {
+  id                 String              @id @default(uuid())
+  shareHouseId       String              @unique
+  rotationCycle      Int
+  categories         Category[]
+  tenantPlaceholders TenantPlaceholder[]
+
+  shareHouse ShareHouse @relation(fields: [shareHouseId], references: [id], onDelete: Cascade)
+}
+
+model AssignmentSheet {
+  id           String      @id @default(uuid())
+  startDate    DateTime
+  endDate      DateTime
+  assignedData Json
+  ShareHouse   ShareHouse?
+}
+
+model Category {
+  id                   String @id @default(uuid())
+  rotationAssignmentId String
+  name                 String
+  tasks                Task[]
+
+  rotationAssignment RotationAssignment @relation(fields: [rotationAssignmentId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String @id @default(uuid())
+  title       String
+  description String @db.Text
+  categoryId  String
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Tenant {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  name               String
+  extraAssignedCount Int
+  tenantPlaceholders TenantPlaceholder[]
+}
+
+model TenantPlaceholder {
+  index                Int
+  rotationAssignmentId String
+  tenantId             String?
+
+  rotationAssignment RotationAssignment @relation(fields: [rotationAssignmentId], references: [id], onDelete: Cascade)
+  tenant             Tenant?            @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@id([rotationAssignmentId, index])
+}
