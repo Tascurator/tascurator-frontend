@@ -38,10 +38,7 @@ export interface ITenant {
  *
  * @note This type is mainly used in the backend.
  */
-export interface IAssignedTask {
-  id: string;
-  title: string;
-  description: string;
+export interface IAssignedTask extends ITask {
   isCompleted: boolean;
 }
 
@@ -51,7 +48,7 @@ export interface IAssignedTask {
  * @note This type is mainly used in the backend.
  */
 export interface IAssignedCategory {
-  category: { id: string; name: string } | null;
+  category: Omit<ICategory, 'tasks'> | null;
   tenantPlaceholderId: number | null;
   tenant: Omit<ITenant, 'email'> | null;
   tasks: IAssignedTask[] | null;
