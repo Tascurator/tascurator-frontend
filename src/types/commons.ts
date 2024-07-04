@@ -34,7 +34,7 @@ export interface ITenant {
 }
 
 /**
- * The object structure for TenantPlaceholder
+ * The object structure for AssignedTask
  *
  * @note This type is mainly used in the backend.
  */
@@ -58,7 +58,7 @@ export interface IAssignedCategory {
 }
 
 /**
- * The object structure for AssignedData.
+ * The object structure for AssignedData
  *
  * This replicates the JSON structure of the assignedData in the AssignmentSheet table.
  *
