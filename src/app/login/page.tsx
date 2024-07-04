@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 import { useSession } from 'next-auth/react';
 
+import Image from 'next/image';
+
 /**
  * This login page was created just for backend development purposes.
  * TODO: Improve and implement the proper login page with the proper logic.
@@ -34,8 +36,15 @@ const LoginPage = () => {
 
   return (
     <div className={'flex flex-col pt-4 gap-y-4'}>
+      <Image
+        src="/logo.svg"
+        alt="Tascurator Logo"
+        className={'mx-auto'}
+        width={88}
+        height={80}
+      />
+
       <div className={'flex justify-between items-center'}>
-        <h2 className={'text-2xl'}>Login</h2>
         {session?.data && (
           <form action={logout}>
             <Button type={'submit'} variant={'destructive'} size={'md'}>
