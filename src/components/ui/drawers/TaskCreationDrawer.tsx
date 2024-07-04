@@ -17,7 +17,6 @@ import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 
-import { useEditor } from '@tiptap/react';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -91,28 +90,7 @@ const EditTaskDrawer = ({
     register,
     formState: { errors, isValid },
     trigger,
-    setValue,
   } = formControls;
-
-  const editor = useEditor({
-    extensions: editorExtensions,
-    editorProps: {
-      attributes: {
-        class: 'p-2 w-full h-full overflow-auto resize-none focus:outline-none',
-      },
-    },
-    content: task?.description || '',
-    onUpdate: ({ editor }) => {
-      const descriptionData = editor.getHTML();
-      const descriptionCount = editor.getText();
-      setValue('description', descriptionData);
-      setValue('descriptionCount', descriptionCount, { shouldValidate: true });
-    },
-  });
-
-  if (!editor) {
-    return null;
-  }
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
@@ -175,7 +153,10 @@ const EditTaskDrawer = ({
                   : 'border-input focus-within:ring-ring',
               )}
             >
-              <TaskDescriptionEditor editor={editor} />
+              <TaskDescriptionEditor
+                taskDescription={task?.description || ''}
+                formControls={formControls}
+              />
             </div>
             {errors.descriptionCount?.message && (
               <FormMessage message={errors.descriptionCount.message} />
@@ -267,7 +248,7 @@ const ConfirmTaskDrawer = ({
             <div>
               <div
                 className={
-                  'w-fit text-base px-2 py-1 rounded-full text-gray-500 bg-slate-100'
+                  'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
                 }
               >
                 {watch('category')}

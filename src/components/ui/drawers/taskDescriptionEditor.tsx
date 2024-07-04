@@ -1,9 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Editor, EditorContent } from '@tiptap/react';
-
-interface TaskDescriptionEditorProps {
-  editor: Editor;
-}
+import { EditorContent, useEditor } from '@tiptap/react';
 
 import {
   BoldIcon,
@@ -12,10 +8,40 @@ import {
   UnderlineIcon,
 } from 'lucide-react';
 
-export const TaskDescriptionEditor = (
-  editorProp: TaskDescriptionEditorProps,
-) => {
-  const { editor } = editorProp;
+import { UseFormReturn } from 'react-hook-form';
+import { TTaskCreationSchema } from '@/constants/schema';
+import { editorExtensions } from './TaskCreationDrawer';
+
+interface TaskDescriptionEditorProps {
+  taskDescription: string;
+  formControls: UseFormReturn<TTaskCreationSchema>;
+}
+
+export const TaskDescriptionEditor = ({
+  taskDescription,
+  formControls,
+}: TaskDescriptionEditorProps) => {
+  const { setValue } = formControls;
+
+  const editor = useEditor({
+    extensions: editorExtensions,
+    editorProps: {
+      attributes: {
+        class: 'p-2 w-full h-full overflow-auto resize-none focus:outline-none',
+      },
+    },
+    content: taskDescription || '',
+    onUpdate: ({ editor }) => {
+      const descriptionData = editor.getHTML();
+      const descriptionCount = editor.getText();
+      setValue('description', descriptionData);
+      setValue('descriptionCount', descriptionCount, { shouldValidate: true });
+    },
+  });
+
+  if (!editor) {
+    return null;
+  }
 
   const buttonCommonStyle =
     'size-12 w-full min-w-12 flex justify-center items-center focus:outline-none focus:bg-slate-300 hover:bg-slate-300';
