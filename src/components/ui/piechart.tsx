@@ -8,7 +8,7 @@
  */
 const Progress = ({ progressPercent }: { progressPercent: number }) => {
   // size of the circle
-  const size = 128;
+  const size = 100;
   // radius of the circle
   const radius = 40;
   // circumference of the circle
@@ -59,7 +59,7 @@ const Progress = ({ progressPercent }: { progressPercent: number }) => {
           />
         </svg>
 
-        <div className="absolute top-1/2 left-1/2 text-4xl text-black whitespace-nowrap -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-1/2 left-1/2 text-2xl sm:text-4xl text-black whitespace-nowrap -translate-x-1/2 -translate-y-1/2">
           {progressPercent}%
         </div>
       </div>
