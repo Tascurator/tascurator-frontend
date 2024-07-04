@@ -30,7 +30,7 @@ app.get('/', async (c) => {
 
   if (!shareHouses) return c.json({ error: 'Internal Server Error' }, 500);
 
-  const shareHousesWithProgress = shareHouses?.shareHouses.map((shareHouse) => {
+  const shareHousesWithProgress = shareHouses.shareHouses.map((shareHouse) => {
     const assignedData = shareHouse.assignmentSheet
       .assignedData as unknown as IAssignedData;
 
