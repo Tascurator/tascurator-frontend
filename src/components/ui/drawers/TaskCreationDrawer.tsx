@@ -32,6 +32,8 @@ import { TaskDescriptionEditor } from '@/components/ui/drawers/taskDescriptionEd
 import { TaskDescriptionRenderer } from '@/components/ui/drawers/taskDescriptionRenderer';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
+
+// Configure the Tiptap editor extensions
 export const editorExtensions = [
   Document,
   Paragraph,
@@ -54,7 +56,7 @@ export const editorExtensions = [
     },
   }),
   Placeholder.configure({
-    placeholder: 'Task description',
+    placeholder: TASK_DESCRIPTION.placeholder,
     emptyEditorClass:
       'first:before:content-[attr(data-placeholder)] first:before:text-slate-400 first:before:float-left first:before:h-0 first:before:left-0 first:before:pointer-events-none',
   }),
@@ -102,7 +104,9 @@ const EditTaskDrawer = ({
     content: task?.description || '',
     onUpdate: ({ editor }) => {
       const descriptionData = editor.getHTML();
+      const descriptionCount = editor.getText();
       setValue('description', descriptionData);
+      setValue('descriptionCount', descriptionCount, { shouldValidate: true });
     },
   });
 
@@ -112,7 +116,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['category', 'title', 'description']);
+    const isValid = await trigger(['category', 'title', 'descriptionCount']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -129,51 +133,54 @@ const EditTaskDrawer = ({
           className={
             'flex-1 flex flex-col justify-center items-start overflow-visible'
           }
+          asChild
         >
-          {/* Category input field */}
-          <Input
-            {...register('category')}
-            variant={errors.category ? 'destructive' : 'default'}
-            type="text"
-            placeholder={CATEGORY_NAME.placeholder}
-            label={CATEGORY_NAME.label}
-            // Disable the input field if category is present
-            disabled={!!task?.category}
-          />
-          {errors.category?.message && (
-            <FormMessage message={errors.category.message} />
-          )}
-
-          {/* Task title input field */}
-          <Input
-            {...register('title')}
-            variant={errors.title ? 'destructive' : 'default'}
-            type="text"
-            placeholder={TASK_TITLE.placeholder}
-            label={TASK_TITLE.label}
-            classNames={{
-              label: 'mt-4',
-            }}
-          />
-          {errors.title?.message && (
-            <FormMessage message={errors.title.message} />
-          )}
-
-          {/* Task description input field */}
-          <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
-          <div
-            className={cn(
-              'group flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-              errors.description
-                ? 'border-destructive focus-within:ring-destructive'
-                : 'border-input focus-within:ring-ring',
+          <div>
+            {/* Category input field */}
+            <Input
+              {...register('category')}
+              variant={errors.category ? 'destructive' : 'default'}
+              type="text"
+              placeholder={CATEGORY_NAME.placeholder}
+              label={CATEGORY_NAME.label}
+              // Disable the input field if category is present
+              disabled={!!task?.category}
+            />
+            {errors.category?.message && (
+              <FormMessage message={errors.category.message} />
             )}
-          >
-            <TaskDescriptionEditor editor={editor} />
+
+            {/* Task title input field */}
+            <Input
+              {...register('title')}
+              variant={errors.title ? 'destructive' : 'default'}
+              type="text"
+              placeholder={TASK_TITLE.placeholder}
+              label={TASK_TITLE.label}
+              classNames={{
+                label: 'mt-4',
+              }}
+            />
+            {errors.title?.message && (
+              <FormMessage message={errors.title.message} />
+            )}
+
+            {/* Task description input field */}
+            <div className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</div>
+            <div
+              className={cn(
+                'group flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+                errors.descriptionCount
+                  ? 'border-destructive focus-within:ring-destructive'
+                  : 'border-input focus-within:ring-ring',
+              )}
+            >
+              <TaskDescriptionEditor editor={editor} />
+            </div>
+            {errors.descriptionCount?.message && (
+              <FormMessage message={errors.descriptionCount.message} />
+            )}
           </div>
-          {errors.description?.message && (
-            <FormMessage message={errors.description.message} />
-          )}
         </DrawerDescription>
         <DrawerFooter>
           <DrawerClose asChild>
@@ -256,15 +263,17 @@ const ConfirmTaskDrawer = ({
       <DrawerContent className={'h-[90%]'} asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>{watch('title')}</DrawerTitle>
-          <DrawerDescription className={'flex-1'}>
-            <div
-              className={
-                'w-fit text-base px-2 py-1 rounded-full text-gray-500 bg-slate-100'
-              }
-            >
-              {watch('category')}
+          <DrawerDescription className={'flex-1'} asChild>
+            <div>
+              <div
+                className={
+                  'w-fit text-base px-2 py-1 rounded-full text-gray-500 bg-slate-100'
+                }
+              >
+                {watch('category')}
+              </div>
+              <TaskDescriptionRenderer formControls={formControls} />
             </div>
-            <TaskDescriptionRenderer formControls={formControls} />
           </DrawerDescription>
           <DrawerFooter>
             <Button
@@ -330,6 +339,7 @@ export const TaskCreationDrawer = ({
       category: task?.category || '',
       title: task?.title || '',
       description: task?.description || '',
+      descriptionCount: '',
     },
   });
 
