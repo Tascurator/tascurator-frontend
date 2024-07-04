@@ -108,76 +108,79 @@ const EditTaskDrawer = ({
       <DrawerContent className={'h-[90%]'}>
         <DrawerTitle>{task?.id ? 'Edit task' : 'Create task'}</DrawerTitle>
         <DrawerDescription
+          asChild
           className={
             'flex-1 flex flex-col justify-center items-start overflow-visible'
           }
         >
           {/* Category input field */}
-          <Input
-            {...register('category')}
-            variant={errors.category ? 'destructive' : 'default'}
-            type="text"
-            placeholder={CATEGORY_NAME.placeholder}
-            label={CATEGORY_NAME.label}
-            // Disable the input field if category is present
-            disabled={!!task?.category || !!category}
-          />
-          {errors.category?.message && (
-            <FormMessage message={errors.category.message} />
-          )}
-
-          {/* Task title input field */}
-          <Input
-            {...register('title')}
-            variant={errors.title ? 'destructive' : 'default'}
-            type="text"
-            placeholder={TASK_TITLE.placeholder}
-            label={TASK_TITLE.label}
-            classNames={{
-              label: 'mt-4',
-            }}
-          />
-          {errors.title?.message && (
-            <FormMessage message={errors.title.message} />
-          )}
-
-          {/* Task description input field */}
-          <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
-          <div
-            className={cn(
-              'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-              errors.description
-                ? 'border-destructive focus-within:ring-destructive'
-                : 'border-input focus-within:ring-ring',
-            )}
-          >
-            <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
-              {toolbarIcons.map(({ name, icon }) => (
-                <button
-                  type={'button'}
-                  key={`${task?.id}-${name}`}
-                  onClick={() => handleToolbarClick(name)}
-                  className="size-12 flex justify-center items-center focus:outline-none"
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-            <textarea
-              {...register('description')}
-              placeholder={TASK_DESCRIPTION.placeholder}
-              className={
-                'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
-              }
+          <div>
+            <Input
+              {...register('category')}
+              variant={errors.category ? 'destructive' : 'default'}
+              type="text"
+              placeholder={CATEGORY_NAME.placeholder}
+              label={CATEGORY_NAME.label}
+              // Disable the input field if category is present
+              disabled={!!task?.category || !!category}
             />
+            {errors.category?.message && (
+              <FormMessage message={errors.category.message} />
+            )}
+
+            {/* Task title input field */}
+            <Input
+              {...register('title')}
+              variant={errors.title ? 'destructive' : 'default'}
+              type="text"
+              placeholder={TASK_TITLE.placeholder}
+              label={TASK_TITLE.label}
+              classNames={{
+                label: 'mt-4',
+              }}
+            />
+            {errors.title?.message && (
+              <FormMessage message={errors.title.message} />
+            )}
+
+            {/* Task description input field */}
+            <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
+            <div
+              className={cn(
+                'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+                errors.description
+                  ? 'border-destructive focus-within:ring-destructive'
+                  : 'border-input focus-within:ring-ring',
+              )}
+            >
+              <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
+                {toolbarIcons.map(({ name, icon }) => (
+                  <button
+                    type={'button'}
+                    key={`${task?.id}-${name}`}
+                    onClick={() => handleToolbarClick(name)}
+                    className="size-12 flex justify-center items-center focus:outline-none"
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                {...register('description')}
+                placeholder={TASK_DESCRIPTION.placeholder}
+                className={
+                  'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
+                }
+              />
+            </div>
+            {errors.description?.message && (
+              <FormMessage message={errors.description.message} />
+            )}
           </div>
-          {errors.description?.message && (
-            <FormMessage message={errors.description.message} />
-          )}
         </DrawerDescription>
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button type={'button'} variant={'secondary'} className={'flex-1'}>
+            <Button type={'button'} variant={'outline'} className={'flex-1'}>
               Cancel
             </Button>
           </DrawerClose>
@@ -269,7 +272,7 @@ const ConfirmTaskDrawer = ({
           <DrawerFooter>
             <Button
               type={'button'}
-              variant={'secondary'}
+              variant={'outline'}
               onClick={closeConfirmationDrawer}
               className={'flex-1'}
             >
