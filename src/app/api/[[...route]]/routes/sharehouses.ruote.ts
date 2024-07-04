@@ -56,7 +56,7 @@ app.get('/', async (c) => {
     return {
       id: shareHouse.id,
       name: shareHouse.name,
-      progress: Number.isNaN(progressRate) ? 0 : progressRate, // 進捗率が計算できない場合は0に設定
+      progress: Number.isNaN(progressRate) ? 0 : progressRate,
     };
   });
 
