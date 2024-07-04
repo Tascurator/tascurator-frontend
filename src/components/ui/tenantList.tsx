@@ -13,14 +13,9 @@ import { TenantInvitationDrawer } from '@/components/ui/drawers/TenantInvitation
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+import type { ITenant } from '@/types/commons';
 
 const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
-
-interface ITenant {
-  id: string;
-  name: string;
-  email: string;
-}
 
 interface ITenantListItemProps {
   tenant: ITenant;

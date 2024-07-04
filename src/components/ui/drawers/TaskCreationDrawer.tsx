@@ -22,14 +22,12 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+import type { ITask as ITaskType } from '@/types/commons';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
-interface ITask {
-  id: string;
+interface ITask extends ITaskType {
   category: string;
-  title: string;
-  description: string;
 }
 
 enum Syntax {
