@@ -11,11 +11,7 @@ export default app;
 app.get('/', async (c) => {
   const session = await auth();
 
-  if (!session) {
-    return c.json({
-      error: 'Unauthorized',
-    });
-  }
+  if (!session) return c.json({ error: 'Unauthorized' }, 401);
 
   const shareHouses = await prisma.landlord.findUnique({
     where: { id: session.user.id },
@@ -31,6 +27,8 @@ app.get('/', async (c) => {
       },
     },
   });
+
+  if (!shareHouses) return c.json({ error: 'Internal Server Error' }, 500);
 
   const shareHousesWithProgress = shareHouses?.shareHouses.map((shareHouse) => {
     const assignedData = shareHouse.assignmentSheet
