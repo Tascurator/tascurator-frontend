@@ -1,14 +1,10 @@
 import { Hono } from 'hono';
-import { PrismaClient } from '@prisma/client';
 
-export const app = new Hono();
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
+
+const app = new Hono();
 
 export default app;
-
-app.get('/', (c) => {
-  return c.json({ message: 'share house route' });
-});
 
 app.get('/:shareHouseId', async (c) => {
   const shareHouseId = c.req.param('shareHouseId');
