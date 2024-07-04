@@ -7,21 +7,21 @@ export interface IShareHouse {
 }
 
 /**
- * The object structure for Category
- */
-export interface ICategory {
-  id: string;
-  name: string;
-  tasks: ITask[];
-}
-
-/**
  * The object structure for Task
  */
 export interface ITask {
   id: string;
   title: string;
   description: string;
+}
+
+/**
+ * The object structure for Category
+ */
+export interface ICategory {
+  id: string;
+  name: string;
+  tasks: ITask[];
 }
 
 /**
