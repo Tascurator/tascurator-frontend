@@ -1,5 +1,6 @@
 'use client';
 import { useLockBodyScroll } from '@/hooks/useLockBodyScroll';
+import { useEffect } from 'react';
 
 /**
  *
@@ -21,6 +22,13 @@ export const LoadingSpinner = ({ isLoading }: LoadingSpinnerProps) => {
 
 export const LoadingOverlay = () => {
   useLockBodyScroll();
+  // Reset the body's overflow when isLoading becomes false
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   return (
     <>
       <div className="fixed left-0 top-0 z-50 bg-black/50 w-full h-full flex justify-center items-center">
