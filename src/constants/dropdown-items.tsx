@@ -1,5 +1,6 @@
 import {
   CirclePlusIcon,
+  NotebookPen,
   NotebookPenIcon,
   SquarePenIcon,
   Trash2Icon,
@@ -21,6 +22,10 @@ export const DROPDOWN_ITEMS: IDropdownItems = {
   EDIT_SHAREHOUSE_NAME: {
     icon: <SquarePenIcon />,
     text: 'Edit share house name',
+  },
+  MANAGE_SHAREHOUSE: {
+    icon: <NotebookPen />,
+    text: 'Manage share house',
   },
   DELETE_SHAREHOUSE: {
     icon: <Trash2Icon />,
