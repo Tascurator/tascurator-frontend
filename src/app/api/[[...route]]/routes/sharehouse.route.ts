@@ -42,9 +42,12 @@ app.get('/:shareHouseId', async (c) => {
       tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
         .filter((tenantPlaceholder) => tenantPlaceholder.tenant !== null)
         .map((tenantPlaceholder) => ({
-          id: tenantPlaceholder.tenant.id,
-          name: tenantPlaceholder.tenant.name,
-          email: tenantPlaceholder.tenant.email,
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          id: tenantPlaceholder.tenant!.id,
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          name: tenantPlaceholder.tenant!.name,
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          email: tenantPlaceholder.tenant!.email,
         })),
       rotationCycle: shareHouseWithOtherTables.RotationAssignment.rotationCycle,
       categories: shareHouseWithOtherTables.RotationAssignment.categories.map(
