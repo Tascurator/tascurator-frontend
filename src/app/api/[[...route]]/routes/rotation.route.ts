@@ -1,5 +1,7 @@
-import prisma from '@/lib/prisma';
 import { Hono } from 'hono';
+
+import prisma from '@/lib/prisma';
+import type { IAssignedData } from '@/types/commons';
 
 const app = new Hono();
 
@@ -24,7 +26,62 @@ app.get('/current/:shareHouseId', async (c) => {
       return c.json({ error: 'ShareHouse or AssignmentSheet not found' }, 404);
     }
 
-    return c.json(shareHouseWithAssignmentSheet.assignmentSheet);
+    const assignedData = shareHouseWithAssignmentSheet.assignmentSheet
+      .assignedData as unknown as IAssignedData;
+
+    let totalTasks = 0;
+    let totalCompletedTasks = 0;
+
+    const categories = assignedData.assignments.map((assignment) => {
+      const maxTasks = assignment.tasks ? assignment.tasks.length : null;
+      const completedTasks = assignment.tasks
+        ? assignment.tasks.filter((task) => task.isCompleted === true).length
+        : null;
+
+      if (maxTasks !== null) totalTasks += maxTasks;
+      if (completedTasks !== null) totalCompletedTasks += completedTasks;
+
+      let categoryId = null;
+      let categoryName = null;
+      if (assignment.category) {
+        categoryId = assignment.category.id;
+        categoryName = assignment.category.name;
+      }
+
+      let tenantId = null;
+      let tenantName = null;
+      if (assignment.tenant) {
+        tenantId = assignment.tenant.id;
+        tenantName = assignment.tenant.name;
+      }
+
+      return {
+        id: categoryId,
+        name: categoryName,
+        maxTasks: maxTasks,
+        completedTasks: completedTasks,
+        tenant: {
+          id: tenantId,
+          name: tenantName,
+        },
+      };
+    });
+
+    const progressRate =
+      totalTasks > 0
+        ? ((totalCompletedTasks / totalTasks) * 100).toFixed(1)
+        : 0;
+
+    const currentRotationData = {
+      id: shareHouseWithAssignmentSheet.id,
+      name: shareHouseWithAssignmentSheet.name,
+      startDate: shareHouseWithAssignmentSheet.assignmentSheet.startDate,
+      endDate: shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+      progressRate: progressRate,
+      categories: categories,
+    };
+
+    return c.json(currentRotationData);
   } catch (error) {
     console.error(error);
     return c.json({ error: 'An error occurred while fetching data' }, 500);
