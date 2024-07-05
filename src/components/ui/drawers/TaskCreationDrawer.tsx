@@ -88,6 +88,7 @@ const EditTaskDrawer = ({
     register,
     formState: { errors, isValid },
     trigger,
+    getValues,
   } = formControls;
 
   const handleSaveClick = async () => {
@@ -152,7 +153,7 @@ const EditTaskDrawer = ({
               )}
             >
               <TaskDescriptionEditor
-                taskDescription={task?.description || ''}
+                taskDescription={getValues('description') || ''}
                 formControls={formControls}
               />
             </div>
@@ -163,7 +164,7 @@ const EditTaskDrawer = ({
         </DrawerDescription>
         <DrawerFooter>
           <DrawerClose asChild>
-            <Button type={'button'} variant={'secondary'} className={'flex-1'}>
+            <Button type={'button'} variant={'outline'} className={'flex-1'}>
               Cancel
             </Button>
           </DrawerClose>
@@ -199,7 +200,7 @@ const ConfirmTaskDrawer = ({
   formControls,
   closeConfirmationDrawer,
 }: ITasksCreationConfirmationDrawer) => {
-  const { handleSubmit, watch, reset } = formControls;
+  const { handleSubmit, watch } = formControls;
 
   const onSubmit: SubmitHandler<TTaskCreationSchema> = async (data) => {
     // Submit the form data
@@ -211,9 +212,6 @@ const ConfirmTaskDrawer = ({
     } else {
       console.log('Creating a new task:', data);
     }
-
-    // Clear the form data
-    reset();
 
     // Close the confirmation drawer
     setOpen(false);
