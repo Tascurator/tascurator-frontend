@@ -9,12 +9,6 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  BoldIcon,
-  ListIcon,
-  ListOrderedIcon,
-  UnderlineIcon,
-} from 'lucide-react';
 import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
@@ -22,45 +16,57 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import Bold from '@tiptap/extension-bold';
+import Underline from '@tiptap/extension-underline';
+import ListItem from '@tiptap/extension-list-item';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Placeholder from '@tiptap/extension-placeholder';
+
+import { TaskDescriptionEditor } from '@/components/ui/drawers/taskDescriptionEditor';
+import { TaskDescriptionRenderer } from '@/components/ui/drawers/taskDescriptionRenderer';
 import type { ITask as ITaskType } from '@/types/commons';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
+
+// Configure the Tiptap editor extensions
+export const editorExtensions = [
+  Document,
+  Paragraph,
+  Text,
+  Bold,
+  Underline,
+  ListItem.configure({
+    HTMLAttributes: {
+      class: '[&>p]:inline',
+    },
+  }),
+  BulletList.configure({
+    HTMLAttributes: {
+      class: 'list-disc pl-6',
+    },
+  }),
+  OrderedList.configure({
+    HTMLAttributes: {
+      class: 'list-decimal pl-6',
+    },
+  }),
+  Placeholder.configure({
+    placeholder: TASK_DESCRIPTION.placeholder,
+    emptyEditorClass:
+      'first:before:content-[attr(data-placeholder)] first:before:text-slate-400 first:before:float-left first:before:h-0 first:before:left-0 first:before:pointer-events-none',
+  }),
+];
 
 interface ITask extends ITaskType {
   category: string;
 }
 
-enum Syntax {
-  BOLD = 'bold',
-  UNDERLINE = 'underline',
-  LIST = 'list',
-  LIST_ORDERED = 'listOrdered',
-}
-
-/**
- * The list of toolbar icons to be displayed in the task description input field
- */
-const toolbarIcons = [
-  {
-    name: Syntax.BOLD,
-    icon: <BoldIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.UNDERLINE,
-    icon: <UnderlineIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.LIST,
-    icon: <ListIcon className={'size-5'} />,
-  },
-  {
-    name: Syntax.LIST_ORDERED,
-    icon: <ListOrderedIcon className={'size-5'} />,
-  },
-];
-
 interface IEditTaskDrawer {
-  category?: string;
   task?: ITask;
   formControls: UseFormReturn<TTaskCreationSchema>;
   open: boolean;
@@ -72,7 +78,6 @@ interface IEditTaskDrawer {
  * A drawer component to create or edit a task
  */
 const EditTaskDrawer = ({
-  category,
   task,
   formControls,
   open,
@@ -83,21 +88,17 @@ const EditTaskDrawer = ({
     register,
     formState: { errors, isValid },
     trigger,
+    getValues,
   } = formControls;
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['category', 'title', 'description']);
+    const isValid = await trigger(['category', 'title', 'descriptionCount']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
       openConfirmationDrawer();
     }
-  };
-
-  const handleToolbarClick = (name: Syntax) => {
-    // TODO: Implement the toolbar click functionality
-    console.log('Toolbar icon clicked:', name);
   };
 
   return (
@@ -106,13 +107,11 @@ const EditTaskDrawer = ({
       <DrawerContent className={'h-[90%]'}>
         <DrawerTitle>{task?.id ? 'Edit task' : 'Create task'}</DrawerTitle>
         <DrawerDescription
+          className={'flex-1 flex flex-col items-start'}
           asChild
-          className={
-            'flex-1 flex flex-col justify-center items-start overflow-visible'
-          }
         >
-          {/* Category input field */}
-          <div>
+          <div className={'overflow-y-scroll pb-1'}>
+            {/* Category input field */}
             <Input
               {...register('category')}
               variant={errors.category ? 'destructive' : 'default'}
@@ -120,7 +119,7 @@ const EditTaskDrawer = ({
               placeholder={CATEGORY_NAME.placeholder}
               label={CATEGORY_NAME.label}
               // Disable the input field if category is present
-              disabled={!!task?.category || !!category}
+              disabled={!!task?.category}
             />
             {errors.category?.message && (
               <FormMessage message={errors.category.message} />
@@ -142,37 +141,22 @@ const EditTaskDrawer = ({
             )}
 
             {/* Task description input field */}
-            <p className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</p>
+            <div className={'pt-4 text-base'}>{TASK_DESCRIPTION.label}</div>
             <div
               className={cn(
-                'flex-1 w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-                errors.description
+                'group w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+                errors.descriptionCount
                   ? 'border-destructive focus-within:ring-destructive'
                   : 'border-input focus-within:ring-ring',
               )}
             >
-              <div className="flex justify-between items-center px-6 bg-slate-100 rounded-t-xl">
-                {toolbarIcons.map(({ name, icon }) => (
-                  <button
-                    type={'button'}
-                    key={`${task?.id}-${name}`}
-                    onClick={() => handleToolbarClick(name)}
-                    className="size-12 flex justify-center items-center focus:outline-none"
-                  >
-                    {icon}
-                  </button>
-                ))}
-              </div>
-              <textarea
-                {...register('description')}
-                placeholder={TASK_DESCRIPTION.placeholder}
-                className={
-                  'flex-1 mt-1.5 mb-4 mx-3 text-lg rounded-b-xl resize-none focus:outline-none focus:ring-transparent'
-                }
+              <TaskDescriptionEditor
+                taskDescription={getValues('description') || ''}
+                formControls={formControls}
               />
             </div>
-            {errors.description?.message && (
-              <FormMessage message={errors.description.message} />
+            {errors.descriptionCount?.message && (
+              <FormMessage message={errors.descriptionCount.message} />
             )}
           </div>
         </DrawerDescription>
@@ -214,7 +198,7 @@ const ConfirmTaskDrawer = ({
   formControls,
   closeConfirmationDrawer,
 }: ITasksCreationConfirmationDrawer) => {
-  const { handleSubmit, watch, reset } = formControls;
+  const { handleSubmit, watch } = formControls;
 
   const onSubmit: SubmitHandler<TTaskCreationSchema> = async (data) => {
     // Submit the form data
@@ -226,9 +210,6 @@ const ConfirmTaskDrawer = ({
     } else {
       console.log('Creating a new task:', data);
     }
-
-    // Clear the form data
-    reset();
 
     // Close the confirmation drawer
     setOpen(false);
@@ -257,15 +238,17 @@ const ConfirmTaskDrawer = ({
       <DrawerContent className={'h-[90%]'} asChild>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DrawerTitle>{watch('title')}</DrawerTitle>
-          <DrawerDescription className={'flex-1'}>
-            <div
-              className={
-                'w-fit text-base px-2 py-1 rounded-full text-gray-500 bg-slate-100'
-              }
-            >
-              {watch('category')}
+          <DrawerDescription className={'flex-1'} asChild>
+            <div>
+              <div
+                className={
+                  'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
+                }
+              >
+                {watch('category')}
+              </div>
+              <TaskDescriptionRenderer formControls={formControls} />
             </div>
-            <p className={'mt-2.5'}>{watch('description')}</p>
           </DrawerDescription>
           <DrawerFooter>
             <Button
@@ -287,7 +270,6 @@ const ConfirmTaskDrawer = ({
 };
 
 interface ITaskCreationDrawer {
-  category?: string;
   task?: ITask;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -309,10 +291,6 @@ interface ITaskCreationDrawer {
  * // To create a new task
  * <TaskCreationDrawer open={open} setOpen={setOpen} />
  *
- * // To create a new task with predefined category
- * const category = 'Kitchen';
- * <TaskCreationDrawer category={category} open={open} setOpen={setOpen} />
- *
  * // To edit an existing task
  * const task = {
  *  id: '1',
@@ -323,7 +301,6 @@ interface ITaskCreationDrawer {
  * <TaskCreationDrawer task={task} open={open} setOpen={setOpen} />
  */
 export const TaskCreationDrawer = ({
-  category,
   task,
   open,
   setOpen,
@@ -334,9 +311,10 @@ export const TaskCreationDrawer = ({
     resolver: zodResolver(taskCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      category: category || task?.category || '',
+      category: task?.category || '',
       title: task?.title || '',
       description: task?.description || '',
+      descriptionCount: '',
     },
   });
 
@@ -353,7 +331,6 @@ export const TaskCreationDrawer = ({
   return (
     <>
       <EditTaskDrawer
-        category={category}
         task={task}
         formControls={formControls}
         open={open}
