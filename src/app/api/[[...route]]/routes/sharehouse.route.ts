@@ -40,15 +40,18 @@ app.get('/:shareHouseId', async (c) => {
 
     const shareHouseData = {
       tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
-        .filter((tenantPlaceholder) => tenantPlaceholder.tenant !== null)
-        .map((tenantPlaceholder) => ({
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          id: tenantPlaceholder.tenant!.id,
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          name: tenantPlaceholder.tenant!.name,
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          email: tenantPlaceholder.tenant!.email,
-        })),
+        .map((tenantPlaceholder) => {
+          if (tenantPlaceholder.tenant) {
+            return {
+              id: tenantPlaceholder.tenant.id,
+              name: tenantPlaceholder.tenant.name,
+              email: tenantPlaceholder.tenant.email,
+            };
+          }
+          return null;
+        })
+        .filter((tenantPlaceholder) => tenantPlaceholder !== null),
+
       rotationCycle: shareHouseWithOtherTables.RotationAssignment.rotationCycle,
       categories: shareHouseWithOtherTables.RotationAssignment.categories.map(
         (category) => ({
