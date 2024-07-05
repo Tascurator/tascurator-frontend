@@ -39,19 +39,13 @@ app.get('/:shareHouseId', async (c) => {
       return c.json({ error: 'Internal Server Error' }, 500);
 
     const shareHouseData = {
-      tenants:
-        shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders.map(
-          (tenantPlaceholder) => {
-            if (tenantPlaceholder.tenant) {
-              return {
-                id: tenantPlaceholder.tenant.id,
-                name: tenantPlaceholder.tenant.name,
-                email: tenantPlaceholder.tenant.email,
-              };
-            }
-            return null;
-          },
-        ),
+      tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
+        .filter((tenantPlaceholder) => tenantPlaceholder.tenant !== null)
+        .map((tenantPlaceholder) => ({
+          id: tenantPlaceholder.tenant.id,
+          name: tenantPlaceholder.tenant.name,
+          email: tenantPlaceholder.tenant.email,
+        })),
       rotationCycle: shareHouseWithOtherTables.RotationAssignment.rotationCycle,
       categories: shareHouseWithOtherTables.RotationAssignment.categories.map(
         (category) => ({
