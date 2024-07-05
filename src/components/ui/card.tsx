@@ -14,6 +14,8 @@ interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
   tenant: string;
   isComplete: boolean;
   isLast?: boolean;
+  taskNum: number;
+  completedTaskNum: number;
 }
 
 /**
@@ -112,7 +114,19 @@ CardDescription.displayName = 'CardDescription';
  * <CardContent category={category} tenant={tenant} isComplete={isComplete} />
  */
 const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ className, category, tenant, isComplete, isLast, ...props }, ref) => (
+  (
+    {
+      className,
+      category,
+      tenant,
+      isComplete,
+      isLast,
+      taskNum,
+      completedTaskNum,
+      ...props
+    },
+    ref,
+  ) => (
     <div
       ref={ref}
       className={cn(
@@ -126,6 +140,8 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
         tenant={tenant}
         category={category}
         isComplete={isComplete}
+        taskNum={taskNum}
+        completedTaskNum={completedTaskNum}
       />
     </div>
   ),
@@ -142,32 +158,47 @@ CardContent.displayName = 'CardContent';
 const CardContentDescription = forwardRef<
   HTMLParagraphElement,
   CardContentProps
->(({ className, tenant, category, isComplete, ...props }, ref) => (
-  <div className="flex items-center">
-    <p
-      ref={ref}
-      className={cn('text-base text-muted-foreground', className)}
-      {...props}
-    />
-    <div
-      className={cn(
-        'flex justify-between items-center w-full',
-        isComplete && 'text-gray-500',
-      )}
-    >
-      <div>
-        <p className="pb-[7px] text-xl font-medium">{category}</p>
-        <p>{tenant}</p>
-      </div>
-      <CircleCheck
-        className={cn(
-          'text-primary w-7 h-7 stroke-white fill-secondary-light hidden',
-          isComplete && 'block',
-        )}
+>(
+  (
+    {
+      className,
+      tenant,
+      category,
+      isComplete,
+      taskNum,
+      completedTaskNum,
+      ...props
+    },
+    ref,
+  ) => (
+    <div className="flex items-center">
+      <p
+        ref={ref}
+        className={cn('text-base text-muted-foreground', className)}
+        {...props}
       />
+      <div
+        className={cn(
+          'flex justify-between items-center w-full',
+          isComplete && 'text-gray-500',
+        )}
+      >
+        <div>
+          <p className="pb-[7px] text-xl font-medium">
+            {category} ({completedTaskNum}/{taskNum})
+          </p>
+          <p>{tenant}</p>
+        </div>
+        <CircleCheck
+          className={cn(
+            'text-primary w-7 h-7 stroke-white fill-secondary-light hidden',
+            isComplete && 'block',
+          )}
+        />
+      </div>
     </div>
-  </div>
-));
+  ),
+);
 CardContentDescription.displayName = 'CardContentDescription';
 
 export { Card, CardHeader, CardContent };
