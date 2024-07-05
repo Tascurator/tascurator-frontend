@@ -13,6 +13,7 @@ import { NameEditionDrawer } from '../drawers/NameEditionDrawer';
 import { AccordionTrigger } from '../accordion';
 import { TaskCreationDrawer } from '../drawers/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '../drawers/DeleteConfirmationDrawer';
+import type { ICategory } from '@/types/commons';
 
 /**
  * Constants used in the dropdown menu.
@@ -82,9 +83,7 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionCategoryItemProps {
-  id: string;
-  name: string;
-  category: string;
+  category: ICategory;
 }
 
 /**
@@ -94,7 +93,6 @@ interface IAccordionCategoryItemProps {
  * <AccordionCategoryItem id={"1"} name={'Kitchen'} category={'Kitchen'} />
  */
 export const AccordionCategoryItem = ({
-  name,
   category,
 }: IAccordionCategoryItemProps) => {
   /**
@@ -120,7 +118,7 @@ export const AccordionCategoryItem = ({
   return (
     <div className={'flex rounded-xl'}>
       <div className="flex items-center w-full">
-        <AccordionTrigger>{name}</AccordionTrigger>
+        <AccordionTrigger>{category.name}</AccordionTrigger>
         <button
           className={
             'flex justify-center items-center p-4 hover:cursor-pointer'
@@ -140,7 +138,7 @@ export const AccordionCategoryItem = ({
 
       {/* Category name edit drawer */}
       <NameEditionDrawer
-        name={name}
+        name={category.name}
         open={isDrawerOpen && userAction === 'edit'}
         setOpen={setIsDrawerOpen}
         type={'category'}
@@ -148,14 +146,14 @@ export const AccordionCategoryItem = ({
 
       {/* Task create drawer */}
       <TaskCreationDrawer
-        category={category}
+        category={category.name}
         open={isDrawerOpen && userAction === 'add'}
         setOpen={setIsDrawerOpen}
       />
 
       {/* Category deletion drawer */}
       <DeleteConfirmationDrawer
-        deleteItem={name}
+        deleteItem={category.name}
         open={isDrawerOpen && userAction === 'delete'}
         setOpen={setIsDrawerOpen}
       />
