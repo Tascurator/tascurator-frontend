@@ -67,6 +67,7 @@ interface ITask extends ITaskType {
 }
 
 interface IEditTaskDrawer {
+  category?: string;
   task?: ITask;
   formControls: UseFormReturn<TTaskCreationSchema>;
   open: boolean;
@@ -78,6 +79,7 @@ interface IEditTaskDrawer {
  * A drawer component to create or edit a task
  */
 const EditTaskDrawer = ({
+  category,
   task,
   formControls,
   open,
@@ -119,7 +121,7 @@ const EditTaskDrawer = ({
               placeholder={CATEGORY_NAME.placeholder}
               label={CATEGORY_NAME.label}
               // Disable the input field if category is present
-              disabled={!!task?.category}
+              disabled={!!task?.category || !!category}
             />
             {errors.category?.message && (
               <FormMessage message={errors.category.message} />
@@ -270,6 +272,7 @@ const ConfirmTaskDrawer = ({
 };
 
 interface ITaskCreationDrawer {
+  category?: string;
   task?: ITask;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -301,6 +304,7 @@ interface ITaskCreationDrawer {
  * <TaskCreationDrawer task={task} open={open} setOpen={setOpen} />
  */
 export const TaskCreationDrawer = ({
+  category,
   task,
   open,
   setOpen,
@@ -311,7 +315,7 @@ export const TaskCreationDrawer = ({
     resolver: zodResolver(taskCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      category: task?.category || '',
+      category: category || task?.category || '',
       title: task?.title || '',
       description: task?.description || '',
       descriptionCount: '',
@@ -331,6 +335,7 @@ export const TaskCreationDrawer = ({
   return (
     <>
       <EditTaskDrawer
+        category={category}
         task={task}
         formControls={formControls}
         open={open}

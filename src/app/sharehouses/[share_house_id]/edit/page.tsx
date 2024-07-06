@@ -20,7 +20,7 @@ interface IEditShareHousePageProps {
 const EditShareHousePage = ({
   params: { share_house_id },
 }: IEditShareHousePageProps) => {
-  console.log('Share house ID:', share_house_id);
+  console.log('EditShareHousePage ID:', share_house_id);
 
   const categories: ICategory[] = [
     {
