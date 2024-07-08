@@ -35,7 +35,8 @@ export const taskCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z
+  description: z.string(),
+  descriptionCount: z
     .string()
     .min(
       TASK_DESCRIPTION_MIN_LENGTH,
