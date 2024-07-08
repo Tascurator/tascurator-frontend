@@ -14,7 +14,7 @@ const ShareHousesPage = () => {
             <Progress progressPercent={50} />
           </div>
         </div>
-        <LandlordDashboard ß />
+        <LandlordDashboard />
       </div>
     </div>
   );
