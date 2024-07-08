@@ -41,12 +41,10 @@ app.get('/current/:shareHouseId', async (c) => {
       if (maxTasks !== null) totalTasks += maxTasks;
       if (completedTasks !== null) totalCompletedTasks += completedTasks;
 
-      let categoryId = null;
-      let categoryName = null;
-      if (assignment.category) {
-        categoryId = assignment.category.id;
-        categoryName = assignment.category.name;
-      }
+      const categoryId = assignment.category ? assignment.category.id : null;
+      const categoryName = assignment.category
+        ? assignment.category.name
+        : null;
 
       if (!assignment.tenant)
         return c.json({ error: 'Internal Server Error' }, 500);
