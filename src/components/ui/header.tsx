@@ -174,7 +174,7 @@ interface IHeaderContainerProps {
  * );
  */
 
-export default function Header({ type, pageTitle }: IHeaderContainerProps) {
+const Header = ({ type, pageTitle }: IHeaderContainerProps) => {
   return (
     <header className="sticky top-0 z-10 bg-primary text-white max-w-screen-sm w-full">
       <div className="container flex items-center justify-between h-14 py-4 px-4">
@@ -188,4 +188,6 @@ export default function Header({ type, pageTitle }: IHeaderContainerProps) {
       </div>
     </header>
   );
-}
+};
+
+export { Header };
