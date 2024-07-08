@@ -48,12 +48,11 @@ app.get('/current/:shareHouseId', async (c) => {
         categoryName = assignment.category.name;
       }
 
-      let tenantId = null;
-      let tenantName = null;
-      if (assignment.tenant) {
-        tenantId = assignment.tenant.id;
-        tenantName = assignment.tenant.name;
-      }
+      if (!assignment.tenant)
+        return c.json({ error: 'Internal Server Error' }, 500);
+
+      const tenantId = assignment.tenant.id;
+      const tenantName = assignment.tenant.name;
 
       return {
         id: categoryId,
