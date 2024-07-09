@@ -88,11 +88,11 @@ const Form = () => {
   });
 
   // TODO: Implement the proper sign up logic
-  // param: formData: TSignupSchema
-  const onSubmit = async () => {
+  const onSubmit = async (formData: TSignupSchema) => {
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
+        console.log('Form data:', formData);
         // await signup(formData);
       }
     } catch (error) {
@@ -114,7 +114,7 @@ const Form = () => {
           <FormMessage message={errors.email.message} />
         )}
       </div>
-      <div className={'flex flex-col mb-6'}>
+      <div className={'flex flex-col mb-3'}>
         <Input
           id="password"
           type="password"
@@ -126,16 +126,16 @@ const Form = () => {
         {errors.password?.message && (
           <FormMessage message={errors.password.message} />
         )}
-        <ul className={'mt-3'}>
-          {ValidationListItems.map((item, index) => (
-            <ValidationListItem
-              key={index}
-              condition={item.condition}
-              constraint={item.constraint}
-            />
-          ))}
-        </ul>
       </div>
+      <ul className={'mb-8'}>
+        {ValidationListItems.map((item, index) => (
+          <ValidationListItem
+            key={index}
+            condition={item.condition}
+            constraint={item.constraint}
+          />
+        ))}
+      </ul>
       <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
         Sign up
       </Button>

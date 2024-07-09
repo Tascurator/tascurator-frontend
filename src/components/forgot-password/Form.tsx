@@ -18,11 +18,11 @@ const Form = () => {
   });
 
   // TODO: Implement the proper forgot password logic
-  // param: formData: TForgotPassword
-  const onSubmit = async () => {
+  const onSubmit = async (formData: TForgotPassword) => {
     try {
       const isValid = await trigger(['email']);
       if (isValid) {
+        console.log('Form data:', formData);
         // await forgotPassword(formData);
       }
     } catch (error) {
