@@ -8,7 +8,7 @@ import { TenantListItem } from '@/components/ui/tenantList';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
-import { RotationCycle } from '../../management/RotationCycle';
+import { RotationCycle } from '@/components/sharehouses-management/RotationCycle';
 import { ICategory } from '@/types/commons';
 
 interface IEditShareHousePageProps {
