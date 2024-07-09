@@ -130,7 +130,7 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
     <div
       ref={ref}
       className={cn(
-        'pl-3.5 pt-2 pb-2.5 pr-4 border-b border-slate-300',
+        'pl-3.5 pt-2 pb-2.5 pr-4 border-t border-slate-300',
         isLast && 'border-0',
         className,
       )}
