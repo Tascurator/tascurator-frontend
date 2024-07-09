@@ -10,7 +10,7 @@ const SignUpPage = () => {
       <Logo />
       <Form />
       <div className="flex justify-center">
-        <Button type="button" variant={'link'} className={'mb-8'}>
+        <Button type="button" variant={'link'}>
           <Link href="/login" className={'text-[1rem]'}>
             Already have an account?
           </Link>
