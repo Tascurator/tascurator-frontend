@@ -13,6 +13,9 @@ const {
   SHAREHOUSE_NAME_MAX_LENGTH,
   PASSWORD_MIN_NUMBERS,
   PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_CAPITAL_LETTERS,
+  PASSWORD_MIN_LOWERCASE_LETTERS,
+  PASSWORD_MIN_SPECIAL_CHARACTERS,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
@@ -101,10 +104,21 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
 export const loginSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z
-    .string()
-    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
-    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH)),
+  password: z.string(),
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+export const signupSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
+    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+    .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+    .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+    .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+    .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+});
+
+export type TSignupSchema = z.infer<typeof signupSchema>;
