@@ -1,4 +1,8 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
+
+import { taskCreationSchema } from '@/constants/schema';
+import prisma from '@/lib/prisma';
 
 const app = new Hono();
 
@@ -9,9 +13,24 @@ app.patch('/:taskId', (c) => {
   return c.json({ message: `Updating task id: ${taskId}` });
 });
 
-app.post('/:shareHouseId', (c) => {
-  const shareHouseId = c.req.param('shareHouseId');
-  return c.json({ message: `Creating task share house id: ${shareHouseId}` });
+app.post('/', zValidator('json', taskCreationSchema), async (c) => {
+  try {
+    const data = c.req.valid('json');
+    console.log('data', data);
+
+    const newTask = await prisma.task.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        categoryId: data.categoryId,
+      },
+    });
+
+    return c.json(newTask, 201);
+  } catch (error) {
+    console.error('Error creating task:', error);
+    return c.json({ error: 'An error occurred while creating the task' }, 500);
+  }
 });
 
 app.delete('/:taskId', (c) => {
