@@ -64,3 +64,32 @@ export interface IAssignedCategory {
 export interface IAssignedData {
   assignments: IAssignedCategory[];
 }
+
+export interface IShareHousePageProps {
+  params: {
+    share_house_id: string;
+    name: string;
+    currentStartDate: string;
+    currentEndDate: string;
+    progressPercent: number;
+    nextStartDate: string;
+    nextEndDate: string;
+    cardContentCurrent: ICardContentProps[];
+    cardContentNext: ICardContentProps[];
+  };
+}
+export interface ICardContentProps {
+  category: string;
+  tenant: string;
+  isComplete: boolean;
+  taskNum: number;
+  completedTaskNum: number;
+}
+
+export interface ILandlordDashboardTabContentProps {
+  tabType: string;
+  startDate: string;
+  endDate: string;
+  progressPercent: number;
+  cardContents: ICardContentProps[];
+}
