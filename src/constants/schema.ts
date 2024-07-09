@@ -122,3 +122,9 @@ export const signupSchema = z.object({
 });
 
 export type TSignupSchema = z.infer<typeof signupSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+});
+
+export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
