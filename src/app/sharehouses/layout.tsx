@@ -1,4 +1,4 @@
-import Header from '@/components/ui/header';
+import { Header } from '@/components/ui/header';
 import { ReactNode } from 'react';
 
 interface IShareHousesLayoutProps {
