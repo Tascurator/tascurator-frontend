@@ -91,7 +91,7 @@ const EditShareHousePage = ({
 
         {/* Tasks */}
         <TabsContent value="Tasks">
-          <ShareHouseManagementHead title={'Category'} type={'category'} />
+          <ShareHouseManagementHead title={'Categories'} type={'categories'} />
 
           {categories.map((category) => (
             <Accordion
@@ -128,7 +128,7 @@ const EditShareHousePage = ({
 
         {/* Tenants */}
         <TabsContent value="Tenants">
-          <ShareHouseManagementHead title={'Tenants'} type={'tenant'} />
+          <ShareHouseManagementHead title={'Tenants'} type={'tenants'} />
           {tenants.length > 0 ? (
             <ul className="mt-6">
               {tenants.map((tenant) => (
@@ -138,7 +138,7 @@ const EditShareHousePage = ({
               ))}
             </ul>
           ) : (
-            <p className="text-center">No Tenants</p>
+            <p className="text-center">No tenant</p>
           )}
         </TabsContent>
       </Tabs>

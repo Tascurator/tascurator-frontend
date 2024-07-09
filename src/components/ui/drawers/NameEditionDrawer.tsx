@@ -136,7 +136,7 @@ export const NameEditionDrawer = ({
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
             <DrawerTitle>
-              Edit {isSharehouse ? 'sharehouse name' : 'category name'}
+              Edit {isSharehouse ? 'share house name' : 'category name'}
             </DrawerTitle>
             <DrawerDescription
               asChild

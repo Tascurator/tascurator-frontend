@@ -6,7 +6,7 @@ import { TenantInvitationDrawer } from './drawers/TenantInvitationDrawer';
 
 interface IHeaderTitleButtonProps {
   title: string;
-  type: 'category' | 'tenant';
+  type: 'categories' | 'tenants';
 }
 
 /**
@@ -24,9 +24,9 @@ export const ShareHouseManagementHead = ({
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
 
   const handleClick = () => {
-    if (type === 'category') {
+    if (type === 'categories') {
       setOpenTaskDrawer(true);
-    } else if (type === 'tenant') {
+    } else if (type === 'tenants') {
       setOpenTenantDrawer(true);
     }
   };
