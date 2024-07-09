@@ -70,7 +70,6 @@ app.get('/current/:shareHouseId', async (c) => {
         : 0;
 
     const currentRotationData = {
-      id: shareHouseWithAssignmentSheet.id,
       name: shareHouseWithAssignmentSheet.name,
       startDate: shareHouseWithAssignmentSheet.assignmentSheet.startDate,
       endDate: shareHouseWithAssignmentSheet.assignmentSheet.endDate,
