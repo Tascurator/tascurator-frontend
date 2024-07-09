@@ -14,7 +14,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
+import {
+  categoryCreationSchema,
+  TCategoryCreationSchema,
+} from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -69,7 +72,7 @@ interface ITask extends ITaskType {
 interface IEditTaskDrawer {
   category?: string;
   task?: ITask;
-  formControls: UseFormReturn<TTaskCreationSchema>;
+  formControls: UseFormReturn<TCategoryCreationSchema>;
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
@@ -186,7 +189,7 @@ interface ITasksCreationConfirmationDrawer {
   taskId?: string;
   open: boolean;
   setOpen: (value: boolean) => void;
-  formControls: UseFormReturn<TTaskCreationSchema>;
+  formControls: UseFormReturn<TCategoryCreationSchema>;
   closeConfirmationDrawer: () => void;
 }
 
@@ -203,7 +206,7 @@ const ConfirmTaskDrawer = ({
   const { handleSubmit, watch } = formControls;
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<TTaskCreationSchema> = async (data) => {
+  const onSubmit: SubmitHandler<TCategoryCreationSchema> = async (data) => {
     setIsLoading(true);
     setOpen(true);
 
@@ -327,8 +330,8 @@ export const TaskCreationDrawer = ({
 }: ITaskCreationDrawer) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
-  const formControls = useForm<TTaskCreationSchema>({
-    resolver: zodResolver(taskCreationSchema),
+  const formControls = useForm<TCategoryCreationSchema>({
+    resolver: zodResolver(categoryCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
       category: category || task?.category || '',
