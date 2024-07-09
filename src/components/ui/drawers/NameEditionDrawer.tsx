@@ -89,25 +89,23 @@ export const NameEditionDrawer = ({
 
   const {
     register,
-    formState: { errors, isValid },
     handleSubmit,
+    formState: { errors, isValid },
     trigger,
-    // reset,
   } = formControls;
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
     const isValid = await trigger(['name']);
-
-    // TODO: Implement the save click functionality
     if (isValid) {
-      setOpen(false);
+      console.log('Form is valid');
     }
   };
 
   // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     setIsLoading(true);
+    setOpen(true);
 
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -115,21 +113,25 @@ export const NameEditionDrawer = ({
     // Update the name based on the id
     if (name) {
       setIsLoading(false);
-      console.log('Updating the name:', data);
       toast({
         variant: 'default',
         description: 'Updated successfully!',
       });
+      console.log('Updating the name:', data);
+      setOpen(false);
+    } else {
+      setIsLoading(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
     }
-
-    // Close the drawer
-    setOpen(false);
   };
 
   return (
     <>
       {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen}>
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>

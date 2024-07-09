@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { taskCreationSchema, TTaskCreationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
-
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
@@ -26,10 +25,11 @@ import ListItem from '@tiptap/extension-list-item';
 import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Placeholder from '@tiptap/extension-placeholder';
-
 import { TaskDescriptionEditor } from '@/components/ui/drawers/taskDescriptionEditor';
 import { TaskDescriptionRenderer } from '@/components/ui/drawers/taskDescriptionRenderer';
 import type { ITask as ITaskType } from '@/types/commons';
+import { toast } from '../use-toast';
+import { LoadingSpinner } from '../loadingSpinner';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -194,80 +194,96 @@ interface ITasksCreationConfirmationDrawer {
  * A confirmation drawer component to confirm the task creation or update
  */
 const ConfirmTaskDrawer = ({
-  taskId,
+  // taskId,
   open,
   setOpen,
   formControls,
   closeConfirmationDrawer,
 }: ITasksCreationConfirmationDrawer) => {
   const { handleSubmit, watch } = formControls;
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<TTaskCreationSchema> = async (data) => {
+    setIsLoading(true);
+    setOpen(true);
+
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Update or create the task based on the taskId
-    if (taskId) {
+    if (data) {
+      setIsLoading(false);
+      toast({
+        variant: 'default',
+        description: 'Updated successfully!',
+      });
       console.log('Updating the task:', data);
+      setOpen(false);
     } else {
+      setIsLoading(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
       console.log('Creating a new task:', data);
     }
-
-    // Close the confirmation drawer
-    setOpen(false);
   };
 
   return (
-    <Drawer
-      open={open}
-      onOpenChange={(state) => {
-        // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit
-        if (!open && !state) {
-          setOpen(false);
-          return;
-        }
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer
+        modal={!isLoading}
+        open={open}
+        onOpenChange={(state) => {
+          // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit
+          if (!open && !state) {
+            setOpen(false);
+            return;
+          }
 
-        // Call custom close function to open the edit drawer while closing the confirmation drawer
-        if (!state) {
-          closeConfirmationDrawer();
-          return;
-        }
+          // Call custom close function to open the edit drawer while closing the confirmation drawer
+          if (!state) {
+            closeConfirmationDrawer();
+            return;
+          }
 
-        setOpen(true);
-      }}
-    >
-      <DrawerTrigger />
-      <DrawerContent className={'h-[90%]'} asChild>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DrawerTitle>{watch('title')}</DrawerTitle>
-          <DrawerDescription className={'flex-1'} asChild>
-            <div>
-              <div
-                className={
-                  'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
-                }
-              >
-                {watch('category')}
+          setOpen(true);
+        }}
+      >
+        <DrawerTrigger />
+        <DrawerContent className={'h-[90%]'} asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DrawerTitle>{watch('title')}</DrawerTitle>
+            <DrawerDescription className={'flex-1'} asChild>
+              <div>
+                <div
+                  className={
+                    'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
+                  }
+                >
+                  {watch('category')}
+                </div>
+                <TaskDescriptionRenderer formControls={formControls} />
               </div>
-              <TaskDescriptionRenderer formControls={formControls} />
-            </div>
-          </DrawerDescription>
-          <DrawerFooter>
-            <Button
-              type={'button'}
-              variant={'outline'}
-              onClick={closeConfirmationDrawer}
-              className={'flex-1'}
-            >
-              Cancel
-            </Button>
-            <Button type={'submit'} className={'flex-1'}>
-              Publish
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+            </DrawerDescription>
+            <DrawerFooter>
+              <Button
+                type={'button'}
+                variant={'outline'}
+                onClick={closeConfirmationDrawer}
+                className={'flex-1'}
+              >
+                Cancel
+              </Button>
+              <Button type={'submit'} className={'flex-1'}>
+                Publish
+              </Button>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 
