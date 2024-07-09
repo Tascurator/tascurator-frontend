@@ -27,8 +27,23 @@ const {
 const { minLength, lessLength, graterLength } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    trigger,
+    watch,
+  } = useForm<TResetPassword>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const password = watch('password');
+  const confirmPassword = watch('confirmPassword');
+
   const [conditions, setConditions] = useState({
     minLength: false,
     maxLength: true,
@@ -85,15 +100,6 @@ const Form = () => {
     },
   ];
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-    trigger,
-  } = useForm<TResetPassword>({
-    resolver: zodResolver(resetPasswordSchema),
-  });
-
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
     try {
@@ -118,7 +124,6 @@ const Form = () => {
           label="New password"
           {...register('password')}
           variant={errors.password ? 'destructive' : 'default'}
-          onChange={(e) => setPassword(e.target.value)}
         />
         {errors.password?.message && (
           <FormMessage message={errors.password.message} />
@@ -131,7 +136,6 @@ const Form = () => {
           label="ConfirmPassword"
           {...register('confirmPassword')}
           variant={errors.confirmPassword ? 'destructive' : 'default'}
-          onChange={(e) => setConfirmPassword(e.target.value)}
         />
         {errors.confirmPassword?.message && (
           <FormMessage message={errors.confirmPassword.message} />
