@@ -12,10 +12,9 @@ import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 
-const LandlordDashboard = () => {
+const LandlordDashboard = ({ name }: { name: string }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const name = 'Share House';
   const { EDIT_SHAREHOUSE_NAME, MANAGE_SHAREHOUSE, DELETE_SHAREHOUSE } =
     DROPDOWN_ITEMS;
 
