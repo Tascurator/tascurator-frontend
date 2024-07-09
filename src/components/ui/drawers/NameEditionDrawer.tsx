@@ -1,3 +1,5 @@
+'use client';
+import { useState } from 'react';
 import {
   Drawer,
   DrawerClose,
@@ -19,6 +21,8 @@ import {
   TCategoryNameSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+import { LoadingSpinner } from '../loadingSpinner';
+import { toast } from '../use-toast';
 
 const { SHAREHOUSE_NAME, CATEGORY_NAME } = INPUT_TEXTS;
 
@@ -71,6 +75,7 @@ export const NameEditionDrawer = ({
   setOpen,
   type,
 }: INameEditionDrawer) => {
+  const [isLoading, setIsLoading] = useState(false);
   const isSharehouse = type === 'sharehouse';
   const schema = getSchema(type);
 
@@ -84,93 +89,106 @@ export const NameEditionDrawer = ({
 
   const {
     register,
-    formState: { errors, isValid },
     handleSubmit,
+    formState: { errors, isValid },
     trigger,
-    reset,
   } = formControls;
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
     const isValid = await trigger(['name']);
-
-    // TODO: Implement the save click functionality
     if (isValid) {
-      setOpen(false);
+      console.log('Form is valid');
     }
   };
 
   // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+    setIsLoading(true);
+    setOpen(true);
+
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Update the name based on the id
     if (name) {
+      setIsLoading(false);
+      toast({
+        variant: 'default',
+        description: 'Updated successfully!',
+      });
       console.log('Updating the name:', data);
+      setOpen(false);
+    } else {
+      setIsLoading(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
     }
-
-    // Clear the form data
-    reset();
-
-    // Close the drawer
-    setOpen(false);
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent asChild>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DrawerTitle>
-            Edit {isSharehouse ? 'sharehouse name' : 'category name'}
-          </DrawerTitle>
-          <DrawerDescription
-            asChild
-            className={
-              'flex flex-col justify-center items-start overflow-visible'
-            }
-          >
-            {/* Name input field */}
-            <div>
-              <Input
-                {...register('name')}
-                variant={errors.name ? 'destructive' : 'default'}
-                type="text"
-                placeholder={
-                  isSharehouse
-                    ? SHAREHOUSE_NAME.placeholder
-                    : CATEGORY_NAME.placeholder
-                }
-                label={
-                  isSharehouse ? SHAREHOUSE_NAME.label : CATEGORY_NAME.label
-                }
-                classNames={{
-                  label: 'mt-4',
-                }}
-              />
-              {errors.name?.message && (
-                <FormMessage message={errors.name.message} />
-              )}
-            </div>
-          </DrawerDescription>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button type={'button'} variant={'outline'} className={'flex-1'}>
-                Cancel
-              </Button>
-            </DrawerClose>
-            <Button
-              type={'submit'}
-              className={'flex-1'}
-              disabled={!isValid}
-              onClick={handleSaveClick}
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+        <DrawerTrigger />
+        <DrawerContent asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DrawerTitle>
+              Edit {isSharehouse ? 'share house name' : 'category name'}
+            </DrawerTitle>
+            <DrawerDescription
+              asChild
+              className={
+                'flex flex-col justify-center items-start overflow-visible'
+              }
             >
-              Save
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+              {/* Name input field */}
+              <div>
+                <Input
+                  {...register('name')}
+                  variant={errors.name ? 'destructive' : 'default'}
+                  type="text"
+                  placeholder={
+                    isSharehouse
+                      ? SHAREHOUSE_NAME.placeholder
+                      : CATEGORY_NAME.placeholder
+                  }
+                  label={
+                    isSharehouse ? SHAREHOUSE_NAME.label : CATEGORY_NAME.label
+                  }
+                  classNames={{
+                    label: 'mt-4',
+                  }}
+                />
+                {errors.name?.message && (
+                  <FormMessage message={errors.name.message} />
+                )}
+              </div>
+            </DrawerDescription>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button
+                  type={'button'}
+                  variant={'outline'}
+                  className={'flex-1'}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button
+                type={'submit'}
+                className={'flex-1'}
+                disabled={!isValid}
+                onClick={handleSaveClick}
+              >
+                Save
+              </Button>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };

@@ -14,8 +14,8 @@ export const INPUT_TEXTS = {
     placeholder: 'Password',
   },
   NEW_PASSWORD: {
-    label: 'New Password',
-    placeholder: 'New Password',
+    label: 'New password',
+    placeholder: 'New password',
   },
 
   // ShareHouse
@@ -26,24 +26,24 @@ export const INPUT_TEXTS = {
 
   // Category
   CATEGORY_NAME: {
-    label: 'Category Name',
-    placeholder: 'Category Name',
+    label: 'Category name',
+    placeholder: 'Category name',
   },
 
   // Task
   TASK_TITLE: {
-    label: 'Task Title',
-    placeholder: 'Task Title',
+    label: 'Task title',
+    placeholder: 'Task title',
   },
   TASK_DESCRIPTION: {
-    label: 'Task Description',
-    placeholder: 'Task Description',
+    label: 'Task description',
+    placeholder: 'Task description',
   },
 
   // Tenant
   TENANT_NAME: {
     label: 'Name',
-    placeholder: 'Tenant Name',
+    placeholder: 'Tenant name',
   },
   TENANT_EMAIL: {
     label: 'Email',

@@ -11,13 +11,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import {
   tenantInvitationSchema,
   TTenantInvitationSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { ITenant } from '@/types/commons';
+import { LoadingSpinner } from '../loadingSpinner';
+import { useState } from 'react';
+import { toast } from '../use-toast';
 
 const { TENANT_NAME, TENANT_EMAIL } = INPUT_TEXTS;
 
@@ -37,9 +40,12 @@ const EditTenantDrawer = ({
 }: IEditTenantDrawer) => {
   const {
     register,
+    handleSubmit,
     formState: { errors, isValid },
     trigger,
   } = formControls;
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveClick = async () => {
     const isValid = await trigger(['name', 'email']);
@@ -48,69 +54,104 @@ const EditTenantDrawer = ({
     }
   };
 
+  // TODO: Implement the onSubmit click functionality
+  const onSubmit: SubmitHandler<TTenantInvitationSchema> = async (data) => {
+    setIsLoading(true);
+    setOpen(true);
+
+    console.log('clicked!!!!111');
+
+    // Submit the form data
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (data) {
+      setIsLoading(false);
+      toast({
+        variant: 'default',
+        description: 'Updated successfully!',
+      });
+      setOpen(false);
+    } else {
+      setIsLoading(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
+    }
+  };
+
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent>
-        <DrawerTitle>
-          {tenant?.id ? 'Tenant setting' : 'Invite tenant'}
-        </DrawerTitle>
-        <DrawerDescription
-          className={
-            'flex-1 flex flex-col justify-center items-start overflow-visible'
-          }
-          asChild
-        >
-          {/* Input field for Tenant name*/}
-          <div>
-            <Input
-              {...register('name')}
-              variant={errors.name ? 'destructive' : 'default'}
-              type="text"
-              placeholder={TENANT_NAME.placeholder}
-              label={TENANT_NAME.label}
-              defaultValue={tenant?.name}
-            />
-            {errors.name?.message && (
-              <FormMessage message={errors.name.message} />
-            )}
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+        <DrawerTrigger />
+        <DrawerContent asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DrawerTitle>
+              {tenant?.id ? 'Tenant setting' : 'Invite tenant'}
+            </DrawerTitle>
+            <DrawerDescription
+              className={
+                'flex-1 flex flex-col justify-center items-start overflow-visible'
+              }
+              asChild
+            >
+              {/* Input field for Tenant name*/}
+              <div>
+                <Input
+                  {...register('name')}
+                  variant={errors.name ? 'destructive' : 'default'}
+                  type="text"
+                  placeholder={TENANT_NAME.placeholder}
+                  label={TENANT_NAME.label}
+                  defaultValue={tenant?.name}
+                />
+                {errors.name?.message && (
+                  <FormMessage message={errors.name.message} />
+                )}
 
-            {/* Input field for Tenant email*/}
+                {/* Input field for Tenant email*/}
 
-            <Input
-              {...register('email')}
-              variant={errors.email ? 'destructive' : 'default'}
-              type="email"
-              placeholder={TENANT_EMAIL.placeholder}
-              label={TENANT_EMAIL.label}
-              classNames={{
-                label: 'mt-4',
-              }}
-              defaultValue={tenant?.email}
-              disabled={!!tenant?.id}
-            />
-            {errors.email?.message && (
-              <FormMessage message={errors.email.message} />
-            )}
-          </div>
-        </DrawerDescription>
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button type={'button'} variant={'outline'} className={'flex-1'}>
-              Cancel
-            </Button>
-          </DrawerClose>
-          <Button
-            type={'button'}
-            className={'flex-1'}
-            onClick={handleSaveClick}
-            disabled={!isValid}
-          >
-            Save
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+                <Input
+                  {...register('email')}
+                  variant={errors.email ? 'destructive' : 'default'}
+                  type="email"
+                  placeholder={TENANT_EMAIL.placeholder}
+                  label={TENANT_EMAIL.label}
+                  classNames={{
+                    label: 'mt-4',
+                  }}
+                  defaultValue={tenant?.email}
+                  disabled={!!tenant?.id}
+                />
+                {errors.email?.message && (
+                  <FormMessage message={errors.email.message} />
+                )}
+              </div>
+            </DrawerDescription>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button
+                  type={'button'}
+                  variant={'outline'}
+                  className={'flex-1'}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button
+                type={'submit'}
+                className={'flex-1'}
+                disabled={!isValid}
+                onClick={handleSaveClick}
+              >
+                Save
+              </Button>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 
