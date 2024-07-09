@@ -9,7 +9,7 @@ const ForgotPasswordPage = () => {
     <div className={'flex flex-col'}>
       <Logo />
       <div className={'mb-6'}>
-        <h1 className={'text-2xl font-bold text-center mb-4'}>
+        <h1 className={'text-2xl font-bold text-center mb-3'}>
           Forgot your password?
         </h1>
         <p className={'text-center'}>
