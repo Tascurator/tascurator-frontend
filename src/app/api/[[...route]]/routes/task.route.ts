@@ -16,13 +16,23 @@ app.patch('/:taskId', (c) => {
 app.post('/', zValidator('json', taskCreationSchema), async (c) => {
   try {
     const data = c.req.valid('json');
-    console.log('data', data);
+    const category = await prisma.category.findUnique({
+      where: {
+        id: data.categoryId,
+      },
+    });
+
+    if (!category) {
+      return c.json({ error: 'Category not found' }, 404);
+    }
 
     const newTask = await prisma.task.create({
       data: {
         title: data.title,
         description: data.description,
-        categoryId: data.categoryId,
+        category: {
+          connect: { id: data.categoryId },
+        },
       },
     });
 
