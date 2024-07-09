@@ -27,7 +27,22 @@ const {
 const { minLength, lessLength, graterLength } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    trigger,
+    watch,
+  } = useForm<TSignupSchema>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const password = watch('password');
+
   const [conditions, setConditions] = useState({
     minLength: false,
     maxLength: true,
@@ -78,15 +93,6 @@ const Form = () => {
     },
   ];
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-    trigger,
-  } = useForm<TSignupSchema>({
-    resolver: zodResolver(signupSchema),
-  });
-
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TSignupSchema) => {
     try {
@@ -121,7 +127,6 @@ const Form = () => {
           label="Password"
           {...register('password')}
           variant={errors.password ? 'destructive' : 'default'}
-          onChange={(e) => setPassword(e.target.value)}
         />
         {errors.password?.message && (
           <FormMessage message={errors.password.message} />
