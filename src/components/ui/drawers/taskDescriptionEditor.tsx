@@ -9,12 +9,12 @@ import {
 } from 'lucide-react';
 
 import { UseFormReturn } from 'react-hook-form';
-import { TTaskCreationSchema } from '@/constants/schema';
+import { TCategoryCreationSchema } from '@/constants/schema';
 import { editorExtensions } from './TaskCreationDrawer';
 
 interface TaskDescriptionEditorProps {
   taskDescription: string;
-  formControls: UseFormReturn<TTaskCreationSchema>;
+  formControls: UseFormReturn<TCategoryCreationSchema>;
 }
 
 export const TaskDescriptionEditor = ({
