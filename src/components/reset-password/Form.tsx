@@ -6,14 +6,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { resetPasswordSchema, TResetPassword } from '@/constants/schema';
 import { Input } from '@/components/ui/input';
-import { FormMessage } from '@/components/ui/formMessage';
-
 import { Button } from '@/components/ui/button';
+import { FormMessage } from '@/components/ui/formMessage';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
-
 import { CONSTRAINTS } from '@/constants/constraints';
+
+import { LoadingSpinner } from '../ui/loadingSpinner';
+import { toast } from '@/components/ui/use-toast';
+import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
 
 const {
   PASSWORD_MIN_LENGTH,
@@ -27,6 +29,9 @@ const {
 const { minLength, lessLength, graterLength } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -102,6 +107,8 @@ const Form = () => {
 
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
+    setIsLoading(true);
+
     try {
       const isValid = await trigger(['password', 'confirmPassword']);
       if (isValid) {
@@ -109,51 +116,70 @@ const Form = () => {
         const { password } = formData;
         console.log('Password:', password);
         // await resetPassword(formData);
+
+        // submit the form data
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await forgotPassword(formData);
+        // Send the email to the user with the reset password link
+
+        setIsLoading(false);
+        setOpen(true);
       }
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
+      // TODO: modify the error message
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
-      <div className={'flex flex-col mb-4'}>
-        <Input
-          id="password"
-          type="password"
-          label="New password"
-          {...register('password')}
-          variant={errors.password ? 'destructive' : 'default'}
-        />
-        {errors.password?.message && (
-          <FormMessage message={errors.password.message} />
-        )}
-      </div>
-      <div className={'flex flex-col mb-3'}>
-        <Input
-          id="confirmPassword"
-          type="password"
-          label="ConfirmPassword"
-          {...register('confirmPassword')}
-          variant={errors.confirmPassword ? 'destructive' : 'default'}
-        />
-        {errors.confirmPassword?.message && (
-          <FormMessage message={errors.confirmPassword.message} />
-        )}
-      </div>
-      <ul className={'mb-8'}>
-        {ValidationListItems.map((item, index) => (
-          <ValidationListItem
-            key={index}
-            condition={item.condition}
-            constraint={item.constraint}
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+
+      <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
+        <div className={'flex flex-col mb-4'}>
+          <Input
+            id="password"
+            type="password"
+            label="New password"
+            {...register('password')}
+            variant={errors.password ? 'destructive' : 'default'}
           />
-        ))}
-      </ul>
-      <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
-        Reset password
-      </Button>
-    </form>
+          {errors.password?.message && (
+            <FormMessage message={errors.password.message} />
+          )}
+        </div>
+        <div className={'flex flex-col mb-3'}>
+          <Input
+            id="confirmPassword"
+            type="password"
+            label="ConfirmPassword"
+            {...register('confirmPassword')}
+            variant={errors.confirmPassword ? 'destructive' : 'default'}
+          />
+          {errors.confirmPassword?.message && (
+            <FormMessage message={errors.confirmPassword.message} />
+          )}
+        </div>
+        <ul className={'mb-8'}>
+          {ValidationListItems.map((item, index) => (
+            <ValidationListItem
+              key={index}
+              condition={item.condition}
+              constraint={item.constraint}
+            />
+          ))}
+        </ul>
+        <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
+          Reset password
+        </Button>
+      </form>
+      <PasswordChangedDrawer open={open} setOpen={setOpen} />
+    </>
   );
 };
 
