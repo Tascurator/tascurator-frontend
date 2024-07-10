@@ -11,8 +11,15 @@ import { Ellipsis } from 'lucide-react';
 import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+import Link from 'next/link';
 
-const LandlordDashboard = ({ name }: { name: string }) => {
+const LandlordDashboard = ({
+  shareHouseName,
+  shareHouseId,
+}: {
+  shareHouseName: string;
+  shareHouseId: string;
+}) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const { EDIT_SHAREHOUSE_NAME, MANAGE_SHAREHOUSE, DELETE_SHAREHOUSE } =
@@ -20,52 +27,51 @@ const LandlordDashboard = ({ name }: { name: string }) => {
 
   return (
     <>
-      <div className="flex justify-between pt-6 ">
-        <p className="text-2xl">{name}</p>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Ellipsis />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuItemWithIcon
-                  icon={EDIT_SHAREHOUSE_NAME.icon}
-                  onClick={() => setOpenEdit(true)}
-                >
-                  {EDIT_SHAREHOUSE_NAME.text}
-                </DropdownMenuItemWithIcon>
-
-                <DropdownMenuItemWithIcon
-                  icon={MANAGE_SHAREHOUSE.icon}
-                  onClick={() => console.log(MANAGE_SHAREHOUSE.text)}
-                >
+      <div className="flex justify-between items-center pt-6 w-full">
+        <Link href={`/sharehouses/${shareHouseId}/`}>
+          <p className="text-2xl">{shareHouseName}</p>
+        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Ellipsis />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuItemWithIcon
+                icon={EDIT_SHAREHOUSE_NAME.icon}
+                onClick={() => setOpenEdit(true)}
+              >
+                {EDIT_SHAREHOUSE_NAME.text}
+              </DropdownMenuItemWithIcon>
+              <Link href={`/sharehouses/${shareHouseId}/edit`}>
+                <DropdownMenuItemWithIcon icon={MANAGE_SHAREHOUSE.icon}>
                   {MANAGE_SHAREHOUSE.text}
                 </DropdownMenuItemWithIcon>
+              </Link>
 
-                <DropdownMenuItemWithIcon
-                  icon={DELETE_SHAREHOUSE.icon}
-                  onClick={() => setOpenDelete(true)}
-                >
-                  {DELETE_SHAREHOUSE.text}
-                </DropdownMenuItemWithIcon>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <NameEditionDrawer
-            name={name}
-            open={openEdit}
-            setOpen={setOpenEdit}
-            type={'sharehouse'}
-          />
-
-          <DeleteConfirmationDrawer
-            deleteItem={name}
-            open={openDelete}
-            setOpen={setOpenDelete}
-          />
-        </div>
+              <DropdownMenuItemWithIcon
+                icon={DELETE_SHAREHOUSE.icon}
+                onClick={() => setOpenDelete(true)}
+              >
+                {DELETE_SHAREHOUSE.text}
+              </DropdownMenuItemWithIcon>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      <NameEditionDrawer
+        name={shareHouseName}
+        open={openEdit}
+        setOpen={setOpenEdit}
+        type={'sharehouse'}
+      />
+
+      <DeleteConfirmationDrawer
+        deleteItem={shareHouseName}
+        open={openDelete}
+        setOpen={setOpenDelete}
+      />
     </>
   );
 };

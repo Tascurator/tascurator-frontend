@@ -19,25 +19,6 @@ const Progress = ({ progressPercent }: { progressPercent: number }) => {
 
   return (
     <>
-      <style>
-        {`@keyframes circleStroke {
-          from {
-            stroke-dashoffset: ${circumference};
-          }
-          to {
-            stroke-dashoffset: ${strokeDashoffset};
-          }
-        }
-        @keyframes rotationObject {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(${progressPercent * 3.6}deg)
-          }
-        }
-        `}
-      </style>
       <div className="relative">
         <svg viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
           <circle
@@ -53,9 +34,13 @@ const Progress = ({ progressPercent }: { progressPercent: number }) => {
             cy={size / 2}
             strokeDasharray={circumference}
             className="stroke-primary-light stroke-[20px] fill-transparent"
-            style={{
-              animation: 'circleStroke 2s ease forwards',
-            }}
+            style={
+              {
+                '--circumference': circumference,
+                '--stroke-dashoffset': strokeDashoffset,
+                animation: 'circleStroke 2s ease forwards',
+              } as React.CSSProperties
+            }
           />
         </svg>
 

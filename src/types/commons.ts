@@ -68,7 +68,7 @@ export interface IAssignedData {
 export interface IShareHousePageProps {
   params: {
     share_house_id: string;
-    name: string;
+    shareHouseName: string;
     currentStartDate: string;
     currentEndDate: string;
     progressPercent: number;

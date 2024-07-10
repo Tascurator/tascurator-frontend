@@ -1,11 +1,12 @@
-import Header from '@/components/ui/header';
+// import {Header} from '@/components/ui/header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LandlordDashboardTabContent } from '@/components/landlord-dashboard/TabContent';
 import { IShareHousePageProps } from '@/types/commons';
 
 const ShareHousePage = ({
   params: {
-    name,
+    share_house_id,
+    shareHouseName,
     currentStartDate,
     currentEndDate,
     progressPercent,
@@ -15,7 +16,9 @@ const ShareHousePage = ({
     cardContentNext,
   },
 }: IShareHousePageProps) => {
-  name = 'Share House Dayo';
+  console.log('⭐️ShareHousePage ID:', share_house_id);
+  console.log('⭐️ShareHousePage Name:', shareHouseName);
+
   currentStartDate = '2022-01-01';
   currentEndDate = '2022-01-07';
   progressPercent = 50;
@@ -72,16 +75,17 @@ const ShareHousePage = ({
 
   return (
     <>
-      <Header type={'HeaderItemWithDropDown'} pageTitle={name} />
       <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-        <div className="relative z-10 p-6">
+        <div className="relative z-10 py-6">
           <Tabs defaultValue="current">
             <TabsList>
               <TabsTrigger value="current">Current</TabsTrigger>
               <TabsTrigger value="next">Next</TabsTrigger>
             </TabsList>
 
-            <div className="text-2xl flex justify-center mt-4">{name}</div>
+            <div className="text-2xl flex justify-center mt-4">
+              {shareHouseName}
+            </div>
 
             <LandlordDashboardTabContent
               tabType="current"
