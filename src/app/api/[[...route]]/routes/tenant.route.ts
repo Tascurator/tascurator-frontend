@@ -27,6 +27,15 @@ app.post(
       const shareHouseId = c.req.param('shareHouseId');
       const data = c.req.valid('json');
 
+      const existingTenant = await prisma.tenant.findUnique({
+        where: {
+          email: data.email,
+        },
+      });
+
+      if (existingTenant)
+        return c.json({ error: 'Tenant with this email already exists' }, 400);
+
       const rotationAssignment = await prisma.rotationAssignment.findUnique({
         where: {
           shareHouseId: shareHouseId,
