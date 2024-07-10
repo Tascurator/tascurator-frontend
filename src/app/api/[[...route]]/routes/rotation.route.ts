@@ -29,6 +29,20 @@ app.get('/current/:shareHouseId', async (c) => {
     const assignedData = shareHouseWithAssignmentSheet.assignmentSheet
       .assignedData as unknown as IAssignedData;
 
+    const areAllTenantsNull = assignedData.assignments.every(
+      (assignment) => assignment.tenant === null,
+    );
+
+    if (areAllTenantsNull) {
+      return c.json({
+        name: shareHouseWithAssignmentSheet.name,
+        startDate: shareHouseWithAssignmentSheet.assignmentSheet.startDate,
+        endDate: shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+        progressRate: 0,
+        categories: null,
+      });
+    }
+
     let totalTasks = 0;
     let totalCompletedTasks = 0;
 
