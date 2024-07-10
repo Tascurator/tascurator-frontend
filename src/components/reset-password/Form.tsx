@@ -101,7 +101,7 @@ const Form = () => {
     },
     {
       condition: conditions.match,
-      constraint: 'Passwords match',
+      constraint: 'Passwords match.',
     },
   ];
 
