@@ -138,7 +138,7 @@ const Form = () => {
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      {isLoading && <LoadingSpinner isLoading={true} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
