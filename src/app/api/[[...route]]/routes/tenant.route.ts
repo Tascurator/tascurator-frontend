@@ -27,7 +27,7 @@ app.post(
       const shareHouseId = c.req.param('shareHouseId');
       const data = c.req.valid('json');
 
-      const sanitizedEmail = data.email.toLowerCase().trim();
+      const sanitizedEmail = data.email.toLowerCase();
       const existingTenant = await prisma.tenant.findUnique({
         where: {
           email: sanitizedEmail,
@@ -63,7 +63,7 @@ app.post(
         newTenant = await prisma.tenant.create({
           data: {
             name: data.name,
-            email: data.email,
+            email: sanitizedEmail,
             extraAssignedCount: 0,
             tenantPlaceholders: {
               connect: {
@@ -81,7 +81,7 @@ app.post(
         newTenant = await prisma.tenant.create({
           data: {
             name: data.name,
-            email: data.email,
+            email: sanitizedEmail,
             extraAssignedCount: 0,
             tenantPlaceholders: {
               create: {
