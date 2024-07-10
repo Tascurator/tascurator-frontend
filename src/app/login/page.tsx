@@ -7,7 +7,7 @@ import { Logo } from '@/components/ui/Logo';
  */
 const LoginPage = () => {
   return (
-    <div className={'flex flex-col'}>
+    <div className={'flex flex-col px-6'}>
       <Logo />
       <Form />
     </div>

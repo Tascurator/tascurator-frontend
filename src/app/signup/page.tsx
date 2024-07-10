@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const SignUpPage = () => {
   return (
-    <div className={'flex flex-col'}>
+    <div className={'flex flex-col px-6'}>
       <Logo />
       <Form />
       <div className="flex justify-center">
