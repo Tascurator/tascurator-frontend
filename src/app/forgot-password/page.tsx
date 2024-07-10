@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const ForgotPasswordPage = () => {
   return (
-    <div className={'flex flex-col'}>
+    <div className={'flex flex-col px-6'}>
       <Logo />
       <div className={'mb-6'}>
         <h1 className={'text-2xl font-bold text-center mb-3'}>
