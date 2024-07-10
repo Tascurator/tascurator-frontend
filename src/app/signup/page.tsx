@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 const SignUpPage = () => {
   return (
     <div className={'flex flex-col px-6'}>
-      <Logo />
+      <Logo responsive={false} />
       <Form />
       <div className="flex justify-center">
         <Button type="button" variant={'link'}>

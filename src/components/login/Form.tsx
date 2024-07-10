@@ -77,7 +77,7 @@ const Form = () => {
           </Button>
         </div>
         <Button type="submit" className={'mx-auto mb-4'}>
-          Login
+          Log in
         </Button>
         <Button type="button" className={'mx-auto'} variant={'secondary'}>
           <Link href="/signup">Sign up</Link>
