@@ -65,6 +65,8 @@ const Form = () => {
             label="Email"
             {...register('email')}
             variant={errors.email ? 'destructive' : 'default'}
+            autoComplete="email"
+            required
           />
           {errors.email?.message && (
             <FormMessage message={errors.email.message} />

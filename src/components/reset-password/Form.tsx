@@ -141,6 +141,17 @@ const Form = () => {
       {isLoading && <LoadingSpinner isLoading={true} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
+        {/* hidden username input ** Don't delete! It's necessary for accessibility. ** */}
+        <input
+          type="text"
+          name="username"
+          autoComplete="username"
+          className="hidden"
+          aria-hidden="true"
+          required
+        />
+        {/* End: hidden username input */}
+
         <div className={'flex flex-col mb-4'}>
           <Input
             id="password"
@@ -148,6 +159,8 @@ const Form = () => {
             label="New password"
             {...register('password')}
             variant={errors.password ? 'destructive' : 'default'}
+            autoComplete="new-password"
+            required
           />
           {errors.password?.message && (
             <FormMessage message={errors.password.message} />
@@ -160,6 +173,7 @@ const Form = () => {
             label="ConfirmPassword"
             {...register('confirmPassword')}
             variant={errors.confirmPassword ? 'destructive' : 'default'}
+            autoComplete="new-password"
           />
           {errors.confirmPassword?.message && (
             <FormMessage message={errors.confirmPassword.message} />

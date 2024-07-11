@@ -115,6 +115,8 @@ const Form = () => {
           label="Email"
           {...register('email')}
           variant={errors.email ? 'destructive' : 'default'}
+          autoComplete="email"
+          required
         />
         {errors.email?.message && (
           <FormMessage message={errors.email.message} />
@@ -127,6 +129,8 @@ const Form = () => {
           label="Password"
           {...register('password')}
           variant={errors.password ? 'destructive' : 'default'}
+          autoComplete="new-password"
+          required
         />
         {errors.password?.message && (
           <FormMessage message={errors.password.message} />
