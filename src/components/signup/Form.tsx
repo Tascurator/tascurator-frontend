@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
 import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '../ui/loadingSpinner';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
-
 import { CONSTRAINTS } from '@/constants/constraints';
 
 const {
@@ -27,6 +27,8 @@ const {
 const { minLength, lessLength, graterLength } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -95,11 +97,18 @@ const Form = () => {
 
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TSignupSchema) => {
+    setIsLoading(true);
+
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
         console.log('Form data:', formData);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // await signup(formData);
+
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -107,48 +116,52 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
-      <div className={'flex flex-col mb-4'}>
-        <Input
-          id="email"
-          type="email"
-          label="Email"
-          {...register('email')}
-          variant={errors.email ? 'destructive' : 'default'}
-          autoComplete="email"
-          required
-        />
-        {errors.email?.message && (
-          <FormMessage message={errors.email.message} />
-        )}
-      </div>
-      <div className={'flex flex-col mb-3'}>
-        <Input
-          id="password"
-          type="password"
-          label="Password"
-          {...register('password')}
-          variant={errors.password ? 'destructive' : 'default'}
-          autoComplete="new-password"
-          required
-        />
-        {errors.password?.message && (
-          <FormMessage message={errors.password.message} />
-        )}
-      </div>
-      <ul className={'mb-8'}>
-        {ValidationListItems.map((item, index) => (
-          <ValidationListItem
-            key={index}
-            condition={item.condition}
-            constraint={item.constraint}
+    <>
+      {isLoading && <LoadingSpinner isLoading={true} />}
+
+      <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
+        <div className={'flex flex-col mb-4'}>
+          <Input
+            id="email"
+            type="email"
+            label="Email"
+            {...register('email')}
+            variant={errors.email ? 'destructive' : 'default'}
+            autoComplete="email"
+            required
           />
-        ))}
-      </ul>
-      <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
-        Sign up
-      </Button>
-    </form>
+          {errors.email?.message && (
+            <FormMessage message={errors.email.message} />
+          )}
+        </div>
+        <div className={'flex flex-col mb-3'}>
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            {...register('password')}
+            variant={errors.password ? 'destructive' : 'default'}
+            autoComplete="new-password"
+            required
+          />
+          {errors.password?.message && (
+            <FormMessage message={errors.password.message} />
+          )}
+        </div>
+        <ul className={'mb-8'}>
+          {ValidationListItems.map((item, index) => (
+            <ValidationListItem
+              key={index}
+              condition={item.condition}
+              constraint={item.constraint}
+            />
+          ))}
+        </ul>
+        <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
+          Sign up
+        </Button>
+      </form>
+    </>
   );
 };
 

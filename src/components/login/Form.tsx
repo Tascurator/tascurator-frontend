@@ -1,36 +1,47 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
-import { login } from '@/actions/login';
+// import { login } from '@/actions/login';
 // import { logout } from '@/actions/logout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
 import Link from 'next/link';
+import { LoadingSpinner } from '../ui/loadingSpinner';
 
 // import { useSession } from 'next-auth/react';
 
 const Form = () => {
+  const [isLoading, setIsLoading] = useState(false);
   // const session = useSession();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     trigger,
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
-  // TODO: Implement the proper login logic
   const onSubmit = async (formData: TLoginSchema) => {
+    setIsLoading(true);
+
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
-        await login(formData);
+        console.log('Form data:', formData);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // TODO: Implement the proper login logic
+        // await login(formData);
+
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -46,6 +57,8 @@ const Form = () => {
           </Button>
         </form>
       )} */}
+      {isLoading && <LoadingSpinner isLoading={true} />}
+
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
           <Input
@@ -80,7 +93,7 @@ const Form = () => {
             <Link href="/forgot-password">Forgot password?</Link>
           </Button>
         </div>
-        <Button type="submit" className={'mx-auto mb-4'}>
+        <Button type="submit" className={'mx-auto mb-4'} disabled={!isValid}>
           Log in
         </Button>
         <Button type="button" className={'mx-auto'} variant={'secondary'}>
