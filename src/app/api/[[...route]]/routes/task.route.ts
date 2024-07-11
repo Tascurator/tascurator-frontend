@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
 import { taskCreationSchema } from '@/constants/schema';
+import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
 
 const app = new Hono();
@@ -20,11 +21,22 @@ app.post('/', zValidator('json', taskCreationSchema), async (c) => {
       where: {
         id: data.categoryId,
       },
+      include: {
+        tasks: true,
+      },
     });
 
     if (!category) {
       return c.json({ error: 'Category not found' }, 404);
     }
+
+    if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
+      return c.json(
+        {
+          error: `The number of tasks has reached the maximum limit of ${CONSTRAINTS.TASK_MAX_AMOUNT}`,
+        },
+        404,
+      );
 
     const newTask = await prisma.task.create({
       data: {
