@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
 import { categoryCreationSchema } from '@/constants/schema';
+import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
 
 const app = new Hono();
@@ -30,12 +31,26 @@ app.post(
         where: {
           shareHouseId: shareHouseId,
         },
+        include: {
+          categories: true,
+        },
       });
 
       if (!rotationAssignment) {
         return c.json(
           { error: 'RotationAssignment not found for the given shareHouseId' },
           404,
+        );
+      }
+
+      if (
+        rotationAssignment.categories.length >= CONSTRAINTS.CATEGORY_MAX_AMOUNT
+      ) {
+        return c.json(
+          {
+            error: `The number of categories has reached the maximum limit of ${CONSTRAINTS.CATEGORY_MAX_AMOUNT}`,
+          },
+          400,
         );
       }
 
