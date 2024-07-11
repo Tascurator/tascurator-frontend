@@ -115,7 +115,7 @@ export const tenantInvitationSchema = z.object({
     .string()
     .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
     .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
