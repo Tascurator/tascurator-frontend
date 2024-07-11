@@ -44,7 +44,7 @@ app.post(
       }
 
       if (
-        rotationAssignment.categories.length >= CONSTRAINTS.CATEGORY_MAX_AMOUNT
+        rotationAssignment.categories.length > CONSTRAINTS.CATEGORY_MAX_AMOUNT
       ) {
         return c.json(
           {
