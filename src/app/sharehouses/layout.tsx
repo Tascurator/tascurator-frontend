@@ -15,7 +15,7 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
   const editPathRegex = new RegExp(`^${basePath}/[\\w-]+/edit$`);
   const shareHousePathRegex = new RegExp(`^${basePath}/[\\w-]+$`);
 
-  const shareHouseName = 'Sample Share House'; // ここは動的に取得する必要があるかもしれません
+  const shareHouseName = 'Sample Share House';
 
   if (pathname === basePath) {
     HeaderComponent = <Header type={'HeaderItemForTop'} pageTitle={''} />;
@@ -37,12 +37,21 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
     );
   }
 
-  return (
-    <>
-      {HeaderComponent}
-      <div className="px-6">{children}</div>
-    </>
-  );
+  if (shareHousePathRegex.test(pathname)) {
+    return (
+      <>
+        {HeaderComponent}
+        <div className="">{children}</div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        {HeaderComponent}
+        <div className="px-6">{children}</div>
+      </>
+    );
+  }
 };
 
 export default ShareHousesLayout;
