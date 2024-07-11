@@ -16,6 +16,8 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
   const shareHousePathRegex = new RegExp(`^${basePath}/[\\w-]+$`);
 
   const shareHouseName = 'Sample Share House';
+  const sharehouseIdMatch = pathname.match(/sharehouses\/([\w-]+)/);
+  const sharehouseId = sharehouseIdMatch ? sharehouseIdMatch[1] : '';
 
   if (pathname === basePath) {
     HeaderComponent = <Header type={'HeaderItemForTop'} pageTitle={''} />;
@@ -25,11 +27,20 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
     );
   } else if (editPathRegex.test(pathname)) {
     HeaderComponent = (
-      <Header type={'HeaderItemWithDropDown'} pageTitle={shareHouseName} />
+      <Header
+        type={'HeaderItemWithDropDown'}
+        pageTitle={shareHouseName}
+        sharehouseId={sharehouseId}
+      />
     );
+    // dashboard
   } else if (shareHousePathRegex.test(pathname)) {
     HeaderComponent = (
-      <Header type={'HeaderItemWithDropDown'} pageTitle={shareHouseName} />
+      <Header
+        type={'HeaderItemWithDropDown'}
+        pageTitle={shareHouseName}
+        sharehouseId={sharehouseId}
+      />
     );
   } else {
     HeaderComponent = (
@@ -37,21 +48,14 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
     );
   }
 
-  if (shareHousePathRegex.test(pathname)) {
-    return (
-      <>
-        {HeaderComponent}
-        <div className="">{children}</div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        {HeaderComponent}
-        <div className="px-6">{children}</div>
-      </>
-    );
-  }
+  return (
+    <>
+      {HeaderComponent}
+      <div className={shareHousePathRegex.test(pathname) ? '' : 'px-6'}>
+        {children}
+      </div>
+    </>
+  );
 };
 
 export default ShareHousesLayout;

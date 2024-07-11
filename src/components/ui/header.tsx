@@ -131,12 +131,14 @@ function HeaderItemOnlyBreadcrumb({ pageTitle }: { pageTitle: string }) {
     </Breadcrumb>
   );
 }
+
 interface IHeaderContainerProps {
   type:
     | 'HeaderItemForTop'
     | 'HeaderItemWithDropDown'
     | 'HeaderItemOnlyBreadcrumb';
   pageTitle: string;
+  sharehouseId?: string;
 }
 
 /**
@@ -145,6 +147,7 @@ interface IHeaderContainerProps {
  * This component is used to render the top header item.
  * @param {string} type - The type of the header item.
  * @param {string} pageTitle - The title of the page.
+ * @param {string} [sharehouseId] - The id of the sharehouse.
  *
  * HeaderItemForTop
  * @example
@@ -160,7 +163,7 @@ interface IHeaderContainerProps {
  * const pageTitle = 'Sample Share House';
  *
  * return (
- *  <Header type={'HeaderItemWithDropDown'} pageTitle={pageTitle} />
+ *  <Header type={'HeaderItemWithDropDown'} pageTitle={pageTitle} sharehouseId="123" />
  * );
  * ```
  *
@@ -172,16 +175,20 @@ interface IHeaderContainerProps {
  * return (
  * <Header type={'HeaderItemOnlyBreadcrumb'} pageTitle={pageTitle} />
  * );
+ * ```
  */
 
-const Header = ({ type, pageTitle }: IHeaderContainerProps) => {
+const Header = ({ type, pageTitle, sharehouseId }: IHeaderContainerProps) => {
   return (
     <header className="bg-primary text-white max-w-screen-sm w-full">
       <div className="container flex items-center justify-between h-14 py-4 px-4">
         {type === 'HeaderItemForTop' ? (
           <HeaderItemForTop />
         ) : type === 'HeaderItemWithDropDown' ? (
-          <HeaderItemWithDropDown pageTitle={pageTitle} />
+          <HeaderItemWithDropDown
+            pageTitle={pageTitle}
+            sharehouseId={sharehouseId!}
+          />
         ) : (
           <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />
         )}

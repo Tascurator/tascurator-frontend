@@ -27,27 +27,37 @@ const ShareHousePage = ({
 
   cardContentCurrent = [
     {
-      category: 'Kitchen',
-      tenant: 'Matio',
+      category: null,
       isComplete: false,
-      taskNum: 4,
-      completedTaskNum: 1,
-    },
-    {
-      category: 'Bathroom',
-      tenant: 'Akio',
-      isComplete: false,
-      taskNum: 9,
-      completedTaskNum: 3,
-    },
-    {
-      category: 'Living room',
-      tenant: 'Maaaatio',
-      isComplete: false,
-      taskNum: 7,
-      completedTaskNum: 2,
+      taskNum: 0,
+      completedTaskNum: 0,
+      tenant: '',
     },
   ];
+
+  // cardContentCurrent = [
+  //   {
+  //     category: 'Kitchen',
+  //     tenant: 'Matio',
+  //     isComplete: true,
+  //     taskNum: 4,
+  //     completedTaskNum: 4,
+  //   },
+  //   {
+  //     category: 'Bathroom',
+  //     tenant: 'Akio',
+  //     isComplete: false,
+  //     taskNum: 9,
+  //     completedTaskNum: 3,
+  //   },
+  //   {
+  //     category: 'Living room',
+  //     tenant: 'Maaaatio',
+  //     isComplete: false,
+  //     taskNum: 7,
+  //     completedTaskNum: 2,
+  //   },
+  // ];
 
   cardContentNext = [
     {
@@ -76,7 +86,7 @@ const ShareHousePage = ({
   return (
     <>
       <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-        <div className="relative z-10 py-6">
+        <div className="relative z-10 p-6">
           <Tabs defaultValue="current">
             <TabsList>
               <TabsTrigger value="current">Current</TabsTrigger>
@@ -93,6 +103,7 @@ const ShareHousePage = ({
               startDate={currentStartDate}
               endDate={currentEndDate}
               cardContents={cardContentCurrent}
+              shareHouseId={share_house_id}
             />
             <LandlordDashboardTabContent
               tabType="next"
@@ -100,6 +111,7 @@ const ShareHousePage = ({
               startDate={nextStartDate}
               endDate={nextEndDate}
               cardContents={cardContentNext}
+              shareHouseId={share_house_id}
             />
           </Tabs>
         </div>

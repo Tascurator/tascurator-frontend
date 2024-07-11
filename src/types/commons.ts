@@ -79,11 +79,13 @@ export interface IShareHousePageProps {
   };
 }
 export interface ICardContentProps {
-  category: string;
+  category: string | null;
   tenant: string;
   isComplete: boolean;
   taskNum: number;
   completedTaskNum: number;
+  className?: string;
+  isLast?: boolean;
 }
 
 export interface ILandlordDashboardTabContentProps {
@@ -92,4 +94,5 @@ export interface ILandlordDashboardTabContentProps {
   endDate: string;
   progressPercent: number;
   cardContents: ICardContentProps[];
+  shareHouseId: string;
 }
