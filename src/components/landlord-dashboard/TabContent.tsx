@@ -43,9 +43,9 @@ const LandlordDashboardTabContent = ({
               return (
                 <div
                   key={index}
-                  className="flex items-center justify-center flex-col w-full py-4"
+                  className="flex items-center justify-center flex-col w-full py-6"
                 >
-                  <div>No tenants</div>
+                  <div className="pb-4">No tenants</div>
                   <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
                     <Button>Add tenant</Button>
                   </Link>
