@@ -5,6 +5,7 @@ import { CONSTRAINTS } from '@/constants/constraints';
 import { shareHouseCreationSchema } from '@/constants/schema';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import type { Category, Tenant } from '@prisma/client';
 
 const app = new Hono();
 
@@ -154,7 +155,7 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
       },
     });
 
-    const createdCategories = [];
+    const createdCategories: Category[] = [];
     for (const categoryData of data.categories) {
       const newCategory = await prisma.category.create({
         data: {
@@ -171,7 +172,7 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
       createdCategories.push(newCategory);
     }
 
-    const createdTenants = [];
+    const createdTenants: Tenant[] = [];
     for (let i = 0; i < data.tenants.length; i++) {
       const tenantData = data.tenants[i];
       const newTenant = await prisma.tenant.create({
