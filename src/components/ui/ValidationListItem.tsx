@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { CircleCheck } from 'lucide-react';
 
 interface IValidationListItem {
@@ -9,9 +10,19 @@ const ValidationListItem = ({ condition, constraint }: IValidationListItem) => {
   return (
     <li className={'flex items-center gap-1'}>
       <CircleCheck
-        className={`stroke-white w-4 h-4 ${condition ? 'fill-primary' : 'fill-gray-400'}`}
+        className={cn(
+          'stroke-white w-4 h-4',
+          { 'fill-primary': condition },
+          { 'fill-gray-400': !condition },
+        )}
       />
-      <span className={`text-sm ${condition ? 'text-gray-500' : 'text-black'}`}>
+      <span
+        className={cn(
+          'text-sm',
+          { 'text-gray-500': condition },
+          { 'text-black': !condition },
+        )}
+      >
         {constraint}
       </span>
     </li>
