@@ -18,9 +18,10 @@ const {
 const { minLength, maxLength } = ERROR_MESSAGES;
 
 /**
- * The schema for the task creation or update form
+ * The schema for the category creation or update form
  */
-export const taskCreationSchema = z.object({
+
+export const categoryCreationSchema = z.object({
   category: z
     .string()
     .min(
@@ -46,6 +47,22 @@ export const taskCreationSchema = z.object({
       TASK_DESCRIPTION_MAX_LENGTH,
       maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
     ),
+});
+
+/**
+ * The schema for the task creation form
+ */
+
+export const taskCreationSchema = z.object({
+  categoryId: z.string(),
+  title: z
+    .string()
+    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
+  /**
+   * TODO: Please set up detailed validation for the description in the frontend team.
+   */
+  description: z.string(),
 });
 
 /**
@@ -83,6 +100,7 @@ export const categoryNameSchema = z.object({
 });
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
+export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
@@ -94,7 +112,7 @@ export const tenantInvitationSchema = z.object({
     .string()
     .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
     .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
