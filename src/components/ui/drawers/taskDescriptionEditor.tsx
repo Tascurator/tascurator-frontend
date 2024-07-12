@@ -33,9 +33,7 @@ export const TaskDescriptionEditor = ({
     content: taskDescription || '',
     onUpdate: ({ editor }) => {
       const descriptionData = editor.getHTML();
-      const descriptionCount = editor.getText();
-      setValue('description', descriptionData);
-      setValue('descriptionCount', descriptionCount, { shouldValidate: true });
+      setValue('description', descriptionData, { shouldValidate: true });
     },
   });
 

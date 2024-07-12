@@ -98,7 +98,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['category', 'title', 'descriptionCount']);
+    const isValid = await trigger(['category', 'title', 'description']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -150,7 +150,7 @@ const EditTaskDrawer = ({
             <div
               className={cn(
                 'group w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-                errors.descriptionCount
+                errors.description
                   ? 'border-destructive focus-within:ring-destructive'
                   : 'border-input focus-within:ring-ring',
               )}
@@ -160,8 +160,8 @@ const EditTaskDrawer = ({
                 formControls={formControls}
               />
             </div>
-            {errors.descriptionCount?.message && (
-              <FormMessage message={errors.descriptionCount.message} />
+            {errors.description?.message && (
+              <FormMessage message={errors.description.message} />
             )}
           </div>
         </DrawerDescription>
@@ -337,7 +337,6 @@ export const TaskCreationDrawer = ({
       category: category || task?.category || '',
       title: task?.title || '',
       description: task?.description || '',
-      descriptionCount: '',
     },
   });
 
