@@ -126,3 +126,21 @@ export const loginSchema = z.object({
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+/**
+ * The schema for the shareHouse creation form
+ */
+export const shareHouseCreationSchema = shareHouseNameSchema.extend({
+  startDate: z.string(),
+  rotationCycle: z.union([z.literal(7), z.literal(14)]),
+  categories: z.array(
+    categoryCreationSchema.omit({ descriptionCount: true }).extend({
+      tasks: z.array(taskCreationSchema.omit({ categoryId: true })),
+    }),
+  ),
+  tenants: z.array(tenantInvitationSchema),
+});
+
+export type TShareHouseCreationSchema = z.infer<
+  typeof shareHouseCreationSchema
+>;
