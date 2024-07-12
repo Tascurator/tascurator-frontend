@@ -11,6 +11,10 @@ export const CONSTRAINTS = {
   PASSWORD_MIN_NUMBERS: 1,
 
   // ShareHouse
+  /**
+   * TODO: This number is temporary, so discuss the maximum number of shareHouse.
+   */
+  SHAREHOUSE_MAX_AMOUNT: 10,
   SHAREHOUSE_NAME_MIN_LENGTH: 1,
   SHAREHOUSE_NAME_MAX_LENGTH: 15,
 

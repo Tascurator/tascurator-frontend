@@ -1,5 +1,9 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 
+import { CONSTRAINTS } from '@/constants/constraints';
+import { shareHouseCreationSchema } from '@/constants/schema';
+import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 const app = new Hono();
@@ -83,9 +87,117 @@ app.delete('/:shareHouseId', (c) => {
   return c.json({ message: `Deleting share house id: ${shareHouseId}` });
 });
 
-app.post('/:landlordId', (c) => {
-  const landlordId = c.req.param('landlordId');
-  return c.json({
-    message: `Landlord id for creating new share hose: ${landlordId}`,
-  });
+app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
+  try {
+    const session = await auth();
+
+    if (!session) {
+      return c.json({
+        message: 'You are not logged in!',
+      });
+    }
+    const landlordId = session.user.id;
+    const data = c.req.valid('json');
+
+    const landlord = await prisma.landlord.findUnique({
+      where: {
+        id: landlordId,
+      },
+      include: {
+        shareHouses: true,
+      },
+    });
+
+    if (!landlord)
+      return c.json(
+        { error: 'Landlord not found for the given landlordId' },
+        404,
+      );
+
+    if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
+      return c.json(
+        {
+          error: `The number of shareHouses has reached the maximum limit of ${CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT}`,
+        },
+        400,
+      );
+
+    const addDays = (date: Date, days: number) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    const startDate = new Date(data.startDate);
+    const endDate = addDays(startDate, data.rotationCycle);
+
+    const newAssignmentSheet = await prisma.assignmentSheet.create({
+      data: {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        assignedData: '',
+      },
+    });
+
+    const newShareHouse = await prisma.shareHouse.create({
+      data: {
+        name: data.name,
+        landlordId: landlordId,
+        assignmentSheetId: newAssignmentSheet.id,
+      },
+    });
+
+    const newRotationAssignment = await prisma.rotationAssignment.create({
+      data: {
+        shareHouseId: newShareHouse.id,
+        rotationCycle: data.rotationCycle,
+      },
+    });
+
+    const createdCategories = [];
+    for (const categoryData of data.categories) {
+      const newCategory = await prisma.category.create({
+        data: {
+          name: categoryData.category,
+          rotationAssignmentId: newRotationAssignment.id,
+          tasks: {
+            create: categoryData.tasks.map((task) => ({
+              title: task.title,
+              description: task.description,
+            })),
+          },
+        },
+      });
+      createdCategories.push(newCategory);
+    }
+
+    const createdTenants = [];
+    for (let i = 0; i < data.tenants.length; i++) {
+      const tenantData = data.tenants[i];
+      const newTenant = await prisma.tenant.create({
+        data: {
+          name: tenantData.name,
+          email: tenantData.email,
+          extraAssignedCount: 0,
+          tenantPlaceholders: {
+            create: {
+              rotationAssignmentId: newRotationAssignment.id,
+              index: i,
+            },
+          },
+        },
+      });
+      createdTenants.push(newTenant);
+    }
+
+    return c.json({
+      shareHouse: newShareHouse,
+      rotationAssignment: newRotationAssignment,
+      categories: createdCategories,
+      tenants: createdTenants,
+    });
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: 'An error occurred while creating data' }, 500);
+  }
 });
