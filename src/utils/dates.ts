@@ -26,7 +26,7 @@ const getPDTOffset = (): number => {
 };
 
 /**
- * Get today in the Pacific Daylight Time (PDT) time zone.
+ * Get current date in the Pacific Daylight Time (PDT) time zone.
  *
  * @credits https://medium.com/make-it-heady/javascript-handle-date-in-any-timezone-with-daylight-saving-check-182657009310
  */
@@ -63,6 +63,7 @@ export const addDays = (date: Date, days: number): Date => {
 
 /**
  * Format a date as a string in the format "YYYY/MM/DD".
+ *
  * @param date - The date to format
  */
 export const formatDate = (date: Date): string => {
