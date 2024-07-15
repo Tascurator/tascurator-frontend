@@ -1,25 +1,25 @@
 /**
- * Returns the offset in hours from UTC for the Pacific Daylight Time (PDT) time zone.
+ * Returns the offset in hours between the Pacific Daylight Time (PDT) time zone and UTC based on the given date.
+ *
+ * @param date - The date to check for Daylight Saving Time
  *
  * @credits
  *   - https://stackoverflow.com/a/11888430
  *   - https://medium.com/make-it-heady/javascript-handle-date-in-any-timezone-with-daylight-saving-check-182657009310
  */
-const getPDTOffset = (): number => {
+const getPDTOffset = (date: Date): number => {
   const stdTimezoneOffset = () => {
     const jan = new Date(0, 1);
     const jul = new Date(6, 1);
     return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
   };
 
-  const today = new Date();
-
   const isDstObserved = (today: Date) => {
     return today.getTimezoneOffset() < stdTimezoneOffset();
   };
 
   // PDT is UTC-7 during Daylight Saving Time, and UTC-8 otherwise
-  if (isDstObserved(today)) {
+  if (isDstObserved(date)) {
     return -7;
   }
   return -8;
