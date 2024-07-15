@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
-import { taskCreationSchema } from '@/constants/schema';
+import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
 
@@ -9,46 +9,39 @@ const app = new Hono();
 
 export default app;
 
-app.patch(
-  '/:taskId',
-  zValidator('json', taskCreationSchema.omit({ categoryId: true }).partial()),
-  async (c) => {
-    try {
-      const taskId = c.req.param('taskId');
-      const data = c.req.valid('json');
+app.patch('/:taskId', zValidator('json', taskUpdateSchema), async (c) => {
+  try {
+    const taskId = c.req.param('taskId');
+    const data = c.req.valid('json');
 
-      if (!data || Object.keys(data).length === 0)
-        return c.json({ error: 'No data' }, 400);
+    if (!data || Object.keys(data).length === 0)
+      return c.json({ error: 'No data' }, 400);
 
-      const task = await prisma.task.findUnique({
-        where: {
-          id: taskId,
-        },
-      });
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
 
-      if (!task) return c.json({ error: 'Task not found' }, 404);
+    if (!task) return c.json({ error: 'Task not found' }, 404);
 
-      const updateData: { title?: string; description?: string } = {};
-      if (data.title) updateData.title = data.title;
-      if (data.description) updateData.description = data.description;
+    const updateData: { title?: string; description?: string } = {};
+    if (data.title) updateData.title = data.title;
+    if (data.description) updateData.description = data.description;
 
-      const updateTask = await prisma.task.update({
-        where: {
-          id: taskId,
-        },
-        data: updateData,
-      });
+    const updateTask = await prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data: updateData,
+    });
 
-      return c.json(updateTask, 201);
-    } catch (error) {
-      console.error('Error updating task:', error);
-      return c.json(
-        { error: 'An error occurred while updating the task' },
-        500,
-      );
-    }
-  },
-);
+    return c.json(updateTask, 201);
+  } catch (error) {
+    console.error('Error updating task:', error);
+    return c.json({ error: 'An error occurred while updating the task' }, 500);
+  }
+});
 
 app.post('/', zValidator('json', taskCreationSchema), async (c) => {
   try {
