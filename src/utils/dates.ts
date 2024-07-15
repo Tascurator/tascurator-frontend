@@ -27,26 +27,9 @@ const getPDTOffset = (date: Date): number => {
 
 /**
  * Get current date in the Pacific Daylight Time (PDT) time zone.
- *
- * @credits https://medium.com/make-it-heady/javascript-handle-date-in-any-timezone-with-daylight-saving-check-182657009310
  */
 export const getToday = (): Date => {
-  const d = new Date();
-
-  // Convert to milliseconds since Jan 1, 1970
-  const localTime = d.getTime();
-
-  // Obtain local UTC offset and convert to milliseconds
-  const localOffset = d.getTimezoneOffset() * 60 * 1000;
-
-  // Obtain UTC time in milliseconds
-  const utcTime = localTime + localOffset;
-
-  // Get PDT offset
-  const pdtOffset = getPDTOffset();
-  const pdtTime = utcTime + 60 * 60 * 1000 * pdtOffset;
-
-  return new Date(pdtTime);
+  return convertToPDT(new Date());
 };
 
 /**
