@@ -92,7 +92,17 @@ app.delete('/:taskId', async (c) => {
         id: taskId,
       },
     });
+
     if (!task) return c.json({ error: 'Task not found' }, 404);
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        categoryId: task.categoryId,
+      },
+    });
+
+    if (tasks.length <= 1)
+      return c.json({ error: 'You are not allowed to delete this task' }, 403);
 
     const deleteTask = await prisma.task.delete({
       where: {
