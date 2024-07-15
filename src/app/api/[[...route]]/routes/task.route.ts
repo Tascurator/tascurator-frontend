@@ -84,7 +84,25 @@ app.post('/', zValidator('json', taskCreationSchema), async (c) => {
   }
 });
 
-app.delete('/:taskId', (c) => {
-  const taskId = c.req.param('taskId');
-  return c.json({ message: `Deleting task id: ${taskId}` });
+app.delete('/:taskId', async (c) => {
+  try {
+    const taskId = c.req.param('taskId');
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+    if (!task) return c.json({ error: 'Task not found' }, 404);
+
+    const deleteTask = await prisma.task.delete({
+      where: {
+        id: taskId,
+      },
+    });
+
+    return c.json(deleteTask, 201);
+  } catch (error) {
+    console.error('Error deleting the task:', error);
+    return c.json({ error: 'An error occurred while deleting the task' }, 500);
+  }
 });
