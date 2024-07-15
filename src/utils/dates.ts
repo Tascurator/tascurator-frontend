@@ -9,8 +9,8 @@
  */
 const getPDTOffset = (date: Date): number => {
   const stdTimezoneOffset = () => {
-    const jan = new Date(0, 1);
-    const jul = new Date(6, 1);
+    const jan = new Date(date.getFullYear(), 0, 1);
+    const jul = new Date(date.getFullYear(), 6, 1);
     return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
   };
 
