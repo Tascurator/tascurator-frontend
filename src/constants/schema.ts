@@ -66,6 +66,14 @@ export const taskCreationSchema = z.object({
 });
 
 /**
+ * The schema for the task update form
+ */
+
+export const taskUpdateSchema = taskCreationSchema
+  .omit({ categoryId: true })
+  .partial();
+
+/**
  * The schema for the sharehouse edit or update form
  */
 
