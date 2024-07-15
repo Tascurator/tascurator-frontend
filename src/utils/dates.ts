@@ -62,6 +62,37 @@ export const addDays = (date: Date, days: number): Date => {
 };
 
 /**
+ * Convert Pacific Time to UTC+0 time.
+ *
+ * @param date - The date to convert
+ * @example
+ * const pdtDate = new Date('2021-09-30T17:00:00Z');
+ * const utcDate = convertToUTC(pdtDate);
+ * console.log(utcDate); // 2021-10-01T00:00:00.000Z
+ *
+ */
+export const convertToUTC = (date: Date): Date => {
+  const pdtOffset = getPDTOffset(date);
+  const utcTime = date.getTime() - pdtOffset * 60 * 60 * 1000;
+  return new Date(utcTime);
+};
+
+/**
+ * Convert UTC+0 time to Pacific Time.
+ *
+ * @param date - The date to convert
+ * @example
+ *  const utcDate = new Date('2021-10-01T00:00:00Z');
+ *  const pdtDate = convertToPDT(utcDate);
+ *  console.log(pdtDate); // 2021-09-30T17:00:00.000Z
+ */
+export const convertToPDT = (date: Date): Date => {
+  const pdtOffset = getPDTOffset(date);
+  const pdtTime = date.getTime() + pdtOffset * 60 * 60 * 1000;
+  return new Date(pdtTime);
+};
+
+/**
  * Format a date as a string in the format "YYYY/MM/DD".
  *
  * @param date - The date to format
