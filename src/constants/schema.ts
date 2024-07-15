@@ -90,6 +90,7 @@ export const taskCreationSchema = z.object({
  */
 export const taskEditSchema = z.object({
   categoryId: z.string(),
+  taskId: z.string(),
   title: z
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
@@ -141,6 +142,7 @@ export const categoryNameSchema = z.object({
 });
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
+export type TTaskEditSchema = z.infer<typeof taskEditSchema>;
 export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;

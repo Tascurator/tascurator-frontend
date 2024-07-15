@@ -1,10 +1,16 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-import { editorExtensions } from './TaskCreationDrawer';
+import { editorExtensions } from './CategoryCreationDrawer';
 
 import { UseFormReturn } from 'react-hook-form';
-import { TCategoryCreationSchema } from '@/constants/schema';
+import {
+  TCategoryCreationSchema,
+  TTaskCreationSchema,
+  TTaskEditSchema,
+} from '@/constants/schema';
 interface TaskDescriptionProps {
-  formControls: UseFormReturn<TCategoryCreationSchema>;
+  formControls: UseFormReturn<
+    TCategoryCreationSchema | TTaskCreationSchema | TTaskEditSchema
+  >;
 }
 
 export const TaskDescriptionRenderer = ({

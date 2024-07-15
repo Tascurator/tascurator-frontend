@@ -9,12 +9,18 @@ import {
 } from 'lucide-react';
 
 import { UseFormReturn } from 'react-hook-form';
-import { TCategoryCreationSchema } from '@/constants/schema';
-import { editorExtensions } from './TaskCreationDrawer';
+import {
+  TCategoryCreationSchema,
+  TTaskCreationSchema,
+  TTaskEditSchema,
+} from '@/constants/schema';
+import { editorExtensions } from './CategoryCreationDrawer';
 
 interface TaskDescriptionEditorProps {
   taskDescription: string;
-  formControls: UseFormReturn<TCategoryCreationSchema>;
+  formControls: UseFormReturn<
+    TCategoryCreationSchema | TTaskCreationSchema | TTaskEditSchema
+  >;
 }
 
 export const TaskDescriptionEditor = ({
@@ -59,6 +65,7 @@ export const TaskDescriptionEditor = ({
             'rounded-tl-xl',
             editor.isActive('bold') && 'group-focus-within:bg-slate-300',
           )}
+          tabIndex={-1}
         >
           <BoldIcon className={'size-5'} />
         </button>
@@ -68,6 +75,7 @@ export const TaskDescriptionEditor = ({
             buttonCommonStyle,
             editor.isActive('underline') && 'group-focus-within:bg-slate-300',
           )}
+          tabIndex={-1}
         >
           <UnderlineIcon className={'size-5'} />
         </button>
@@ -77,6 +85,7 @@ export const TaskDescriptionEditor = ({
             buttonCommonStyle,
             editor.isActive('bulletList') && 'group-focus-within:bg-slate-300',
           )}
+          tabIndex={-1}
         >
           <ListIcon className={'size-5'} />
         </button>
@@ -87,12 +96,14 @@ export const TaskDescriptionEditor = ({
             'rounded-tr-xl',
             editor.isActive('orderedList') && 'group-focus-within:bg-slate-300',
           )}
+          tabIndex={-1}
         >
           <ListOrderedIcon className={'size-5'} />
         </button>
       </div>
 
       <EditorContent
+        tabIndex={0}
         editor={editor}
         className="h-full max-h-72 min-h-72 overflow-visible resize-none"
       />
