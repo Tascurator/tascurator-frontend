@@ -79,6 +79,10 @@ export const convertToPDT = (date: Date): Date => {
  * Format a date as a string in the format "YYYY/MM/DD".
  *
  * @param date - The date to format
+ * @example
+ * const date = new Date('2021-10-01T00:00:00Z');
+ * const formattedDate = formatDate(date);
+ * console.log(formattedDate); // 2021/10/01
  */
 export const formatDate = (date: Date): string => {
   const year = date.getFullYear();
