@@ -55,7 +55,7 @@ export class AssignedData {
   }[] => {
     return this.getAssignments()
       .map((category) => {
-        if (category.tenantPlaceholderId && category.tenant) {
+        if (category.tenantPlaceholderId !== null && category.tenant) {
           return {
             id: category.tenant.id,
             name: category.tenant.name,
