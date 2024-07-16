@@ -9,17 +9,18 @@ import {
 } from 'lucide-react';
 
 import { UseFormReturn } from 'react-hook-form';
+import { editorExtensions } from './CategoryCreationDrawer';
+
 import {
   TCategoryCreationSchema,
   TTaskCreationSchema,
-  TTaskEditSchema,
+  TTaskUpdateSchema,
 } from '@/constants/schema';
-import { editorExtensions } from './CategoryCreationDrawer';
 
 interface TaskDescriptionEditorProps {
   taskDescription: string;
   formControls: UseFormReturn<
-    TCategoryCreationSchema | TTaskCreationSchema | TTaskEditSchema
+    TCategoryCreationSchema | TTaskCreationSchema | TTaskUpdateSchema
   >;
 }
 

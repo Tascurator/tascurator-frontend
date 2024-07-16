@@ -16,9 +16,9 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import {
   taskCreationSchema,
-  taskEditSchema,
+  taskUpdateSchema,
   TTaskCreationSchema,
-  TTaskEditSchema,
+  TTaskUpdateSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { TaskDescriptionEditor } from '@/components/ui/drawers/TaskDescriptionEditor';
@@ -29,14 +29,10 @@ import { LoadingSpinner } from '../loadingSpinner';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
-// interface ITask extends ITaskType {
-//   category: string;
-// }
-
 interface IEditTaskDrawer {
   category: ICategoryWithoutTasks;
   task?: ITask;
-  formControls: UseFormReturn<TTaskCreationSchema | TTaskEditSchema>;
+  formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
@@ -62,12 +58,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger([
-      'categoryId',
-      'taskId',
-      'title',
-      'description',
-    ]);
+    const isValid = await trigger(['categoryId', 'title', 'description']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -153,7 +144,7 @@ interface ITasksCreationConfirmationDrawer {
   category: ICategoryWithoutTasks;
   open: boolean;
   setOpen: (value: boolean) => void;
-  formControls: UseFormReturn<TTaskCreationSchema | TTaskEditSchema>;
+  formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
   closeConfirmationDrawer: () => void;
 }
 
@@ -171,9 +162,9 @@ const ConfirmTaskDrawer = ({
   const { handleSubmit, watch } = formControls;
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<TTaskCreationSchema | TTaskEditSchema> = async (
-    data,
-  ) => {
+  const onSubmit: SubmitHandler<
+    TTaskCreationSchema | TTaskUpdateSchema
+  > = async (data) => {
     setIsLoading(true);
     setOpen(true);
 
@@ -268,7 +259,7 @@ interface ITaskCreationDrawer {
 }
 
 const getSchema = (type: drawerType) => {
-  return type === 'creation' ? taskCreationSchema : taskEditSchema;
+  return type === 'creation' ? taskCreationSchema : taskUpdateSchema;
 };
 
 /**
@@ -313,12 +304,11 @@ export const TaskCreationDrawer = ({
 
   const schema = getSchema(type);
 
-  const formControls = useForm<TTaskCreationSchema | TTaskEditSchema>({
+  const formControls = useForm<TTaskCreationSchema | TTaskUpdateSchema>({
     resolver: zodResolver(schema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      categoryId: category?.id || '',
-      taskId: task?.id || '',
+      categoryId: category?.id,
       title: task?.title || '',
       description: task?.description || '',
     },

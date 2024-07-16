@@ -5,11 +5,12 @@ import { UseFormReturn } from 'react-hook-form';
 import {
   TCategoryCreationSchema,
   TTaskCreationSchema,
-  TTaskEditSchema,
+  TTaskUpdateSchema,
 } from '@/constants/schema';
+
 interface TaskDescriptionProps {
   formControls: UseFormReturn<
-    TCategoryCreationSchema | TTaskCreationSchema | TTaskEditSchema
+    TCategoryCreationSchema | TTaskCreationSchema | TTaskUpdateSchema
   >;
 }
 

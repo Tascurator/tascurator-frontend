@@ -85,32 +85,6 @@ export const taskCreationSchema = z.object({
     ),
 });
 
-/**
- * The schema for the task edit form
- */
-export const taskEditSchema = z.object({
-  categoryId: z.string(),
-  taskId: z.string(),
-  title: z
-    .string()
-    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
-    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z
-    .string()
-    .refine(
-      taskDescriptionLengthMinValidate,
-      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-    )
-    .refine(
-      taskDescriptionLengthMaxValidate,
-      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-    ),
-});
-
-/**
- * The schema for the task update form
- */
-
 export const taskUpdateSchema = taskCreationSchema
   .omit({ categoryId: true })
   .partial();
@@ -150,8 +124,8 @@ export const categoryNameSchema = z.object({
 });
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
-export type TTaskEditSchema = z.infer<typeof taskEditSchema>;
 export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
+export type TTaskUpdateSchema = z.infer<typeof taskUpdateSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
