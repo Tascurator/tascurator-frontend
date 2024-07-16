@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { generateAssignedData } from '../src/utils/assigned-data';
 import bcrypt, { genSaltSync } from 'bcryptjs';
+import { InitialAssignedData } from '@/services/InitialAssignedData';
+import { getToday } from '@/utils/dates';
 
 const prisma = new PrismaClient();
 
@@ -291,10 +292,36 @@ const main = async () => {
       `✅ Created ${i !== 1 ? 4 : 3} tenants and linked to tenant placeholders`,
     );
 
-    const assignedData = await generateAssignedData(
-      prisma,
-      rotationAssignment.id,
-    );
+    const sharehouse = await prisma.shareHouse.findUnique({
+      where: { id: shareHouse.id },
+      select: {
+        assignmentSheet: true,
+        RotationAssignment: {
+          select: {
+            rotationCycle: true,
+            categories: {
+              include: { tasks: true },
+            },
+            tenantPlaceholders: {
+              include: {
+                tenant: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!sharehouse || !sharehouse.RotationAssignment) {
+      throw new Error('Share house not found');
+    }
+
+    const assignedData = new InitialAssignedData(
+      sharehouse,
+      getToday(),
+      sharehouse.RotationAssignment.rotationCycle,
+    ).getAssignedData();
+
     console.log(
       '✅ Generated assigned data\n',
       JSON.stringify(assignedData, null, 2),
