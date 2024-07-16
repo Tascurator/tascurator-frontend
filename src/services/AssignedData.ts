@@ -5,8 +5,6 @@ import {
   ICategoriesGreaterThanTenants,
   ICategoryWithoutSingleTenant,
   TAssignedCategory,
-} from '@/types/server';
-import {
   TPrismaCategory,
   TPrismaTask,
   TPrismaTenantPlaceholder,
@@ -45,6 +43,28 @@ export class AssignedData {
    */
   public getAssignments = (): TAssignedCategory[] =>
     this.assignedData.assignments;
+
+  /**
+   * Changes the completion status of a task
+   *
+   * @param tenantId - The tenant ID
+   * @param taskId - The task ID
+   * @param status - The new completion status
+   */
+  public toggleTaskCompletion = (
+    tenantId: string,
+    taskId: string,
+    status: boolean,
+  ) => {
+    const assignments = this.getAssignments();
+    const assignment = assignments.find((a) => a.tenant?.id === tenantId);
+    if (!assignment) return;
+
+    const task = assignment.tasks?.find((t) => t.id === taskId);
+    if (!task) return;
+
+    task.isCompleted = status;
+  };
 
   /**
    * Calculates the number of extra assignments for each tenant in the current rotation's assigned data.
