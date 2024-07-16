@@ -52,6 +52,18 @@ app.delete('/:categoryId', async (c) => {
     });
     if (!category) return c.json({ error: 'Category not found' }, 404);
 
+    const categories = await prisma.category.findMany({
+      where: {
+        rotationAssignmentId: category.rotationAssignmentId,
+      },
+    });
+
+    if (categories.length <= 1)
+      return c.json(
+        { error: 'You are not allowed to delete this category' },
+        403,
+      );
+
     const deleteCategory = await prisma.category.delete({
       where: {
         id: categoryId,
