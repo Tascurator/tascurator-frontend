@@ -1,4 +1,5 @@
 import {
+  hasTasks,
   IAssignedData,
   IAssignedTask,
   ICategoriesEqualTenants,
@@ -43,6 +44,29 @@ export class AssignedData {
    */
   public getAssignments = (): TAssignedCategory[] =>
     this.assignedData.assignments;
+
+  /**
+   * Retrieves the assigned categories for a given tenant
+   *
+   * @param tenantId - The tenant ID
+   */
+  public getAssignedCategories = (tenantId: string) => {
+    const assignments = this.getAssignments();
+
+    /**
+     * Populate the assigned categories, which type is ICategoriesEqualTenants or ICategoriesGreaterThanTenants (because we only need the categories that have the given tenant assigned)
+     */
+    return assignments
+      .filter((category) => hasTasks(category))
+      .filter((category) => category.tenant.id === tenantId)
+      .map((category) => {
+        return {
+          id: category.category.id,
+          name: category.category.name,
+          tasks: category.tasks,
+        };
+      });
+  };
 
   /**
    * Changes the completion status of a task
