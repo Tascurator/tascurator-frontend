@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 
+import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import type { IAssignedData } from '@/types/commons';
 
@@ -104,3 +106,42 @@ app.get('/next/:shareHouseId', (c) => {
     message: `Share house id for current rotation for next rotation: ${shareHouseId}`,
   });
 });
+
+app.patch(
+  '/:shareHouseId',
+  zValidator('json', rotationCycleUpdateSchema),
+  async (c) => {
+    try {
+      const shareHouseId = c.req.param('shareHouseId');
+      const data = c.req.valid('json');
+
+      const shareHouse = await prisma.shareHouse.findUnique({
+        where: {
+          id: shareHouseId,
+        },
+        include: {
+          RotationAssignment: true,
+        },
+      });
+
+      if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+
+      if (!shareHouse.RotationAssignment)
+        return c.json({ error: 'Interval Server Error' }, 500);
+
+      const updateRotationCycle = await prisma.rotationAssignment.update({
+        where: {
+          id: shareHouse.RotationAssignment.id,
+        },
+        data: {
+          rotationCycle: data.rotationCycle,
+        },
+      });
+
+      return c.json(updateRotationCycle, 201);
+    } catch (error) {
+      console.error(error);
+      return c.json({ error: 'An error occurred while updating data' }, 500);
+    }
+  },
+);
