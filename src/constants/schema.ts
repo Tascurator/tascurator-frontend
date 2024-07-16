@@ -70,6 +70,14 @@ export const taskCreationSchema = z.object({
 });
 
 /**
+ * The schema for the task update form
+ */
+
+export const taskUpdateSchema = taskCreationSchema
+  .omit({ categoryId: true })
+  .partial();
+
+/**
  * The schema for the sharehouse edit or update form
  */
 
@@ -127,6 +135,14 @@ export const loginSchema = z.object({
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+/**
+ * The schema for the rotation cycle update form
+ */
+
+export const rotationCycleUpdateSchema = z.object({
+  rotationCycle: z.union([z.literal(7), z.literal(14)]),
+});
 
 export const signupSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
