@@ -5,6 +5,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { Skeleton } from '../skeleton';
+import { useEffect, useState } from 'react';
 
 interface ITaskDescriptionDrawer {
   title: string;
@@ -16,13 +18,15 @@ interface ITaskDescriptionDrawer {
 /**
  * A drawer component to log out the user
  *
+ * @param title - The title of the task
+ * @param description - The description of the task
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
  *
  * @example
  * const [open, setOpen] = useState(false);
  *
- * <TaskDescriptionDrawer open={open} setOpen={setOpen} />
+ * <TaskDescriptionDrawer open={open} setOpen={setOpen} title={currentTask.title} description={currentTask.description} />
  *
  */
 
@@ -32,6 +36,18 @@ export const TaskDescriptionDrawer = ({
   open,
   setOpen,
 }: ITaskDescriptionDrawer) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const handleLogout = () => {
     setOpen(false);
   };
@@ -42,7 +58,9 @@ export const TaskDescriptionDrawer = ({
       <DrawerContent asChild>
         <form onSubmit={handleLogout}>
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
+          <DrawerDescription>
+            {isLoading ? <Skeleton className="h-64" /> : <>{description}</>}
+          </DrawerDescription>
         </form>
       </DrawerContent>
     </Drawer>
