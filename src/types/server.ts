@@ -1,4 +1,5 @@
 import type { ICategory, ITask, ITenant } from '@/types/commons';
+import { Prisma } from '@prisma/client';
 
 /**
  * The object structure for AssignedTask
@@ -68,3 +69,44 @@ export type TAssignedCategory =
 export interface IAssignedData {
   assignments: TAssignedCategory[];
 }
+
+/**
+ * Type representing the Prisma ShareHouse object with the assignmentSheet and RotationAssignment included.
+ */
+export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
+  select: {
+    assignmentSheet: true;
+    RotationAssignment: {
+      select: {
+        rotationCycle: true;
+        categories: {
+          include: { tasks: true };
+        };
+        tenantPlaceholders: {
+          include: {
+            tenant: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+/**
+ * Type representing the Prisma Category object with the tasks included.
+ */
+export type TPrismaCategory = Prisma.CategoryGetPayload<{
+  include: { tasks: true };
+}>;
+
+/**
+ * Type representing the Prisma Task object.
+ */
+export type TPrismaTask = Prisma.TaskGetPayload<NonNullable<unknown>>;
+
+/**
+ * Type representing the Prisma Tenant object.
+ */
+export type TPrismaTenantPlaceholder = Prisma.TenantPlaceholderGetPayload<{
+  include: { tenant: true };
+}>;
