@@ -46,17 +46,43 @@ export class AssignedData {
     this.assignedData.assignments;
 
   /**
+   * Retrieves the tenants in the current rotation
+   */
+  public getTenants = (): {
+    name: string;
+    id: string;
+    tenantPlaceholderId: number;
+  }[] => {
+    return this.getAssignments()
+      .map((category) => {
+        if (category.tenantPlaceholderId && category.tenant) {
+          return {
+            id: category.tenant.id,
+            name: category.tenant.name,
+            tenantPlaceholderId: category.tenantPlaceholderId,
+          };
+        }
+        return null;
+      })
+      .filter((tenant) => tenant !== null);
+  };
+
+  /**
+   * Checks if a given tenant exists in the current rotation
+   */
+  public hasTenant = (tenantId: string): boolean =>
+    this.getTenants().findIndex((tenant) => tenant.id === tenantId) !== -1;
+
+  /**
    * Retrieves the assigned categories for a given tenant
    *
    * @param tenantId - The tenant ID
    */
   public getAssignedCategories = (tenantId: string) => {
-    const assignments = this.getAssignments();
-
     /**
      * Populate the assigned categories, which type is ICategoriesEqualTenants or ICategoriesGreaterThanTenants (because we only need the categories that have the given tenant assigned)
      */
-    return assignments
+    return this.getAssignments()
       .filter((category) => hasTasks(category))
       .filter((category) => category.tenant.id === tenantId)
       .map((category) => {
