@@ -134,3 +134,11 @@ export const loginSchema = z.object({
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+/**
+ * The schema for the rotation cycle update form
+ */
+
+export const rotationCycleUpdateSchema = z.object({
+  rotationCycle: z.union([z.literal(7), z.literal(14)]),
+});
