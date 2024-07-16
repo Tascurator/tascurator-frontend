@@ -110,9 +110,31 @@ app.patch(
   },
 );
 
-app.delete('/:shareHouseId', (c) => {
-  const shareHouseId = c.req.param('shareHouseId');
-  return c.json({ message: `Deleting share house id: ${shareHouseId}` });
+app.delete('/:shareHouseId', async (c) => {
+  try {
+    const shareHouseId = c.req.param('shareHouseId');
+    const shareHouse = await prisma.shareHouse.findUnique({
+      where: {
+        id: shareHouseId,
+      },
+    });
+
+    if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+
+    const deleteShareHouse = await prisma.shareHouse.delete({
+      where: {
+        id: shareHouseId,
+      },
+    });
+
+    return c.json(deleteShareHouse, 201);
+  } catch (error) {
+    console.error('Error deleting the shareHouse:', error);
+    return c.json(
+      { error: 'An error occurred while deleting the shareHouse' },
+      500,
+    );
+  }
 });
 
 app.post('/:landlordId', (c) => {
