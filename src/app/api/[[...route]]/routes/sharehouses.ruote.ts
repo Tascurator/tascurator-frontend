@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import type { IAssignedData } from '@/types/commons';
+import type { IAssignedData } from '@/types/server';
 
 const app = new Hono();
 
