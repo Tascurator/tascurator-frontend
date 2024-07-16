@@ -13,20 +13,21 @@
     "format-ignore-path": "prettier . --write --ignore-path {any file}",
     "prepare": "husky",
     "typedoc": "typedoc",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "prisma": "dotenv -e .env.local -- prisma studio",
     "prisma:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "prisma:push": "dotenv -e .env.local -- prisma db push",
     "prisma:generate": "dotenv -e .env.local -- prisma generate",
     "prisma:reset": "dotenv -e .env.local -- prisma migrate reset",
-    "prisma:seed": "dotenv -e .env.local -- prisma db seed",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "prisma:seed": "dotenv -e .env.local -- prisma db seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.3.0",
+    "@hono/zod-validator": "^0.2.2",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.15.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -38,6 +39,13 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toast": "^1.1.5",
+    "@tiptap/extension-list-item": "^2.4.0",
+    "@tiptap/extension-ordered-list": "^2.4.0",
+    "@tiptap/extension-placeholder": "^2.4.0",
+    "@tiptap/extension-underline": "^2.4.0",
+    "@tiptap/pm": "^2.4.0",
+    "@tiptap/react": "^2.4.0",
+    "@tiptap/starter-kit": "^2.4.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -51,12 +59,11 @@
     "react-day-picker": "^8.10.0",
     "react-dom": "^18",
     "react-hook-form": "^7.51.0",
-    "react-markdown": "^9.0.1",
     "recharts": "^2.12.2",
     "resend": "^3.3.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.9.0",
+    "vaul": "^0.9.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -68,7 +75,7 @@
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
-    "@vitest/coverage-v8": "^2.0.2",
+    "@vitest/coverage-v8": "^2.0.3",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.2",
@@ -83,6 +90,6 @@
     "typedoc": "^0.26.3",
     "typedoc-theme-hierarchy": "^5.0.3",
     "typescript": "^5.5.3",
-    "vitest": "^2.0.2"
+    "vitest": "^2.0.3"
   }
 }

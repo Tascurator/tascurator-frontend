@@ -23,14 +23,12 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={cn(
-            'flex justify-center items-start w-screen min-h-screen bg-primary-lightest',
+            'flex justify-center items-start min-h-screen bg-primary-lightest',
             roboto.className,
           )}
         >
           <main
-            className={
-              'max-w-screen-sm min-h-screen w-full h-full bg-white px-6'
-            }
+            className={'max-w-screen-sm min-h-screen w-full h-full bg-white'}
           >
             {children}
           </main>

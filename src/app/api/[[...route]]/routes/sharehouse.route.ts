@@ -1,22 +1,114 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
 
-export const app = new Hono();
+import { shareHouseNameSchema } from '@/constants/schema';
+import prisma from '@/lib/prisma';
+
+const app = new Hono();
 
 export default app;
 
-app.get('/', (c) => {
-  return c.json({ message: 'share house route' });
+app.get('/:shareHouseId', async (c) => {
+  const shareHouseId = c.req.param('shareHouseId');
+
+  try {
+    const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
+      where: {
+        id: shareHouseId,
+      },
+      include: {
+        RotationAssignment: {
+          include: {
+            tenantPlaceholders: {
+              include: {
+                tenant: true,
+              },
+            },
+            categories: {
+              include: {
+                tasks: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!shareHouseWithOtherTables)
+      return c.json({ error: 'ShareHouse not found' }, 404);
+
+    if (!shareHouseWithOtherTables.RotationAssignment)
+      return c.json({ error: 'Internal Server Error' }, 500);
+
+    const shareHouseData = {
+      tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
+        .map((tenantPlaceholder) => {
+          if (tenantPlaceholder.tenant) {
+            return {
+              id: tenantPlaceholder.tenant.id,
+              name: tenantPlaceholder.tenant.name,
+              email: tenantPlaceholder.tenant.email,
+            };
+          }
+          return null;
+        })
+        .filter((tenantPlaceholder) => tenantPlaceholder !== null),
+
+      rotationCycle: shareHouseWithOtherTables.RotationAssignment.rotationCycle,
+      categories: shareHouseWithOtherTables.RotationAssignment.categories.map(
+        (category) => ({
+          id: category.id,
+          name: category.name,
+          tasks: category.tasks.map((task) => ({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+          })),
+        }),
+      ),
+    };
+
+    return c.json(shareHouseData);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: 'An error occurred while fetching data' }, 500);
+  }
 });
 
-app.get('/:shareHouseId', (c) => {
-  const shareHouseId = c.req.param('shareHouseId');
-  return c.json({ message: `Share house id: ${shareHouseId}` });
-});
+app.patch(
+  '/:shareHouseId',
+  zValidator('json', shareHouseNameSchema),
+  async (c) => {
+    try {
+      const shareHouseId = c.req.param('shareHouseId');
+      const data = c.req.valid('json');
+      const shareHouse = await prisma.shareHouse.findUnique({
+        where: {
+          id: shareHouseId,
+        },
+      });
 
-app.patch('/:shareHouseId', (c) => {
-  const shareHouseId = c.req.param('shareHouseId');
-  return c.json({ message: `Updating share house id: ${shareHouseId}` });
-});
+      if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+
+      const updateShareHouse = await prisma.shareHouse.update({
+        where: {
+          id: shareHouseId,
+        },
+        data: {
+          name: data.name,
+        },
+      });
+
+      return c.json(updateShareHouse, 201);
+    } catch (error) {
+      console.error('Error updating shareHouse:', error);
+      return c.json(
+        { error: 'An error occurred while updating shareHouse' },
+        500,
+      );
+    }
+  },
+);
 
 app.delete('/:shareHouseId', (c) => {
   const shareHouseId = c.req.param('shareHouseId');

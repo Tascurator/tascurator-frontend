@@ -63,7 +63,7 @@ export const DeleteConfirmationDrawer = ({
           <DrawerTitle>Confirm delete</DrawerTitle>
           <DrawerDescription asChild>
             <div className={'mt-8'}>
-              {`Are you sure you want to delete ${deleteItem}?`}
+              {`Are you sure you want to delete "${deleteItem}"?`}
               <div>
                 <label
                   className={
@@ -74,7 +74,7 @@ export const DeleteConfirmationDrawer = ({
                     checked={isChecked}
                     onCheckedChange={handleCheckboxChange}
                   />
-                  <p>{`Yes, I want to delete ${deleteItem}.`}</p>
+                  <p>{`Yes, I want to delete "${deleteItem}".`}</p>
                 </label>
               </div>
             </div>

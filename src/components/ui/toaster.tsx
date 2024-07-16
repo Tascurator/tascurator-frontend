@@ -39,10 +39,10 @@ export function Toaster() {
         return (
           <Toast key={id} variant={variant} {...props}>
             <div className="flex items-center justify-center gap-1">
-              {variant ? (
-                <TriangleAlert className="size-3.5 flex-shrink-0" />
-              ) : (
+              {variant === 'default' ? (
                 <Check className="size-3.5 flex-shrink-0" />
+              ) : (
+                <TriangleAlert className="size-3.5 flex-shrink-0" />
               )}
               {description && (
                 <ToastDescription>{description}</ToastDescription>
