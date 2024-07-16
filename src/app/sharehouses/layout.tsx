@@ -10,7 +10,9 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
   return (
     <>
       <Header type={'HeaderItemWithDropDown'} pageTitle={pageTitle} />
-      <div className="px-6">{children}</div>
+      <div className="flex flex-col px-6 min-h-[calc(100dvh-56px)]">
+        {children}
+      </div>
     </>
   );
 };
