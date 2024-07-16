@@ -24,7 +24,7 @@ const {
   PASSWORD_MIN_NUMBERS,
 } = CONSTRAINTS;
 
-const { minLength, lessLength, graterLength } = PASSWORD_CONSTRAINTS;
+const { minLength, length } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,8 +46,9 @@ const Form = () => {
   const password = watch('password');
 
   const [conditions, setConditions] = useState({
-    minLength: false,
-    maxLength: true,
+    length: false,
+    // minLength: false,
+    // maxLength: true,
     uppercase: false,
     lowercase: false,
     specialChar: false,
@@ -56,8 +57,9 @@ const Form = () => {
 
   useEffect(() => {
     setConditions({
-      minLength: password.length >= PASSWORD_MIN_LENGTH,
-      maxLength: password.length <= PASSWORD_MAX_LENGTH,
+      length:
+        password.length >= PASSWORD_MIN_LENGTH &&
+        password.length <= PASSWORD_MAX_LENGTH,
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
       specialChar: /[\W_]/.test(password),
@@ -67,12 +69,12 @@ const Form = () => {
 
   const ValidationListItems = [
     {
-      condition: conditions.minLength,
-      constraint: lessLength('characters long', PASSWORD_MIN_LENGTH),
-    },
-    {
-      condition: conditions.maxLength,
-      constraint: graterLength('characters long', PASSWORD_MAX_LENGTH),
+      condition: conditions.length,
+      constraint: length(
+        'characters long',
+        PASSWORD_MIN_LENGTH,
+        PASSWORD_MAX_LENGTH,
+      ),
     },
     {
       condition: conditions.uppercase,

@@ -12,6 +12,7 @@ const {
   SHAREHOUSE_NAME_MIN_LENGTH,
   SHAREHOUSE_NAME_MAX_LENGTH,
   PASSWORD_MIN_NUMBERS,
+  PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_CAPITAL_LETTERS,
   PASSWORD_MIN_LOWERCASE_LETTERS,
@@ -131,7 +132,7 @@ export const signupSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
   password: z
     .string()
-    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
     .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
     .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
     .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
@@ -151,7 +152,7 @@ export const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
+      .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
       .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
       .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
       .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))

@@ -1,8 +1,6 @@
 export const PASSWORD_CONSTRAINTS = {
   // Dynamic constraints
   minLength: (field: string, min: number) => `At least ${min} ${field}.`,
-  lessLength: (field: string, min: number) =>
-    `Less than or equal to ${min} ${field}.`,
-  graterLength: (field: string, max: number) =>
-    `Greater than or equal to ${max} ${field}.`,
+  length: (field: string, min: number, max: number) =>
+    `Between ${min} and ${max} ${field}.`,
 };
