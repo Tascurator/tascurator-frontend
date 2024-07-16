@@ -9,10 +9,38 @@ const app = new Hono();
 
 export default app;
 
-app.patch('/:categoryId', (c) => {
-  const categoryId = c.req.param('categoryId');
-  return c.json({ message: `Updating category id: ${categoryId}` });
-});
+app.patch(
+  '/:categoryId',
+  zValidator('json', categoryCreationSchema.pick({ category: true })),
+  async (c) => {
+    try {
+      const categoryId = c.req.param('categoryId');
+      const data = c.req.valid('json');
+
+      const category = await prisma.category.findUnique({
+        where: {
+          id: categoryId,
+        },
+      });
+
+      if (!category) return c.json({ error: 'Category not found' }, 404);
+
+      const updateCategory = await prisma.category.update({
+        where: {
+          id: categoryId,
+        },
+        data: {
+          name: data.category,
+        },
+      });
+
+      return c.json(updateCategory, 201);
+    } catch (error) {
+      console.error(error);
+      return c.json({ error: 'An error occurred while updating data' }, 500);
+    }
+  },
+);
 
 app.delete('/:categoryId', (c) => {
   const categoryId = c.req.param('categoryId');

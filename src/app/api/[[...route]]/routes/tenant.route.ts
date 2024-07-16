@@ -9,14 +9,59 @@ const app = new Hono();
 
 export default app;
 
-app.patch('/:tenantId', (c) => {
-  const tenantId = c.req.param('tenantId');
-  return c.json({ message: `Updating tenant id: ${tenantId}` });
-});
+app.patch(
+  '/:tenantId',
+  zValidator('json', tenantInvitationSchema.pick({ name: true })),
+  async (c) => {
+    try {
+      const tenantId = c.req.param('tenantId');
+      const data = c.req.valid('json');
 
-app.delete('/:tenantId', (c) => {
-  const tenantId = c.req.param('tenantId');
-  return c.json({ message: `Deleting tenant id: ${tenantId}` });
+      const tenant = await prisma.tenant.findUnique({
+        where: {
+          id: tenantId,
+        },
+      });
+
+      if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+
+      const updateTenant = await prisma.tenant.update({
+        where: {
+          id: tenantId,
+        },
+        data: {
+          name: data.name,
+        },
+      });
+
+      return c.json(updateTenant, 201);
+    } catch (error) {
+      console.error('Error updating tenant:', error);
+      return c.json({ error: 'An error occurred while updating  tenant' }, 500);
+    }
+  },
+);
+
+app.delete('/:tenantId', async (c) => {
+  try {
+    const tenantId = c.req.param('tenantId');
+    const tenant = await prisma.tenant.findUnique({
+      where: {
+        id: tenantId,
+      },
+    });
+    if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+
+    const deleteTenant = await prisma.tenant.delete({
+      where: {
+        id: tenantId,
+      },
+    });
+    return c.json(deleteTenant, 201);
+  } catch (error) {
+    console.error('Error deleting tenant:', error);
+    return c.json({ error: 'An error occurred while deleting  tenant' }, 500);
+  }
 });
 
 app.post(
