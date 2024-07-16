@@ -122,7 +122,10 @@ const SetupStepper = ({
             onBack={handleBack}
             onOpen={handleOpen}
           >
-            <DatePicker />
+            <div className="mb-6">
+              <p className="mb-6">Start date</p>
+              <DatePicker />
+            </div>
             <RotationCycle />
           </SetupContents>
           <SetupConfirmationDrawer open={openDrawer} setOpen={setOpenDrawer} />
