@@ -129,13 +129,6 @@ export const tenantInvitationSchema = z.object({
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
-export const loginSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z.string(),
-});
-
-export type TLoginSchema = z.infer<typeof loginSchema>;
-
 /**
  * The schema for the rotation cycle update form
  */
@@ -143,6 +136,17 @@ export type TLoginSchema = z.infer<typeof loginSchema>;
 export const rotationCycleUpdateSchema = z.object({
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
 });
+
+/**
+ * The schema for the authentication forms
+ */
+
+export const loginSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z.string(),
+});
+
+export type TLoginSchema = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
