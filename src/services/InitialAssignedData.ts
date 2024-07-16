@@ -52,4 +52,23 @@ export class InitialAssignedData extends AssignedData {
 
     this.getAssignedData().assignments = assignedData.assignments;
   }
+
+  /**
+   * Randomly toggles some tasks in the current assigned data for each tenant.
+   *
+   * @note This is intended to use in seed data generation for mock data.
+   */
+  public toggleTasksRandomly() {
+    const assignedData = this.getAssignedData();
+
+    for (const assignment of assignedData.assignments) {
+      if (!assignment.tasks) continue;
+
+      for (const task of assignment.tasks) {
+        if (Math.random() > 0.5) {
+          this.toggleTaskCompletion(assignment.tenant.id, task.id, true);
+        }
+      }
+    }
+  }
 }

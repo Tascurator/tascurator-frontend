@@ -316,11 +316,18 @@ const main = async () => {
       throw new Error('Share house not found');
     }
 
-    const assignedData = new InitialAssignedData(
+    const newInitialAssignedData = new InitialAssignedData(
       sharehouse,
       getToday(),
       sharehouse.RotationAssignment.rotationCycle,
-    ).getAssignedData();
+    );
+
+    /**
+     * Randomly toggle some tasks in the current assigned data for each tenant.
+     */
+    newInitialAssignedData.toggleTasksRandomly();
+
+    const assignedData = newInitialAssignedData.getAssignedData();
 
     console.log(
       '✅ Generated assigned data\n',
