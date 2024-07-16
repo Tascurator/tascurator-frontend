@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import type {
-  IAssignedCategory,
+import {
+  TAssignedCategory,
   IAssignedData,
   IAssignedTask,
-} from '@/types/commons';
+  ICategoriesEqualTenants,
+  ICategoriesLessThanTenants,
+  ICategoryWithoutSingleTenant,
+} from '@/types/server';
 
 /**
  * Generate assigned data based on the rotation assignment and tenant placeholders
@@ -129,21 +132,43 @@ export const generateAssignedData = async (
      *   tasks: [{ id: string, name: string, description: string, isCompleted: boolean }, ...],
      * }
      */
-    const assignedCategory: IAssignedCategory = {
-      category: { id: category.id, name: category.name },
-      tenantPlaceholderId: foundPlaceholder?.tenant
-        ? foundPlaceholder?.index ?? null
-        : null,
-      tenant: tenant ? { id: tenant.id, name: tenant.name } : null,
-      tasks: category.tasks.map(
-        (task): IAssignedTask => ({
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          isCompleted: Boolean(Math.round(Math.random())), // 1/2 chance of being completed
-        }),
-      ),
-    };
+    const assignedCategory: TAssignedCategory = (() => {
+      if (category && tenant) {
+        return {
+          category: { id: category.id, name: category.name },
+          tenantPlaceholderId: foundPlaceholder?.tenant
+            ? foundPlaceholder?.index ?? null
+            : null,
+          tenant: { id: tenant.id, name: tenant.name },
+          tasks: category.tasks.map(
+            (task): IAssignedTask => ({
+              id: task.id,
+              title: task.title,
+              description: task.description,
+              isCompleted: Boolean(Math.round(Math.random())), // 1/2 chance of being completed
+            }),
+          ),
+        } as unknown as ICategoriesEqualTenants;
+      } else if (tenant) {
+        return {
+          category: null,
+          tenantPlaceholderId: foundPlaceholder?.tenant
+            ? foundPlaceholder?.index ?? null
+            : null,
+          tenant: { id: tenant.id, name: tenant.name },
+          tasks: null,
+        } as unknown as ICategoriesLessThanTenants;
+      } else {
+        return {
+          category: { id: category.id, name: category.name },
+          tenantPlaceholderId: foundPlaceholder?.tenant
+            ? foundPlaceholder?.index ?? null
+            : null,
+          tenant: null,
+          tasks: null,
+        } as unknown as ICategoryWithoutSingleTenant;
+      }
+    })();
 
     /**
      * Add the assigned category to the assignments array
@@ -174,18 +199,21 @@ export const generateAssignedData = async (
     const assignedTenants = assignedData.assignments.map(
       (assignment) => assignment.tenant?.id,
     );
-    const extraTenants = tenantPlaceholders
+    const extraTenants: ICategoriesLessThanTenants[] = tenantPlaceholders
       .filter(
         (placeholder) => !assignedTenants.includes(placeholder.tenant?.id),
       )
-      .map((placeholder) => ({
-        category: null,
-        tenantPlaceholderId: placeholder.index,
-        tenant: placeholder.tenant
-          ? { id: placeholder.tenant.id, name: placeholder.tenant.name }
-          : null,
-        tasks: null,
-      }));
+      .map(
+        (placeholder): ICategoriesLessThanTenants => ({
+          category: null,
+          tenantPlaceholderId: placeholder.index,
+          tenant: {
+            id: placeholder.tenant!.id,
+            name: placeholder.tenant!.name,
+          },
+          tasks: null,
+        }),
+      );
 
     /**
      * Increase the extra assigned count for each tenant

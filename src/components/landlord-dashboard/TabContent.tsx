@@ -3,9 +3,18 @@ import { TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/piechart';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Key } from 'react';
-import { ILandlordDashboardTabContentProps } from '@/types/commons';
+import { ICardContentProps } from '@/types/commons';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+
+interface ILandlordDashboardTabContentProps {
+  tabType: string;
+  startDate: string;
+  endDate: string;
+  progressPercent: number;
+  cardContents: ICardContentProps[];
+  shareHouseId: string;
+}
 
 const LandlordDashboardTabContent = ({
   tabType,

@@ -1,7 +1,21 @@
 // import {Header} from '@/components/ui/header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LandlordDashboardTabContent } from '@/components/landlord-dashboard/TabContent';
-import { IShareHousePageProps } from '@/types/commons';
+import { ICardContentProps } from '@/types/commons';
+
+export interface IShareHousePageProps {
+  params: {
+    share_house_id: string;
+    shareHouseName: string;
+    currentStartDate: string;
+    currentEndDate: string;
+    progressPercent: number;
+    nextStartDate: string;
+    nextEndDate: string;
+    cardContentCurrent: ICardContentProps[];
+    cardContentNext: ICardContentProps[];
+  };
+}
 
 const ShareHousePage = ({
   params: {
