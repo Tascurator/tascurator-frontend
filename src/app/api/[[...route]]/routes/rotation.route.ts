@@ -3,7 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 
 import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
-import type { IAssignedData } from '@/types/commons';
+import type { IAssignedData } from '@/types/server';
 
 const app = new Hono();
 
