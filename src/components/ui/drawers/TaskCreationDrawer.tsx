@@ -13,7 +13,7 @@ import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   taskCreationSchema,
   taskUpdateSchema,
@@ -140,8 +140,9 @@ const EditTaskDrawer = ({
 };
 
 interface ITasksCreationConfirmationDrawer {
-  taskId?: string;
+  task: ITask | undefined;
   category: ICategoryWithoutTasks;
+  type: 'creation' | 'edit';
   open: boolean;
   setOpen: (value: boolean) => void;
   formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
@@ -152,15 +153,40 @@ interface ITasksCreationConfirmationDrawer {
  * A confirmation drawer component to confirm the task creation or update
  */
 const ConfirmTaskDrawer = ({
-  // taskId,
+  task,
   category,
+  type,
   open,
   setOpen,
   formControls,
   closeConfirmationDrawer,
 }: ITasksCreationConfirmationDrawer) => {
-  const { handleSubmit, watch } = formControls;
+  const {
+    handleSubmit,
+    watch,
+    formState: { isValid },
+  } = formControls;
   const [isLoading, setIsLoading] = useState(false);
+
+  // for determining if the form data has been changed
+  const initialValues = {
+    title: task?.title || '',
+    description: task?.description || '',
+  };
+
+  const [isTitleChanged, setIsTitleChanged] = useState(false);
+  const [isDescriptionChanged, setIsDescriptionChanged] = useState(false);
+
+  const watchedTitle = watch('title');
+  const watchedDescription = watch('description');
+
+  useEffect(() => {
+    setIsTitleChanged(initialValues.title !== watchedTitle);
+  }, [watchedTitle, initialValues.title]);
+
+  useEffect(() => {
+    setIsDescriptionChanged(initialValues.description !== watchedDescription);
+  }, [watchedDescription, initialValues.description]);
 
   const onSubmit: SubmitHandler<
     TTaskCreationSchema | TTaskUpdateSchema
@@ -168,17 +194,33 @@ const ConfirmTaskDrawer = ({
     setIsLoading(true);
     setOpen(true);
 
-    // Submit the form data
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Update or create the task based on the taskId
-    if (data) {
+    if (isValid) {
+      // if no change, delete the title from the data object
+      if (type === 'edit' && !isTitleChanged) {
+        delete data.title;
+      }
+      // if no change, delete the description from the data object
+      if (type === 'edit' && !isDescriptionChanged) {
+        delete data.description;
+      }
+
+      // if no change for both title and description, return without doing anything
+      if (type === 'edit' && !isTitleChanged && !isDescriptionChanged) {
+        setIsLoading(false);
+        setOpen(false);
+        return;
+      }
+
+      console.log('Updating the task:', data);
+
       setIsLoading(false);
       toast({
         variant: 'default',
         description: 'Updated successfully!',
       });
-      console.log('Updating the task:', data);
       setOpen(false);
     } else {
       setIsLoading(false);
@@ -237,7 +279,11 @@ const ConfirmTaskDrawer = ({
               >
                 Cancel
               </Button>
-              <Button type={'submit'} className={'flex-1'}>
+              <Button
+                type={'submit'}
+                className={'flex-1'}
+                disabled={!isTitleChanged && !isDescriptionChanged}
+              >
                 Publish
               </Button>
             </DrawerFooter>
@@ -339,8 +385,9 @@ export const TaskCreationDrawer = ({
       />
 
       <ConfirmTaskDrawer
-        taskId={task?.id}
+        task={task}
         category={category}
+        type={type}
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
         formControls={formControls}
