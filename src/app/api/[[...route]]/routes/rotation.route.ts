@@ -164,7 +164,7 @@ app.get('/next/:shareHouseId', async (c) => {
     /**
      * Structure the nextAssignedData to be returned.
      */
-    const res = {
+    const nextAssignmentData = {
       name: sharehouse.name,
       startDate: sharehouse.assignmentSheet.startDate.toISOString(),
       endDate: sharehouse.assignmentSheet.endDate.toISOString(),
@@ -187,7 +187,7 @@ app.get('/next/:shareHouseId', async (c) => {
         .filter((assignment) => assignment !== null),
     };
 
-    return c.json(res);
+    return c.json(nextAssignmentData);
   } catch (error) {
     console.error(error);
     return c.json({ error: 'An error occurred while fetching data' }, 500);
