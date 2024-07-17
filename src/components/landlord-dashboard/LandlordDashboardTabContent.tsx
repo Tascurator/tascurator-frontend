@@ -16,7 +16,7 @@ interface ILandlordDashboardTabContentProps {
   shareHouseId: string;
 }
 
-const LandlordDashboardTabContent = ({
+export const LandlordDashboardTabContent = ({
   tabType,
   startDate,
   endDate,
@@ -78,4 +78,4 @@ const LandlordDashboardTabContent = ({
   );
 };
 
-export { LandlordDashboardTabContent };
+// export { LandlordDashboardTabContent };

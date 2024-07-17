@@ -1,6 +1,6 @@
 // import {Header} from '@/components/ui/header';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LandlordDashboardTabContent } from '@/components/landlord-dashboard/TabContent';
+import { LandlordDashboardTabContent } from '@/components/landlord-dashboard/LandlordDashboardTabContent';
 import { ICardContentProps } from '@/types/commons';
 
 export interface IShareHousePageProps {

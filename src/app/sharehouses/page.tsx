@@ -1,6 +1,6 @@
 // import {Header} from '@/components/ui/header';
 import { Progress } from '@/components/ui/piechart';
-import { LandlordDashboard } from '@/components/landlord-dashboard/Dropdown';
+import { LandlordDashboard } from '@/components/landlord-dashboard/LandlordDashboard';
 import Link from 'next/link';
 import { FloatingActionButton } from '@/components/ui/floatingActionButton';
 
@@ -12,31 +12,31 @@ interface IShareHouse {
 
 const ShareHousesPage = () => {
   const shareHouses: IShareHouse[] = [
-    // {
-    //   shareHouseId: 'yourShareHouseId',
-    //   shareHouseName: 'Sample Share House',
-    //   progressPercent: 50,
-    // },
-    // {
-    //   shareHouseId: 'yourShareHouseId2',
-    //   shareHouseName: 'Sample Share House 2',
-    //   progressPercent: 80,
-    // },
-    // {
-    //   shareHouseId: 'yourShareHouseId3',
-    //   shareHouseName: 'Sample Share House 3',
-    //   progressPercent: 20,
-    // },
+    {
+      shareHouseId: 'yourShareHouseId',
+      shareHouseName: 'Sample Share House',
+      progressPercent: 50,
+    },
+    {
+      shareHouseId: 'yourShareHouseId2',
+      shareHouseName: 'Sample Share House 2',
+      progressPercent: 80,
+    },
+    {
+      shareHouseId: 'yourShareHouseId3',
+      shareHouseName: 'Sample Share House 3',
+      progressPercent: 20,
+    },
   ];
 
   if (shareHouses.length === 0) {
     return (
       <>
-        <div className="flex items-center justify-end mt-2">0/10</div>
-        <div className="flex items-center justify-center mt-4">
-          No share houses
+        <div className="flex items-center justify-end mt-4 mb-2 text-base">
+          {shareHouses.length}/10
         </div>
-        <div className="absolute right-11 bottom-8">
+        <div className="flex items-center justify-center">No share houses</div>
+        <div className="fixed right-11 bottom-8">
           <Link href={`/sharehouses/new`}>
             <FloatingActionButton />
           </Link>
@@ -46,15 +46,17 @@ const ShareHousesPage = () => {
   } else {
     return (
       <div>
-        <div className="flex items-center justify-end mt-2">
+        <div className="flex items-center justify-end mt-4 mb-2 text-base">
           {shareHouses.length}/10
         </div>
-        <div className="absolute right-11 bottom-8">
-          <FloatingActionButton />
+        <div className="fixed right-11 bottom-8">
+          <Link href={`/sharehouses/new`}>
+            <FloatingActionButton />
+          </Link>
         </div>
         {shareHouses.map((shareHouse) => (
           <div
-            className="bg-primary-lightest rounded-md my-4 px-4 pt-4 shadow-lg"
+            className="bg-primary-lightest rounded-md mb-4 px-4 pt-4 shadow-lg"
             key={shareHouse.shareHouseId}
           >
             <Link href={`/sharehouses/${shareHouse.shareHouseId}/`}>

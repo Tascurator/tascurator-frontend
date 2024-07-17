@@ -13,7 +13,7 @@ import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirma
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import Link from 'next/link';
 
-const LandlordDashboard = ({
+export const LandlordDashboard = ({
   shareHouseName,
   shareHouseId,
 }: {
@@ -76,4 +76,4 @@ const LandlordDashboard = ({
   );
 };
 
-export { LandlordDashboard };
+// export { LandlordDashboard };
