@@ -28,8 +28,8 @@ import ListItem from '@tiptap/extension-list-item';
 import BulletList from '@tiptap/extension-bullet-list';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Placeholder from '@tiptap/extension-placeholder';
-import { TaskDescriptionEditor } from '@/components/ui/drawers/TaskDescriptionEditor';
-import { TaskDescriptionRenderer } from '@/components/ui/drawers/TaskDescriptionRenderer';
+import { TaskDescriptionEditor } from '@/components/ui/drawers/task-description/TaskDescriptionEditorForCategory';
+import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-description/TaskDescriptionRendererForCategory';
 import { toast } from '../use-toast';
 import { LoadingSpinner } from '../loadingSpinner';
 
@@ -304,7 +304,7 @@ export const CategoryCreationDrawer = ({
 }: ICategoryCreationDrawer) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
-  const formControls = useForm({
+  const formControls = useForm<TCategoryCreationSchema>({
     resolver: zodResolver(categoryCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {

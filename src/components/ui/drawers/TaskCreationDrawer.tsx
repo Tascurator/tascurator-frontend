@@ -21,8 +21,8 @@ import {
   TTaskUpdateSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
-import { TaskDescriptionEditor } from '@/components/ui/drawers/TaskDescriptionEditor';
-import { TaskDescriptionRenderer } from '@/components/ui/drawers/TaskDescriptionRenderer';
+import { TaskDescriptionEditor } from '@/components/ui/drawers/task-description/TaskDescriptionEditor';
+import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-description/TaskDescriptionRenderer';
 import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
 import { toast } from '../use-toast';
 import { LoadingSpinner } from '../loadingSpinner';
@@ -281,17 +281,20 @@ const getSchema = (type: drawerType) => {
  * id: '1'
  * title: 'Kitchen',
  * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'taskCreation'} category={category}/>
+ * <TaskCreationDrawer open={open} setOpen={setOpen} type={'creation'} category={category}/>
  *
  * // To edit an existing task
+ * const category = {
+ * id: '1'
+ * title: 'Kitchen',
+ * };
+ *
  * const task = {
  *  id: '1',
- *  category: 'Kitchen',
  *  title: 'Clean the kitchen',
  *  description: 'Clean the kitchen and make it shine.',
- *  type={'taskEdit'}
  * };
- * <TaskCreationDrawer task={task} open={open} setOpen={setOpen} />
+ * <TaskCreationDrawer open={open} setOpen={setOpen} task={task} category={category} type={'edit'}/>
  */
 export const TaskCreationDrawer = ({
   category,
