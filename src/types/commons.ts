@@ -34,3 +34,13 @@ export interface ITenant {
   name: string;
   email: string;
 }
+
+/**
+ * The enum for RotationCycle
+ * - Weekly: 7 days
+ * - Fortnightly: 14 days
+ */
+export enum RotationCycle {
+  Weekly = 7,
+  Fortnightly = 14,
+}
