@@ -44,7 +44,7 @@ export const TaskDescriptionDrawer = ({
       <DrawerContent className={'h-[90%]'} asChild>
         <form onSubmit={handleLogout}>
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>
+          <DrawerDescription asChild>
             <div
               id="taskDescriptionHtml"
               dangerouslySetInnerHTML={{ __html: description }}
