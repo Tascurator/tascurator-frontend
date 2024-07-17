@@ -106,7 +106,7 @@ const EditTaskDrawer = ({
           className={'flex-1 flex flex-col items-start'}
           asChild
         >
-          <div className={'overflow-y-scroll pb-1'}>
+          <div className={'overflow-y-auto pb-1'}>
             {/* Category input field */}
             <Input
               {...register('category')}
