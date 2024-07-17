@@ -30,12 +30,12 @@ export class AssignedData {
   public getAssignedData = (): IAssignedData => this.assignedData;
 
   /**
-   * Returns the start date of the rotation
+   * Returns the start date of the rotation in UTC+0 time
    */
   public getStartDate = (): Date => this.startDate;
 
   /**
-   * Returns the end date of the rotation
+   * Returns the end date of the rotation in UTC+0 time
    */
   public getEndDate = (): Date => this.endDate;
 
@@ -170,8 +170,13 @@ export class AssignedData {
     tenantPlaceholders: TPrismaTenantPlaceholder[],
     rotationCycle: RotationCycle,
   ): AssignedData => {
-    const startDate = addDays(this.endDate, 1);
-    const endDate = addDays(startDate, rotationCycle - 1);
+    /**
+     * Note:
+     * The startDate is already in UTC+0 time, and adding days to it will not affect the result.
+     * Therefore, converting it to PDT time is not necessary.
+     */
+    const startDate = this.getEndDate();
+    const endDate = addDays(startDate, rotationCycle);
     const nextAssignedData = this.generateNextAssignedData(
       categories,
       tenantPlaceholders,

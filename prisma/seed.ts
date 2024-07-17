@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import bcrypt, { genSaltSync } from 'bcryptjs';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
-import { getToday } from '@/utils/dates';
+import { addDays, convertToUTC, getToday } from '@/utils/dates';
 
 const prisma = new PrismaClient();
 
@@ -31,10 +31,12 @@ const createLandlord = async () => {
 };
 
 const createAssignmentSheet = async () => {
+  const todayInUTC = convertToUTC(getToday());
+
   return prisma.assignmentSheet.create({
     data: {
-      startDate: new Date('2025-01-01T00:00:00Z'),
-      endDate: new Date('2025-01-08T00:00:00Z'),
+      startDate: todayInUTC,
+      endDate: addDays(todayInUTC, 7),
       assignedData: '',
     },
   });
@@ -318,7 +320,7 @@ const main = async () => {
 
     const newInitialAssignedData = new InitialAssignedData(
       sharehouse,
-      getToday(),
+      sharehouse.assignmentSheet.startDate,
       sharehouse.RotationAssignment.rotationCycle,
     );
 
