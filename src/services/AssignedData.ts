@@ -13,6 +13,10 @@ import {
 import { addDays } from '@/utils/dates';
 import { RotationCycle } from '@/types/commons';
 
+/**
+ * Represents the assigned data for a specific rotation period based on a given assignedData.
+ * Provides methods to access and manipulate the assigned data and generate the next rotation's assigned data based on the current one.
+ */
 export class AssignedData {
   private readonly assignedData: IAssignedData;
   private readonly startDate: Date;

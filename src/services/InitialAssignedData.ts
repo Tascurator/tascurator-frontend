@@ -3,6 +3,10 @@ import { AssignedData } from '@/services/AssignedData';
 import { TPrismaShareHouse } from '@/types/server';
 import { RotationCycle } from '@/types/commons';
 
+/**
+ * Represents the initial assigned data for a share house, extending the AssignedData class.
+ * Automatically generates the initial assigned data for the first rotation cycle once instantiated.
+ */
 export class InitialAssignedData extends AssignedData {
   private readonly sharehouse: TPrismaShareHouse;
 
