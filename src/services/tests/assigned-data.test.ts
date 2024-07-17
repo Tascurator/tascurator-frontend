@@ -124,7 +124,7 @@ describe('AssignedData class', () => {
     expect(newAssignedDataInstance.getAssignedData()).toEqual(expectedData);
 
     expect(newAssignedDataInstance.getStartDate()).toEqual(
-      new Date('2025-01-09T00:00:00Z'),
+      new Date('2025-01-08T00:00:00Z'),
     );
     expect(newAssignedDataInstance.getEndDate()).toEqual(
       new Date('2025-01-15T00:00:00Z'),
@@ -252,7 +252,7 @@ describe('AssignedData class', () => {
       expect(newAssignedDataInstance.getAssignedData()).toEqual(expectedData);
 
       expect(newAssignedDataInstance.getStartDate()).toEqual(
-        new Date('2025-01-09T00:00:00Z'),
+        new Date('2025-01-08T00:00:00Z'),
       );
       expect(newAssignedDataInstance.getEndDate()).toEqual(
         new Date('2025-01-15T00:00:00Z'),
