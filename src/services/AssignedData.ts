@@ -99,6 +99,18 @@ export class AssignedData {
   };
 
   /**
+   * Retrieves the assigned tasks for a given tenant
+   *
+   * @param tenantId - The tenant ID
+   */
+  public getAssignedTasks = (tenantId: string) => {
+    return this.getAssignments()
+      .filter((category) => hasTasks(category))
+      .filter((category) => category.tenant.id === tenantId)
+      .flatMap((category) => (category ? category.tasks : []));
+  };
+
+  /**
    * Changes the completion status of a task
    *
    * @param tenantId - The tenant ID
