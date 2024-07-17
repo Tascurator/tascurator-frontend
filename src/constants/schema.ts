@@ -149,7 +149,7 @@ export const rotationCycleUpdateSchema = z.object({
 export const taskCompletionUpdateSchema = z.object({
   tasks: z.array(
     z.object({
-      id: z.string(),
+      id: z.string().uuid(),
       isCompleted: z.boolean(),
     }),
   ),
