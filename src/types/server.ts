@@ -80,6 +80,35 @@ export const hasTasks = (
   return category.tasks !== null;
 };
 
+interface ICurrentRotation {
+  startDate: string;
+  endDate: string;
+  categories: {
+    id: string;
+    name: string;
+    tasks: IAssignedTask[];
+  }[];
+}
+
+interface ISubsequentRotation {
+  startDate: string;
+  endDate: string;
+  categories: {
+    id: string;
+    name: string;
+    tasks: Pick<IAssignedTask, 'id' | 'title'>[];
+  }[];
+}
+
+type RotationKeys = 1 | 2 | 3 | 4;
+
+/**
+ * The response type for 'api/tenant/[assignment_sheet_id]/[tenant_id]'
+ */
+export type TRotationScheduleForecast = {
+  [key in RotationKeys]: key extends 1 ? ICurrentRotation : ISubsequentRotation;
+};
+
 /**
  * Type representing the Prisma ShareHouse object with the assignmentSheet and RotationAssignment included.
  */
