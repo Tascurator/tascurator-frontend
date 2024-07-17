@@ -45,3 +45,13 @@ export interface ICardContentProps {
   className?: string;
   isLast?: boolean;
 }
+
+/**
+ * The enum for RotationCycle
+ * - Weekly: 7 days
+ * - Fortnightly: 14 days
+ */
+export enum RotationCycle {
+  Weekly = 7,
+  Fortnightly = 14,
+}
