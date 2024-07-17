@@ -20,7 +20,7 @@ export interface ICategoriesEqualTenants {
 }
 
 /**
- * The object structure for AssignedCategory
+ * The object structure for Ass AssignedCategory
  * for when the number of tenants is greater than the number of tasks
  */
 export interface ICategoriesGreaterThanTenants {
@@ -69,6 +69,16 @@ export type TAssignedCategory =
 export interface IAssignedData {
   assignments: TAssignedCategory[];
 }
+
+/**
+ * Function to check if the category has tasks.
+ * @param category
+ */
+export const hasTasks = (
+  category: TAssignedCategory,
+): category is ICategoriesEqualTenants | ICategoriesGreaterThanTenants => {
+  return category.tasks !== null;
+};
 
 /**
  * Type representing the Prisma ShareHouse object with the assignmentSheet and RotationAssignment included.
