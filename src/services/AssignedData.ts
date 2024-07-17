@@ -122,13 +122,24 @@ export class AssignedData {
     taskId: string,
     status: boolean,
   ) => {
-    const assignments = this.getAssignments();
-    const assignment = assignments.find((a) => a.tenant?.id === tenantId);
-    if (!assignment) return;
+    /**
+     * Get the assigned tasks for the tenant
+     */
+    const assignedTasks = this.getAssignedTasks(tenantId);
 
-    const task = assignment.tasks?.find((t) => t.id === taskId);
+    /**
+     * Find the task to update
+     */
+    const task = assignedTasks.find((task) => task.id === taskId);
+
+    /**
+     * If the task is not found, return
+     */
     if (!task) return;
 
+    /**
+     * Update the task completion status
+     */
     task.isCompleted = status;
   };
 
