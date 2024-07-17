@@ -142,3 +142,19 @@ export type TLoginSchema = z.infer<typeof loginSchema>;
 export const rotationCycleUpdateSchema = z.object({
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
 });
+
+/**
+ * The schema for the task completion status update form
+ */
+export const taskCompletionUpdateSchema = z.object({
+  tasks: z.array(
+    z.object({
+      id: z.string(),
+      isCompleted: z.boolean(),
+    }),
+  ),
+});
+
+export type TTaskCompletionUpdateSchema = z.infer<
+  typeof taskCompletionUpdateSchema
+>;
