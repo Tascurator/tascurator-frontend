@@ -121,13 +121,48 @@ app.delete('/:shareHouseId', async (c) => {
 
     if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
 
-    const deleteShareHouse = await prisma.shareHouse.delete({
-      where: {
-        id: shareHouseId,
-      },
+    const transaction = await prisma.$transaction(async (prisma) => {
+      const deleteShareHouse = await prisma.shareHouse.delete({
+        where: {
+          id: shareHouseId,
+        },
+        include: {
+          assignmentSheet: true,
+          RotationAssignment: {
+            include: {
+              tenantPlaceholders: {
+                include: {
+                  tenant: true,
+                },
+              },
+              categories: {
+                include: {
+                  tasks: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      await prisma.assignmentSheet.delete({
+        where: {
+          id: deleteShareHouse.assignmentSheetId,
+        },
+      });
+
+      await prisma.tenant.deleteMany({
+        where: {
+          tenantPlaceholders: {
+            none: {},
+          },
+        },
+      });
+
+      return deleteShareHouse;
     });
 
-    return c.json(deleteShareHouse, 201);
+    return c.json(transaction, 201);
   } catch (error) {
     console.error('Error deleting the shareHouse:', error);
     return c.json(
