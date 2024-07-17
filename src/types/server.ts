@@ -1,4 +1,5 @@
 import type { ICategory, ITask, ITenant } from '@/types/commons';
+import { Prisma } from '@prisma/client';
 
 /**
  * The object structure for AssignedTask
@@ -19,7 +20,7 @@ export interface ICategoriesEqualTenants {
 }
 
 /**
- * The object structure for AssignedCategory
+ * The object structure for Ass AssignedCategory
  * for when the number of tenants is greater than the number of tasks
  */
 export interface ICategoriesGreaterThanTenants {
@@ -68,3 +69,83 @@ export type TAssignedCategory =
 export interface IAssignedData {
   assignments: TAssignedCategory[];
 }
+
+/**
+ * Function to check if the category has tasks.
+ * @param category
+ */
+export const hasTasks = (
+  category: TAssignedCategory,
+): category is ICategoriesEqualTenants | ICategoriesGreaterThanTenants => {
+  return category.tasks !== null;
+};
+
+interface ICurrentRotation {
+  startDate: string;
+  endDate: string;
+  categories: {
+    id: string;
+    name: string;
+    tasks: IAssignedTask[];
+  }[];
+}
+
+interface ISubsequentRotation {
+  startDate: string;
+  endDate: string;
+  categories: {
+    id: string;
+    name: string;
+    tasks: Pick<IAssignedTask, 'id' | 'title'>[];
+  }[];
+}
+
+type RotationKeys = 1 | 2 | 3 | 4;
+
+/**
+ * The response type for 'api/tenant/[assignment_sheet_id]/[tenant_id]'
+ */
+export type TRotationScheduleForecast = {
+  [key in RotationKeys]: key extends 1 ? ICurrentRotation : ISubsequentRotation;
+};
+
+/**
+ * Type representing the Prisma ShareHouse object with the assignmentSheet and RotationAssignment included.
+ */
+export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
+  select: {
+    assignmentSheet: true;
+    RotationAssignment: {
+      select: {
+        rotationCycle: true;
+        categories: {
+          include: { tasks: true };
+        };
+        tenantPlaceholders: {
+          include: {
+            tenant: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+/**
+ * Type representing the Prisma Category object with the tasks included.
+ */
+export type TPrismaCategory = Prisma.CategoryGetPayload<{
+  include: { tasks: true };
+}>;
+
+/**
+ * Type representing the Prisma Task object.
+ */
+export type TPrismaTask = Prisma.TaskGetPayload<NonNullable<unknown>>;
+
+/**
+ * Type representing the Prisma Tenant object.
+ */
+export type TPrismaTenantPlaceholder = Prisma.TenantPlaceholderGetPayload<{
+  include: { tenant: true };
+}>;
