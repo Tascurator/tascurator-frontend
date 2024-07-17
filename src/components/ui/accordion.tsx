@@ -66,7 +66,7 @@ const AccordionItem = forwardRef<
   <Item
     ref={ref}
     className={cn(
-      'border-b bg-primary-lightest rounded-xl shadow-md m-3',
+      'border-b bg-primary-lightest rounded-xl shadow-md my-6',
       className,
     )}
     {...props}

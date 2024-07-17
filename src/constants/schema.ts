@@ -18,9 +18,10 @@ const {
 const { minLength, maxLength } = ERROR_MESSAGES;
 
 /**
- * The schema for the task creation or update form
+ * The schema for the category creation or update form
  */
-export const taskCreationSchema = z.object({
+
+export const categoryCreationSchema = z.object({
   category: z
     .string()
     .min(
@@ -35,7 +36,8 @@ export const taskCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z
+  description: z.string(),
+  descriptionCount: z
     .string()
     .min(
       TASK_DESCRIPTION_MIN_LENGTH,
@@ -46,6 +48,30 @@ export const taskCreationSchema = z.object({
       maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
     ),
 });
+
+/**
+ * The schema for the task creation form
+ */
+
+export const taskCreationSchema = z.object({
+  categoryId: z.string(),
+  title: z
+    .string()
+    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
+  /**
+   * TODO: Please set up detailed validation for the description in the frontend team.
+   */
+  description: z.string(),
+});
+
+/**
+ * The schema for the task update form
+ */
+
+export const taskUpdateSchema = taskCreationSchema
+  .omit({ categoryId: true })
+  .partial();
 
 /**
  * The schema for the sharehouse edit or update form
@@ -82,6 +108,7 @@ export const categoryNameSchema = z.object({
 });
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
+export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
@@ -93,7 +120,7 @@ export const tenantInvitationSchema = z.object({
     .string()
     .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
     .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
@@ -107,3 +134,11 @@ export const loginSchema = z.object({
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+/**
+ * The schema for the rotation cycle update form
+ */
+
+export const rotationCycleUpdateSchema = z.object({
+  rotationCycle: z.union([z.literal(7), z.literal(14)]),
+});

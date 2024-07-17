@@ -1,3 +1,4 @@
+import { Header } from '@/components/ui/header';
 import { ReactNode } from 'react';
 
 interface IShareHousesLayoutProps {
@@ -5,7 +6,13 @@ interface IShareHousesLayoutProps {
 }
 
 const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
-  return <>{children}</>;
+  const pageTitle = 'Sample Share House';
+  return (
+    <>
+      <Header type={'HeaderItemWithDropDown'} pageTitle={pageTitle} />
+      <div className="px-6">{children}</div>
+    </>
+  );
 };
 
 export default ShareHousesLayout;
