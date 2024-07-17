@@ -7,13 +7,14 @@ import {
 } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Info } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TaskDescriptionDrawer } from '../ui/drawers/TaskDescriptionDrawer';
 import { Button } from '../ui/button';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '../ui/use-toast';
 import { cn } from '@/lib/utils';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
 
 interface AccordionAssignmentSheetProps {
   rotationData: {
@@ -47,6 +48,21 @@ export const AccordionAssignmentSheet = ({
     description: string;
   }>({ title: '', description: '' });
 
+  // Set initial checkbox states based on task completion status
+  useEffect(() => {
+    const initialChecked: { [taskId: string]: boolean } = {};
+    Object.values(rotationData.rotations).forEach((rotation) => {
+      rotation.categories.forEach((category) => {
+        category.tasks.forEach((task) => {
+          if (task.isCompleted) {
+            initialChecked[task.id] = true;
+          }
+        });
+      });
+    });
+    setIsChecked(initialChecked);
+  }, [rotationData]);
+
   const handleCheckboxChange = (taskId: string) => {
     setIsChecked((prevChecked) => ({
       ...prevChecked,
@@ -78,7 +94,10 @@ export const AccordionAssignmentSheet = ({
 
   const { handleSubmit } = useForm();
 
-  const handleSaveClick = () => {
+  const onSubmit = async () => {
+    setIsLoading(true);
+
+    // Update the tasks
     const updatedTasks = Object.values(rotationData.rotations)
       .flatMap((rotation) =>
         rotation.categories.flatMap((category) => category.tasks),
@@ -89,11 +108,6 @@ export const AccordionAssignmentSheet = ({
         isCompleted: isChecked[task.id] || false,
       }));
     console.log('updated', updatedTasks);
-  };
-
-  // TODO: Implement the onSubmit click functionality
-  const onSubmit = async () => {
-    setIsLoading(true);
 
     // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -101,7 +115,7 @@ export const AccordionAssignmentSheet = ({
       setIsLoading(false);
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
     }, 1000);
   };
@@ -118,9 +132,6 @@ export const AccordionAssignmentSheet = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           {Object.entries(rotationData.rotations).map(([key, rotation]) => {
             const numericKey = parseInt(key);
-            if (numericKey > 2) {
-              return null;
-            }
             return (
               <AccordionItem value={`item-${key}`} key={key}>
                 <AccordionTrigger>
@@ -130,66 +141,69 @@ export const AccordionAssignmentSheet = ({
                   className={'bg-primary-lightest p-0 rounded-none'}
                   asChild
                 >
-                  {rotation.categories.map((category) => (
-                    <div key={category.id}>
-                      <label className="flex items-center gap-1 mb-2 font-medium cursor-pointer">
-                        <Checkbox
-                          checked={category.tasks.every(
-                            (task) => isChecked[task.id],
-                          )}
-                          onCheckedChange={() =>
-                            handleAllCheckedChange(category.id)
-                          }
-                          disabled={numericKey > 1}
-                        />
-                        <p>{category.name}</p>
-                      </label>
+                  {rotation.categories.length === 0 ? (
+                    <p className="p-4 text-center">No task</p>
+                  ) : (
+                    rotation.categories.map((category) => (
+                      <div key={category.id}>
+                        <label className="flex items-center gap-1 mb-2 font-medium cursor-pointer">
+                          <Checkbox
+                            checked={category.tasks.every(
+                              (task) => isChecked[task.id],
+                            )}
+                            onCheckedChange={() =>
+                              handleAllCheckedChange(category.id)
+                            }
+                            disabled={numericKey > 1}
+                          />
+                          <p>{category.name}</p>
+                        </label>
 
-                      {category.tasks.map((task) => (
-                        <div
-                          key={task.id}
-                          className="flex justify-between items-center bg-white rounded-xl mb-2"
-                        >
-                          <label
-                            className={cn(
-                              `flex flex-1 items-center gap-1 py-2 px-3 cursor-pointer ${isChecked[task.id] ? 'text-gray-500' : ''}`,
-                            )}
+                        {category.tasks.map((task) => (
+                          <div
+                            key={task.id}
+                            className="flex justify-between items-center bg-white rounded-xl mb-2"
                           >
-                            <Checkbox
-                              checked={isChecked[task.id] || false}
-                              onCheckedChange={() =>
-                                handleCheckboxChange(task.id)
-                              }
-                              disabled={numericKey > 1}
-                            />
-                            <p>{task.title}</p>
-                          </label>
-                          <div className="flex items-center w-10 h-12 cursor-pointer">
-                            {numericKey < 2 && (
-                              <Info
-                                className="stroke-gray-500"
-                                onClick={() => {
-                                  setCurrentTask({
-                                    title: task.title,
-                                    description: task.description || '',
-                                  });
-                                  setIsDrawerOpen(true);
-                                }}
+                            <label
+                              className={cn(
+                                `flex flex-1 items-center gap-1 py-2 px-3 cursor-pointer ${isChecked[task.id] ? 'text-gray-500' : ''}`,
+                              )}
+                            >
+                              <Checkbox
+                                checked={isChecked[task.id] || false}
+                                onCheckedChange={() =>
+                                  handleCheckboxChange(task.id)
+                                }
+                                disabled={numericKey > 1}
                               />
-                            )}
+                              <p>{task.title}</p>
+                            </label>
+                            <div className="flex items-center w-10 h-12 cursor-pointer">
+                              {numericKey === 1 && (
+                                <Info
+                                  className="stroke-gray-500"
+                                  onClick={() => {
+                                    setCurrentTask({
+                                      title: task.title,
+                                      description: task.description || '',
+                                    });
+                                    setIsDrawerOpen(true);
+                                  }}
+                                />
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                  {numericKey < 2 && (
+                        ))}
+                      </div>
+                    ))
+                  )}
+                  {numericKey === 1 && (
                     <Button
                       type={'submit'}
                       className={'w-full mt-6'}
                       disabled={Object.values(isChecked).every(
                         (value) => !value,
                       )}
-                      onClick={handleSaveClick}
                     >
                       Save
                     </Button>

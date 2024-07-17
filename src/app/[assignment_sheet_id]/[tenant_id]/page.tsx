@@ -27,13 +27,15 @@ const AssignmentSheetPage = ({
               {
                 id: 'd7bd18d4-60c9-4fb7-b420-3139ed8cde64',
                 title: 'Clean the kitchen',
-                description: 'Ensure the kitchen is clean and tidy.',
+                description:
+                  '<p>Ensure the <strong>kitchen</strong> is</p><p><strong>clean</strong> and <u>tidy</u>.</p>',
                 isCompleted: false,
               },
               {
                 id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde64',
                 title: 'Sample title',
-                description: 'Sample description.',
+                description:
+                  '<p><strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non mollis nisi.</strong></p><p></p><p><u>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</u></p><p><strong>Nulla eget odio in nulla euismod commodo et sed mauris.</strong></p><p></p><ul class="list-disc pl-6"><li class="[&amp;>p]:inline"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></li><li class="[&amp;>p]:inline"><p><u>Praesent eget lorem volutpat, dignissim purus sit amet, posuere nisl.</u></p></li><li class="[&amp;>p]:inline"><p>Aenean at ante ornare, congue neque id, consectetur elit.</p></li></ul><p></p><ol class="list-decimal pl-6"><li class="[&amp;>p]:inline"><p>In auctor neque quis porta venenatis.</p></li><li class="[&amp;>p]:inline"><p>Fusce sed ex eget sapien tristique tincidunt.</p></li></ol>',
                 isCompleted: false,
               },
             ],
@@ -44,7 +46,7 @@ const AssignmentSheetPage = ({
       // rotation 2
       2: {
         startDate: '12/8',
-        endDate: '12/15',
+        endDate: '12/14',
         categories: [
           {
             id: '545ea4fe-83e1-4fb9-825e-408a03fd7fc0',
@@ -57,6 +59,29 @@ const AssignmentSheetPage = ({
             ],
           },
         ],
+      },
+      // rotation 3
+      3: {
+        startDate: '12/15',
+        endDate: '12/21',
+        categories: [
+          {
+            id: '545ea4fe-83e1-4fb9-825e-408a03fd7fca',
+            name: 'TEST',
+            tasks: [
+              {
+                id: '1cee1481-5be6-41c1-b5e1-7e68a72d817a',
+                title: 'TASK',
+              },
+            ],
+          },
+        ],
+      },
+      // rotation 4
+      4: {
+        startDate: '12/22',
+        endDate: '12/28',
+        categories: [],
       },
     },
   };

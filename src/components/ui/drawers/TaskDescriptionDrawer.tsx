@@ -5,8 +5,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { Skeleton } from '../skeleton';
-import { useEffect, useState } from 'react';
 
 interface ITaskDescriptionDrawer {
   title: string;
@@ -36,18 +34,6 @@ export const TaskDescriptionDrawer = ({
   open,
   setOpen,
 }: ITaskDescriptionDrawer) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (open) {
-      setIsLoading(true);
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
   const handleLogout = () => {
     setOpen(false);
   };
@@ -55,11 +41,14 @@ export const TaskDescriptionDrawer = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent asChild>
+      <DrawerContent className={'h-[90%]'} asChild>
         <form onSubmit={handleLogout}>
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>
-            {isLoading ? <Skeleton className="h-64" /> : <>{description}</>}
+            <div
+              id="taskDescriptionHtml"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           </DrawerDescription>
         </form>
       </DrawerContent>
