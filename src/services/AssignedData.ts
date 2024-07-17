@@ -325,9 +325,9 @@ export class AssignedData {
    * [3, 4, 5] -> The head index = 0
    */
   private getTenantPlaceholderRotationStartIndex = (): number | null => {
-    const assignments = this.assignedData.assignments
-      .map((category) => category.tenantPlaceholderId)
-      .filter((id) => id !== null);
+    const assignments = this.assignedData.assignments.map(
+      (category) => category.tenantPlaceholderId,
+    );
 
     return assignments.indexOf(0) ?? null;
   };
