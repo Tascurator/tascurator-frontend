@@ -34,33 +34,11 @@ export interface ITenant {
 }
 
 /**
- * The object structure for AssignedTask
- *
- * @note This type is mainly used in the backend.
+ * The enum for RotationCycle
+ * - Weekly: 7 days
+ * - Fortnightly: 14 days
  */
-export interface IAssignedTask extends ITask {
-  isCompleted: boolean;
-}
-
-/**
- * The object structure for AssignedCategory
- *
- * @note This type is mainly used in the backend.
- */
-export interface IAssignedCategory {
-  category: Omit<ICategory, 'tasks'> | null;
-  tenantPlaceholderId: number | null;
-  tenant: Omit<ITenant, 'email'> | null;
-  tasks: IAssignedTask[] | null;
-}
-
-/**
- * The object structure for AssignedData
- *
- * This replicates the JSON structure of the assignedData in the AssignmentSheet table.
- *
- * @note This type is mainly used in the backend.
- */
-export interface IAssignedData {
-  assignments: IAssignedCategory[];
+export enum RotationCycle {
+  Weekly = 7,
+  Fortnightly = 14,
 }

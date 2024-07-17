@@ -66,6 +66,14 @@ export const taskCreationSchema = z.object({
 });
 
 /**
+ * The schema for the task update form
+ */
+
+export const taskUpdateSchema = taskCreationSchema
+  .omit({ categoryId: true })
+  .partial();
+
+/**
  * The schema for the sharehouse edit or update form
  */
 
@@ -144,3 +152,11 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
 export type TShareHouseCreationSchema = z.infer<
   typeof shareHouseCreationSchema
 >;
+
+/**
+ * The schema for the rotation cycle update form
+ */
+
+export const rotationCycleUpdateSchema = z.object({
+  rotationCycle: z.union([z.literal(7), z.literal(14)]),
+});
