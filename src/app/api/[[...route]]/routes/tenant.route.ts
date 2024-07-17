@@ -4,6 +4,8 @@ import type { Tenant } from '@prisma/client';
 
 import { tenantInvitationSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
+import { AssignedData } from '@/services/AssignedData';
+import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 
 const app = new Hono();
 
@@ -149,12 +151,142 @@ app.post(
   },
 );
 
-app.get('/:assignmentSheetId/:tenantId', (c) => {
+app.get('/:assignmentSheetId/:tenantId', async (c) => {
   const assignmentSheetId = c.req.param('assignmentSheetId');
   const tenantId = c.req.param('tenantId');
-  return c.json({
-    message: `Assignment sheet id: ${assignmentSheetId}, tenant id: ${tenantId}`,
-  });
+
+  try {
+    const assignmentSheet = await prisma.assignmentSheet.findUnique({
+      where: {
+        id: assignmentSheetId,
+      },
+      include: {
+        ShareHouse: {
+          include: {
+            RotationAssignment: {
+              select: {
+                rotationCycle: true,
+                categories: {
+                  include: {
+                    tasks: true,
+                  },
+                },
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    /**
+     * Return an internal server error if the related resources are not found.
+     */
+    if (
+      !assignmentSheet ||
+      !assignmentSheet.ShareHouse ||
+      !assignmentSheet.ShareHouse.RotationAssignment
+    ) {
+      return c.json({ error: 'Assignment sheet not found' }, 500);
+    }
+
+    /**
+     * Create an AssignedData instance from the assignedData in the assignmentSheet.
+     */
+    const assignedData = new AssignedData(
+      assignmentSheet.assignedData as unknown as IAssignedData,
+      assignmentSheet.startDate,
+      assignmentSheet.endDate,
+    );
+
+    /**
+     * Check if the tenant exists in the assignedData.
+     */
+    if (!assignedData.hasTenant(tenantId)) {
+      return c.json({ error: 'Tenant not found' }, 404);
+    }
+
+    const rotationScheduleForecast: TRotationScheduleForecast = {
+      1: {
+        startDate: '',
+        endDate: '',
+        categories: [],
+      },
+      2: {
+        startDate: '',
+        endDate: '',
+        categories: [],
+      },
+      3: {
+        startDate: '',
+        endDate: '',
+        categories: [],
+      },
+      4: {
+        startDate: '',
+        endDate: '',
+        categories: [],
+      },
+    };
+
+    /**
+     * Get the currently assigned categories for the tenant.
+     */
+    const assignedCategories = assignedData.getAssignedCategories(tenantId);
+
+    rotationScheduleForecast['1'] = {
+      startDate: assignmentSheet.startDate.toISOString(),
+      endDate: assignmentSheet.endDate.toISOString(),
+      categories: assignedCategories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        tasks: category.tasks.map((task) => ({
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          isCompleted: task.isCompleted,
+        })),
+      })),
+    };
+
+    let nextAssignedData: AssignedData | null = null;
+
+    /**
+     * Get the subsequent rotations for the tenant.
+     */
+    for (let i: number = 2; i <= 4; i++) {
+      nextAssignedData = (nextAssignedData ?? assignedData).createNextRotation(
+        assignmentSheet.ShareHouse.RotationAssignment.categories,
+        assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders,
+        assignmentSheet.ShareHouse.RotationAssignment.rotationCycle,
+      );
+
+      const nextAssignedCategories =
+        nextAssignedData.getAssignedCategories(tenantId);
+
+      rotationScheduleForecast[i as 2 | 3 | 4] = {
+        startDate: nextAssignedData.getStartDate().toISOString(),
+        endDate: nextAssignedData.getEndDate().toISOString(),
+        categories: nextAssignedCategories.map((category) => ({
+          id: category.id,
+          name: category.name,
+          tasks: category.tasks.map((task) => ({
+            id: task.id,
+            title: task.title,
+          })),
+        })),
+      };
+    }
+
+    return c.json(rotationScheduleForecast);
+  } catch (error) {
+    console.error('Error getting tenant:', error);
+    return c.json({ error: 'An error occurred while getting tenant' }, 500);
+  }
 });
 
 app.patch('/:assignmentSheetId/:tenantId', (c) => {
