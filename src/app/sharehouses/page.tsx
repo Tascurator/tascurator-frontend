@@ -37,7 +37,9 @@ const ShareHousesPage = () => {
           No share houses
         </div>
         <div className="absolute right-11 bottom-8">
-          <FloatingActionButton />
+          <Link href={`/sharehouses/new`}>
+            <FloatingActionButton />
+          </Link>
         </div>
       </>
     );
@@ -68,9 +70,6 @@ const ShareHousesPage = () => {
             />
           </div>
         ))}
-        {/* <div className='fixed bottom-5 right-5 sm:'>
-        <FloatingActionButton />
-      </div> */}
       </div>
     );
   }
