@@ -2,7 +2,7 @@ import { Stepper } from '@/components/ui/stepper';
 import { Button } from '@/components/ui/button';
 import { ReactNode } from 'react';
 
-interface SetupContentsProps {
+interface ISetupContentsProps {
   title: string;
   currentStep: number;
   maxSteps: number;
@@ -22,14 +22,13 @@ const SetupContents = ({
   children,
   isNextDisabled,
   onOpen,
-}: SetupContentsProps) => {
+}: ISetupContentsProps) => {
   return (
     <div className="flex-1 flex flex-col justify-between h-full">
       <div>
         <h1 className="my-4">{title}</h1>
         <Stepper currentStep={currentStep} maxSteps={maxSteps} />
 
-        {/* <div className="h-[1000px]">aaaaaaaaaaaaaaaa</div> */}
         {children}
       </div>
       <div className="flex justify-center gap-4 py-4">
