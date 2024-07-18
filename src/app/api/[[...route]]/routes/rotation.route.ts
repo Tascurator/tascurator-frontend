@@ -166,8 +166,8 @@ app.get('/next/:shareHouseId', async (c) => {
      */
     const nextAssignmentData = {
       name: sharehouse.name,
-      startDate: sharehouse.assignmentSheet.startDate.toISOString(),
-      endDate: sharehouse.assignmentSheet.endDate.toISOString(),
+      startDate: nextAssignedData.getStartDate().toISOString(),
+      endDate: nextAssignedData.getEndDate().toISOString(),
       categories: nextAssignedData
         .getAssignments()
         .map((assignment) => {
