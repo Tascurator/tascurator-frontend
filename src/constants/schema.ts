@@ -203,3 +203,19 @@ export const resetPasswordSchema = z
   });
 
 export type TResetPassword = z.infer<typeof resetPasswordSchema>;
+
+/**
+ * The schema for the task completion status update form
+ */
+export const taskCompletionUpdateSchema = z.object({
+  tasks: z.array(
+    z.object({
+      id: z.string().uuid(),
+      isCompleted: z.boolean(),
+    }),
+  ),
+});
+
+export type TTaskCompletionUpdateSchema = z.infer<
+  typeof taskCompletionUpdateSchema
+>;
