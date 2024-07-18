@@ -152,6 +152,7 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
     if (!session.user.email)
       return c.json({ error: 'User email is missing' }, 400);
 
+    // Check for existing landlord by email
     const existingLandlord = await prisma.landlord.findUnique({
       where: {
         email: session.user.email,
@@ -160,6 +161,40 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
 
     if (existingLandlord)
       return c.json({ error: 'Landlord email already exists' }, 400);
+
+    // Check for existing shareHouse by name
+    const existingShareHouse = await prisma.shareHouse.findFirst({
+      where: {
+        name: data.name,
+      },
+    });
+
+    if (existingShareHouse)
+      return c.json({ error: 'ShareHouse name already exists' }, 400);
+
+    // Check for existing categories by name
+    const existingCategories = await prisma.category.findMany({
+      where: {
+        name: {
+          in: data.categories.map((category) => category.category),
+        },
+      },
+    });
+
+    if (existingCategories.length > 0)
+      return c.json({ error: 'Category name(s) already exists' }, 400);
+
+    // Check for existing tenants by email
+    const existingTenants = await prisma.tenant.findMany({
+      where: {
+        email: {
+          in: data.tenants.map((tenant) => tenant.email),
+        },
+      },
+    });
+
+    if (existingTenants.length > 0)
+      return c.json({ error: 'Tenant email(s) already exists' }, 400);
 
     if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
       return c.json(
