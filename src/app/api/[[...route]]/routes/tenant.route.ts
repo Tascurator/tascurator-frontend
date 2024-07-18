@@ -9,6 +9,7 @@ import {
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
+import { addDays } from '@/utils/dates';
 
 const app = new Hono();
 
@@ -243,7 +244,7 @@ app.get('/:assignmentSheetId/:tenantId', async (c) => {
 
     rotationScheduleForecast['1'] = {
       startDate: assignmentSheet.startDate.toISOString(),
-      endDate: assignmentSheet.endDate.toISOString(),
+      endDate: addDays(assignmentSheet.endDate, -1).toISOString(),
       categories: assignedCategories.map((category) => ({
         id: category.id,
         name: category.name,
@@ -273,7 +274,7 @@ app.get('/:assignmentSheetId/:tenantId', async (c) => {
 
       rotationScheduleForecast[i as 2 | 3 | 4] = {
         startDate: nextAssignedData.getStartDate().toISOString(),
-        endDate: nextAssignedData.getEndDate().toISOString(),
+        endDate: addDays(nextAssignedData.getEndDate(), -1).toISOString(),
         categories: nextAssignedCategories.map((category) => ({
           id: category.id,
           name: category.name,
