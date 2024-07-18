@@ -5,16 +5,13 @@ import {
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Info } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TaskDescriptionDrawer } from '../ui/drawers/TaskDescriptionDrawer';
 import { Button } from '../ui/button';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '../ui/use-toast';
-import { cn } from '@/lib/utils';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { AssignmentCategoryTasks } from './AssignmentCategoryTasks';
 
 interface AccordionAssignmentSheetProps {
   rotationData: {
@@ -40,23 +37,18 @@ interface AccordionAssignmentSheetProps {
 export const AccordionAssignmentSheet = ({
   rotationData,
 }: AccordionAssignmentSheetProps) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isChecked, setIsChecked] = useState<{ [taskId: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTask, setCurrentTask] = useState<{
-    title: string;
-    description: string;
-  }>({ title: '', description: '' });
+  const [isEnabled, setIsEnabled] = useState(true);
 
   // Set initial checkbox states based on task completion status
   useEffect(() => {
+    // Initialize isChecked based on initial task data
     const initialChecked: { [taskId: string]: boolean } = {};
     Object.values(rotationData.rotations).forEach((rotation) => {
       rotation.categories.forEach((category) => {
         category.tasks.forEach((task) => {
-          if (task.isCompleted) {
-            initialChecked[task.id] = true;
-          }
+          initialChecked[task.id] = !!task.isCompleted;
         });
       });
     });
@@ -64,6 +56,7 @@ export const AccordionAssignmentSheet = ({
   }, [rotationData]);
 
   const handleCheckboxChange = (taskId: string) => {
+    setIsEnabled(false);
     setIsChecked((prevChecked) => ({
       ...prevChecked,
       [taskId]: !prevChecked[taskId],
@@ -71,6 +64,7 @@ export const AccordionAssignmentSheet = ({
   };
 
   const handleAllCheckedChange = (categoryId: string) => {
+    setIsEnabled(false);
     // Get all task IDs for the category
     const taskIds = Object.values(rotationData.rotations).flatMap(
       (rotation) =>
@@ -102,9 +96,10 @@ export const AccordionAssignmentSheet = ({
       .flatMap((rotation) =>
         rotation.categories.flatMap((category) => category.tasks),
       )
-      .filter((task) => isChecked[task.id])
+      // .filter((task) => task.isCompleted)
       .map((task) => ({
-        ...task,
+        // ...task,
+        id: task.id,
         isCompleted: isChecked[task.id] || false,
       }));
     console.log('updated', updatedTasks);
@@ -145,65 +140,21 @@ export const AccordionAssignmentSheet = ({
                     <p className="p-4 text-center">No task</p>
                   ) : (
                     rotation.categories.map((category) => (
-                      <div key={category.id}>
-                        <label className="flex items-center gap-1 mb-2 font-medium cursor-pointer">
-                          <Checkbox
-                            checked={category.tasks.every(
-                              (task) => isChecked[task.id],
-                            )}
-                            onCheckedChange={() =>
-                              handleAllCheckedChange(category.id)
-                            }
-                            disabled={numericKey > 1}
-                          />
-                          <p>{category.name}</p>
-                        </label>
-
-                        {category.tasks.map((task) => (
-                          <div
-                            key={task.id}
-                            className="flex justify-between items-center bg-white rounded-xl mb-2"
-                          >
-                            <label
-                              className={cn(
-                                `flex flex-1 items-center gap-1 py-2 px-3 cursor-pointer ${isChecked[task.id] ? 'text-gray-500' : ''}`,
-                              )}
-                            >
-                              <Checkbox
-                                checked={isChecked[task.id] || false}
-                                onCheckedChange={() =>
-                                  handleCheckboxChange(task.id)
-                                }
-                                disabled={numericKey > 1}
-                              />
-                              <p>{task.title}</p>
-                            </label>
-                            <div className="flex items-center w-10 h-12 cursor-pointer">
-                              {numericKey === 1 && (
-                                <Info
-                                  className="stroke-gray-500"
-                                  onClick={() => {
-                                    setCurrentTask({
-                                      title: task.title,
-                                      description: task.description || '',
-                                    });
-                                    setIsDrawerOpen(true);
-                                  }}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      <AssignmentCategoryTasks
+                        key={category.id}
+                        category={category}
+                        isChecked={isChecked}
+                        handleAllCheckedChange={handleAllCheckedChange}
+                        handleCheckboxChange={handleCheckboxChange}
+                        numericKey={parseInt(key)}
+                      />
                     ))
                   )}
                   {numericKey === 1 && (
                     <Button
                       type={'submit'}
                       className={'w-full mt-6'}
-                      disabled={Object.values(isChecked).every(
-                        (value) => !value,
-                      )}
+                      disabled={isEnabled}
                     >
                       Save
                     </Button>
@@ -214,12 +165,6 @@ export const AccordionAssignmentSheet = ({
           })}
         </form>
       </Accordion>
-      <TaskDescriptionDrawer
-        open={isDrawerOpen}
-        setOpen={setIsDrawerOpen}
-        title={currentTask.title}
-        description={currentTask.description}
-      />
     </>
   );
 };

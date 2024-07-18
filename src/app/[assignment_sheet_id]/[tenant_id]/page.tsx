@@ -29,7 +29,7 @@ const AssignmentSheetPage = ({
                 title: 'Clean the kitchen',
                 description:
                   '<p>Ensure the <strong>kitchen</strong> is</p><p><strong>clean</strong> and <u>tidy</u>.</p>',
-                isCompleted: false,
+                isCompleted: true,
               },
               {
                 id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde64',
