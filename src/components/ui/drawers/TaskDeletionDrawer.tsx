@@ -1,3 +1,4 @@
+'use client';
 import {
   Drawer,
   DrawerContent,
@@ -9,6 +10,9 @@ import {
 } from '@/components/ui/drawer';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '../loadingSpinner';
+import { toast } from '../use-toast';
+import { useState } from 'react';
 
 interface ITaskDeletionDrawer {
   title: string;
@@ -51,39 +55,55 @@ export const TaskDeletionDrawer = ({
 }: ITaskDeletionDrawer) => {
   const { handleSubmit } = useForm();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // TODO: Implement the delete click functionality
-  const onSubmit = () => {
-    setTimeout(() => {
-      setOpen(false);
-    }, 1000);
+  const onSubmit = async () => {
+    setIsLoading(true);
+    setOpen(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    setIsLoading(false);
+    toast({
+      variant: 'default',
+      description: 'Updated successfully!',
+    });
+    setOpen(false);
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent asChild>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DrawerTitle>Delete</DrawerTitle>
-          <DrawerDescription asChild>
-            <p className={'mt-8'}>You want to delete &quot;{title}&quot; ?</p>
-          </DrawerDescription>
-          <DrawerFooter className={'flex justify-between'}>
-            <DrawerClose asChild>
-              <Button type={'button'} variant={'outline'} className={'flex-1'}>
-                Cancel
-              </Button>
-            </DrawerClose>
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+        <DrawerTrigger />
+        <DrawerContent asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DrawerTitle>Delete</DrawerTitle>
+            <DrawerDescription asChild>
+              <p className={'mt-8'}>You want to delete &quot;{title}&quot; ?</p>
+            </DrawerDescription>
+            <DrawerFooter className={'flex justify-between'}>
+              <DrawerClose asChild>
+                <Button
+                  type={'button'}
+                  variant={'outline'}
+                  className={'flex-1'}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
 
-            <Button
-              type={'submit'}
-              variant={'destructive'}
-              className={'flex-1'}
-            >
-              Delete
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+              <Button
+                type={'submit'}
+                variant={'destructive'}
+                className={'flex-1'}
+              >
+                Delete
+              </Button>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
