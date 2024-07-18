@@ -148,9 +148,44 @@ export const loginSchema = z.object({
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
 
+export const signupSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+    .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+    .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+    .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+    .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+});
+
+export type TSignupSchema = z.infer<typeof signupSchema>;
+
 export const forgotPasswordSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
 });
+
+export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+      .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+      .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+      .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+      .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+      .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
+
+export type TResetPassword = z.infer<typeof resetPasswordSchema>;
 
 /**
  * The schema for the task completion status update form
@@ -167,17 +202,3 @@ export const taskCompletionUpdateSchema = z.object({
 export type TTaskCompletionUpdateSchema = z.infer<
   typeof taskCompletionUpdateSchema
 >;
-
-export const signupSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z
-    .string()
-    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
-    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
-    .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
-    .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
-    .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
-    .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
-});
-
-export type TSignupSchema = z.infer<typeof signupSchema>;
