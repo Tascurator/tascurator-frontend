@@ -8,6 +8,7 @@ import {
 } from '@/constants/schema';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
 
 const app = new Hono();
@@ -156,80 +157,78 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
         400,
       );
 
-    const addDays = (date: Date, days: number) => {
-      const result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
-    };
+    const transaction = await prisma.$transaction(async (prisma) => {
+      const startDate = new Date(data.startDate);
+      const endDate = addDays(startDate, data.rotationCycle);
 
-    const startDate = new Date(data.startDate);
-    const endDate = addDays(startDate, data.rotationCycle);
-
-    const newAssignmentSheet = await prisma.assignmentSheet.create({
-      data: {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        assignedData: '',
-      },
-    });
-
-    const newShareHouse = await prisma.shareHouse.create({
-      data: {
-        name: data.name,
-        landlordId: landlordId,
-        assignmentSheetId: newAssignmentSheet.id,
-      },
-    });
-
-    const newRotationAssignment = await prisma.rotationAssignment.create({
-      data: {
-        shareHouseId: newShareHouse.id,
-        rotationCycle: data.rotationCycle,
-      },
-    });
-
-    const createdCategories: Category[] = [];
-    for (const categoryData of data.categories) {
-      const newCategory = await prisma.category.create({
+      const newAssignmentSheet = await prisma.assignmentSheet.create({
         data: {
-          name: categoryData.category,
-          rotationAssignmentId: newRotationAssignment.id,
-          tasks: {
-            create: categoryData.tasks.map((task) => ({
-              title: task.title,
-              description: task.description,
-            })),
-          },
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          assignedData: '',
         },
       });
-      createdCategories.push(newCategory);
-    }
 
-    const createdTenants: Tenant[] = [];
-    for (let i = 0; i < data.tenants.length; i++) {
-      const tenantData = data.tenants[i];
-      const newTenant = await prisma.tenant.create({
+      const newShareHouse = await prisma.shareHouse.create({
         data: {
-          name: tenantData.name,
-          email: tenantData.email,
-          extraAssignedCount: 0,
-          tenantPlaceholders: {
-            create: {
-              rotationAssignmentId: newRotationAssignment.id,
-              index: i,
+          name: data.name,
+          landlordId: landlordId,
+          assignmentSheetId: newAssignmentSheet.id,
+        },
+      });
+
+      const newRotationAssignment = await prisma.rotationAssignment.create({
+        data: {
+          shareHouseId: newShareHouse.id,
+          rotationCycle: data.rotationCycle,
+        },
+      });
+
+      const createdCategories: Category[] = [];
+      for (const categoryData of data.categories) {
+        const newCategory = await prisma.category.create({
+          data: {
+            name: categoryData.category,
+            rotationAssignmentId: newRotationAssignment.id,
+            tasks: {
+              create: categoryData.tasks.map((task) => ({
+                title: task.title,
+                description: task.description,
+              })),
             },
           },
-        },
-      });
-      createdTenants.push(newTenant);
-    }
+        });
+        createdCategories.push(newCategory);
+      }
 
-    return c.json({
-      shareHouse: newShareHouse,
-      rotationAssignment: newRotationAssignment,
-      categories: createdCategories,
-      tenants: createdTenants,
+      const createdTenants: Tenant[] = [];
+      for (let i = 0; i < data.tenants.length; i++) {
+        const tenantData = data.tenants[i];
+        const newTenant = await prisma.tenant.create({
+          data: {
+            name: tenantData.name,
+            email: tenantData.email,
+            extraAssignedCount: 0,
+            tenantPlaceholders: {
+              create: {
+                rotationAssignmentId: newRotationAssignment.id,
+                index: i,
+              },
+            },
+          },
+        });
+        createdTenants.push(newTenant);
+      }
+
+      return {
+        shareHouse: newShareHouse,
+        rotationAssignment: newRotationAssignment,
+        categories: createdCategories,
+        tenants: createdTenants,
+      };
     });
+
+    return c.json(transaction, 201);
   } catch (error) {
     console.error(error);
     return c.json({ error: 'An error occurred while creating data' }, 500);
