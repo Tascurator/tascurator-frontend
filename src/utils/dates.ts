@@ -27,9 +27,13 @@ const getPDTOffset = (date: Date): number => {
 
 /**
  * Get current date in the Pacific Daylight Time (PDT) time zone.
+ * The time is set to 12:00 AM (midnight).
  */
 export const getToday = (): Date => {
-  return convertToPDT(new Date());
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  return convertToPDT(now);
 };
 
 /**
@@ -52,7 +56,6 @@ export const addDays = (date: Date, days: number): Date => {
  * const pdtDate = new Date('2021-09-30T17:00:00Z');
  * const utcDate = convertToUTC(pdtDate);
  * console.log(utcDate); // 2021-10-01T00:00:00.000Z
- *
  */
 export const convertToUTC = (date: Date): Date => {
   const pdtOffset = getPDTOffset(date);

@@ -42,9 +42,42 @@ app.patch(
   },
 );
 
-app.delete('/:categoryId', (c) => {
-  const categoryId = c.req.param('categoryId');
-  return c.json({ message: `Deleting category id: ${categoryId}` });
+app.delete('/:categoryId', async (c) => {
+  try {
+    const categoryId = c.req.param('categoryId');
+    const category = await prisma.category.findUnique({
+      where: {
+        id: categoryId,
+      },
+    });
+    if (!category) return c.json({ error: 'Category not found' }, 404);
+
+    const categories = await prisma.category.findMany({
+      where: {
+        rotationAssignmentId: category.rotationAssignmentId,
+      },
+    });
+
+    if (categories.length <= 1)
+      return c.json(
+        { error: 'You are not allowed to delete this category' },
+        403,
+      );
+
+    const deleteCategory = await prisma.category.delete({
+      where: {
+        id: categoryId,
+      },
+    });
+
+    return c.json(deleteCategory, 201);
+  } catch (error) {
+    console.error('Error deleting the category:', error);
+    return c.json(
+      { error: 'An error occurred while updating the category' },
+      500,
+    );
+  }
 });
 
 app.post(
