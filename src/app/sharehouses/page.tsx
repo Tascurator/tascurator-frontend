@@ -56,11 +56,11 @@ const ShareHousesPage = () => {
   };
 
   return (
-    <div>
+    <div className="pb-20">
       <div className="flex items-center justify-end mt-4 mb-2 text-base">
         {shareHouses.length}/10
       </div>
-      <div className="fixed right-11 bottom-8">
+      <div className="fixed right-6 bottom-6">
         <Link href={`/sharehouses/new`}>
           <FloatingActionButton />
         </Link>
