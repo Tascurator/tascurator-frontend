@@ -149,6 +149,18 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
         404,
       );
 
+    if (!session.user.email)
+      return c.json({ error: 'User email is missing' }, 400);
+
+    const existingLandlord = await prisma.landlord.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    });
+
+    if (existingLandlord)
+      return c.json({ error: 'Landlord email already exists' }, 400);
+
     if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
       return c.json(
         {
