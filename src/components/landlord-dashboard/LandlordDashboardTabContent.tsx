@@ -24,11 +24,54 @@ export const LandlordDashboardTabContent = ({
   cardContents,
   shareHouseId,
 }: ILandlordDashboardTabContentProps) => {
+  const renderCardContent = (
+    content: ICardContentProps,
+    index: Key,
+    isCurrent: boolean,
+  ) => {
+    if (content.category === null && !content.tenant) {
+      return (
+        <div
+          key={index}
+          className="flex items-center justify-center flex-col w-full py-6"
+        >
+          <div className="pb-4">No tenants</div>
+          <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
+            <Button>Add tenant</Button>
+          </Link>
+        </div>
+      );
+    } else if (content.category === null && content.tenant) {
+      return (
+        <CardContent
+          key={index}
+          tenant={content.tenant}
+          isComplete={isCurrent}
+          taskNum={0}
+          completedTaskNum={0}
+          category={'--'}
+        />
+      );
+    }
+    return (
+      <CardContent
+        key={index}
+        category={content.category}
+        tenant={content.tenant}
+        isComplete={isCurrent ? content.isComplete : false}
+        taskNum={content.taskNum}
+        completedTaskNum={isCurrent ? content.completedTaskNum : 0}
+      />
+    );
+  };
+
   return (
     <TabsContent value={tabType}>
       <div className="flex justify-center">
         <div className="w-32 sm:w-48">
-          <Progress progressPercent={progressPercent} />
+          <Progress
+            progressPercent={tabType === 'current' ? progressPercent : 0}
+          />
         </div>
       </div>
       <Card className="mt-6">
@@ -37,45 +80,12 @@ export const LandlordDashboardTabContent = ({
           endDate={endDate}
           title={'Task assignment'}
         />
-        {cardContents.map(
-          (
-            content: {
-              category: string | null;
-              tenant: string;
-              isComplete: boolean;
-              taskNum: number;
-              completedTaskNum: number;
-            },
-            index: Key,
-          ) => {
-            if (content.category === null) {
-              return (
-                <div
-                  key={index}
-                  className="flex items-center justify-center flex-col w-full py-6"
-                >
-                  <div className="pb-4">No tenants</div>
-                  <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
-                    <Button>Add tenant</Button>
-                  </Link>
-                </div>
-              );
-            }
-            return (
-              <CardContent
-                key={index}
-                category={content.category}
-                tenant={content.tenant}
-                isComplete={content.isComplete}
-                taskNum={content.taskNum}
-                completedTaskNum={content.completedTaskNum}
-              />
-            );
-          },
+        {cardContents.map((content, index) =>
+          renderCardContent(content, index, tabType === 'current'),
         )}
       </Card>
     </TabsContent>
   );
 };
 
-// export { LandlordDashboardTabContent };
+export default LandlordDashboardTabContent;

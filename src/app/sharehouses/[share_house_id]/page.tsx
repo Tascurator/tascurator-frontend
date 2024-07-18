@@ -39,61 +39,60 @@ const ShareHousePage = ({
   nextStartDate = '2022-01-08';
   nextEndDate = '2022-01-14';
 
+  // EXAMPLE: TENANTS
   cardContentCurrent = [
     {
       category: null,
       isComplete: false,
       taskNum: 0,
       completedTaskNum: 0,
-      tenant: '',
+      tenant: 'Akio',
     },
-  ];
-
-  // cardContentCurrent = [
-  //   {
-  //     category: 'Kitchen',
-  //     tenant: 'Matio',
-  //     isComplete: true,
-  //     taskNum: 4,
-  //     completedTaskNum: 4,
-  //   },
-  //   {
-  //     category: 'Bathroom',
-  //     tenant: 'Akio',
-  //     isComplete: false,
-  //     taskNum: 9,
-  //     completedTaskNum: 3,
-  //   },
-  //   {
-  //     category: 'Living room',
-  //     tenant: 'Maaaatio',
-  //     isComplete: false,
-  //     taskNum: 7,
-  //     completedTaskNum: 2,
-  //   },
-  // ];
-
-  cardContentNext = [
     {
       category: 'Kitchen',
       tenant: 'Matio',
-      isComplete: false,
+      isComplete: true,
       taskNum: 4,
-      completedTaskNum: 0,
+      completedTaskNum: 4,
     },
     {
       category: 'Bathroom',
       tenant: 'Akio',
       isComplete: false,
       taskNum: 9,
-      completedTaskNum: 0,
+      completedTaskNum: 3,
     },
     {
       category: 'Living room',
       tenant: 'Maaaatio',
       isComplete: false,
       taskNum: 7,
-      completedTaskNum: 0,
+      completedTaskNum: 2,
+    },
+  ];
+
+  // // EXAMPLE: NO TENANTS
+  // cardContentCurrent = [
+  //   {
+  //     category: null,
+  //   }
+  // ];
+
+  cardContentNext = [
+    {
+      category: null,
+      tenant: 'Matio',
+      taskNum: 4,
+    },
+    {
+      category: 'Bathroom',
+      tenant: 'Akio',
+      taskNum: 9,
+    },
+    {
+      category: 'Living room',
+      tenant: 'Maaaatio',
+      taskNum: 7,
     },
   ];
 

@@ -38,10 +38,10 @@ export interface ITenant {
  */
 export interface ICardContentProps {
   category: string | null;
-  tenant: string;
-  isComplete: boolean;
-  taskNum: number;
-  completedTaskNum: number;
+  tenant?: string;
+  isComplete?: boolean;
+  taskNum?: number;
+  completedTaskNum?: number;
   className?: string;
   isLast?: boolean;
 }

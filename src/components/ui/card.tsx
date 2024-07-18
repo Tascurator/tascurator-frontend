@@ -1,7 +1,7 @@
 import { forwardRef, HTMLAttributes } from 'react';
 
 import { CalendarDays, CircleCheck } from 'lucide-react';
-
+import { ICardContentProps } from '@/types/commons';
 import { cn } from '@/lib/utils';
 
 interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -9,14 +9,14 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
   endDate: string;
 }
 
-interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
-  category: string;
-  tenant: string;
-  isComplete: boolean;
-  isLast?: boolean;
-  taskNum: number;
-  completedTaskNum: number;
-}
+// interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
+//   category: string;
+//   tenant: string;
+//   isComplete: boolean;
+//   isLast?: boolean;
+//   taskNum: number;
+//   completedTaskNum: number;
+// }
 
 /**
  * The Card component is the root component for the Card component.
@@ -113,7 +113,8 @@ CardDescription.displayName = 'CardDescription';
  * @example
  * <CardContent category={category} tenant={tenant} isComplete={isComplete} />
  */
-const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
+// const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
+const CardContent = forwardRef<HTMLDivElement, ICardContentProps>(
   (
     {
       className,
@@ -157,7 +158,8 @@ CardContent.displayName = 'CardContent';
  */
 const CardContentDescription = forwardRef<
   HTMLParagraphElement,
-  CardContentProps
+  // CardContentProps
+  ICardContentProps
 >(
   (
     {
