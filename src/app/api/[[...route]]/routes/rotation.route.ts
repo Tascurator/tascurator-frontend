@@ -5,6 +5,7 @@ import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import type { IAssignedData } from '@/types/server';
 import { AssignedData } from '@/services/AssignedData';
+import { addDays } from '@/utils/dates';
 
 const app = new Hono();
 
@@ -39,8 +40,12 @@ app.get('/current/:shareHouseId', async (c) => {
     if (areAllTenantsNull) {
       return c.json({
         name: shareHouseWithAssignmentSheet.name,
-        startDate: shareHouseWithAssignmentSheet.assignmentSheet.startDate,
-        endDate: shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+        startDate:
+          shareHouseWithAssignmentSheet.assignmentSheet.startDate.toISOString(),
+        endDate: addDays(
+          shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+          -1,
+        ).toISOString(),
         progressRate: 0,
         categories: null,
       });
@@ -88,8 +93,12 @@ app.get('/current/:shareHouseId', async (c) => {
 
     const currentRotationData = {
       name: shareHouseWithAssignmentSheet.name,
-      startDate: shareHouseWithAssignmentSheet.assignmentSheet.startDate,
-      endDate: shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+      startDate:
+        shareHouseWithAssignmentSheet.assignmentSheet.startDate.toISOString(),
+      endDate: addDays(
+        shareHouseWithAssignmentSheet.assignmentSheet.endDate,
+        -1,
+      ).toISOString(),
       progressRate: progressRate,
       categories: categories,
     };
@@ -167,7 +176,7 @@ app.get('/next/:shareHouseId', async (c) => {
     const nextAssignmentData = {
       name: sharehouse.name,
       startDate: nextAssignedData.getStartDate().toISOString(),
-      endDate: nextAssignedData.getEndDate().toISOString(),
+      endDate: addDays(nextAssignedData.getEndDate(), -1).toISOString(),
       categories: nextAssignedData
         .getAssignments()
         .map((assignment) => {
