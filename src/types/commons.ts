@@ -24,6 +24,8 @@ export interface ICategory {
   tasks: ITask[];
 }
 
+export type ICategoryWithoutTasks = Omit<ICategory, 'tasks'>;
+
 /**
  * The object structure for Tenant
  */

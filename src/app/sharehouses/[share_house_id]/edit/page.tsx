@@ -110,7 +110,10 @@ const EditShareHousePage = ({
                     <AccordionTaskItem
                       key={task.id}
                       id={task.id}
-                      category={category.name}
+                      category={{
+                        id: category.id,
+                        name: category.name,
+                      }}
                       title={task.title}
                       description={task.description}
                     />

@@ -12,6 +12,7 @@ import {
 import { TaskCreationDrawer } from '@/components/ui/drawers/TaskCreationDrawer';
 import { TaskDeletionDrawer } from '../drawers/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
+import { ICategoryWithoutTasks } from '@/types/commons';
 
 /**
  * Constants used in the dropdown menu.
@@ -74,9 +75,9 @@ const UserActionsDropdownMenu = ({
 
 interface IAccordionTaskItemProps {
   id: string;
-  category: string;
   title: string;
   description: string;
+  category: ICategoryWithoutTasks;
 }
 
 /**
@@ -132,14 +133,15 @@ export const AccordionTaskItem = ({
 
       {/* Task creation drawer */}
       <TaskCreationDrawer
+        category={category}
         task={{
           id,
-          category,
           title,
           description,
         }}
         open={isDrawerOpen && userAction === 'edit'}
         setOpen={setIsDrawerOpen}
+        type={'edit'}
       />
 
       {/* Task deletion drawer */}

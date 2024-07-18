@@ -13,26 +13,59 @@ import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormMessage } from '@/components/ui/formMessage';
 import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  taskCreationSchema,
-  taskUpdateSchema,
-  TTaskCreationSchema,
-  TTaskUpdateSchema,
+  categoryCreationSchema,
+  TCategoryCreationSchema,
 } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
-import { TaskDescriptionEditor } from '@/components/ui/drawers/task-description/TaskDescriptionEditor';
-import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-description/TaskDescriptionRenderer';
-import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import Bold from '@tiptap/extension-bold';
+import Underline from '@tiptap/extension-underline';
+import ListItem from '@tiptap/extension-list-item';
+import BulletList from '@tiptap/extension-bullet-list';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Placeholder from '@tiptap/extension-placeholder';
+import { TaskDescriptionEditor } from '@/components/ui/drawers/task-description/TaskDescriptionEditorForCategory';
+import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-description/TaskDescriptionRendererForCategory';
 import { toast } from '../use-toast';
 import { LoadingSpinner } from '../loadingSpinner';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
+// Configure the Tiptap editor extensions
+export const editorExtensions = [
+  Document,
+  Paragraph,
+  Text,
+  Bold,
+  Underline,
+  ListItem.configure({
+    HTMLAttributes: {
+      class: '[&>p]:inline',
+    },
+  }),
+  BulletList.configure({
+    HTMLAttributes: {
+      class: 'list-disc pl-6',
+    },
+  }),
+  OrderedList.configure({
+    HTMLAttributes: {
+      class: 'list-decimal pl-6',
+    },
+  }),
+  Placeholder.configure({
+    placeholder: TASK_DESCRIPTION.placeholder,
+    emptyEditorClass:
+      'first:before:content-[attr(data-placeholder)] first:before:text-slate-400 first:before:float-left first:before:h-0 first:before:left-0 first:before:pointer-events-none',
+  }),
+];
+
 interface IEditTaskDrawer {
-  category: ICategoryWithoutTasks;
-  task?: ITask;
-  formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
+  formControls: UseFormReturn<TCategoryCreationSchema>;
   open: boolean;
   setOpen: (value: boolean) => void;
   openConfirmationDrawer: () => void;
@@ -42,8 +75,6 @@ interface IEditTaskDrawer {
  * A drawer component to create or edit a task
  */
 const EditTaskDrawer = ({
-  category,
-  task,
   formControls,
   open,
   setOpen,
@@ -58,7 +89,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['categoryId', 'title', 'description']);
+    const isValid = await trigger(['category', 'title', 'description']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -70,7 +101,7 @@ const EditTaskDrawer = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
       <DrawerContent className={'h-[90%]'}>
-        <DrawerTitle>{task?.id ? 'Edit task' : 'Create task'}</DrawerTitle>
+        <DrawerTitle>Create task</DrawerTitle>
         <DrawerDescription
           className={'flex-1 flex flex-col items-start'}
           asChild
@@ -78,11 +109,15 @@ const EditTaskDrawer = ({
           <div className={'overflow-y-auto pb-1'}>
             {/* Category input field */}
             <Input
-              value={category.name}
+              {...register('category')}
+              variant={errors.category ? 'destructive' : 'default'}
               type="text"
+              placeholder={CATEGORY_NAME.placeholder}
               label={CATEGORY_NAME.label}
-              disabled
             />
+            {errors.category?.message && (
+              <FormMessage message={errors.category.message} />
+            )}
 
             {/* Task title input field */}
             <Input
@@ -139,13 +174,10 @@ const EditTaskDrawer = ({
   );
 };
 
-interface ITasksCreationConfirmationDrawer {
-  task: ITask | undefined;
-  category: ICategoryWithoutTasks;
-  type: 'creation' | 'edit';
+interface ICategoryCreationConfirmationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
-  formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
+  formControls: UseFormReturn<TCategoryCreationSchema>;
   closeConfirmationDrawer: () => void;
 }
 
@@ -153,74 +185,29 @@ interface ITasksCreationConfirmationDrawer {
  * A confirmation drawer component to confirm the task creation or update
  */
 const ConfirmTaskDrawer = ({
-  task,
-  category,
-  type,
   open,
   setOpen,
   formControls,
   closeConfirmationDrawer,
-}: ITasksCreationConfirmationDrawer) => {
-  const {
-    handleSubmit,
-    watch,
-    formState: { isValid },
-  } = formControls;
+}: ICategoryCreationConfirmationDrawer) => {
+  const { handleSubmit, watch } = formControls;
   const [isLoading, setIsLoading] = useState(false);
 
-  // for determining if the form data has been changed
-  const initialValues = {
-    title: task?.title || '',
-    description: task?.description || '',
-  };
-
-  const [isTitleChanged, setIsTitleChanged] = useState(false);
-  const [isDescriptionChanged, setIsDescriptionChanged] = useState(false);
-
-  const watchedTitle = watch('title');
-  const watchedDescription = watch('description');
-
-  useEffect(() => {
-    setIsTitleChanged(initialValues.title !== watchedTitle);
-  }, [watchedTitle, initialValues.title]);
-
-  useEffect(() => {
-    setIsDescriptionChanged(initialValues.description !== watchedDescription);
-  }, [watchedDescription, initialValues.description]);
-
-  const onSubmit: SubmitHandler<
-    TTaskCreationSchema | TTaskUpdateSchema
-  > = async (data) => {
+  const onSubmit: SubmitHandler<TCategoryCreationSchema> = async (data) => {
     setIsLoading(true);
     setOpen(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Submit the form data
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Update or create the task based on the taskId
-    if (isValid) {
-      // if no change, delete the title from the data object
-      if (type === 'edit' && !isTitleChanged) {
-        delete data.title;
-      }
-      // if no change, delete the description from the data object
-      if (type === 'edit' && !isDescriptionChanged) {
-        delete data.description;
-      }
-
-      // if no change for both title and description, return without doing anything
-      if (type === 'edit' && !isTitleChanged && !isDescriptionChanged) {
-        setIsLoading(false);
-        setOpen(false);
-        return;
-      }
-
-      console.log('Updating the task:', data);
-
+    //TODO: create the category and task
+    if (data) {
       setIsLoading(false);
       toast({
         variant: 'default',
         description: 'Updated successfully!',
       });
+      console.log('Updating the task:', data);
       setOpen(false);
     } else {
       setIsLoading(false);
@@ -265,7 +252,7 @@ const ConfirmTaskDrawer = ({
                     'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
                   }
                 >
-                  {category.name}
+                  {watch('category')}
                 </div>
                 <TaskDescriptionRenderer formControls={formControls} />
               </div>
@@ -279,11 +266,7 @@ const ConfirmTaskDrawer = ({
               >
                 Cancel
               </Button>
-              <Button
-                type={'submit'}
-                className={'flex-1'}
-                disabled={!isTitleChanged && !isDescriptionChanged}
-              >
+              <Button type={'submit'} className={'flex-1'}>
                 Publish
               </Button>
             </DrawerFooter>
@@ -294,19 +277,10 @@ const ConfirmTaskDrawer = ({
   );
 };
 
-type drawerType = 'creation' | 'edit';
-
-interface ITaskCreationDrawer {
-  task?: ITask;
-  category: ICategoryWithoutTasks;
+interface ICategoryCreationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
-  type: drawerType;
 }
-
-const getSchema = (type: drawerType) => {
-  return type === 'creation' ? taskCreationSchema : taskUpdateSchema;
-};
 
 /**
  * A drawer component to create a new task or edit an existing task
@@ -314,52 +288,29 @@ const getSchema = (type: drawerType) => {
  * If task is passed, the drawer will be in edit mode.
  * Otherwise, the drawer will be in create mode.
  *
- * @param task - The task object to be edited
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
- * @param type - The type to determine if creating a 'task' or editing a 'task'
  *
  * @example
  * const [open, setOpen] = useState(false);
  *
- * // To create a new task
- * const category = {
- * id: '1'
- * title: 'Kitchen',
- * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'creation'} category={category}/>
+ * // To create a new category
+ * <TaskCreationDrawer open={open} setOpen={setOpen} type={'categoryCreation'}/>
  *
- * // To edit an existing task
- * const category = {
- * id: '1'
- * title: 'Kitchen',
- * };
- *
- * const task = {
- *  id: '1',
- *  title: 'Clean the kitchen',
- *  description: 'Clean the kitchen and make it shine.',
- * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} task={task} category={category} type={'edit'}/>
  */
-export const TaskCreationDrawer = ({
-  category,
-  task,
+export const CategoryCreationDrawer = ({
   open,
   setOpen,
-  type,
-}: ITaskCreationDrawer) => {
+}: ICategoryCreationDrawer) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
-  const schema = getSchema(type);
-
-  const formControls = useForm<TTaskCreationSchema | TTaskUpdateSchema>({
-    resolver: zodResolver(schema),
+  const formControls = useForm<TCategoryCreationSchema>({
+    resolver: zodResolver(categoryCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      categoryId: category?.id,
-      title: task?.title || '',
-      description: task?.description || '',
+      category: '',
+      title: '',
+      description: '',
     },
   });
 
@@ -376,8 +327,6 @@ export const TaskCreationDrawer = ({
   return (
     <>
       <EditTaskDrawer
-        category={category}
-        task={task}
         formControls={formControls}
         open={open}
         setOpen={setOpen}
@@ -385,9 +334,6 @@ export const TaskCreationDrawer = ({
       />
 
       <ConfirmTaskDrawer
-        task={task}
-        category={category}
-        type={type}
         open={confirmationOpen}
         setOpen={setConfirmationOpen}
         formControls={formControls}

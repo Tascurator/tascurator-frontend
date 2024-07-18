@@ -2,6 +2,8 @@ import { CONSTRAINTS } from '@/constants/constraints';
 import { ERROR_MESSAGES } from '@/constants/error-messages';
 import { z } from 'zod';
 
+import { removeHtmlTags } from '@/utils/task-description';
+
 const {
   TASK_TITLE_MIN_LENGTH,
   TASK_TITLE_MAX_LENGTH,
@@ -22,6 +24,19 @@ const {
 const { minLength, maxLength } = ERROR_MESSAGES;
 
 /**
+ * // custom validator for task description length
+ */
+const taskDescriptionLengthMinValidate = (description: string) => {
+  const cleanedDescription = removeHtmlTags(description);
+  return cleanedDescription.length >= TASK_DESCRIPTION_MIN_LENGTH;
+};
+
+const taskDescriptionLengthMaxValidate = (description: string) => {
+  const cleanedDescription = removeHtmlTags(description);
+  return cleanedDescription.length <= TASK_DESCRIPTION_MAX_LENGTH;
+};
+
+/**
  * The schema for the category creation or update form
  */
 
@@ -40,15 +55,14 @@ export const categoryCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z.string(),
-  descriptionCount: z
+  description: z
     .string()
-    .min(
-      TASK_DESCRIPTION_MIN_LENGTH,
+    .refine(
+      taskDescriptionLengthMinValidate,
       minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
     )
-    .max(
-      TASK_DESCRIPTION_MAX_LENGTH,
+    .refine(
+      taskDescriptionLengthMaxValidate,
       maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
     ),
 });
@@ -63,15 +77,17 @@ export const taskCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  /**
-   * TODO: Please set up detailed validation for the description in the frontend team.
-   */
-  description: z.string(),
+  description: z
+    .string()
+    .refine(
+      taskDescriptionLengthMinValidate,
+      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+    )
+    .refine(
+      taskDescriptionLengthMaxValidate,
+      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+    ),
 });
-
-/**
- * The schema for the task update form
- */
 
 export const taskUpdateSchema = taskCreationSchema
   .omit({ categoryId: true })
@@ -113,6 +129,7 @@ export const categoryNameSchema = z.object({
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
 export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
+export type TTaskUpdateSchema = z.infer<typeof taskUpdateSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
