@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
@@ -10,6 +11,7 @@ import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
+import { InitialAssignedData } from '@/services/InitialAssignedData';
 
 const app = new Hono();
 
@@ -152,16 +154,6 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
     if (!session.user.email)
       return c.json({ error: 'User email is missing' }, 400);
 
-    // Check for existing landlord by email
-    const existingLandlord = await prisma.landlord.findUnique({
-      where: {
-        email: session.user.email,
-      },
-    });
-
-    if (existingLandlord)
-      return c.json({ error: 'Landlord email already exists' }, 400);
-
     // Check for existing shareHouse by name
     const existingShareHouse = await prisma.shareHouse.findFirst({
       where: {
@@ -266,6 +258,47 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
         });
         createdTenants.push(newTenant);
       }
+
+      const sharehouse = await prisma.shareHouse.findUnique({
+        where: { id: newShareHouse.id },
+        select: {
+          assignmentSheet: true,
+          RotationAssignment: {
+            select: {
+              rotationCycle: true,
+              categories: {
+                include: { tasks: true },
+              },
+              tenantPlaceholders: {
+                include: {
+                  tenant: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!sharehouse || !sharehouse.RotationAssignment) {
+        throw new Error('Share house not found');
+      }
+
+      const newInitialAssignedData = new InitialAssignedData(
+        sharehouse,
+        startDate,
+        data.rotationCycle,
+      );
+
+      const assignedData = newInitialAssignedData.getAssignedData();
+
+      await prisma.assignmentSheet.update({
+        where: {
+          id: newAssignmentSheet.id,
+        },
+        data: {
+          assignedData: assignedData as unknown as Prisma.JsonArray,
+        },
+      });
 
       return {
         shareHouse: newShareHouse,
