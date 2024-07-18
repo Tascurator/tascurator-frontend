@@ -150,7 +150,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
  * The schema for the shareHouse creation form
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
-  startDate: z.string(),
+  startDate: z.string().datetime(),
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
   categories: z.array(
     categoryCreationSchema.extend({
