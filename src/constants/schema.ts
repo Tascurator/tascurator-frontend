@@ -12,7 +12,11 @@ const {
   SHAREHOUSE_NAME_MIN_LENGTH,
   SHAREHOUSE_NAME_MAX_LENGTH,
   PASSWORD_MIN_NUMBERS,
+  PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_CAPITAL_LETTERS,
+  PASSWORD_MIN_LOWERCASE_LETTERS,
+  PASSWORD_MIN_SPECIAL_CHARACTERS,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
@@ -125,16 +129,6 @@ export const tenantInvitationSchema = z.object({
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
-export const loginSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z
-    .string()
-    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
-    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH)),
-});
-
-export type TLoginSchema = z.infer<typeof loginSchema>;
-
 /**
  * The schema for the rotation cycle update form
  */
@@ -142,3 +136,53 @@ export type TLoginSchema = z.infer<typeof loginSchema>;
 export const rotationCycleUpdateSchema = z.object({
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
 });
+
+/**
+ * The schema for the authentication forms
+ */
+
+export const loginSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z.string(),
+});
+
+export type TLoginSchema = z.infer<typeof loginSchema>;
+
+export const signupSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+    .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+    .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+    .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+    .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+});
+
+export type TSignupSchema = z.infer<typeof signupSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+});
+
+export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+      .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+      .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+      .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+      .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+      .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
+
+export type TResetPassword = z.infer<typeof resetPasswordSchema>;
