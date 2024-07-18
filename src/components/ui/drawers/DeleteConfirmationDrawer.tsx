@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import {
   Drawer,
@@ -11,6 +12,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useForm } from 'react-hook-form';
+import { LoadingSpinner } from '../loadingSpinner';
+import { toast } from '../use-toast';
 
 export interface IDeleteConfirmationDrawerProps {
   deleteItem: string;
@@ -47,54 +50,78 @@ export const DeleteConfirmationDrawer = ({
   };
 
   const { handleSubmit } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
 
   // TODO: Implement the delete click functionality
-  const onSubmit = () => {
-    setTimeout(() => {
+  const onSubmit = async () => {
+    setIsLoading(true);
+    setOpen(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (deleteItem) {
+      setIsLoading(false);
       setOpen(false);
-    }, 1000);
+      console.log('deleteItem', deleteItem);
+      toast({
+        variant: 'default',
+        description: 'Updated successfully!',
+      });
+    } else {
+      setIsLoading(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
+    }
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent asChild>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DrawerTitle>Confirm delete</DrawerTitle>
-          <DrawerDescription asChild>
-            <div className={'mt-8'}>
-              {`Are you sure you want to delete "${deleteItem}"?`}
-              <div>
-                <label
-                  className={
-                    'flex items-center content-start mt-4 gap-3 cursor-pointer'
-                  }
-                >
-                  <Checkbox
-                    checked={isChecked}
-                    onCheckedChange={handleCheckboxChange}
-                  />
-                  <p>{`Yes, I want to delete "${deleteItem}".`}</p>
-                </label>
+    <>
+      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+        <DrawerTrigger />
+        <DrawerContent asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <DrawerTitle>Confirm delete</DrawerTitle>
+            <DrawerDescription asChild>
+              <div className={'mt-8'}>
+                {`Are you sure you want to delete "${deleteItem}"?`}
+                <div>
+                  <label
+                    className={
+                      'flex items-center content-start mt-4 gap-3 cursor-pointer'
+                    }
+                  >
+                    <Checkbox
+                      checked={isChecked}
+                      onCheckedChange={handleCheckboxChange}
+                    />
+                    <p>{`Yes, I want to delete "${deleteItem}".`}</p>
+                  </label>
+                </div>
               </div>
-            </div>
-          </DrawerDescription>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button type={'button'} variant={'outline'} className={'flex-1'}>
-                Cancel
+            </DrawerDescription>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button
+                  type={'button'}
+                  variant={'outline'}
+                  className={'flex-1'}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button
+                variant="destructive"
+                disabled={!isChecked}
+                className={'flex-1'}
+              >
+                Delete
               </Button>
-            </DrawerClose>
-            <Button
-              variant="destructive"
-              disabled={!isChecked}
-              className={'flex-1'}
-            >
-              Delete
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };

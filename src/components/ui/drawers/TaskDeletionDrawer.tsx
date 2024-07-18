@@ -63,12 +63,22 @@ export const TaskDeletionDrawer = ({
     setOpen(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    setIsLoading(false);
-    toast({
-      variant: 'default',
-      description: 'Updated successfully!',
-    });
-    setOpen(false);
+    if (title) {
+      console.log('title', title);
+      setIsLoading(false);
+      setOpen(false);
+      toast({
+        variant: 'default',
+        description: 'Updated successfully!',
+      });
+    } else {
+      setIsLoading(false);
+      setOpen(false);
+      toast({
+        variant: 'destructive',
+        description: 'error!',
+      });
+    }
   };
 
   return (
