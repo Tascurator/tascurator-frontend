@@ -1,11 +1,15 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import type { Tenant } from '@prisma/client';
+import { Prisma, Tenant } from '@prisma/client';
 
-import { tenantInvitationSchema } from '@/constants/schema';
+import {
+  taskCompletionUpdateSchema,
+  tenantInvitationSchema,
+} from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
+import { addDays } from '@/utils/dates';
 
 const app = new Hono();
 
@@ -240,7 +244,7 @@ app.get('/:assignmentSheetId/:tenantId', async (c) => {
 
     rotationScheduleForecast['1'] = {
       startDate: assignmentSheet.startDate.toISOString(),
-      endDate: assignmentSheet.endDate.toISOString(),
+      endDate: addDays(assignmentSheet.endDate, -1).toISOString(),
       categories: assignedCategories.map((category) => ({
         id: category.id,
         name: category.name,
@@ -270,7 +274,7 @@ app.get('/:assignmentSheetId/:tenantId', async (c) => {
 
       rotationScheduleForecast[i as 2 | 3 | 4] = {
         startDate: nextAssignedData.getStartDate().toISOString(),
-        endDate: nextAssignedData.getEndDate().toISOString(),
+        endDate: addDays(nextAssignedData.getEndDate(), -1).toISOString(),
         categories: nextAssignedCategories.map((category) => ({
           id: category.id,
           name: category.name,
@@ -289,10 +293,94 @@ app.get('/:assignmentSheetId/:tenantId', async (c) => {
   }
 });
 
-app.patch('/:assignmentSheetId/:tenantId', (c) => {
-  const assignmentSheetId = c.req.param('assignmentSheetId');
-  const tenantId = c.req.param('tenantId');
-  return c.json({
-    message: `Updating assignment sheet id: ${assignmentSheetId}, tenant id: ${tenantId}`,
-  });
-});
+app.patch(
+  '/:assignmentSheetId/:tenantId',
+  zValidator('json', taskCompletionUpdateSchema),
+  async (c) => {
+    const assignmentSheetId = c.req.param('assignmentSheetId');
+    const tenantId = c.req.param('tenantId');
+    const data = c.req.valid('json');
+
+    /**
+     * Check if the tasks array is empty.
+     */
+    if (data.tasks.length === 0) {
+      return c.json({ error: 'Tasks array is empty' }, 400);
+    }
+
+    try {
+      const assignmentSheet = await prisma.assignmentSheet.findUnique({
+        where: {
+          id: assignmentSheetId,
+        },
+      });
+
+      /**
+       * Return an internal server error if the assignment sheet is not found.
+       */
+      if (!assignmentSheet) {
+        return c.json({ error: 'Assignment sheet not found' }, 500);
+      }
+
+      /**
+       * Create an AssignedData instance from the assignedData in the assignmentSheet.
+       */
+      const assignedData = new AssignedData(
+        assignmentSheet.assignedData as unknown as IAssignedData,
+        assignmentSheet.startDate,
+        assignmentSheet.endDate,
+      );
+
+      /**
+       * Check if the tenant exists in the assignedData.
+       */
+      if (!assignedData.hasTenant(tenantId)) {
+        return c.json({ error: 'Tenant not found' }, 404);
+      }
+
+      /**
+       * Get all the tasks assigned to the tenant.
+       */
+      const assignedTasks = assignedData.getAssignedTasks(tenantId);
+
+      /**
+       * Check if only the tasks that the tenant has been assigned are included in the request.
+       */
+      if (
+        !data.tasks.every((task) =>
+          assignedTasks.some((assignedTask) => assignedTask.id === task.id),
+        )
+      ) {
+        return c.json({ error: 'Tenant can update only assigned tasks' }, 400);
+      }
+
+      /**
+       * Update the task completion status for only the tasks that the tenant has been assigned.
+       */
+      for (const task of data.tasks) {
+        assignedData.toggleTaskCompletion(tenantId, task.id, task.isCompleted);
+      }
+
+      /**
+       * Update the assignedData in the assignmentSheet.
+       */
+      await prisma.assignmentSheet.update({
+        where: {
+          id: assignmentSheetId,
+        },
+        data: {
+          assignedData:
+            assignedData.getAssignedData() as unknown as Prisma.JsonArray,
+        },
+      });
+
+      return c.json({ message: 'Task completion updated' });
+    } catch (error) {
+      console.error('Error updating tenant:', error);
+      return c.json(
+        { error: 'An error occurred while updating task completion' },
+        500,
+      );
+    }
+  },
+);

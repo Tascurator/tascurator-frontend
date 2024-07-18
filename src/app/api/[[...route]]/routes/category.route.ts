@@ -82,7 +82,7 @@ app.delete('/:categoryId', async (c) => {
 
 app.post(
   '/:shareHouseId',
-  zValidator('json', categoryCreationSchema.omit({ descriptionCount: true })),
+  zValidator('json', categoryCreationSchema),
   async (c) => {
     try {
       const shareHouseId = c.req.param('shareHouseId');

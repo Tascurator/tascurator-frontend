@@ -2,6 +2,8 @@ import { CONSTRAINTS } from '@/constants/constraints';
 import { ERROR_MESSAGES } from '@/constants/error-messages';
 import { z } from 'zod';
 
+import { removeHtmlTags } from '@/utils/task-description';
+
 const {
   TASK_TITLE_MIN_LENGTH,
   TASK_TITLE_MAX_LENGTH,
@@ -12,10 +14,27 @@ const {
   SHAREHOUSE_NAME_MIN_LENGTH,
   SHAREHOUSE_NAME_MAX_LENGTH,
   PASSWORD_MIN_NUMBERS,
+  PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_CAPITAL_LETTERS,
+  PASSWORD_MIN_LOWERCASE_LETTERS,
+  PASSWORD_MIN_SPECIAL_CHARACTERS,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
+
+/**
+ * // custom validator for task description length
+ */
+const taskDescriptionLengthMinValidate = (description: string) => {
+  const cleanedDescription = removeHtmlTags(description);
+  return cleanedDescription.length >= TASK_DESCRIPTION_MIN_LENGTH;
+};
+
+const taskDescriptionLengthMaxValidate = (description: string) => {
+  const cleanedDescription = removeHtmlTags(description);
+  return cleanedDescription.length <= TASK_DESCRIPTION_MAX_LENGTH;
+};
 
 /**
  * The schema for the category creation or update form
@@ -36,15 +55,14 @@ export const categoryCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z.string(),
-  descriptionCount: z
+  description: z
     .string()
-    .min(
-      TASK_DESCRIPTION_MIN_LENGTH,
+    .refine(
+      taskDescriptionLengthMinValidate,
       minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
     )
-    .max(
-      TASK_DESCRIPTION_MAX_LENGTH,
+    .refine(
+      taskDescriptionLengthMaxValidate,
       maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
     ),
 });
@@ -59,15 +77,17 @@ export const taskCreationSchema = z.object({
     .string()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  /**
-   * TODO: Please set up detailed validation for the description in the frontend team.
-   */
-  description: z.string(),
+  description: z
+    .string()
+    .refine(
+      taskDescriptionLengthMinValidate,
+      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+    )
+    .refine(
+      taskDescriptionLengthMaxValidate,
+      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+    ),
 });
-
-/**
- * The schema for the task update form
- */
 
 export const taskUpdateSchema = taskCreationSchema
   .omit({ categoryId: true })
@@ -109,6 +129,7 @@ export const categoryNameSchema = z.object({
 
 export type TTaskCreationSchema = z.infer<typeof taskCreationSchema>;
 export type TCategoryCreationSchema = z.infer<typeof categoryCreationSchema>;
+export type TTaskUpdateSchema = z.infer<typeof taskUpdateSchema>;
 
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
@@ -125,16 +146,6 @@ export const tenantInvitationSchema = z.object({
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
-export const loginSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z
-    .string()
-    .min(PASSWORD_MIN_NUMBERS, minLength('Password', PASSWORD_MIN_NUMBERS))
-    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH)),
-});
-
-export type TLoginSchema = z.infer<typeof loginSchema>;
-
 /**
  * The schema for the shareHouse creation form
  */
@@ -142,7 +153,7 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   startDate: z.string(),
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
   categories: z.array(
-    categoryCreationSchema.omit({ descriptionCount: true }).extend({
+    categoryCreationSchema.extend({
       tasks: z.array(taskCreationSchema.omit({ categoryId: true })),
     }),
   ),
@@ -160,3 +171,69 @@ export type TShareHouseCreationSchema = z.infer<
 export const rotationCycleUpdateSchema = z.object({
   rotationCycle: z.union([z.literal(7), z.literal(14)]),
 });
+
+/**
+ * The schema for the authentication forms
+ */
+
+export const loginSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z.string(),
+});
+
+export type TLoginSchema = z.infer<typeof loginSchema>;
+
+export const signupSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+    .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+    .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+    .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+    .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+    .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+});
+
+export type TSignupSchema = z.infer<typeof signupSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+});
+
+export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
+      .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
+      .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
+      .regex(/[a-z]/, minLength('Password', PASSWORD_MIN_LOWERCASE_LETTERS))
+      .regex(/[\W_]/, minLength('Password', PASSWORD_MIN_SPECIAL_CHARACTERS))
+      .regex(/\d/, minLength('Password', PASSWORD_MIN_NUMBERS)),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
+
+export type TResetPassword = z.infer<typeof resetPasswordSchema>;
+
+/**
+ * The schema for the task completion status update form
+ */
+export const taskCompletionUpdateSchema = z.object({
+  tasks: z.array(
+    z.object({
+      id: z.string().uuid(),
+      isCompleted: z.boolean(),
+    }),
+  ),
+});
+
+export type TTaskCompletionUpdateSchema = z.infer<
+  typeof taskCompletionUpdateSchema
+>;
