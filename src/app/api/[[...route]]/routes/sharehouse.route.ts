@@ -226,43 +226,43 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
         400,
       );
 
+    // Check for duplicate tenant names and emails within the provided data
+    const categories = data.categories.map((category) => category.category);
+    const isDuplicatedCategoryName = categories.some(
+      (category, idx) => categories.indexOf(category) !== idx,
+    );
+    if (isDuplicatedCategoryName)
+      return c.json(
+        {
+          error: 'Duplicate category name(s) found in the provided data',
+        },
+        400,
+      );
+
+    // Check for duplicate tenant names and emails within the provided data
+    const tenantNames = data.tenants.map((tenant) => tenant.name);
+    const isDuplicatedTenantName = tenantNames.some(
+      (name, idx) => tenantNames.indexOf(name) !== idx,
+    );
+    if (isDuplicatedTenantName)
+      return c.json(
+        { error: 'Duplicate tenant name(s) found in the provided data' },
+        400,
+      );
+
+    const tenantEmails = data.tenants.map((tenant) => tenant.email);
+    const isDuplicatedTenantEmail = tenantEmails.some(
+      (email, idx) => tenantEmails.indexOf(email) !== idx,
+    );
+    if (isDuplicatedTenantEmail)
+      return c.json(
+        { error: 'Duplicate tenant email(s) found in the provided data' },
+        400,
+      );
+
     const transaction = await prisma.$transaction(async (prisma) => {
       const startDate = new Date(data.startDate);
       const endDate = addDays(startDate, data.rotationCycle);
-
-      // Check for duplicate tenant names and emails within the provided data
-      const categories = data.categories.map((category) => category.category);
-      const isDuplicatedCategoryName = categories.some(
-        (category, idx) => categories.indexOf(category) !== idx,
-      );
-      if (isDuplicatedCategoryName)
-        return c.json(
-          {
-            error: 'Duplicate category name(s) found in the provided data',
-          },
-          400,
-        );
-
-      // Check for duplicate tenant names and emails within the provided data
-      const tenantNames = data.tenants.map((tenant) => tenant.name);
-      const isDuplicatedTenantName = tenantNames.some(
-        (name, idx) => tenantNames.indexOf(name) !== idx,
-      );
-      if (isDuplicatedTenantName)
-        return c.json(
-          { error: 'Duplicate tenant name(s) found in the provided data' },
-          400,
-        );
-
-      const tenantEmails = data.tenants.map((tenant) => tenant.email);
-      const isDuplicatedTenantEmail = tenantEmails.some(
-        (email, idx) => tenantEmails.indexOf(email) !== idx,
-      );
-      if (isDuplicatedTenantEmail)
-        return c.json(
-          { error: 'Duplicate tenant email(s) found in the provided data' },
-          400,
-        );
 
       const newAssignmentSheet = await prisma.assignmentSheet.create({
         data: {
