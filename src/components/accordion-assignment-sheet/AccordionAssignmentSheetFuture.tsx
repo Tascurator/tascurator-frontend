@@ -4,8 +4,8 @@ import {
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { AssignmentCategoryTasksFuture } from './AssignmentCategoryTasksFuture';
-import { NoTaskMessage } from './NoTaskMessage';
+import { AssignmentCategoryTasksFuture } from '@/components/accordion-assignment-sheet/AssignmentCategoryTasksFuture';
+import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 
 interface AccordionAssignmentSheetFutureProps {
   startDate: string;

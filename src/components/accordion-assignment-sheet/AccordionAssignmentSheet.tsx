@@ -8,13 +8,13 @@ import {
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '../ui/button';
-import { LoadingSpinner } from '../ui/loadingSpinner';
-import { toast } from '../ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
+import { toast } from '@/components/ui/use-toast';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
-import { AssignmentCategoryTasks } from './AssignmentCategoryTasks';
+import { AssignmentCategoryTasks } from '@/components/accordion-assignment-sheet/AssignmentCategoryTasks';
 import { ITask } from '@/types/commons';
-import { NoTaskMessage } from './NoTaskMessage';
+import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 
 interface AccordionAssignmentSheetProps {

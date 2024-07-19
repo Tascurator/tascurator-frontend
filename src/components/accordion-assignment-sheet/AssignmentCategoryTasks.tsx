@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { TaskDescriptionDrawer } from '../ui/drawers/TaskDescriptionDrawer';
+import { TaskDescriptionDrawer } from '@/components/ui/drawers/TaskDescriptionDrawer';
 
 interface Category {
   id: string;
