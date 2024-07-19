@@ -10,45 +10,48 @@ import categoryRoute from './routes/category.route';
 import taskRoute from './routes/task.route';
 import tenantRoute from './routes/tenant.route';
 
-const app = new Hono().basePath('/api');
+const app = new Hono();
 
-const defaultRoutes = [
-  { path: '/sharehouse', route: sharehouseRoute },
-  { path: '/sharehouses', route: sharehousesRoute },
-  { path: '/rotation', route: rotationRoute },
-  { path: '/category', route: categoryRoute },
-  { path: '/task', route: taskRoute },
-  { path: '/tenant', route: tenantRoute },
-];
+const routes = app
+  .basePath('/api')
+  .route('/sharehouse', sharehouseRoute)
+  .route('/sharehouses', sharehousesRoute)
+  .route('/rotation', rotationRoute)
+  .route('/category', categoryRoute)
+  .route('/task', taskRoute)
+  .route('/tenant', tenantRoute)
+
+  /**
+   * This is a test route to check if the user is logged in.
+   * TODO: Remove this route before deploying to production.
+   */
+  .get('/whoami', async (c) => {
+    const session = await auth();
+
+    if (!session) {
+      return c.json(
+        {
+          error: 'You are not logged in!',
+        },
+        401,
+      );
+    }
+
+    const landlord = await prisma.landlord.findUnique({
+      where: { id: session.user.id },
+    });
+
+    return c.json({
+      message: 'You are logged in!',
+      session,
+      landlord,
+    });
+  });
 
 /**
- * This is a test route to check if the user is logged in.
- * TODO: Remove this route before deploying to production.
+ * Expose the type of the api routes.
  */
-app.get('/whoami', async (c) => {
-  const session = await auth();
-
-  if (!session) {
-    return c.json({
-      message: 'You are not logged in!',
-    });
-  }
-
-  const landlord = await prisma.landlord.findUnique({
-    where: { id: session.user.id },
-  });
-
-  return c.json({
-    message: 'You are logged in!',
-    session,
-    landlord,
-  });
-});
-
-for (const route of defaultRoutes) {
-  console.log(`Adding route: /api${route.path}`);
-  app.route(`${route.path}`, route.route);
-}
+export type AppType = typeof routes;
 
 /**
  * Expose HTTP methods for the app.
