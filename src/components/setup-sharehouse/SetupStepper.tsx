@@ -23,7 +23,7 @@ interface ISetupStepperProps {
   categories: ICategory[];
 }
 
-const SetupStepper = ({
+export const SetupStepper = ({
   initialStep,
   maxSteps,
   tenants,
@@ -77,7 +77,7 @@ const SetupStepper = ({
                     <AccordionTaskItem
                       key={task.id}
                       id={task.id}
-                      category={category.name}
+                      category={category}
                       title={task.title}
                       description={task.description}
                     />
@@ -135,5 +135,3 @@ const SetupStepper = ({
       return <div>Invalid step</div>;
   }
 };
-
-export default SetupStepper;

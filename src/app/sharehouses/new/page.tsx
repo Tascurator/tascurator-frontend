@@ -1,4 +1,4 @@
-import SetupStepper from '@/components/setup-sharehouse/SetupStepper';
+import { SetupStepper } from '@/components/setup-sharehouse/SetupStepper';
 import { ICategory, ITenant } from '@/types/commons';
 
 const NewSharehousePage = () => {
