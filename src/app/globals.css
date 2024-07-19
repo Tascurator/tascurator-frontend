@@ -38,6 +38,15 @@
   }
 }
 
+@keyframes circleStroke {
+  0% {
+    stroke-dashoffset: var(--circumference);
+  }
+  100% {
+    stroke-dashoffset: var(--stroke-dashoffset);
+  }
+}
+
 .lucide {
   color: var(--color-black);
 }

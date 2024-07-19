@@ -36,6 +36,19 @@ export interface ITenant {
 }
 
 /**
+ * The object structure for share house data
+ */
+export interface ICardContentProps {
+  category: string | null;
+  tenant?: string;
+  isComplete?: boolean;
+  taskNum?: number;
+  completedTaskNum?: number;
+  className?: string;
+  isLast?: boolean;
+}
+
+/**
  * The enum for RotationCycle
  * - Weekly: 7 days
  * - Fortnightly: 14 days
