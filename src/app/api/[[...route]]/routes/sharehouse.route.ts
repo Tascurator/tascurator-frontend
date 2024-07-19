@@ -201,9 +201,12 @@ const app = new Hono()
       const session = await auth();
 
       if (!session) {
-        return c.json({
-          message: 'You are not logged in!',
-        });
+        return c.json(
+          {
+            error: 'You are not logged in!',
+          },
+          401,
+        );
       }
       const landlordId = session.user.id;
       const data = c.req.valid('json');
