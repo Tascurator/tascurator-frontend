@@ -383,13 +383,6 @@ export class AssignedData {
     tenantPlaceholdersLength: number,
   ): number => {
     /**
-     * If the array length is 0, thrown an error
-     */
-    if (tenantPlaceholdersLength === 0) {
-      throw new Error('Tenant placeholders length is 0');
-    }
-
-    /**
      * If the current rotation start index is null, return the first index
      */
     if (currentTenantPlaceholderHeadIndex === null) {

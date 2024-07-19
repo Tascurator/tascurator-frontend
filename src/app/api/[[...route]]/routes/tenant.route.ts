@@ -79,7 +79,7 @@ app.post(
       const data = c.req.valid('json');
 
       const sanitizedEmail = data.email.toLowerCase();
-      const existingTenant = await prisma.tenant.findUnique({
+      const existingTenant = await prisma.tenant.findFirst({
         where: {
           email: sanitizedEmail,
         },

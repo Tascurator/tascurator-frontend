@@ -5,10 +5,17 @@ import { z } from 'zod';
 import { removeHtmlTags } from '@/utils/task-description';
 
 const {
+  TENANT_MAX_AMOUNT,
+  TENANT_NAME_MIN_LENGTH,
+  TENANT_NAME_MAX_LENGTH,
+  TASK_MIN_AMOUNT,
+  TASK_MAX_AMOUNT,
   TASK_TITLE_MIN_LENGTH,
   TASK_TITLE_MAX_LENGTH,
   TASK_DESCRIPTION_MIN_LENGTH,
   TASK_DESCRIPTION_MAX_LENGTH,
+  CATEGORY_MIN_AMOUNT,
+  CATEGORY_MAX_AMOUNT,
   CATEGORY_NAME_MIN_LENGTH,
   CATEGORY_NAME_MAX_LENGTH,
   SHAREHOUSE_NAME_MIN_LENGTH,
@@ -19,6 +26,8 @@ const {
   PASSWORD_MIN_CAPITAL_LETTERS,
   PASSWORD_MIN_LOWERCASE_LETTERS,
   PASSWORD_MIN_SPECIAL_CHARACTERS,
+  ROTATION_WEEKLY,
+  ROTATION_FORTNIGHTLY,
 } = CONSTRAINTS;
 
 const { minLength, maxLength } = ERROR_MESSAGES;
@@ -134,8 +143,6 @@ export type TTaskUpdateSchema = z.infer<typeof taskUpdateSchema>;
 export type TShareHouseNameSchema = z.infer<typeof shareHouseNameSchema>;
 export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
 
-const { TENANT_NAME_MIN_LENGTH, TENANT_NAME_MAX_LENGTH } = CONSTRAINTS;
-
 export const tenantInvitationSchema = z.object({
   name: z
     .string()
@@ -145,6 +152,33 @@ export const tenantInvitationSchema = z.object({
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
+
+/**
+ * The schema for the shareHouse creation form
+ */
+export const shareHouseCreationSchema = shareHouseNameSchema.extend({
+  startDate: z.string().datetime(),
+  rotationCycle: z.union([
+    z.literal(ROTATION_WEEKLY),
+    z.literal(ROTATION_FORTNIGHTLY),
+  ]),
+  categories: z
+    .array(
+      categoryCreationSchema.extend({
+        tasks: z
+          .array(taskCreationSchema.omit({ categoryId: true }))
+          .min(TASK_MIN_AMOUNT)
+          .max(TASK_MAX_AMOUNT),
+      }),
+    )
+    .min(CATEGORY_MIN_AMOUNT)
+    .max(CATEGORY_MAX_AMOUNT),
+  tenants: z.array(tenantInvitationSchema).max(TENANT_MAX_AMOUNT),
+});
+
+export type TShareHouseCreationSchema = z.infer<
+  typeof shareHouseCreationSchema
+>;
 
 /**
  * The schema for the rotation cycle update form
