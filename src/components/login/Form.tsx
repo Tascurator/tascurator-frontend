@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
-// import { login } from '@/actions/login';
-// import { logout } from '@/actions/logout';
+import { login } from '@/actions/login';
+import { logout } from '@/actions/logout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
@@ -13,11 +13,11 @@ import { FormMessage } from '@/components/ui/formMessage';
 import Link from 'next/link';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 
-// import { useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
-  // const session = useSession();
+  const session = useSession();
 
   const {
     register,
@@ -36,10 +36,7 @@ const Form = () => {
       if (isValid) {
         console.log('Form data:', formData);
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // TODO: Implement the proper login logic
-        // await login(formData);
+        await login(formData);
 
         setIsLoading(false);
       }
@@ -50,13 +47,13 @@ const Form = () => {
 
   return (
     <>
-      {/* {session?.data && (
+      {session?.data && (
         <form action={logout}>
           <Button type={'submit'} variant={'destructive'} size={'md'}>
             Logout
           </Button>
         </form>
-      )} */}
+      )}
       {isLoading && <LoadingSpinner isLoading={true} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
