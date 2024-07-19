@@ -2,6 +2,7 @@
 import { forwardRef, ElementRef, ComponentPropsWithoutRef } from 'react';
 import { Root, List, Trigger, Content } from '@radix-ui/react-tabs';
 import { cn } from '@/lib/utils';
+// import { useSearchParams } from 'next/navigation';
 
 /**
  * The root component of the Tabs.
@@ -33,6 +34,9 @@ const Tabs = Root;
  *   <TabsTrigger value="tab-3">Tab 3</TabsTrigger>
  * </TabsList>
  */
+
+// const searchParams = useSearchParams();
+// const tab = searchParams.get('tab') || 'Tasks';
 const TabsList = forwardRef<
   ElementRef<typeof List>,
   ComponentPropsWithoutRef<typeof List>
