@@ -28,7 +28,9 @@ export default function RootLayout({
           )}
         >
           <main
-            className={'max-w-screen-sm min-h-screen w-full h-full bg-white'}
+            className={
+              'max-w-screen-sm min-h-screen w-full h-full bg-white relative'
+            }
           >
             {children}
           </main>

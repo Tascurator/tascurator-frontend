@@ -25,9 +25,7 @@ import { cn } from '@/lib/utils';
  * @example
  *   <DropdownMenu>
  *     <DropdownMenuTrigger asChild>
- *       <button className="p-4">
  *         <Citrus />
- *       </button>
  *     </DropdownMenuTrigger>
  *     <DropdownMenuContent>
  *       <DropdownMenuGroup>
