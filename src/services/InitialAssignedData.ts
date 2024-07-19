@@ -35,12 +35,9 @@ export class InitialAssignedData extends AssignedData {
      */
     if (
       this.sharehouse.RotationAssignment.categories.length < 1 ||
-      this.sharehouse.RotationAssignment.categories[0].tasks.length < 1 ||
-      this.sharehouse.RotationAssignment.tenantPlaceholders.length < 1
+      this.sharehouse.RotationAssignment.categories[0].tasks.length < 1
     ) {
-      throw new Error(
-        'No categories, tasks or tenants found in the rotation assignment',
-      );
+      throw new Error('No categories, tasks found in the rotation assignment');
     }
 
     const { categories, tenantPlaceholders } =

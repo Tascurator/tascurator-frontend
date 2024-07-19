@@ -64,7 +64,7 @@ model Task {
 
 model Tenant {
   id                 String              @id @default(uuid())
-  email              String              @unique
+  email              String
   name               String
   extraAssignedCount Int
   tenantPlaceholders TenantPlaceholder[]
