@@ -208,14 +208,15 @@ app.post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
         404,
       );
 
-    // Check for existing shareHouse by name
-    const existingShareHouse = await prisma.shareHouse.findFirst({
+    // Check if the landlord has a share house with the same name
+    const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
       where: {
         name: data.name,
+        landlordId: landlordId,
       },
     });
 
-    if (existingShareHouse)
+    if (ShareHouseWithSameName)
       return c.json({ error: 'ShareHouse name already exists' }, 400);
 
     if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
