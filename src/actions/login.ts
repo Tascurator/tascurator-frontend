@@ -9,6 +9,7 @@ export const login = async (credentials: TLoginSchema) => {
    */
   await signIn('credentials', {
     ...credentials,
+    redirectTo: '/sharehouses',
     redirect: true,
   });
 };
