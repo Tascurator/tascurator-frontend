@@ -4,16 +4,15 @@ import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TaskDescriptionDrawer } from '../ui/drawers/TaskDescriptionDrawer';
 
-interface Tasks {
-  id: string;
-  title: string;
-  description?: string;
-}
-
 interface Category {
   id: string;
   name: string;
-  tasks: Tasks[];
+  tasks: {
+    id: string;
+    title: string;
+    description?: string;
+    isCompleted?: boolean;
+  }[];
 }
 
 interface AssignmentCategoryTasksProps {
@@ -21,7 +20,6 @@ interface AssignmentCategoryTasksProps {
   isChecked: { [taskId: string]: boolean };
   handleAllCheckedChange: (categoryId: string) => void;
   handleCheckboxChange: (taskId: string) => void;
-  numericKey: number;
 }
 
 export const AssignmentCategoryTasks = ({
@@ -29,7 +27,6 @@ export const AssignmentCategoryTasks = ({
   isChecked,
   handleAllCheckedChange,
   handleCheckboxChange,
-  numericKey,
 }: AssignmentCategoryTasksProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentTaskDetails, setCurrentTaskDetails] = useState<{
@@ -45,68 +42,46 @@ export const AssignmentCategoryTasks = ({
   return (
     <>
       <div key={category.id}>
-        {numericKey === 1 ? (
-          <>
-            <label className="flex items-center gap-1 mb-2 font-medium cursor-pointer">
+        <label className="flex items-center gap-1 mb-2 font-medium cursor-pointer">
+          <Checkbox
+            checked={category.tasks.every((task) => isChecked[task.id])}
+            onCheckedChange={() => handleAllCheckedChange(category.id)}
+          />
+          <p>{category.name}</p>
+        </label>
+
+        {category.tasks.map((task) => (
+          <div
+            key={task.id}
+            className="flex justify-between items-center bg-white rounded-xl mb-2"
+          >
+            <label
+              className={cn(
+                `flex flex-1 items-center gap-1 py-2 px-3 cursor-pointer ${
+                  isChecked[task.id] ? 'text-gray-500' : ''
+                }`,
+              )}
+            >
               <Checkbox
-                checked={category.tasks.every((task) => isChecked[task.id])}
-                onCheckedChange={() => handleAllCheckedChange(category.id)}
-                disabled={numericKey > 1}
+                checked={isChecked[task.id] || false}
+                onCheckedChange={() => handleCheckboxChange(task.id)}
               />
-              <p>{category.name}</p>
+              <p>{task.title}</p>
             </label>
 
-            {category.tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex justify-between items-center bg-white rounded-xl mb-2"
-              >
-                <label
-                  className={cn(
-                    `flex flex-1 items-center gap-1 py-2 px-3 cursor-pointer ${
-                      isChecked[task.id] ? 'text-gray-500' : ''
-                    }`,
-                  )}
-                >
-                  <Checkbox
-                    checked={isChecked[task.id] || false}
-                    onCheckedChange={() => handleCheckboxChange(task.id)}
-                    disabled={numericKey > 1}
-                  />
-                  <p>{task.title}</p>
-                </label>
-
-                <div className="flex items-center w-10 h-12 cursor-pointer">
-                  <Info
-                    className="stroke-gray-500"
-                    onClick={() =>
-                      setCurrentTask({
-                        title: task.title,
-                        description: task.description || '',
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <>
-            <div className="flex items-center gap-1 mb-2 font-medium text-gray-400">
-              <Checkbox disabled />
-              <p>{category.name}</p>
+            <div className="flex items-center w-10 h-12 cursor-pointer">
+              <Info
+                className="stroke-gray-500"
+                onClick={() =>
+                  setCurrentTask({
+                    title: task.title,
+                    description: task.description || '',
+                  })
+                }
+              />
             </div>
-
-            {category.tasks.map((task) => (
-              <div key={task.id} className="bg-white rounded-xl mb-2">
-                <div className="flex flex-1 items-center gap-1 py-2 px-3 text-gray-400">
-                  <Checkbox disabled />
-                  <p>{task.title}</p>
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+          </div>
+        ))}
       </div>
 
       <div className="h-0">

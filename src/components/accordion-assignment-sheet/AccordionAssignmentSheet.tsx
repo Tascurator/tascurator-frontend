@@ -12,66 +12,65 @@ import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '../ui/use-toast';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { AssignmentCategoryTasks } from './AssignmentCategoryTasks';
+import { ITask } from '@/types/commons';
+import { NoTaskMessage } from './NoTaskMessage';
 
 interface AccordionAssignmentSheetProps {
-  rotationData: {
-    rotations: {
-      [key: number]: {
-        startDate: string;
-        endDate: string;
-        categories: {
-          id: string;
-          name: string;
-          tasks: {
-            id: string;
-            title: string;
-            description?: string;
-            isCompleted?: boolean;
-          }[];
-        }[];
-      };
-    };
-  };
+  startDate: string;
+  endDate: string;
+  categories: {
+    id: string;
+    name: string;
+    tasks: (ITask & { isCompleted: boolean })[];
+  }[];
 }
 
 export const AccordionAssignmentSheet = ({
-  rotationData,
+  startDate,
+  endDate,
+  categories,
 }: AccordionAssignmentSheetProps) => {
   const [isChecked, setIsChecked] = useState<{ [taskId: string]: boolean }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
+  const [updatedTasks, setUpdatedTasks] = useState<{
+    [taskId: string]: boolean;
+  }>({});
 
   // Set initial checkbox states based on task completion status
   useEffect(() => {
     // Initialize isChecked based on initial task data
     const initialChecked: { [taskId: string]: boolean } = {};
-    Object.values(rotationData.rotations).forEach((rotation) => {
-      rotation.categories.forEach((category) => {
-        category.tasks.forEach((task) => {
-          initialChecked[task.id] = !!task.isCompleted;
-        });
+    categories.forEach((category) => {
+      category.tasks.forEach((task) => {
+        initialChecked[task.id] = !!task.isCompleted;
       });
     });
     setIsChecked(initialChecked);
-  }, [rotationData]);
+  }, [categories]);
 
   const handleCheckboxChange = (taskId: string) => {
     setIsEnabled(false);
-    setIsChecked((prevChecked) => ({
-      ...prevChecked,
-      [taskId]: !prevChecked[taskId],
-    }));
+    setIsChecked((prevChecked) => {
+      const newChecked = {
+        ...prevChecked,
+        [taskId]: !prevChecked[taskId],
+      };
+      setUpdatedTasks({
+        ...updatedTasks,
+        [taskId]: newChecked[taskId],
+      });
+      return newChecked;
+    });
   };
 
   const handleAllCheckedChange = (categoryId: string) => {
     setIsEnabled(false);
     // Get all task IDs for the category
-    const taskIds = Object.values(rotationData.rotations).flatMap(
-      (rotation) =>
-        rotation.categories
-          .find((category) => category.id === categoryId)
-          ?.tasks.map((task) => task.id) || [],
-    );
+    const taskIds =
+      categories
+        .find((category) => category.id === categoryId)
+        ?.tasks.map((task) => task.id) || [];
 
     // Check if all tasks in the category are checked
     const allChecked = taskIds.every((taskId) => isChecked[taskId]);
@@ -92,10 +91,8 @@ export const AccordionAssignmentSheet = ({
     setIsLoading(true);
 
     // Update the tasks
-    const updatedTasks = Object.values(rotationData.rotations)
-      .flatMap((rotation) =>
-        rotation.categories.flatMap((category) => category.tasks),
-      )
+    const updatedTasks = categories
+      .flatMap((category) => category.tasks)
       // .filter((task) => task.isCompleted)
       .map((task) => ({
         // ...task,
@@ -125,44 +122,36 @@ export const AccordionAssignmentSheet = ({
         defaultValue={`item-1`}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          {Object.entries(rotationData.rotations).map(([key, rotation]) => {
-            const numericKey = parseInt(key);
-            return (
-              <AccordionItem value={`item-${key}`} key={key}>
-                <AccordionTrigger>
-                  {rotation.startDate} - {rotation.endDate}
-                </AccordionTrigger>
-                <AccordionContent
-                  className={'bg-primary-lightest p-0 rounded-none'}
-                  asChild
-                >
-                  {rotation.categories.length === 0 ? (
-                    <p className="p-4 text-center">No task</p>
-                  ) : (
-                    rotation.categories.map((category) => (
-                      <AssignmentCategoryTasks
-                        key={category.id}
-                        category={category}
-                        isChecked={isChecked}
-                        handleAllCheckedChange={handleAllCheckedChange}
-                        handleCheckboxChange={handleCheckboxChange}
-                        numericKey={parseInt(key)}
-                      />
-                    ))
-                  )}
-                  {numericKey === 1 && (
-                    <Button
-                      type={'submit'}
-                      className={'w-full mt-6'}
-                      disabled={isEnabled}
-                    >
-                      Save
-                    </Button>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
+          <AccordionItem value={`item-1`}>
+            <AccordionTrigger>
+              {startDate} - {endDate}
+            </AccordionTrigger>
+            <AccordionContent
+              className={'bg-primary-lightest p-0 rounded-none'}
+              asChild
+            >
+              {categories.length === 0 ? (
+                <NoTaskMessage />
+              ) : (
+                categories.map((category) => (
+                  <AssignmentCategoryTasks
+                    key={category.id}
+                    category={category}
+                    isChecked={isChecked}
+                    handleAllCheckedChange={handleAllCheckedChange}
+                    handleCheckboxChange={handleCheckboxChange}
+                  />
+                ))
+              )}
+              <Button
+                type={'submit'}
+                className={'w-full mt-6'}
+                disabled={isEnabled}
+              >
+                Save
+              </Button>
+            </AccordionContent>
+          </AccordionItem>
         </form>
       </Accordion>
     </>

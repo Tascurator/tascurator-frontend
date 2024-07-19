@@ -1,4 +1,6 @@
 import { AccordionAssignmentSheet } from '@/components/accordion-assignment-sheet/AccordionAssignmentSheet';
+import { AccordionAssignmentSheetFuture } from '@/components/accordion-assignment-sheet/AccordionAssignmentSheetFuture';
+
 interface IAssignmentSheetPageProps {
   params: {
     assignment_sheet_id: string;
@@ -42,7 +44,6 @@ const AssignmentSheetPage = ({
           },
         ],
       },
-
       // rotation 2
       2: {
         startDate: '12/8',
@@ -54,7 +55,19 @@ const AssignmentSheetPage = ({
             tasks: [
               {
                 id: '1cee1481-5be6-41c1-b5e1-7e68a72d8177',
-                title: 'Weed the garden',
+                title: 'Sample task',
+              },
+              {
+                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                title: 'Sample task',
+              },
+              {
+                id: 'b7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                title: 'Sample task',
+              },
+              {
+                id: 'c7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                title: 'Sample task',
               },
             ],
           },
@@ -67,11 +80,11 @@ const AssignmentSheetPage = ({
         categories: [
           {
             id: '545ea4fe-83e1-4fb9-825e-408a03fd7fca',
-            name: 'TEST',
+            name: 'Sample name',
             tasks: [
               {
                 id: '1cee1481-5be6-41c1-b5e1-7e68a72d817a',
-                title: 'TASK',
+                title: 'Sample task',
               },
             ],
           },
@@ -95,7 +108,24 @@ const AssignmentSheetPage = ({
       </header>
 
       <div className="px-6">
-        <AccordionAssignmentSheet rotationData={rotationData} />
+        {/* Current rotation */}
+        <AccordionAssignmentSheet
+          startDate={rotationData.rotations[1].startDate}
+          endDate={rotationData.rotations[1].endDate}
+          categories={rotationData.rotations[1].categories}
+        />
+
+        {/* Future rotations */}
+        {Object.entries(rotationData.rotations)
+          .slice(1)
+          .map(([key, rotation]) => (
+            <AccordionAssignmentSheetFuture
+              key={key}
+              startDate={rotation.startDate}
+              endDate={rotation.endDate}
+              categories={rotation.categories}
+            />
+          ))}
       </div>
     </>
   );
