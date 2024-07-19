@@ -14,6 +14,8 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
   const basePath = '/sharehouses';
   const editPathRegex = new RegExp(`^${basePath}/[\\w-]+/edit$`);
   const shareHousePathRegex = new RegExp(`^${basePath}/[\\w-]+$`);
+  // sharehouses/new
+  const shareHouseNew = `${basePath}/new`;
 
   const shareHouseName = 'Sample Share House';
   const sharehouseIdMatch = pathname.match(/sharehouses\/([\w-]+)/);
@@ -48,9 +50,19 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
     );
   }
 
+  if (pathname === shareHouseNew) {
+    return (
+      <>
+        {HeaderComponent}
+        <div className="px-6">{children}</div>
+      </>
+    );
+  }
+
   return (
     <>
       {HeaderComponent}
+      {console.log(shareHouseNew)}
       <div className={shareHousePathRegex.test(pathname) ? '' : 'px-6'}>
         {children}
       </div>
