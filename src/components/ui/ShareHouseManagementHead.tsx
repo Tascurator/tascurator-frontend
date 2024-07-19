@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
-import { TaskCreationDrawer } from './drawers/TaskCreationDrawer';
 import { TenantInvitationDrawer } from './drawers/TenantInvitationDrawer';
+import { CategoryCreationDrawer } from './drawers/CategoryCreationDrawer';
 
 interface IHeaderTitleButtonProps {
   title: string;
@@ -42,7 +42,10 @@ export const ShareHouseManagementHead = ({
         />
       </div>
       <div className="h-0">
-        <TaskCreationDrawer open={openTaskDrawer} setOpen={setOpenTaskDrawer} />
+        <CategoryCreationDrawer
+          open={openTaskDrawer}
+          setOpen={setOpenTaskDrawer}
+        />
         <TenantInvitationDrawer
           open={openTenantDrawer}
           setOpen={setOpenTenantDrawer}

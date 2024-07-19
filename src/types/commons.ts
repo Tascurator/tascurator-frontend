@@ -24,6 +24,8 @@ export interface ICategory {
   tasks: ITask[];
 }
 
+export type ICategoryWithoutTasks = Omit<ICategory, 'tasks'>;
+
 /**
  * The object structure for Tenant
  */
@@ -31,6 +33,19 @@ export interface ITenant {
   id: string;
   name: string;
   email: string;
+}
+
+/**
+ * The object structure for share house data
+ */
+export interface ICardContentProps {
+  category: string | null;
+  tenant?: string;
+  isComplete?: boolean;
+  taskNum?: number;
+  completedTaskNum?: number;
+  className?: string;
+  isLast?: boolean;
 }
 
 /**

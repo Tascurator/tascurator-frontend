@@ -79,6 +79,7 @@ const Input = forwardRef<HTMLInputElement, TInputProps>(
       <div className="relative w-full">
         {type === 'password' && (
           <button
+            tabIndex={2}
             type="button"
             onClick={togglePasswordVisibility}
             className="absolute inset-y-0 right-3 flex items-center"
@@ -107,6 +108,7 @@ const Input = forwardRef<HTMLInputElement, TInputProps>(
           )}
           ref={ref}
           {...props}
+          tabIndex={1}
         />
       </div>
     );

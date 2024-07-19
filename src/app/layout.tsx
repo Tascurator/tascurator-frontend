@@ -27,7 +27,11 @@ export default function RootLayout({
             roboto.className,
           )}
         >
-          <main className={'max-w-screen-sm min-h-dvh w-full h-full bg-white'}>
+          <main
+            className={
+              'max-w-screen-sm min-h-screen w-full h-full bg-white relative'
+            }
+          >
             {children}
           </main>
           <Toaster />
