@@ -31,13 +31,40 @@ const AssignmentSheetPage = ({
                 title: 'Clean the kitchen',
                 description:
                   '<p>Ensure the <strong>kitchen</strong> is</p><p><strong>clean</strong> and <u>tidy</u>.</p>',
-                isCompleted: true,
+                isCompleted: false,
               },
               {
-                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde65',
                 title: 'Sample title',
                 description:
                   '<p><strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non mollis nisi.</strong></p><p></p><p><u>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</u></p><p><strong>Nulla eget odio in nulla euismod commodo et sed mauris.</strong></p><p></p><ul class="list-disc pl-6"><li class="[&amp;>p]:inline"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></li><li class="[&amp;>p]:inline"><p><u>Praesent eget lorem volutpat, dignissim purus sit amet, posuere nisl.</u></p></li><li class="[&amp;>p]:inline"><p>Aenean at ante ornare, congue neque id, consectetur elit.</p></li></ul><p></p><ol class="list-decimal pl-6"><li class="[&amp;>p]:inline"><p>In auctor neque quis porta venenatis.</p></li><li class="[&amp;>p]:inline"><p>Fusce sed ex eget sapien tristique tincidunt.</p></li></ol>',
+                isCompleted: false,
+              },
+              {
+                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde66',
+                title: 'Sample title2',
+                description:
+                  '<p><strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In non mollis nisi.</strong></p><p></p><p><u>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</u></p><p><strong>Nulla eget odio in nulla euismod commodo et sed mauris.</strong></p>',
+                isCompleted: false,
+              },
+            ],
+          },
+          {
+            id: '42e5edd4-8960-4be4-8b4c-86c8c31cb8f1',
+            name: 'Sample name',
+            tasks: [
+              {
+                id: 'd1bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                title: 'Sample title1',
+                description:
+                  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>',
+                isCompleted: false,
+              },
+              {
+                id: 'a1bd18d4-60c9-4fb7-b420-3139ed8cde65',
+                title: 'Sample title2',
+                description:
+                  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>',
                 isCompleted: false,
               },
             ],
@@ -58,15 +85,15 @@ const AssignmentSheetPage = ({
                 title: 'Sample task',
               },
               {
-                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                id: 'a7bd18d4-60c9-4fb7-b420-3139ed8cde67',
                 title: 'Sample task',
               },
               {
-                id: 'b7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                id: 'b7bd18d4-60c9-4fb7-b420-3139ed8cde68',
                 title: 'Sample task',
               },
               {
-                id: 'c7bd18d4-60c9-4fb7-b420-3139ed8cde64',
+                id: 'c7bd18d4-60c9-4fb7-b420-3139ed8cde69',
                 title: 'Sample task',
               },
             ],

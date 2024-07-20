@@ -41,27 +41,32 @@ export const AccordionAssignmentSheet = ({
 }: AccordionAssignmentSheetProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, watch, setValue } = useForm({
+  const defaultValues = {
+    tasks: categories.flatMap((category) =>
+      category.tasks.map((task) => ({
+        id: task.id,
+        isCompleted: task.isCompleted,
+      })),
+    ),
+  };
+
+  const { handleSubmit, watch, setValue } = useForm<FormValues>({
     resolver: zodResolver(taskCompletionUpdateSchema),
-    defaultValues: {
-      tasks: categories.flatMap((category) =>
-        category.tasks.map((task) => ({
-          id: task.id,
-          isCompleted: task.isCompleted,
-        })),
-      ),
-    },
+    defaultValues,
   });
 
   // Watch changes in form field values
   const watchedFields = watch('tasks');
 
-  // Enable Save button if any changes are detected
-  const isEnabled = watchedFields.some(
-    (task, index) =>
-      task.isCompleted !==
-      categories.flatMap((category) => category.tasks)[index].isCompleted,
-  );
+  // Determine if there are any changes from the initial values
+  const hasChanges = (tasks: FormValues['tasks']) =>
+    tasks.some(
+      (task, index) =>
+        task.isCompleted !== defaultValues.tasks[index].isCompleted,
+    );
+
+  // Enable Save button when isCompleted status is changed from the initial value
+  const isEnabled = hasChanges(watchedFields);
 
   // Change the state of checkboxes
   const handleCheckboxChange = (taskId: string) => {
@@ -70,11 +75,9 @@ export const AccordionAssignmentSheet = ({
       watchedFields.map((task) =>
         task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task,
       ),
-      { shouldValidate: true },
     );
   };
 
-  // Change the state of all checkboxes
   const handleAllCheckedChange = (categoryId: string) => {
     // Get all task IDs in the category
     const taskIds =
@@ -94,21 +97,21 @@ export const AccordionAssignmentSheet = ({
           ? { ...task, isCompleted: !allChecked }
           : task,
       ),
-      { shouldValidate: true },
     );
   };
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
+    // Filter out only the changed tasks
+    const upDataTasks = data.tasks.filter((task) => hasChanges([task]));
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        variant: 'default',
-        description: TOAST_TEXTS.success,
-      });
-    }, 1000);
-    console.log('updated', data.tasks);
+    setIsLoading(false);
+    toast({
+      variant: 'default',
+      description: TOAST_TEXTS.success,
+    });
+
+    console.log('Updated Tasks:', upDataTasks);
   };
 
   return (
