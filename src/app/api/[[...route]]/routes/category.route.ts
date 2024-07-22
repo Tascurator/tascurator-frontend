@@ -125,6 +125,17 @@ const app = new Hono()
     zValidator('json', categoryCreationSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -156,6 +167,19 @@ const app = new Hono()
             400,
           );
         }
+
+        // Check if the sharehouse has a category with the same name
+        const categoryWithSameName = await prisma.category.findFirst({
+          where: {
+            name: data.category,
+            rotationAssignment: {
+              shareHouseId: shareHouseId,
+            },
+          },
+        });
+
+        if (categoryWithSameName)
+          return c.json({ error: 'Category name already exists' }, 400);
 
         const newCategory = await prisma.category.create({
           data: {
