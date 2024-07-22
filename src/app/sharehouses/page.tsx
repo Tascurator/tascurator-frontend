@@ -7,21 +7,25 @@ import { headers } from 'next/headers';
 import { CONSTRAINTS } from '@/constants/constraints';
 
 const ShareHousesPage = async () => {
+  // Fetch share house information with headers including cookies
   const res = await api.sharehouses.$get(
     {},
     {
       headers: {
-        cookie: headers().get('cookie') || '',
+        cookie: headers().get('cookie') || '', // Add cookies to headers
       },
     },
   );
 
+  // Convert response to JSON
   const data = await res.json();
 
+  // Check for error in data and display it if found
   if ('error' in data) {
     return <div>{data.error}</div>;
   }
 
+  // Extract 'shareHouses' from data
   const { shareHouses } = data;
 
   const renderShareHouses = () => {
