@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator';
 import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -25,7 +26,8 @@ const app = new Hono()
         },
       });
 
-      if (!task) return c.json({ error: 'Task not found' }, 404);
+      if (!task)
+        return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
       const updateData: { title?: string; description?: string } = {};
       if (data.title) updateData.title = data.title;
@@ -65,7 +67,10 @@ const app = new Hono()
       });
 
       if (!category) {
-        return c.json({ error: 'Category not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
       }
 
       if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
@@ -109,7 +114,8 @@ const app = new Hono()
         },
       });
 
-      if (!task) return c.json({ error: 'Task not found' }, 404);
+      if (!task)
+        return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
       const tasks = await prisma.task.findMany({
         where: {

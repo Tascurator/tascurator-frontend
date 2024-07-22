@@ -10,6 +10,7 @@ import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -31,7 +32,11 @@ const app = new Hono()
           },
         });
 
-        if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+        if (!tenant)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
 
         const updateTenant = await prisma.tenant.update({
           where: {
@@ -65,7 +70,11 @@ const app = new Hono()
           id: tenantId,
         },
       });
-      if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+      if (!tenant)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
 
       const deleteTenant = await prisma.tenant.delete({
         where: {
@@ -116,7 +125,7 @@ const app = new Hono()
         if (!rotationAssignment)
           return c.json(
             {
-              error: 'RotationAssignment not found for the given shareHouseId',
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
             },
             404,
           );
@@ -217,7 +226,10 @@ const app = new Hono()
         !assignmentSheet.ShareHouse ||
         !assignmentSheet.ShareHouse.RotationAssignment
       ) {
-        return c.json({ error: 'Assignment sheet not found' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
+          500,
+        );
       }
 
       /**
@@ -233,7 +245,10 @@ const app = new Hono()
        * Check if the tenant exists in the assignedData.
        */
       if (!assignedData.hasTenant(tenantId)) {
-        return c.json({ error: 'Tenant not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
       }
 
       const rotationScheduleForecast: TRotationScheduleForecast = {
@@ -347,7 +362,10 @@ const app = new Hono()
          * Return an internal server error if the assignment sheet is not found.
          */
         if (!assignmentSheet) {
-          return c.json({ error: 'Assignment sheet not found' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
+            500,
+          );
         }
 
         /**
@@ -363,7 +381,10 @@ const app = new Hono()
          * Check if the tenant exists in the assignedData.
          */
         if (!assignedData.hasTenant(tenantId)) {
-          return c.json({ error: 'Tenant not found' }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
         }
 
         /**

@@ -47,7 +47,10 @@ const app = new Hono()
       });
 
       if (!shareHouseWithOtherTables)
-        return c.json({ error: 'ShareHouse not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       if (!shareHouseWithOtherTables.RotationAssignment)
         return c.json(
@@ -108,7 +111,11 @@ const app = new Hono()
           },
         });
 
-        if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+        if (!shareHouse)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
 
         const updateShareHouse = await prisma.shareHouse.update({
           where: {
@@ -143,7 +150,11 @@ const app = new Hono()
         },
       });
 
-      if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+      if (!shareHouse)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       const transaction = await prisma.$transaction(async (prisma) => {
         const deleteShareHouse = await prisma.shareHouse.delete({
@@ -226,7 +237,7 @@ const app = new Hono()
 
       if (!landlord)
         return c.json(
-          { error: 'Landlord not found for the given landlordId' },
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('landlord') },
           404,
         );
 
@@ -239,7 +250,7 @@ const app = new Hono()
       });
 
       if (ShareHouseWithSameName)
-        return c.json({ error: 'ShareHouse name already exists' }, 400);
+        return c.json({ error: 'Share House name already exists' }, 400);
 
       if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
@@ -367,7 +378,7 @@ const app = new Hono()
         });
 
         if (!sharehouse || !sharehouse.RotationAssignment) {
-          throw new Error('Share house not found');
+          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('shareHouse'));
         }
 
         const newInitialAssignedData = new InitialAssignedData(

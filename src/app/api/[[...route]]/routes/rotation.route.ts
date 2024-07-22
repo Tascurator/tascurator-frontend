@@ -31,7 +31,11 @@ const app = new Hono()
         !shareHouseWithAssignmentSheet.assignmentSheet
       ) {
         return c.json(
-          { error: 'ShareHouse or AssignmentSheet not found' },
+          {
+            error: SERVER_ERROR_MESSAGES.NOT_FOUND(
+              'share house or assignmentSheet',
+            ),
+          },
           404,
         );
       }
@@ -155,7 +159,10 @@ const app = new Hono()
        * Return 404 if sharehouse not found
        */
       if (!sharehouse) {
-        return c.json({ error: 'ShareHouse not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
       }
 
       /**
@@ -240,7 +247,11 @@ const app = new Hono()
           },
         });
 
-        if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+        if (!shareHouse)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
 
         if (!shareHouse.RotationAssignment)
           return c.json({ error: 'Interval Server Error' }, 500);

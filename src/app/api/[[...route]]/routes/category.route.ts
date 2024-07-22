@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator';
 import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -25,7 +26,11 @@ const app = new Hono()
           },
         });
 
-        if (!category) return c.json({ error: 'Category not found' }, 404);
+        if (!category)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+            404,
+          );
 
         const updateCategory = await prisma.category.update({
           where: {
@@ -56,7 +61,11 @@ const app = new Hono()
           id: categoryId,
         },
       });
-      if (!category) return c.json({ error: 'Category not found' }, 404);
+      if (!category)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
 
       const categories = await prisma.category.findMany({
         where: {
@@ -110,7 +119,7 @@ const app = new Hono()
         if (!rotationAssignment) {
           return c.json(
             {
-              error: 'RotationAssignment not found for the given shareHouseId',
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
             },
             404,
           );
