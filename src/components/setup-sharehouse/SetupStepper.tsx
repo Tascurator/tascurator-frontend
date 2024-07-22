@@ -68,6 +68,7 @@ export const SetupStepper = ({
         isValid = true;
       }
     } else if (currentStep === 3) {
+      // console.log('trigger tenants');
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
       isValid = await trigger(['startDate', 'rotationCycle']);
@@ -167,6 +168,9 @@ export const SetupStepper = ({
           </ul>
         ) : (
           <p className="text-center">No tenant</p>
+        )}
+        {errors.tenants && (
+          <p className="text-red-500 text-sm">{errors.tenants.message}</p>
         )}
       </SetupContents>
     );
