@@ -96,8 +96,20 @@ const app = new Hono()
     zValidator('json', shareHouseNameSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+        const landlordId = session.user.id;
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
+
         const shareHouse = await prisma.shareHouse.findUnique({
           where: {
             id: shareHouseId,
@@ -105,6 +117,17 @@ const app = new Hono()
         });
 
         if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+
+        // Check if the landlord has a share house with the same name
+        const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
+          where: {
+            name: data.name,
+            landlordId: landlordId,
+          },
+        });
+
+        if (ShareHouseWithSameName)
+          return c.json({ error: 'ShareHouse name already exists' }, 400);
 
         const updateShareHouse = await prisma.shareHouse.update({
           where: {
