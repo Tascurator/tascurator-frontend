@@ -119,7 +119,7 @@ const AccordionContent = forwardRef<
 >(({ className, children, ...props }, ref) => (
   <Content
     ref={ref}
-    className="overflow-hidden transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down bg-white rounded-xl mt-2 mb-4 mx-4"
+    className="overflow-hidden transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down rounded-xl mt-2 mb-4 mx-4"
     {...props}
   >
     <div className={cn('p-4', className)}>{children}</div>

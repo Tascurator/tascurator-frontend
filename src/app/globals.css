@@ -50,3 +50,15 @@
 .lucide {
   color: var(--color-black);
 }
+
+/* Line break for <p></p> in task description */
+@supports (height: 1lh) {
+  #taskDescriptionHtml p:empty {
+    height: 1lh;
+  }
+}
+@supports not (height: 1lh) {
+  #taskDescriptionHtml p:empty::after {
+    content: '\00A0';
+  }
+}
