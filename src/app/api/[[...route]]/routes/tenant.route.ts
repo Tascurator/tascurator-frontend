@@ -149,6 +149,13 @@ const app = new Hono()
         const existingTenant = await prisma.tenant.findFirst({
           where: {
             email: sanitizedEmail,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
           },
         });
 
