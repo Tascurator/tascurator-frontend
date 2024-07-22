@@ -58,15 +58,12 @@ export const AccordionAssignmentSheet = ({
   // Watch changes in form field values
   const watchedFields = watch('tasks');
 
-  // Determine if there are any changes from the initial values
-  const hasChanges = (tasks: FormValues['tasks']) =>
-    tasks.some(
-      (task, index) =>
-        task.isCompleted !== defaultValues.tasks[index].isCompleted,
-    );
-
   // Enable Save button when isCompleted status is changed from the initial value
-  const isEnabled = hasChanges(watchedFields);
+  const isEnabled = watchedFields.some(
+    (task, index) =>
+      task.isCompleted !==
+      categories.flatMap((category) => category.tasks)[index].isCompleted,
+  );
 
   // Change the state of checkboxes
   const handleCheckboxChange = (taskId: string) => {
@@ -103,7 +100,11 @@ export const AccordionAssignmentSheet = ({
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
     // Filter out only the changed tasks
-    const upDataTasks = data.tasks.filter((task) => hasChanges([task]));
+    const updatedTasks = data.tasks.filter(
+      (task, index) =>
+        task.isCompleted !== defaultValues.tasks[index].isCompleted,
+    );
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
     toast({
@@ -111,7 +112,7 @@ export const AccordionAssignmentSheet = ({
       description: TOAST_TEXTS.success,
     });
 
-    console.log('Updated Tasks:', upDataTasks);
+    console.log('Updated Tasks:', updatedTasks);
   };
 
   return (
