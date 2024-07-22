@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import type { IAssignedData } from '@/types/server';
@@ -30,7 +31,11 @@ const app = new Hono()
       },
     });
 
-    if (!shareHouses) return c.json({ error: 'Internal Server Error' }, 500);
+    if (!shareHouses)
+      return c.json(
+        { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+        500,
+      );
 
     const shareHousesWithProgress = shareHouses.shareHouses.map(
       (shareHouse) => {

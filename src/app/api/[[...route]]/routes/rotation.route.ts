@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import type { IAssignedData } from '@/types/server';
@@ -74,7 +75,10 @@ const app = new Hono()
           : null;
 
         if (!assignment.tenant)
-          return c.json({ error: 'Internal Server Error' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+            500,
+          );
 
         const tenantId = assignment.tenant.id;
         const tenantName = assignment.tenant.name;
@@ -158,7 +162,10 @@ const app = new Hono()
        * Return 500 if RotationAssignment or AssignmentSheet not found
        */
       if (!sharehouse.RotationAssignment || !sharehouse.assignmentSheet) {
-        return c.json({ error: 'Internal Server Error' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
       }
 
       /**

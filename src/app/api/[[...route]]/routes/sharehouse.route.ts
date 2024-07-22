@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
 import { CONSTRAINTS } from '@/constants/constraints';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
   shareHouseCreationSchema,
   shareHouseNameSchema,
@@ -49,7 +50,10 @@ const app = new Hono()
         return c.json({ error: 'ShareHouse not found' }, 404);
 
       if (!shareHouseWithOtherTables.RotationAssignment)
-        return c.json({ error: 'Internal Server Error' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
 
       const shareHouseData = {
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
