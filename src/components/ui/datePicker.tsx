@@ -13,16 +13,25 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
+interface IDatePickerProps {
+  onChange: (date: Date) => void;
+}
 /**
  * The DatePicker component is used to create a date picker component.
  *
  * @example
  * <DatePicker />
  */
-export function DatePicker() {
+
+export function DatePicker({ onChange }: IDatePickerProps) {
   const [date, setDate] = useState<Date | undefined>(() =>
     startOfDay(new Date()),
   );
+
+  const handleDateChange = (date: Date | undefined) => {
+    setDate(date);
+    onChange(date as Date);
+  };
 
   return (
     <Popover>
@@ -46,7 +55,7 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleDateChange}
           initialFocus
         />
       </PopoverContent>

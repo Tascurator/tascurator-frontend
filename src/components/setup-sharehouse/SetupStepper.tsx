@@ -10,10 +10,10 @@ import {
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
-import { RotationCycle } from '@/components/sharehouses-management/RotationCycle';
+import { ScheduleSetting } from './ScheduleSetting';
 import { TenantListItem } from '../ui/tenantList';
 import { DatePicker } from '@/components/ui/datePicker';
-import { SetupConfirmationDrawer } from '@/components/ui/drawers/SetupConfirmationDrawer';
+// import { SetupConfirmationDrawer } from '@/components/ui/drawers/SetupConfirmationDrawer';
 import { SetupContents } from '@/components/setup-sharehouse/SetupContents';
 import {
   shareHouseCreationSchema,
@@ -36,11 +36,14 @@ export const SetupStepper = ({
   categories,
 }: ISetupStepperProps) => {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  // const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   // const [shareHouseName, setShareHouseName] = useState<string>('');
 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [rotationCycle, setRotationCycle] = useState<number>(7);
+
   const handleBack = () => setCurrentStep(currentStep - 1);
-  const handleOpen = () => setOpenDrawer(true);
+  // const handleOpen = () => setOpenDrawer(true);
 
   const {
     register,
@@ -48,6 +51,7 @@ export const SetupStepper = ({
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm<TShareHouseCreationSchema>({
     resolver: zodResolver(shareHouseCreationSchema),
     defaultValues: {
@@ -71,10 +75,19 @@ export const SetupStepper = ({
       // console.log('trigger tenants');
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
-      isValid = await trigger(['startDate', 'rotationCycle']);
+      console.log('trigger schedule');
+      setValue('startDate', selectedDate?.toString() || '');
+      setValue('rotationCycle', rotationCycle);
+      isValid = true;
+      const values = getValues();
+      console.log(values);
     }
-    if (isValid) {
-      setCurrentStep((prevStep) => prevStep + 1);
+    if (isValid && currentStep === maxSteps) {
+      console.log('akeruyo!!');
+      // handleOpen();
+    }
+    if (isValid && currentStep < maxSteps) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -185,15 +198,15 @@ export const SetupStepper = ({
           maxSteps={maxSteps}
           onNext={handleNext}
           onBack={handleBack}
-          onOpen={handleOpen}
+          // onOpen={handleOpen}
         >
           <div className="mb-6">
             <p className="mb-6">Start date</p>
-            <DatePicker />
+            <DatePicker onChange={setSelectedDate} />
           </div>
-          <RotationCycle />
+          <ScheduleSetting onChange={setRotationCycle} />
         </SetupContents>
-        <SetupConfirmationDrawer open={openDrawer} setOpen={setOpenDrawer} />
+        {/* <SetupConfirmationDrawer open={openDrawer} setOpen={setOpenDrawer} /> */}
       </>
     );
   };
