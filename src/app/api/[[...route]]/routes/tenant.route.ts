@@ -10,6 +10,7 @@ import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import { auth } from '@/lib/auth';
 
 const app = new Hono()
 
@@ -22,6 +23,17 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema.pick({ name: true })),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+
         const tenantId = c.req.param('tenantId');
         const data = c.req.valid('json');
 
@@ -29,9 +41,30 @@ const app = new Hono()
           where: {
             id: tenantId,
           },
+          include: {
+            tenantPlaceholders: {
+              include: {
+                rotationAssignment: {
+                  include: {
+                    shareHouse: true,
+                  },
+                },
+              },
+            },
+          },
         });
 
         if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json({ error: 'Tenant name already exists' }, 400);
 
         const updateTenant = await prisma.tenant.update({
           where: {
