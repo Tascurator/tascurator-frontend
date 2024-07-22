@@ -56,10 +56,20 @@ const app = new Hono()
 
         if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
 
+        const shareHouseId =
+          tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
+
         // Check if the sharehouse has a tenant with the same name
         const tenantWithSameName = await prisma.tenant.findFirst({
           where: {
             name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
           },
         });
 
@@ -121,6 +131,17 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -133,7 +154,9 @@ const app = new Hono()
 
         if (existingTenant)
           return c.json(
-            { error: 'Tenant with this email already exists' },
+            {
+              error: 'Tenant with this email already exists',
+            },
             400,
           );
 
@@ -153,6 +176,23 @@ const app = new Hono()
             },
             404,
           );
+
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json({ error: 'Tenant name already exists' }, 400);
 
         const availableTenantPlaceholder =
           rotationAssignment.tenantPlaceholders.find(
