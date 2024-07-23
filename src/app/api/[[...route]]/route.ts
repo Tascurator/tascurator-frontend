@@ -22,6 +22,20 @@ const defaultRoutes = [
 ];
 
 /**
+ * Define public and auth routes.
+ */
+export const publicRoutes: string[] = [
+  '/login',
+  '/sign-up',
+  '/forgot-password',
+  '/reset-password',
+];
+
+export const authRoutes: string[] = ['/login'];
+
+export const DEFAULT_LOGIN_REDIRECT: string = '/sharehouses';
+
+/**
  * This is a test route to check if the user is logged in.
  * TODO: Remove this route before deploying to production.
  */

@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 
 import { useSession } from 'next-auth/react';
+import { toast } from '../ui/use-toast';
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,12 +37,25 @@ const Form = () => {
       if (isValid) {
         console.log('Form data:', formData);
 
-        await login(formData);
+        const result = await login(formData);
+        console.log('Login result:', result);
 
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        }
         setIsLoading(false);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+
+      toast({
+        variant: 'destructive',
+        description: 'An error occurred while logging in.',
+      });
+      setIsLoading(false);
     }
   };
 
