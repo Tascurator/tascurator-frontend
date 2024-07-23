@@ -5,6 +5,7 @@ import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -22,7 +23,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: 'You are not logged in!',
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -40,7 +41,11 @@ const app = new Hono()
           },
         });
 
-        if (!category) return c.json({ error: 'Category not found' }, 404);
+        if (!category)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+            404,
+          );
 
         const shareHouseId = category.rotationAssignment.shareHouseId;
 
@@ -55,7 +60,16 @@ const app = new Hono()
         });
 
         if (categoryWithSameName)
-          return c.json({ error: 'Category name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const updateCategory = await prisma.category.update({
           where: {
@@ -68,8 +82,20 @@ const app = new Hono()
 
         return c.json(updateCategory, 201);
       } catch (error) {
-        console.error(error);
-        return c.json({ error: 'An error occurred while updating data' }, 500);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the category',
+          ),
+          error,
+        );
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the category',
+            ),
+          },
+          500,
+        );
       }
     },
   )
@@ -86,7 +112,11 @@ const app = new Hono()
           id: categoryId,
         },
       });
-      if (!category) return c.json({ error: 'Category not found' }, 404);
+      if (!category)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
 
       const categories = await prisma.category.findMany({
         where: {
@@ -96,7 +126,9 @@ const app = new Hono()
 
       if (categories.length <= 1)
         return c.json(
-          { error: 'You are not allowed to delete this category' },
+          {
+            error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('category'),
+          },
           403,
         );
 
@@ -108,9 +140,16 @@ const app = new Hono()
 
       return c.json(deleteCategory, 201);
     } catch (error) {
-      console.error('Error deleting the category:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the category:',
+        ),
+        error,
+      );
       return c.json(
-        { error: 'An error occurred while updating the category' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('delete the category'),
+        },
         500,
       );
     }
@@ -130,7 +169,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: 'You are not logged in!',
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -151,7 +190,7 @@ const app = new Hono()
         if (!rotationAssignment) {
           return c.json(
             {
-              error: 'RotationAssignment not found for the given shareHouseId',
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
             },
             404,
           );
@@ -162,7 +201,10 @@ const app = new Hono()
         ) {
           return c.json(
             {
-              error: `The number of categories has reached the maximum limit of ${CONSTRAINTS.CATEGORY_MAX_AMOUNT}`,
+              error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+                'categories',
+                CONSTRAINTS.CATEGORY_MAX_AMOUNT,
+              ),
             },
             400,
           );
@@ -179,7 +221,16 @@ const app = new Hono()
         });
 
         if (categoryWithSameName)
-          return c.json({ error: 'Category name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const newCategory = await prisma.category.create({
           data: {
@@ -200,9 +251,18 @@ const app = new Hono()
 
         return c.json(newCategory, 201);
       } catch (error) {
-        console.error(error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'creating the category',
+          ),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while creating the category' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the category',
+            ),
+          },
           500,
         );
       }

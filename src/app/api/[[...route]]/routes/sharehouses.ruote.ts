@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import type { IAssignedData } from '@/types/server';
@@ -14,7 +15,8 @@ const app = new Hono()
     try {
       const session = await auth();
 
-      if (!session) return c.json({ error: 'Unauthorized' }, 401);
+      if (!session)
+        return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
 
       const shareHouses = await prisma.landlord.findUnique({
         where: { id: session.user.id },
@@ -31,7 +33,11 @@ const app = new Hono()
         },
       });
 
-      if (!shareHouses) return c.json({ error: 'Internal Server Error' }, 500);
+      if (!shareHouses)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
 
       const shareHousesWithProgress = shareHouses.shareHouses.map(
         (shareHouse) => {
@@ -69,11 +75,17 @@ const app = new Hono()
 
       return c.json({ shareHouses: shareHousesWithProgress });
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for all share houses the landlord has',
+        ),
+        error,
+      );
       return c.json(
         {
-          error:
-            'Something went long while fetching all share houses the landlord has',
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for all share houses the landlord has',
+          ),
         },
         500,
       );
