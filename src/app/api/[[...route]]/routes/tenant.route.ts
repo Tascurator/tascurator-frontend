@@ -301,6 +301,17 @@ const app = new Hono()
       }
 
       /**
+       * Check if the tenant exists in the share house.
+       */
+      if (
+        !assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders.some(
+          (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
+        )
+      ) {
+        return c.json({ error: 'Tenant not found' }, 404);
+      }
+
+      /**
        * Create an AssignedData instance from the assignedData in the assignmentSheet.
        */
       const assignedData = new AssignedData(
