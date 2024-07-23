@@ -229,7 +229,9 @@ const app = new Hono()
         if (!RotationAssignment || !assignmentSheet)
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house, rotationAssignment, or assignmentSheet'),
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND(
+                'share house, rotationAssignment, or assignmentSheet',
+              ),
             },
             404,
           );
