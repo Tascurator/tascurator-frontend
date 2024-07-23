@@ -35,10 +35,7 @@ const Form = () => {
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
-        console.log('Form data:', formData);
-
         const result = await login(formData);
-        console.log('Login result:', result);
 
         if (result?.error) {
           toast({

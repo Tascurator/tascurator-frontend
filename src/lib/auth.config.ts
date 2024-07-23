@@ -18,10 +18,6 @@ export default {
           if (validatedFields.success) {
             const { email, password } = validatedFields.data;
 
-            if (!email || !password) {
-              throw new Error('Missing credentials.');
-            }
-
             const user = await prisma.landlord.findUnique({
               where: { email },
             });
@@ -30,13 +26,7 @@ export default {
 
             const passwordValid = await bcrypt.compare(password, user.password);
 
-            if (passwordValid) {
-              return user;
-            } else {
-              throw new Error(
-                'Authorize error: Invalid credentials. Please check your email and password.',
-              );
-            }
+            if (passwordValid) return user;
           }
 
           return null;
