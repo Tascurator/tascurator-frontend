@@ -61,7 +61,7 @@ export const SetupConfirmationDrawer = ({
         <DrawerTrigger />
         <DrawerContent>
           <DrawerTitle>Confirm</DrawerTitle>
-          <DrawerDescription>
+          <DrawerDescription asChild>
             {data && (
               <div>
                 <p>Share house name: {data.name}</p>
@@ -98,7 +98,6 @@ export const SetupConfirmationDrawer = ({
             </DrawerClose>
             <Button
               type="submit"
-              // variant="destructive"
               className="flex-1"
               onClick={handleSubmit(handleFormSubmit)}
             >
