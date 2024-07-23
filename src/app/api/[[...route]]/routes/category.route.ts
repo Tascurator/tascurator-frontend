@@ -193,7 +193,10 @@ const app = new Hono()
         ) {
           return c.json(
             {
-              error: `The number of categories has reached the maximum limit of ${CONSTRAINTS.CATEGORY_MAX_AMOUNT}`,
+              error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+                'categories',
+                CONSTRAINTS.CATEGORY_MAX_AMOUNT,
+              ),
             },
             400,
           );

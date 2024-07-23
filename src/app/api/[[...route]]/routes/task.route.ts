@@ -78,7 +78,10 @@ const app = new Hono()
       if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
         return c.json(
           {
-            error: `The number of tasks has reached the maximum limit of ${CONSTRAINTS.TASK_MAX_AMOUNT}`,
+            error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+              'tasks',
+              CONSTRAINTS.TASK_MAX_AMOUNT,
+            ),
           },
           404,
         );

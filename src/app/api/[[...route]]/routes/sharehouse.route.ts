@@ -311,7 +311,10 @@ const app = new Hono()
       if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
           {
-            error: `The number of shareHouses has reached the maximum limit of ${CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT}`,
+            error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+              'shareHouses',
+              CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT,
+            ),
           },
           400,
         );
