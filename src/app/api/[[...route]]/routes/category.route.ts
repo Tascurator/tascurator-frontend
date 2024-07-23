@@ -121,7 +121,9 @@ const app = new Hono()
 
       if (categories.length <= 1)
         return c.json(
-          { error: 'You are not allowed to delete this category' },
+          {
+            error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('category'),
+          },
           403,
         );
 

@@ -127,7 +127,7 @@ const app = new Hono()
 
       if (tasks.length <= 1)
         return c.json(
-          { error: 'You are not allowed to delete this task' },
+          { error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('task') },
           403,
         );
 
