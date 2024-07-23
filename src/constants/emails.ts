@@ -16,7 +16,7 @@ export const EMAILS: IEmails = {
     subject: 'You have been invited to join the tenant',
     html: (callbackUrl: string) => `
       <h2>Tascurator</h2>
-      <p>You have been invited to join the tenant.<br/>Click the link below to check and report your assignments.<br/><br/>${callbackUrl}</p>
+      <p>You have been invited to join the tenant.<br/>Click your personalized link below to check and report your assignments.<br/><br/>${callbackUrl}</p>
     `,
   },
 };
