@@ -6,11 +6,12 @@ import {
   taskCompletionUpdateSchema,
   tenantInvitationSchema,
 } from '@/constants/schema';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
-import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -23,12 +24,34 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema.pick({ name: true })),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+
         const tenantId = c.req.param('tenantId');
         const data = c.req.valid('json');
 
         const tenant = await prisma.tenant.findUnique({
           where: {
             id: tenantId,
+          },
+          include: {
+            tenantPlaceholders: {
+              include: {
+                rotationAssignment: {
+                  include: {
+                    shareHouse: true,
+                  },
+                },
+              },
+            },
           },
         });
 
@@ -37,6 +60,26 @@ const app = new Hono()
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
             404,
           );
+
+        const shareHouseId =
+          tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
+
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json({ error: 'Tenant name already exists' }, 400);
 
         const updateTenant = await prisma.tenant.update({
           where: {
@@ -106,6 +149,17 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: 'You are not logged in!',
+            },
+            401,
+          );
+        }
+
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -113,12 +167,21 @@ const app = new Hono()
         const existingTenant = await prisma.tenant.findFirst({
           where: {
             email: sanitizedEmail,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
           },
         });
 
         if (existingTenant)
           return c.json(
-            { error: 'Tenant with this email already exists' },
+            {
+              error: 'Tenant with this email already exists',
+            },
             400,
           );
 
@@ -138,6 +201,23 @@ const app = new Hono()
             },
             404,
           );
+
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json({ error: 'Tenant name already exists' }, 400);
 
         const availableTenantPlaceholder =
           rotationAssignment.tenantPlaceholders.find(
