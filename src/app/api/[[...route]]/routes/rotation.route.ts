@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import type { IAssignedData } from '@/types/server';
@@ -30,7 +31,11 @@ const app = new Hono()
         !shareHouseWithAssignmentSheet.assignmentSheet
       ) {
         return c.json(
-          { error: 'ShareHouse or AssignmentSheet not found' },
+          {
+            error: SERVER_ERROR_MESSAGES.NOT_FOUND(
+              'share house or assignmentSheet',
+            ),
+          },
           404,
         );
       }
@@ -74,7 +79,10 @@ const app = new Hono()
           : null;
 
         if (!assignment.tenant)
-          return c.json({ error: 'Internal Server Error' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+            500,
+          );
 
         const tenantId = assignment.tenant.id;
         const tenantName = assignment.tenant.name;
@@ -110,8 +118,20 @@ const app = new Hono()
 
       return c.json(currentRotationData);
     } catch (error) {
-      console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching the data for the current rotation',
+        ),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching the data for the current rotation',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -151,14 +171,20 @@ const app = new Hono()
        * Return 404 if sharehouse not found
        */
       if (!sharehouse) {
-        return c.json({ error: 'ShareHouse not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
       }
 
       /**
        * Return 500 if RotationAssignment or AssignmentSheet not found
        */
       if (!sharehouse.RotationAssignment || !sharehouse.assignmentSheet) {
-        return c.json({ error: 'Internal Server Error' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
       }
 
       /**
@@ -207,8 +233,20 @@ const app = new Hono()
 
       return c.json(nextAssignmentData);
     } catch (error) {
-      console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the next rotation',
+        ),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the next rotation',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -233,10 +271,17 @@ const app = new Hono()
           },
         });
 
-        if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+        if (!shareHouse)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
 
         if (!shareHouse.RotationAssignment)
-          return c.json({ error: 'Interval Server Error' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+            500,
+          );
 
         const updateRotationCycle = await prisma.rotationAssignment.update({
           where: {
@@ -249,8 +294,20 @@ const app = new Hono()
 
         return c.json(updateRotationCycle, 201);
       } catch (error) {
-        console.error(error);
-        return c.json({ error: 'An error occurred while updating data' }, 500);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updates the rotation cycle',
+          ),
+          error,
+        );
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updates the rotation cycle',
+            ),
+          },
+          500,
+        );
       }
     },
   );

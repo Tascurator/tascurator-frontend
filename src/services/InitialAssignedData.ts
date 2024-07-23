@@ -2,6 +2,7 @@ import { addDays } from '@/utils/dates';
 import { AssignedData } from '@/services/AssignedData';
 import { TPrismaShareHouse } from '@/types/server';
 import { RotationCycle } from '@/types/commons';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 /**
  * Represents the initial assigned data for a share house, extending the AssignedData class.
@@ -27,7 +28,9 @@ export class InitialAssignedData extends AssignedData {
      * Check if the share house or rotation assignment is missing (should not happen)
      */
     if (!this.sharehouse || !this.sharehouse.RotationAssignment) {
-      throw new Error('Share house or rotation assignment not found');
+      throw new Error(
+        SERVER_ERROR_MESSAGES.NOT_FOUND('share house or rotation assignment'),
+      );
     }
 
     /**
