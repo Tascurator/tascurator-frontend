@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
 import { CONSTRAINTS } from '@/constants/constraints';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
   shareHouseCreationSchema,
   shareHouseNameSchema,
@@ -48,10 +49,16 @@ const app = new Hono()
       });
 
       if (!shareHouseWithOtherTables)
-        return c.json({ error: 'ShareHouse not found' }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       if (!shareHouseWithOtherTables.RotationAssignment)
-        return c.json({ error: 'Internal Server Error' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
 
       const shareHouseData = {
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
@@ -84,8 +91,20 @@ const app = new Hono()
 
       return c.json(shareHouseData);
     } catch (error) {
-      console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the share house',
+        ),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the share house',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -103,7 +122,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: 'You are not logged in!',
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -118,7 +137,11 @@ const app = new Hono()
           },
         });
 
-        if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+        if (!shareHouse)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
 
         // Check if the landlord has a share house with the same name
         const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
@@ -129,7 +152,16 @@ const app = new Hono()
         });
 
         if (ShareHouseWithSameName)
-          return c.json({ error: 'ShareHouse name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'share house',
+                'landlord',
+              ),
+            },
+            400,
+          );
 
         const updateShareHouse = await prisma.shareHouse.update({
           where: {
@@ -142,9 +174,18 @@ const app = new Hono()
 
         return c.json(updateShareHouse, 201);
       } catch (error) {
-        console.error('Error updating shareHouse:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating data for the share house',
+          ),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while updating shareHouse' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating data for the share house',
+            ),
+          },
           500,
         );
       }
@@ -164,7 +205,11 @@ const app = new Hono()
         },
       });
 
-      if (!shareHouse) return c.json({ error: 'ShareHouse not found' }, 404);
+      if (!shareHouse)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       const transaction = await prisma.$transaction(async (prisma) => {
         const deleteShareHouse = await prisma.shareHouse.delete({
@@ -209,9 +254,18 @@ const app = new Hono()
 
       return c.json(transaction, 201);
     } catch (error) {
-      console.error('Error deleting the shareHouse:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the share house',
+        ),
+        error,
+      );
       return c.json(
-        { error: 'An error occurred while deleting the shareHouse' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'deleting the share house',
+          ),
+        },
         500,
       );
     }
@@ -228,7 +282,7 @@ const app = new Hono()
       if (!session) {
         return c.json(
           {
-            error: 'You are not logged in!',
+            error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
           },
           401,
         );
@@ -247,7 +301,7 @@ const app = new Hono()
 
       if (!landlord)
         return c.json(
-          { error: 'Landlord not found for the given landlordId' },
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('landlord') },
           404,
         );
 
@@ -260,17 +314,29 @@ const app = new Hono()
       });
 
       if (ShareHouseWithSameName)
-        return c.json({ error: 'ShareHouse name already exists' }, 400);
-
-      if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
           {
-            error: `The number of shareHouses has reached the maximum limit of ${CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT}`,
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'share house',
+              'landlord',
+            ),
           },
           400,
         );
 
-      // Check for duplicate tenant names and emails within the provided data
+      if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+              'shareHouses',
+              CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT,
+            ),
+          },
+          400,
+        );
+
+      // Check for duplicate category names within the provided data
       const categories = data.categories.map((category) => category.category);
       const isDuplicatedCategoryName = categories.some(
         (category, idx) => categories.indexOf(category) !== idx,
@@ -278,7 +344,11 @@ const app = new Hono()
       if (isDuplicatedCategoryName)
         return c.json(
           {
-            error: 'Duplicate category name(s) found in the provided data',
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'category',
+              'provided data',
+            ),
           },
           400,
         );
@@ -290,7 +360,13 @@ const app = new Hono()
       );
       if (isDuplicatedTenantName)
         return c.json(
-          { error: 'Duplicate tenant name(s) found in the provided data' },
+          {
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'tenant',
+              'provided data',
+            ),
+          },
           400,
         );
 
@@ -300,7 +376,13 @@ const app = new Hono()
       );
       if (isDuplicatedTenantEmail)
         return c.json(
-          { error: 'Duplicate tenant email(s) found in the provided data' },
+          {
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'email',
+              'tenant',
+              'provided data',
+            ),
+          },
           400,
         );
 
@@ -388,7 +470,7 @@ const app = new Hono()
         });
 
         if (!sharehouse || !sharehouse.RotationAssignment) {
-          throw new Error('Share house not found');
+          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('shareHouse'));
         }
 
         const newInitialAssignedData = new InitialAssignedData(
@@ -436,8 +518,20 @@ const app = new Hono()
 
       return c.json(transaction, 201);
     } catch (error) {
-      console.error(error);
-      return c.json({ error: 'An error occurred while creating data' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'creating data for the share house',
+        ),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'creating data for the share house',
+          ),
+        },
+        500,
+      );
     }
   });
 
