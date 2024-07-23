@@ -34,7 +34,7 @@ export default {
               return user;
             } else {
               throw new Error(
-                'Invalid credentials. Please check your email and password.',
+                'Authorize error: Invalid credentials. Please check your email and password.',
               );
             }
           }
