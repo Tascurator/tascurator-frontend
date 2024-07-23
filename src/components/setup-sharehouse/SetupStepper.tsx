@@ -13,7 +13,7 @@ import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHe
 import { ScheduleSetting } from './ScheduleSetting';
 import { TenantListItem } from '../ui/tenantList';
 import { DatePicker } from '@/components/ui/datePicker';
-// import { SetupConfirmationDrawer } from '@/components/ui/drawers/SetupConfirmationDrawer';
+import { SetupConfirmationDrawer } from '@/components/ui/drawers/SetupConfirmationDrawer';
 import { SetupContents } from '@/components/setup-sharehouse/SetupContents';
 import {
   shareHouseCreationSchema,
@@ -36,14 +36,11 @@ export const SetupStepper = ({
   categories,
 }: ISetupStepperProps) => {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
-  // const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  // const [shareHouseName, setShareHouseName] = useState<string>('');
-
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [rotationCycle, setRotationCycle] = useState<number>(7);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [formData, setFormData] = useState<TShareHouseCreationSchema | ''>('');
 
   const handleBack = () => setCurrentStep(currentStep - 1);
-  // const handleOpen = () => setOpenDrawer(true);
+  const handleOpen = () => setOpenDrawer(true);
 
   const {
     register,
@@ -57,6 +54,8 @@ export const SetupStepper = ({
     defaultValues: {
       categories,
       tenants,
+      rotationCycle: 7,
+      startDate: new Date().toISOString(),
     },
   });
 
@@ -72,19 +71,17 @@ export const SetupStepper = ({
         isValid = true;
       }
     } else if (currentStep === 3) {
-      // console.log('trigger tenants');
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
       console.log('trigger schedule');
-      setValue('startDate', selectedDate?.toString() || '');
-      setValue('rotationCycle', rotationCycle);
-      isValid = true;
-      const values = getValues();
-      console.log(values);
+
+      isValid = await trigger(['startDate', 'rotationCycle']);
+      console.log(isValid);
     }
     if (isValid && currentStep === maxSteps) {
-      console.log('akeruyo!!');
-      // handleOpen();
+      const data = getValues();
+      setFormData(data);
+      handleOpen();
     }
     if (isValid && currentStep < maxSteps) {
       setCurrentStep(currentStep + 1);
@@ -198,15 +195,31 @@ export const SetupStepper = ({
           maxSteps={maxSteps}
           onNext={handleNext}
           onBack={handleBack}
-          // onOpen={handleOpen}
         >
           <div className="mb-6">
             <p className="mb-6">Start date</p>
-            <DatePicker onChange={setSelectedDate} />
+            <DatePicker
+              onChange={(date) => setValue('startDate', date.toISOString())}
+            />
           </div>
-          <ScheduleSetting onChange={setRotationCycle} />
+          <ScheduleSetting
+            onChange={(data) => setValue('rotationCycle', data)}
+          />
+          {errors.startDate && (
+            <p className="text-red-500 text-sm">{errors.startDate.message}</p>
+          )}
+          {errors.rotationCycle && (
+            <p className="text-red-500 text-sm">
+              {errors.rotationCycle.message}
+            </p>
+          )}
         </SetupContents>
-        {/* <SetupConfirmationDrawer open={openDrawer} setOpen={setOpenDrawer} /> */}
+
+        <SetupConfirmationDrawer
+          open={openDrawer}
+          setOpen={setOpenDrawer}
+          data={formData}
+        />
       </>
     );
   };

@@ -13,28 +13,21 @@ import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  TCategoryCreationSchema,
-  TShareHouseNameSchema,
-  TTaskCreationSchema,
-  TCategoryNameSchema,
-} from '@/constants/schema';
+import { TShareHouseCreationSchema } from '@/constants/schema';
 
+interface ISetupConfirmSchema {
+  data: TShareHouseCreationSchema;
+}
 interface ISetupConfirmationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
-}
-interface ISetupConfirmSchema {
-  data:
-    | TTaskCreationSchema
-    | TCategoryCreationSchema
-    | TShareHouseNameSchema
-    | TCategoryNameSchema;
+  data: TShareHouseCreationSchema | '';
 }
 
 export const SetupConfirmationDrawer = ({
   open,
   setOpen,
+  data,
 }: ISetupConfirmationDrawer) => {
   const { handleSubmit } = useForm();
 
@@ -66,7 +59,33 @@ export const SetupConfirmationDrawer = ({
         <DrawerContent>
           <DrawerTitle>Confirm</DrawerTitle>
           <DrawerDescription>
-            <p className="mt-8">Setup complete</p>
+            {data && (
+              <div>
+                <p>Share house name: {data.name}</p>
+                <p>Start date: {data.startDate}</p>
+                <p>Rotation cycle: {data.rotationCycle}</p>
+                <p>Categories number: {data.categories.length}</p>
+                <p>Tenant number: {data.tenants.length}</p>
+                {/* <p>Categories:</p>
+                <ul>
+                  {data.categories.map((category) => (
+                    <li key={category.id}>
+                      <p>{category.name}</p>
+                      <ul>
+                        {category.tasks.map((task) => (
+                          <li key={task.id}>
+                            <p>{task.title}</p>
+                            <p>{task.description}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul> */}
+
+                {/* <p>{JSON.stringify(data)}</p> */}
+              </div>
+            )}
           </DrawerDescription>
           <DrawerFooter className="flex justify-between">
             <DrawerClose asChild>
