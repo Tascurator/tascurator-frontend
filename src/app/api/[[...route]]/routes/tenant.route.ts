@@ -79,7 +79,16 @@ const app = new Hono()
         });
 
         if (tenantWithSameName)
-          return c.json({ error: 'Tenant name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'tenant',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const updateTenant = await prisma.tenant.update({
           where: {
@@ -180,7 +189,11 @@ const app = new Hono()
         if (existingTenant)
           return c.json(
             {
-              error: 'Tenant with this email already exists',
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'email',
+                'tenant',
+                'share house',
+              ),
             },
             400,
           );
@@ -217,7 +230,16 @@ const app = new Hono()
         });
 
         if (tenantWithSameName)
-          return c.json({ error: 'Tenant name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'tenant',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const availableTenantPlaceholder =
           rotationAssignment.tenantPlaceholders.find(

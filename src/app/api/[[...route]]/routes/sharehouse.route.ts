@@ -145,7 +145,16 @@ const app = new Hono()
         });
 
         if (ShareHouseWithSameName)
-          return c.json({ error: 'ShareHouse name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'share house',
+                'landlord',
+              ),
+            },
+            400,
+          );
 
         const updateShareHouse = await prisma.shareHouse.update({
           where: {
@@ -288,7 +297,16 @@ const app = new Hono()
       });
 
       if (ShareHouseWithSameName)
-        return c.json({ error: 'Share House name already exists' }, 400);
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'share house',
+              'landlord',
+            ),
+          },
+          400,
+        );
 
       if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
@@ -298,7 +316,7 @@ const app = new Hono()
           400,
         );
 
-      // Check for duplicate tenant names and emails within the provided data
+      // Check for duplicate category names within the provided data
       const categories = data.categories.map((category) => category.category);
       const isDuplicatedCategoryName = categories.some(
         (category, idx) => categories.indexOf(category) !== idx,
@@ -306,7 +324,11 @@ const app = new Hono()
       if (isDuplicatedCategoryName)
         return c.json(
           {
-            error: 'Duplicate category name(s) found in the provided data',
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'category',
+              'provided data',
+            ),
           },
           400,
         );
@@ -318,7 +340,13 @@ const app = new Hono()
       );
       if (isDuplicatedTenantName)
         return c.json(
-          { error: 'Duplicate tenant name(s) found in the provided data' },
+          {
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'name',
+              'tenant',
+              'provided data',
+            ),
+          },
           400,
         );
 
@@ -328,7 +356,13 @@ const app = new Hono()
       );
       if (isDuplicatedTenantEmail)
         return c.json(
-          { error: 'Duplicate tenant email(s) found in the provided data' },
+          {
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+              'email',
+              'tenant',
+              'provided data',
+            ),
+          },
           400,
         );
 

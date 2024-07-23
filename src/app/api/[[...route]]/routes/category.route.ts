@@ -60,7 +60,16 @@ const app = new Hono()
         });
 
         if (categoryWithSameName)
-          return c.json({ error: 'Category name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const updateCategory = await prisma.category.update({
           where: {
@@ -199,7 +208,16 @@ const app = new Hono()
         });
 
         if (categoryWithSameName)
-          return c.json({ error: 'Category name already exists' }, 400);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const newCategory = await prisma.category.create({
           data: {
