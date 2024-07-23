@@ -13,6 +13,8 @@ import prisma from '@/lib/prisma';
 import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
+import { sendEmail } from '@/lib/resend';
+import { EMAILS } from '@/constants/emails';
 
 const app = new Hono()
 
@@ -487,6 +489,29 @@ const app = new Hono()
             assignedData: assignedData as unknown as Prisma.JsonArray,
           },
         });
+
+        /**
+         * Send emails to each tenant with their personalized link
+         */
+        try {
+          for (const tenant of createdTenants) {
+            await sendEmail({
+              to: tenant.email,
+              subject: EMAILS.TENANT_INVITATION.subject,
+              html: EMAILS.TENANT_INVITATION.html(
+                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
+              ),
+            });
+          }
+        } catch (error) {
+          console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
+            },
+            500,
+          );
+        }
 
         return {
           shareHouse: newShareHouse,

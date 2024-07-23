@@ -7,11 +7,13 @@ import {
   tenantInvitationSchema,
 } from '@/constants/schema';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import { auth } from '@/lib/auth';
+import { sendEmail } from '@/lib/resend';
+import { EMAILS } from '@/constants/emails';
 
 const app = new Hono()
 
@@ -204,19 +206,32 @@ const app = new Hono()
             400,
           );
 
-        const rotationAssignment = await prisma.rotationAssignment.findUnique({
+        const sharehouse = await prisma.shareHouse.findUnique({
           where: {
-            shareHouseId: shareHouseId,
+            id: shareHouseId,
           },
           include: {
-            tenantPlaceholders: true,
+            RotationAssignment: {
+              include: {
+                tenantPlaceholders: true,
+              },
+            },
+            assignmentSheet: true,
           },
         });
 
-        if (!rotationAssignment)
+        if (!sharehouse) {
+          return c.json({ error: 'ShareHouse not found' }, 404);
+        }
+
+        const { RotationAssignment, assignmentSheet } = sharehouse;
+
+        if (!RotationAssignment || !assignmentSheet)
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND(
+                'share house, rotationAssignment, or assignmentSheet',
+              ),
             },
             404,
           );
@@ -247,48 +262,68 @@ const app = new Hono()
             400,
           );
 
-        const availableTenantPlaceholder =
-          rotationAssignment.tenantPlaceholders.find(
-            (tenantPlaceholder) => tenantPlaceholder.tenantId === null,
-          );
+        const transaction = await prisma.$transaction(async (prisma) => {
+          const availableTenantPlaceholder =
+            RotationAssignment.tenantPlaceholders.find(
+              (tenantPlaceholder) => tenantPlaceholder.tenantId === null,
+            );
 
-        let newTenant: Tenant;
+          let newTenant: Tenant;
 
-        if (availableTenantPlaceholder) {
-          newTenant = await prisma.tenant.create({
-            data: {
-              name: data.name,
-              email: sanitizedEmail,
-              extraAssignedCount: 0,
-              tenantPlaceholders: {
-                connect: {
-                  rotationAssignmentId_index: {
-                    rotationAssignmentId:
-                      availableTenantPlaceholder.rotationAssignmentId,
-                    index: availableTenantPlaceholder.index,
+          if (availableTenantPlaceholder) {
+            newTenant = await prisma.tenant.create({
+              data: {
+                name: data.name,
+                email: sanitizedEmail,
+                extraAssignedCount: 0,
+                tenantPlaceholders: {
+                  connect: {
+                    rotationAssignmentId_index: {
+                      rotationAssignmentId:
+                        availableTenantPlaceholder.rotationAssignmentId,
+                      index: availableTenantPlaceholder.index,
+                    },
                   },
                 },
               },
-            },
-          });
-        } else {
-          const lastIndex = rotationAssignment.tenantPlaceholders.length;
-          newTenant = await prisma.tenant.create({
-            data: {
-              name: data.name,
-              email: sanitizedEmail,
-              extraAssignedCount: 0,
-              tenantPlaceholders: {
-                create: {
-                  rotationAssignmentId: rotationAssignment.id,
-                  index: lastIndex,
+            });
+          } else {
+            const lastIndex = RotationAssignment.tenantPlaceholders.length;
+            newTenant = await prisma.tenant.create({
+              data: {
+                name: data.name,
+                email: sanitizedEmail,
+                extraAssignedCount: 0,
+                tenantPlaceholders: {
+                  create: {
+                    rotationAssignmentId: RotationAssignment.id,
+                    index: lastIndex,
+                  },
                 },
               },
-            },
-          });
-        }
+            });
+          }
 
-        return c.json(newTenant, 201);
+          /**
+           * Send email to the tenant with their personalized link
+           */
+          try {
+            await sendEmail({
+              to: sanitizedEmail,
+              subject: EMAILS.TENANT_INVITATION.subject,
+              html: EMAILS.TENANT_INVITATION.html(
+                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
+              ),
+            });
+          } catch (error) {
+            console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+            throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
+          }
+
+          return newTenant;
+        });
+
+        return c.json(transaction, 201);
       } catch (error) {
         console.error(
           SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the tenant'),
