@@ -15,7 +15,8 @@ const app = new Hono()
     try {
       const session = await auth();
 
-      if (!session) return c.json({ error: 'Unauthorized' }, 401);
+      if (!session)
+        return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
 
       const shareHouses = await prisma.landlord.findUnique({
         where: { id: session.user.id },

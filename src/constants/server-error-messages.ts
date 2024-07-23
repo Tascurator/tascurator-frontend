@@ -13,4 +13,11 @@ export const SERVER_ERROR_MESSAGES = {
     `You are not allowed to delete this ${entity}.`,
   MAX_LIMIT_REACHED: (entity: string, max: number) =>
     `The number of ${entity} has reached the maximum limit of ${max}.`,
+  UNAUTHORIZED: 'You are not authorized. Please log in and try again.',
+  NO_DATA_PROVIDED:
+    'No data provided in the request. Please include the necessary information.',
+  EMPTY_ARRAY: (entity: string) =>
+    `The provided ${entity} array is empty. Please include at least one ${entity}.`,
+  UNASSIGNED_TASK_UPDATE_ERROR:
+    'The request contains tasks that the tenant has not been assigned. Only assigned tasks can be updated.',
 };

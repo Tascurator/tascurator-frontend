@@ -470,7 +470,10 @@ const app = new Hono()
        * Check if the tasks array is empty.
        */
       if (data.tasks.length === 0) {
-        return c.json({ error: 'Tasks array is empty' }, 400);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.EMPTY_ARRAY('task') },
+          400,
+        );
       }
 
       try {
@@ -523,7 +526,7 @@ const app = new Hono()
           )
         ) {
           return c.json(
-            { error: 'Tenant can update only assigned tasks' },
+            { error: SERVER_ERROR_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
             400,
           );
         }

@@ -18,7 +18,7 @@ const app = new Hono()
       const data = c.req.valid('json');
 
       if (!data || Object.keys(data).length === 0)
-        return c.json({ error: 'No data' }, 400);
+        return c.json({ error: SERVER_ERROR_MESSAGES.NO_DATA_PROVIDED }, 400);
 
       const task = await prisma.task.findUnique({
         where: {
