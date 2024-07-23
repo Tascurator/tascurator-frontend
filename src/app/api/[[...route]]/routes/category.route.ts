@@ -23,7 +23,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: 'You are not logged in!',
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -159,7 +159,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: 'You are not logged in!',
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
