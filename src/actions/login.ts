@@ -1,15 +1,47 @@
 'use server';
 
 import { signIn } from '@/lib/auth';
-import { TLoginSchema } from '@/constants/schema';
+import { loginSchema, TLoginSchema } from '@/constants/schema';
+import { AuthError } from 'next-auth';
+import { DEFAULT_LOGIN_REDIRECT } from '@/app/api/[[...route]]/route';
 
 export const login = async (credentials: TLoginSchema) => {
-  /**
-   * TODO: Please implement the proper sign in logic.
-   */
-  await signIn('credentials', {
-    ...credentials,
-    redirectTo: '/sharehouses',
-    redirect: true,
-  });
+  const validatedFields = loginSchema.safeParse(credentials);
+
+  if (!validatedFields.success) {
+    return { error: 'Invalid credentials' };
+  }
+
+  try {
+    await signIn('credentials', {
+      ...credentials,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirect: false,
+    });
+  } catch (error) {
+    // assert that error is of type Error to access its properties safely
+    const e = error as Error & { cause?: { err: { code: string } } };
+
+    //check if the error has a cause and err.code property
+    if (e.cause?.err.code === 'credentials') {
+      return { error: 'Invalid credentials debugging' };
+    }
+
+    //
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CallbackRouteError':
+          console.error('Error signing in (Callback route):', error);
+          return { error: 'Something went wrong callback route' };
+        case 'CredentialsSignin':
+          console.error('Error signing in (Invalid credentials):', error);
+          return { error: 'Invalid credentials' };
+        default:
+          console.error('Error signing in (Others):', error);
+          return { error: 'Something went wrong' };
+      }
+    }
+
+    throw error;
+  }
 };

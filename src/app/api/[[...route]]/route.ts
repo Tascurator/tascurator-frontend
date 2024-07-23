@@ -63,3 +63,17 @@ export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
+
+/**
+ * Define public and auth routes.
+ */
+export const publicRoutes: string[] = [
+  '/login',
+  '/sign-up',
+  '/forgot-password',
+  '/reset-password',
+];
+
+export const authRoutes: string[] = ['/login'];
+
+export const DEFAULT_LOGIN_REDIRECT: string = '/sharehouses';

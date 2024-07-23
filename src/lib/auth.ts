@@ -4,6 +4,9 @@ import authConfig from '@/lib/auth.config';
 import prisma from '@/lib/prisma';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // TODO: Remove this line for debug before deploying to production
+  debug: process.env.NODE_ENV === 'development',
+
   adapter: PrismaAdapter(prisma),
   session: { strategy: 'jwt' },
   callbacks: {

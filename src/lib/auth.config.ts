@@ -1,4 +1,4 @@
-import type { NextAuthConfig } from 'next-auth';
+import { type NextAuthConfig } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
@@ -12,23 +12,38 @@ export default {
        * This checks if the user exists and the password is correct
        */
       authorize: async (credentials) => {
-        const validatedFields = loginSchema.safeParse(credentials);
+        try {
+          const validatedFields = loginSchema.safeParse(credentials);
 
-        if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
+          if (validatedFields.success) {
+            const { email, password } = validatedFields.data;
 
-          const user = await prisma.landlord.findUnique({
-            where: { email },
-          });
+            if (!email || !password) {
+              throw new Error('Missing credentials.');
+            }
 
-          if (!user) return null;
+            const user = await prisma.landlord.findUnique({
+              where: { email },
+            });
 
-          const passwordValid = await bcrypt.compare(password, user.password);
+            if (!user) return null;
 
-          if (passwordValid) return user;
+            const passwordValid = await bcrypt.compare(password, user.password);
+
+            if (passwordValid) {
+              return user;
+            } else {
+              throw new Error(
+                'Invalid credentials. Please check your email and password.',
+              );
+            }
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Authorize user:', error);
+          return null;
         }
-
-        return null;
       },
     }),
   ],
