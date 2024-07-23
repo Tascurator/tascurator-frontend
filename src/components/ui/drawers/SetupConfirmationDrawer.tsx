@@ -15,38 +15,41 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TShareHouseCreationSchema } from '@/constants/schema';
 
-interface ISetupConfirmSchema {
-  data: TShareHouseCreationSchema;
-}
 interface ISetupConfirmationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
-  data: TShareHouseCreationSchema | '';
+  data: TShareHouseCreationSchema;
+  onSubmit: SubmitHandler<TShareHouseCreationSchema>;
 }
 
 export const SetupConfirmationDrawer = ({
   open,
   setOpen,
   data,
+  onSubmit,
 }: ISetupConfirmationDrawer) => {
-  const { handleSubmit } = useForm();
+  const { handleSubmit } = useForm<TShareHouseCreationSchema>();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<ISetupConfirmSchema> = async (data) => {
+  const handleFormSubmit: SubmitHandler<TShareHouseCreationSchema> = async (
+    data,
+  ) => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (data) {
+    try {
+      await onSubmit(data);
       setIsLoading(false);
       toast({
         variant: 'default',
         description: 'Updated successfully!',
       });
-    } else {
+      setOpen(false);
+      console.log('data', data);
+    } catch (error) {
       setIsLoading(false);
       toast({
         variant: 'destructive',
-        description: 'error!',
+        description: 'Error!',
       });
     }
   };
@@ -97,7 +100,7 @@ export const SetupConfirmationDrawer = ({
               type="submit"
               // variant="destructive"
               className="flex-1"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(handleFormSubmit)}
             >
               Create
             </Button>

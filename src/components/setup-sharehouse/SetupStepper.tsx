@@ -89,7 +89,7 @@ export const SetupStepper = ({
   };
 
   const onSubmit = (data: TShareHouseCreationSchema) => {
-    console.log(data);
+    console.log('data', data);
   };
 
   const shareHouseNameSetting = () => {
@@ -218,7 +218,8 @@ export const SetupStepper = ({
         <SetupConfirmationDrawer
           open={openDrawer}
           setOpen={setOpenDrawer}
-          data={formData}
+          data={formData as TShareHouseCreationSchema}
+          onSubmit={() => handleSubmit(onSubmit)()}
         />
       </>
     );
