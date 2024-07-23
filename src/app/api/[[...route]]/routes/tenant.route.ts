@@ -320,13 +320,6 @@ const app = new Hono()
         assignmentSheet.endDate,
       );
 
-      /**
-       * Check if the tenant exists in the assignedData.
-       */
-      if (!assignedData.hasTenant(tenantId)) {
-        return c.json({ error: 'Tenant not found' }, 404);
-      }
-
       const rotationScheduleForecast: TRotationScheduleForecast = {
         1: {
           startDate: '',
