@@ -392,6 +392,20 @@ const app = new Hono()
       }
 
       /**
+       * Check if the tenant exists in the share house.
+       */
+      if (
+        !assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders.some(
+          (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
+        )
+      ) {
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
+      }
+
+      /**
        * Create an AssignedData instance from the assignedData in the assignmentSheet.
        */
       const assignedData = new AssignedData(
@@ -399,16 +413,6 @@ const app = new Hono()
         assignmentSheet.startDate,
         assignmentSheet.endDate,
       );
-
-      /**
-       * Check if the tenant exists in the assignedData.
-       */
-      if (!assignedData.hasTenant(tenantId)) {
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
-          404,
-        );
-      }
 
       const rotationScheduleForecast: TRotationScheduleForecast = {
         1: {
