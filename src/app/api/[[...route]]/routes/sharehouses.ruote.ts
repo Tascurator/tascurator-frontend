@@ -77,8 +77,9 @@ const app = new Hono()
       console.error(error);
       return c.json(
         {
-          error:
-            'Something went long while fetching all share houses the landlord has',
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for all share houses the landlord has',
+          ),
         },
         500,
       );

@@ -44,7 +44,9 @@ const app = new Hono()
     } catch (error) {
       console.error('Error updating task:', error);
       return c.json(
-        { error: 'An error occurred while updating the task' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('updating the task'),
+        },
         500,
       );
     }
@@ -95,7 +97,7 @@ const app = new Hono()
     } catch (error) {
       console.error('Error creating task:', error);
       return c.json(
-        { error: 'An error occurred while creating the task' },
+        { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('creating the task') },
         500,
       );
     }
@@ -139,7 +141,7 @@ const app = new Hono()
     } catch (error) {
       console.error('Error deleting the task:', error);
       return c.json(
-        { error: 'An error occurred while deleting the task' },
+        { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the task') },
         500,
       );
     }

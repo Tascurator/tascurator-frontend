@@ -44,7 +44,14 @@ const app = new Hono()
         return c.json(updateCategory, 201);
       } catch (error) {
         console.error(error);
-        return c.json({ error: 'An error occurred while updating data' }, 500);
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the category',
+            ),
+          },
+          500,
+        );
       }
     },
   )
@@ -89,7 +96,11 @@ const app = new Hono()
     } catch (error) {
       console.error('Error deleting the category:', error);
       return c.json(
-        { error: 'An error occurred while updating the category' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'updating the category',
+          ),
+        },
         500,
       );
     }
@@ -157,7 +168,11 @@ const app = new Hono()
       } catch (error) {
         console.error(error);
         return c.json(
-          { error: 'An error occurred while creating the category' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the category',
+            ),
+          },
           500,
         );
       }

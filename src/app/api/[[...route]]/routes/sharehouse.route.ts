@@ -90,7 +90,14 @@ const app = new Hono()
       return c.json(shareHouseData);
     } catch (error) {
       console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the share house',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -130,7 +137,11 @@ const app = new Hono()
       } catch (error) {
         console.error('Error updating shareHouse:', error);
         return c.json(
-          { error: 'An error occurred while updating shareHouse' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating data for the share house',
+            ),
+          },
           500,
         );
       }
@@ -201,7 +212,11 @@ const app = new Hono()
     } catch (error) {
       console.error('Error deleting the shareHouse:', error);
       return c.json(
-        { error: 'An error occurred while deleting the shareHouse' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'deleting the share house',
+          ),
+        },
         500,
       );
     }
@@ -409,7 +424,14 @@ const app = new Hono()
       return c.json(transaction, 201);
     } catch (error) {
       console.error(error);
-      return c.json({ error: 'An error occurred while creating data' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'creating data for the share house',
+          ),
+        },
+        500,
+      );
     }
   });
 

@@ -119,7 +119,14 @@ const app = new Hono()
       return c.json(currentRotationData);
     } catch (error) {
       console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the current rotation',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -222,7 +229,14 @@ const app = new Hono()
       return c.json(nextAssignmentData);
     } catch (error) {
       console.error(error);
-      return c.json({ error: 'An error occurred while fetching data' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the next rotation',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -254,7 +268,10 @@ const app = new Hono()
           );
 
         if (!shareHouse.RotationAssignment)
-          return c.json({ error: 'Interval Server Error' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+            500,
+          );
 
         const updateRotationCycle = await prisma.rotationAssignment.update({
           where: {
@@ -268,7 +285,14 @@ const app = new Hono()
         return c.json(updateRotationCycle, 201);
       } catch (error) {
         console.error(error);
-        return c.json({ error: 'An error occurred while updating data' }, 500);
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updates the rotation cycle',
+            ),
+          },
+          500,
+        );
       }
     },
   );

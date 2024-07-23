@@ -51,7 +51,11 @@ const app = new Hono()
       } catch (error) {
         console.error('Error updating tenant:', error);
         return c.json(
-          { error: 'An error occurred while updating  tenant' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the tenant',
+            ),
+          },
           500,
         );
       }
@@ -84,7 +88,12 @@ const app = new Hono()
       return c.json(deleteTenant, 201);
     } catch (error) {
       console.error('Error deleting tenant:', error);
-      return c.json({ error: 'An error occurred while deleting  tenant' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the tenant'),
+        },
+        500,
+      );
     }
   })
 
@@ -175,7 +184,11 @@ const app = new Hono()
       } catch (error) {
         console.error('Error creating tenant:', error);
         return c.json(
-          { error: 'An error occurred while creating the tenant' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the tenant',
+            ),
+          },
           500,
         );
       }
@@ -328,7 +341,14 @@ const app = new Hono()
       return c.json(rotationScheduleForecast);
     } catch (error) {
       console.error('Error getting tenant:', error);
-      return c.json({ error: 'An error occurred while getting tenant' }, 500);
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the tenant',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -434,7 +454,11 @@ const app = new Hono()
       } catch (error) {
         console.error('Error updating tenant:', error);
         return c.json(
-          { error: 'An error occurred while updating task completion' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the task completion',
+            ),
+          },
           500,
         );
       }

@@ -9,6 +9,5 @@ export const SERVER_ERROR_MESSAGES = {
   EMAIL_EXISTS: 'A tenant with this email already exists.',
   INTERNAL_SERVER_ERROR:
     'An internal server error occurred. Please try again later.',
-  COMPLETION_ERROR: (entity: string) =>
-    `An error occurred while ${entity} completion.`,
+  COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
 };
