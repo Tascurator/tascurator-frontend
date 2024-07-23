@@ -24,18 +24,17 @@ export const login = async (credentials: TLoginSchema) => {
 
     //check if the error has a cause and err.code property
     if (e.cause?.err.code === 'credentials') {
-      return { error: 'Invalid credentials debugging' };
+      return {
+        error: 'Invalid credentials. Please check your email and password!',
+      };
     }
 
     //
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CallbackRouteError':
-          console.error('Error signing in (Callback route):', error);
-          return { error: 'Something went wrong callback route' };
         case 'CredentialsSignin':
           console.error('Error signing in (Invalid credentials):', error);
-          return { error: 'Invalid credentials' };
+          return { error: 'Invalid credentials(CredentialsSignin)' };
         default:
           console.error('Error signing in (Others):', error);
           return { error: 'Something went wrong' };
