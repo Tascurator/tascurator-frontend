@@ -504,8 +504,13 @@ const app = new Hono()
             });
           }
         } catch (error) {
-          console.error('Error sending email:', error);
-          throw new Error('An error occurred while sending an email');
+          console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
+            },
+            500,
+          );
         }
 
         return {

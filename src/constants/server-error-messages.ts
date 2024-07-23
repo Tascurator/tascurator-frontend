@@ -21,4 +21,8 @@ export const SERVER_ERROR_MESSAGES = {
   UNASSIGNED_TASK_UPDATE_ERROR:
     'The request contains tasks that the tenant has not been assigned. Only assigned tasks can be updated.',
   UNAUTHORIZED: 'You are not authorized. Please log in and try again.',
+  EMAIL_SEND_ERROR:
+    'An error occurred while sending the email. Please try again later.',
+  ENV_KEYS_MISSING: (keys: string[]) =>
+    `The following environment keys are missing: ${keys.join(', ')}.`,
 };
