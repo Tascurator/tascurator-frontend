@@ -75,7 +75,12 @@ const app = new Hono()
 
       return c.json({ shareHouses: shareHousesWithProgress });
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for all share houses the landlord has',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(

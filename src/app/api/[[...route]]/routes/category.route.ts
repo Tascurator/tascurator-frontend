@@ -82,7 +82,12 @@ const app = new Hono()
 
         return c.json(updateCategory, 201);
       } catch (error) {
-        console.error(error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the category',
+          ),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -135,12 +140,15 @@ const app = new Hono()
 
       return c.json(deleteCategory, 201);
     } catch (error) {
-      console.error('Error deleting the category:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the category:',
+        ),
+        error,
+      );
       return c.json(
         {
-          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'updating the category',
-          ),
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('delete the category'),
         },
         500,
       );
@@ -243,7 +251,12 @@ const app = new Hono()
 
         return c.json(newCategory, 201);
       } catch (error) {
-        console.error(error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'creating the category',
+          ),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(

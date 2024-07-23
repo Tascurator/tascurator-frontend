@@ -42,7 +42,10 @@ const app = new Hono()
 
       return c.json(updateTask, 201);
     } catch (error) {
-      console.error('Error updating task:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the task'),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('updating the task'),
@@ -98,7 +101,10 @@ const app = new Hono()
 
       return c.json(newTask, 201);
     } catch (error) {
-      console.error('Error creating task:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the task'),
+        error,
+      );
       return c.json(
         { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('creating the task') },
         500,
@@ -142,7 +148,10 @@ const app = new Hono()
 
       return c.json(deleteTask, 201);
     } catch (error) {
-      console.error('Error deleting the task:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the task'),
+        error,
+      );
       return c.json(
         { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the task') },
         500,

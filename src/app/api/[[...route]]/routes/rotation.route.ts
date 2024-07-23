@@ -118,11 +118,16 @@ const app = new Hono()
 
       return c.json(currentRotationData);
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching the data for the current rotation',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'fetching data for the current rotation',
+            'fetching the data for the current rotation',
           ),
         },
         500,
@@ -228,7 +233,12 @@ const app = new Hono()
 
       return c.json(nextAssignmentData);
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the next rotation',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -284,7 +294,12 @@ const app = new Hono()
 
         return c.json(updateRotationCycle, 201);
       } catch (error) {
-        console.error(error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updates the rotation cycle',
+          ),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(

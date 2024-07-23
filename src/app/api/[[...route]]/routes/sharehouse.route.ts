@@ -89,7 +89,12 @@ const app = new Hono()
 
       return c.json(shareHouseData);
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the share house',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -167,7 +172,12 @@ const app = new Hono()
 
         return c.json(updateShareHouse, 201);
       } catch (error) {
-        console.error('Error updating shareHouse:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating data for the share house',
+          ),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -242,7 +252,12 @@ const app = new Hono()
 
       return c.json(transaction, 201);
     } catch (error) {
-      console.error('Error deleting the shareHouse:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the share house',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -483,7 +498,12 @@ const app = new Hono()
 
       return c.json(transaction, 201);
     } catch (error) {
-      console.error(error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'creating data for the share house',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(

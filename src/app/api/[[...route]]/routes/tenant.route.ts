@@ -101,7 +101,10 @@ const app = new Hono()
 
         return c.json(updateTenant, 201);
       } catch (error) {
-        console.error('Error updating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the tenant'),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -139,7 +142,10 @@ const app = new Hono()
       });
       return c.json(deleteTenant, 201);
     } catch (error) {
-      console.error('Error deleting tenant:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the tenant'),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the tenant'),
@@ -284,7 +290,10 @@ const app = new Hono()
 
         return c.json(newTenant, 201);
       } catch (error) {
-        console.error('Error creating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the tenant'),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -442,7 +451,12 @@ const app = new Hono()
 
       return c.json(rotationScheduleForecast);
     } catch (error) {
-      console.error('Error getting tenant:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the tenant',
+        ),
+        error,
+      );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
@@ -557,7 +571,12 @@ const app = new Hono()
 
         return c.json({ message: 'Task completion updated' });
       } catch (error) {
-        console.error('Error updating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the task completion',
+          ),
+          error,
+        );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
