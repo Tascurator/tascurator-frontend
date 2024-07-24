@@ -89,7 +89,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['category', 'title', 'description']);
+    const isValid = await trigger(['name', 'task.title', 'task.description']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -109,20 +109,20 @@ const EditTaskDrawer = ({
           <div className={'overflow-y-auto pb-1'}>
             {/* Category input field */}
             <Input
-              {...register('category')}
-              variant={errors.category ? 'destructive' : 'default'}
+              {...register('name')}
+              variant={errors.name ? 'destructive' : 'default'}
               type="text"
               placeholder={CATEGORY_NAME.placeholder}
               label={CATEGORY_NAME.label}
             />
-            {errors.category?.message && (
-              <FormMessage message={errors.category.message} />
+            {errors.name?.message && (
+              <FormMessage message={errors.name.message} />
             )}
 
             {/* Task title input field */}
             <Input
-              {...register('title')}
-              variant={errors.title ? 'destructive' : 'default'}
+              {...register('task.title')}
+              variant={errors.task?.title ? 'destructive' : 'default'}
               type="text"
               placeholder={TASK_TITLE.placeholder}
               label={TASK_TITLE.label}
@@ -130,8 +130,8 @@ const EditTaskDrawer = ({
                 label: 'mt-4',
               }}
             />
-            {errors.title?.message && (
-              <FormMessage message={errors.title.message} />
+            {errors.task?.title?.message && (
+              <FormMessage message={errors.task.title.message} />
             )}
 
             {/* Task description input field */}
@@ -139,18 +139,18 @@ const EditTaskDrawer = ({
             <div
               className={cn(
                 'group w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-                errors.description
+                errors.task?.description
                   ? 'border-destructive focus-within:ring-destructive'
                   : 'border-input focus-within:ring-ring',
               )}
             >
               <TaskDescriptionEditor
-                taskDescription={getValues('description') || ''}
+                taskDescription={getValues('task.description') || ''}
                 formControls={formControls}
               />
             </div>
-            {errors.description?.message && (
-              <FormMessage message={errors.description.message} />
+            {errors.task?.description?.message && (
+              <FormMessage message={errors.task.description.message} />
             )}
           </div>
         </DrawerDescription>
@@ -244,7 +244,7 @@ const ConfirmTaskDrawer = ({
         <DrawerTrigger />
         <DrawerContent className={'h-[90%]'} asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerTitle>{watch('title')}</DrawerTitle>
+            <DrawerTitle>{watch('task.title')}</DrawerTitle>
             <DrawerDescription className={'flex-1'} asChild>
               <div>
                 <div
@@ -252,7 +252,7 @@ const ConfirmTaskDrawer = ({
                     'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
                   }
                 >
-                  {watch('category')}
+                  {watch('name')}
                 </div>
                 <TaskDescriptionRenderer formControls={formControls} />
               </div>
@@ -308,9 +308,11 @@ export const CategoryCreationDrawer = ({
     resolver: zodResolver(categoryCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      category: '',
-      title: '',
-      description: '',
+      name: '',
+      task: {
+        title: '',
+        description: '',
+      },
     },
   });
 
