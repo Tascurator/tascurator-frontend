@@ -69,12 +69,7 @@ export const DELETE = handle(app);
  * These routes do not require authentication.
  * @type {string[]}
  */
-export const publicRoutes: string[] = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-];
+export const publicRoutes: string[] = ['/forgot-password'];
 
 /**
  * An array of routes are used for authentication.
