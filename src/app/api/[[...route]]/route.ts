@@ -4,12 +4,13 @@ import { handle } from 'hono/vercel';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import sharehouseRoute from './routes/sharehouse.route';
-import sharehousesRoute from './routes/sharehouses.ruote';
-import rotationRoute from './routes/rotation.route';
-import categoryRoute from './routes/category.route';
-import taskRoute from './routes/task.route';
-import tenantRoute from './routes/tenant.route';
+import sharehouseRoute from '@/app/api/[[...route]]/routes/sharehouse.route';
+import sharehousesRoute from '@/app/api/[[...route]]/routes/sharehouses.ruote';
+import rotationRoute from '@/app/api/[[...route]]/routes/rotation.route';
+import categoryRoute from '@/app/api/[[...route]]/routes/category.route';
+import taskRoute from '@/app/api/[[...route]]/routes/task.route';
+import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
+import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
 
 const app = new Hono();
 
@@ -21,6 +22,7 @@ const routes = app
   .route('/category', categoryRoute)
   .route('/task', taskRoute)
   .route('/tenant', tenantRoute)
+  .route('/assignments', assignmentsRoute)
 
   /**
    * This is a test route to check if the user is logged in.
