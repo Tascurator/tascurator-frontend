@@ -5,13 +5,14 @@ import { TLoginSchema } from '@/constants/schema';
 import { AuthError } from 'next-auth';
 import { DEFAULT_LOGIN_REDIRECT } from '@/app/api/[[...route]]/route';
 import { ERROR_MESSAGES } from '@/constants/error-messages';
+import { redirect } from 'next/navigation';
 
 export const login = async (credentials: TLoginSchema) => {
   try {
     await signIn('credentials', {
       ...credentials,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
-      redirect: true,
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -28,8 +29,9 @@ export const login = async (credentials: TLoginSchema) => {
           return { error: 'Something went wrong' };
       }
     }
-
     console.error('Unexpected error:', error);
     return { error: 'Something went wrong' };
   }
+
+  redirect(DEFAULT_LOGIN_REDIRECT);
 };
