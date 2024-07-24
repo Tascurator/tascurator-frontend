@@ -39,13 +39,15 @@ export interface ITenant {
  * The object structure for share house data
  */
 export interface ICardContentProps {
-  category: string | null;
-  tenant?: string;
+  id: string | null;
+  name: string | null;
+  maxTasks: number | null;
+  completedTasks: number | null;
+  tenant: {
+    id: string;
+    name: string;
+  };
   isComplete?: boolean;
-  taskNum?: number;
-  completedTaskNum?: number;
-  className?: string;
-  isLast?: boolean;
 }
 
 /**
