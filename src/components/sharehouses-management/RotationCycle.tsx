@@ -5,7 +5,11 @@ import { toast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-export const RotationCycle = () => {
+interface RotationCycleProps {
+  rotationCycle: number;
+}
+
+export const RotationCycle = ({ rotationCycle }: RotationCycleProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   interface FormValues {
@@ -14,14 +18,14 @@ export const RotationCycle = () => {
 
   const { register, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
-      repeat: 'Weekly',
+      repeat: rotationCycle === 7 ? 'Weekly' : 'Fortnightly',
     },
   });
 
   const selectedOption = watch('repeat');
 
-  const handleButtonClick = (option: FormValues['repeat']) => {
-    setValue('repeat', option);
+  const getButtonVariant = (option: FormValues['repeat']) => {
+    return selectedOption === option ? 'default' : 'secondary';
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -56,17 +60,15 @@ export const RotationCycle = () => {
           <div className="flex justify-between gap-4 w-full">
             <Button
               className="rounded-full w-full"
-              onClick={() => handleButtonClick('Weekly')}
-              variant={selectedOption === 'Weekly' ? 'default' : 'secondary'}
+              onClick={() => setValue('repeat', 'Weekly')}
+              variant={getButtonVariant('Weekly')}
             >
               Weekly
             </Button>
             <Button
               className="rounded-full w-full"
-              onClick={() => handleButtonClick('Fortnightly')}
-              variant={
-                selectedOption === 'Fortnightly' ? 'default' : 'secondary'
-              }
+              onClick={() => setValue('repeat', 'Fortnightly')}
+              variant={getButtonVariant('Fortnightly')}
             >
               Fortnightly
             </Button>
