@@ -12,7 +12,7 @@ interface ILandlordDashboardTabContentProps {
   startDate: string;
   endDate: string;
   progressPercent: number;
-  cardContents: ICardContentProps[];
+  cardContents: ICardContentProps[] | null;
   shareHouseId: string;
 }
 
@@ -29,7 +29,14 @@ export const LandlordDashboardTabContent = ({
     index: Key,
     isCurrent: boolean,
   ) => {
-    if (content.category === null && !content.tenant) {
+    console.log('cardContents', cardContents);
+
+    console.log('content', content);
+
+    if (content === null) {
+      // if (content.name === null && !content.tenant.id) {
+      console.log('hey');
+
       return (
         <div
           key={index}
@@ -41,26 +48,30 @@ export const LandlordDashboardTabContent = ({
           </Link>
         </div>
       );
-    } else if (content.category === null && content.tenant) {
+    }
+    if (content.name === null && content.tenant.id) {
       return (
         <CardContent
           key={index}
+          id={content.id}
           tenant={content.tenant}
           isComplete={isCurrent}
-          taskNum={0}
-          completedTaskNum={0}
-          category={'--'}
+          maxTasks={0}
+          completedTasks={0}
+          name={'--'}
         />
       );
     }
     return (
       <CardContent
         key={index}
-        category={content.category}
-        tenant={content.tenant}
-        isComplete={isCurrent ? content.isComplete : false}
-        taskNum={content.taskNum}
-        completedTaskNum={isCurrent ? content.completedTaskNum : 0}
+        category={content.name}
+        tenant={content.tenant.name}
+        isComplete={
+          isCurrent ? content.completedTasks === content.maxTasks : false
+        }
+        taskNum={content.maxTasks}
+        completedTaskNum={isCurrent ? content.completedTasks : 0}
       />
     );
   };
@@ -80,8 +91,18 @@ export const LandlordDashboardTabContent = ({
           endDate={endDate}
           title={'Task assignment'}
         />
-        {cardContents.map((content, index) =>
-          renderCardContent(content, index, tabType === 'current'),
+        {/* cardContents が null または undefined の場合に対応 */}
+        {cardContents ? (
+          cardContents.map((content, index) =>
+            renderCardContent(content, index, tabType === 'current'),
+          )
+        ) : (
+          <div className="flex items-center justify-center flex-col w-full py-6">
+            <div className="pb-4">No tenants</div>
+            <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
+              <Button>Add tenant</Button>
+            </Link>
+          </div>
         )}
       </Card>
     </TabsContent>
