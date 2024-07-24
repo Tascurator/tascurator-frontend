@@ -3,7 +3,9 @@ import { zValidator } from '@hono/zod-validator';
 
 import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -16,6 +18,17 @@ const app = new Hono()
     zValidator('json', categoryCreationSchema.pick({ category: true })),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
+            },
+            401,
+          );
+        }
+
         const categoryId = c.req.param('categoryId');
         const data = c.req.valid('json');
 
@@ -23,9 +36,40 @@ const app = new Hono()
           where: {
             id: categoryId,
           },
+          include: {
+            rotationAssignment: true,
+          },
         });
 
-        if (!category) return c.json({ error: 'Category not found' }, 404);
+        if (!category)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+            404,
+          );
+
+        const shareHouseId = category.rotationAssignment.shareHouseId;
+
+        // Check if the sharehouse has a category with the same name
+        const categoryWithSameName = await prisma.category.findFirst({
+          where: {
+            name: data.category,
+            rotationAssignment: {
+              shareHouseId: shareHouseId,
+            },
+          },
+        });
+
+        if (categoryWithSameName)
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const updateCategory = await prisma.category.update({
           where: {
@@ -38,8 +82,20 @@ const app = new Hono()
 
         return c.json(updateCategory, 201);
       } catch (error) {
-        console.error(error);
-        return c.json({ error: 'An error occurred while updating data' }, 500);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the category',
+          ),
+          error,
+        );
+        return c.json(
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the category',
+            ),
+          },
+          500,
+        );
       }
     },
   )
@@ -56,7 +112,11 @@ const app = new Hono()
           id: categoryId,
         },
       });
-      if (!category) return c.json({ error: 'Category not found' }, 404);
+      if (!category)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
 
       const categories = await prisma.category.findMany({
         where: {
@@ -66,7 +126,9 @@ const app = new Hono()
 
       if (categories.length <= 1)
         return c.json(
-          { error: 'You are not allowed to delete this category' },
+          {
+            error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('category'),
+          },
           403,
         );
 
@@ -78,9 +140,16 @@ const app = new Hono()
 
       return c.json(deleteCategory, 201);
     } catch (error) {
-      console.error('Error deleting the category:', error);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the category:',
+        ),
+        error,
+      );
       return c.json(
-        { error: 'An error occurred while updating the category' },
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('delete the category'),
+        },
         500,
       );
     }
@@ -95,6 +164,17 @@ const app = new Hono()
     zValidator('json', categoryCreationSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
+            },
+            401,
+          );
+        }
+
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -110,7 +190,7 @@ const app = new Hono()
         if (!rotationAssignment) {
           return c.json(
             {
-              error: 'RotationAssignment not found for the given shareHouseId',
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
             },
             404,
           );
@@ -121,11 +201,36 @@ const app = new Hono()
         ) {
           return c.json(
             {
-              error: `The number of categories has reached the maximum limit of ${CONSTRAINTS.CATEGORY_MAX_AMOUNT}`,
+              error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+                'categories',
+                CONSTRAINTS.CATEGORY_MAX_AMOUNT,
+              ),
             },
             400,
           );
         }
+
+        // Check if the sharehouse has a category with the same name
+        const categoryWithSameName = await prisma.category.findFirst({
+          where: {
+            name: data.category,
+            rotationAssignment: {
+              shareHouseId: shareHouseId,
+            },
+          },
+        });
+
+        if (categoryWithSameName)
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'category',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const newCategory = await prisma.category.create({
           data: {
@@ -146,9 +251,18 @@ const app = new Hono()
 
         return c.json(newCategory, 201);
       } catch (error) {
-        console.error(error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'creating the category',
+          ),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while creating the category' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the category',
+            ),
+          },
           500,
         );
       }

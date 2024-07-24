@@ -6,10 +6,14 @@ import {
   taskCompletionUpdateSchema,
   tenantInvitationSchema,
 } from '@/constants/schema';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import { auth } from '@/lib/auth';
+import { sendEmail } from '@/lib/resend';
+import { EMAILS } from '@/constants/emails';
 
 const app = new Hono()
 
@@ -22,6 +26,17 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema.pick({ name: true })),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
+            },
+            401,
+          );
+        }
+
         const tenantId = c.req.param('tenantId');
         const data = c.req.valid('json');
 
@@ -29,9 +44,53 @@ const app = new Hono()
           where: {
             id: tenantId,
           },
+          include: {
+            tenantPlaceholders: {
+              include: {
+                rotationAssignment: {
+                  include: {
+                    shareHouse: true,
+                  },
+                },
+              },
+            },
+          },
         });
 
-        if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+        if (!tenant)
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
+
+        const shareHouseId =
+          tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
+
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'tenant',
+                'share house',
+              ),
+            },
+            400,
+          );
 
         const updateTenant = await prisma.tenant.update({
           where: {
@@ -44,9 +103,16 @@ const app = new Hono()
 
         return c.json(updateTenant, 201);
       } catch (error) {
-        console.error('Error updating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the tenant'),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while updating  tenant' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the tenant',
+            ),
+          },
           500,
         );
       }
@@ -65,7 +131,11 @@ const app = new Hono()
           id: tenantId,
         },
       });
-      if (!tenant) return c.json({ error: 'Tenant not found' }, 404);
+      if (!tenant)
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
 
       const deleteTenant = await prisma.tenant.delete({
         where: {
@@ -74,8 +144,16 @@ const app = new Hono()
       });
       return c.json(deleteTenant, 201);
     } catch (error) {
-      console.error('Error deleting tenant:', error);
-      return c.json({ error: 'An error occurred while deleting  tenant' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the tenant'),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the tenant'),
+        },
+        500,
+      );
     }
   })
 
@@ -88,6 +166,17 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema),
     async (c) => {
       try {
+        const session = await auth();
+
+        if (!session) {
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
+            },
+            401,
+          );
+        }
+
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -95,78 +184,157 @@ const app = new Hono()
         const existingTenant = await prisma.tenant.findFirst({
           where: {
             email: sanitizedEmail,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
           },
         });
 
         if (existingTenant)
           return c.json(
-            { error: 'Tenant with this email already exists' },
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'email',
+                'tenant',
+                'share house',
+              ),
+            },
             400,
           );
 
-        const rotationAssignment = await prisma.rotationAssignment.findUnique({
+        const sharehouse = await prisma.shareHouse.findUnique({
           where: {
-            shareHouseId: shareHouseId,
+            id: shareHouseId,
           },
           include: {
-            tenantPlaceholders: true,
+            RotationAssignment: {
+              include: {
+                tenantPlaceholders: true,
+              },
+            },
+            assignmentSheet: true,
           },
         });
 
-        if (!rotationAssignment)
+        if (!sharehouse) {
+          return c.json({ error: 'ShareHouse not found' }, 404);
+        }
+
+        const { RotationAssignment, assignmentSheet } = sharehouse;
+
+        if (!RotationAssignment || !assignmentSheet)
           return c.json(
             {
-              error: 'RotationAssignment not found for the given shareHouseId',
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND(
+                'share house, rotationAssignment, or assignmentSheet',
+              ),
             },
             404,
           );
 
-        const availableTenantPlaceholder =
-          rotationAssignment.tenantPlaceholders.find(
-            (tenantPlaceholder) => tenantPlaceholder.tenantId === null,
+        // Check if the sharehouse has a tenant with the same name
+        const tenantWithSameName = await prisma.tenant.findFirst({
+          where: {
+            name: data.name,
+            tenantPlaceholders: {
+              some: {
+                rotationAssignment: {
+                  shareHouseId: shareHouseId,
+                },
+              },
+            },
+          },
+        });
+
+        if (tenantWithSameName)
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
+                'name',
+                'tenant',
+                'share house',
+              ),
+            },
+            400,
           );
 
-        let newTenant: Tenant;
+        const transaction = await prisma.$transaction(async (prisma) => {
+          const availableTenantPlaceholder =
+            RotationAssignment.tenantPlaceholders.find(
+              (tenantPlaceholder) => tenantPlaceholder.tenantId === null,
+            );
 
-        if (availableTenantPlaceholder) {
-          newTenant = await prisma.tenant.create({
-            data: {
-              name: data.name,
-              email: sanitizedEmail,
-              extraAssignedCount: 0,
-              tenantPlaceholders: {
-                connect: {
-                  rotationAssignmentId_index: {
-                    rotationAssignmentId:
-                      availableTenantPlaceholder.rotationAssignmentId,
-                    index: availableTenantPlaceholder.index,
+          let newTenant: Tenant;
+
+          if (availableTenantPlaceholder) {
+            newTenant = await prisma.tenant.create({
+              data: {
+                name: data.name,
+                email: sanitizedEmail,
+                extraAssignedCount: 0,
+                tenantPlaceholders: {
+                  connect: {
+                    rotationAssignmentId_index: {
+                      rotationAssignmentId:
+                        availableTenantPlaceholder.rotationAssignmentId,
+                      index: availableTenantPlaceholder.index,
+                    },
                   },
                 },
               },
-            },
-          });
-        } else {
-          const lastIndex = rotationAssignment.tenantPlaceholders.length;
-          newTenant = await prisma.tenant.create({
-            data: {
-              name: data.name,
-              email: sanitizedEmail,
-              extraAssignedCount: 0,
-              tenantPlaceholders: {
-                create: {
-                  rotationAssignmentId: rotationAssignment.id,
-                  index: lastIndex,
+            });
+          } else {
+            const lastIndex = RotationAssignment.tenantPlaceholders.length;
+            newTenant = await prisma.tenant.create({
+              data: {
+                name: data.name,
+                email: sanitizedEmail,
+                extraAssignedCount: 0,
+                tenantPlaceholders: {
+                  create: {
+                    rotationAssignmentId: RotationAssignment.id,
+                    index: lastIndex,
+                  },
                 },
               },
-            },
-          });
-        }
+            });
+          }
 
-        return c.json(newTenant, 201);
+          /**
+           * Send email to the tenant with their personalized link
+           */
+          try {
+            await sendEmail({
+              to: sanitizedEmail,
+              subject: EMAILS.TENANT_INVITATION.subject,
+              html: EMAILS.TENANT_INVITATION.html(
+                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
+              ),
+            });
+          } catch (error) {
+            console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+            throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
+          }
+
+          return newTenant;
+        });
+
+        return c.json(transaction, 201);
       } catch (error) {
-        console.error('Error creating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the tenant'),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while creating the tenant' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the tenant',
+            ),
+          },
           500,
         );
       }
@@ -217,7 +385,24 @@ const app = new Hono()
         !assignmentSheet.ShareHouse ||
         !assignmentSheet.ShareHouse.RotationAssignment
       ) {
-        return c.json({ error: 'Assignment sheet not found' }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
+          500,
+        );
+      }
+
+      /**
+       * Check if the tenant exists in the share house.
+       */
+      if (
+        !assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders.some(
+          (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
+        )
+      ) {
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
       }
 
       /**
@@ -228,13 +413,6 @@ const app = new Hono()
         assignmentSheet.startDate,
         assignmentSheet.endDate,
       );
-
-      /**
-       * Check if the tenant exists in the assignedData.
-       */
-      if (!assignedData.hasTenant(tenantId)) {
-        return c.json({ error: 'Tenant not found' }, 404);
-      }
 
       const rotationScheduleForecast: TRotationScheduleForecast = {
         1: {
@@ -312,8 +490,20 @@ const app = new Hono()
 
       return c.json(rotationScheduleForecast);
     } catch (error) {
-      console.error('Error getting tenant:', error);
-      return c.json({ error: 'An error occurred while getting tenant' }, 500);
+      console.error(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'fetching data for the tenant',
+        ),
+        error,
+      );
+      return c.json(
+        {
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'fetching data for the tenant',
+          ),
+        },
+        500,
+      );
     }
   })
 
@@ -333,7 +523,10 @@ const app = new Hono()
        * Check if the tasks array is empty.
        */
       if (data.tasks.length === 0) {
-        return c.json({ error: 'Tasks array is empty' }, 400);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.EMPTY_ARRAY('task') },
+          400,
+        );
       }
 
       try {
@@ -347,7 +540,10 @@ const app = new Hono()
          * Return an internal server error if the assignment sheet is not found.
          */
         if (!assignmentSheet) {
-          return c.json({ error: 'Assignment sheet not found' }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
+            500,
+          );
         }
 
         /**
@@ -363,7 +559,10 @@ const app = new Hono()
          * Check if the tenant exists in the assignedData.
          */
         if (!assignedData.hasTenant(tenantId)) {
-          return c.json({ error: 'Tenant not found' }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
         }
 
         /**
@@ -380,7 +579,7 @@ const app = new Hono()
           )
         ) {
           return c.json(
-            { error: 'Tenant can update only assigned tasks' },
+            { error: SERVER_ERROR_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
             400,
           );
         }
@@ -411,9 +610,18 @@ const app = new Hono()
 
         return c.json({ message: 'Task completion updated' });
       } catch (error) {
-        console.error('Error updating tenant:', error);
+        console.error(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the task completion',
+          ),
+          error,
+        );
         return c.json(
-          { error: 'An error occurred while updating task completion' },
+          {
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the task completion',
+            ),
+          },
           500,
         );
       }

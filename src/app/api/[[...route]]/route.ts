@@ -1,8 +1,9 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
+
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-
 import sharehouseRoute from './routes/sharehouse.route';
 import sharehousesRoute from './routes/sharehouses.ruote';
 import rotationRoute from './routes/rotation.route';
@@ -31,7 +32,7 @@ const routes = app
     if (!session) {
       return c.json(
         {
-          error: 'You are not logged in!',
+          error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
         },
         401,
       );
@@ -42,7 +43,7 @@ const routes = app
     });
 
     return c.json({
-      message: 'You are logged in!',
+      message: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
       session,
       landlord,
     });
