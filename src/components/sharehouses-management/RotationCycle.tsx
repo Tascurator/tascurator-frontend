@@ -5,11 +5,11 @@ import { toast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-interface RotationCycleProps {
+interface IRotationCycleProps {
   rotationCycle: number;
 }
 
-export const RotationCycle = ({ rotationCycle }: RotationCycleProps) => {
+export const RotationCycle = ({ rotationCycle }: IRotationCycleProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   interface FormValues {
