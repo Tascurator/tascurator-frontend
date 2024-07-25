@@ -15,33 +15,33 @@ import {
 const { auth } = NextAuth(authConfig);
 export default auth(async function middleware(req: NextRequest) {
   const { nextUrl } = req;
+  // Get the session for if the user is logged in
   const session = await auth();
 
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  // Validate if the route is an auth route or public route
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
 
-  if (isPublicRoute) {
-    return NextResponse.next();
+  // Redirect to the login page if the user is not logged in
+  if (session && isAuthRoute) {
+    return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
   }
 
-  if (isAuthRoute) {
-    if (session) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  // Redirect to the login page if the user is not logged in
+  if (!session) {
+    if (isAuthRoute || isPublicRoute) {
+      return NextResponse.next();
     }
-    return NextResponse.next();
-  }
-  if (!session && !isPublicRoute) {
-    return Response.redirect(new URL('/login', nextUrl));
+    return NextResponse.redirect(new URL('/login', nextUrl));
   }
 
   return NextResponse.next();
 });
 
+/** Optionally, don't invoke Middleware on some paths
+ * @see https://nextjs.org/docs/pages/building-your-application/routing/middleware#matcher
+ * Plus, api/auth and logo.svg are excluded from the middleware
+ */
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!_next/static|api/auth|logo.svg|_next/image|favicon.ico).*)'],
 };

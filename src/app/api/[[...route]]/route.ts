@@ -68,14 +68,19 @@ export const DELETE = handle(app);
  * These routes do not require authentication.
  * @type {string[]}
  */
-export const publicRoutes: string[] = ['/forgot-password'];
+export const publicRoutes: string[] = [];
 
 /**
  * An array of routes are used for authentication.
  * These routes will redirect logged in users to /sharehouses.
  * @type {string[]}
  */
-export const authRoutes: string[] = ['/login', '/signup'];
+export const authRoutes: string[] = [
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/reset-password',
+];
 
 /**
  * The default route to redirect to after logging in.
