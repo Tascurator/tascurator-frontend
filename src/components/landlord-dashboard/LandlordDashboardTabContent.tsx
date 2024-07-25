@@ -29,9 +29,6 @@ export const LandlordDashboardTabContent = ({
     index: Key,
     isCurrent: boolean,
   ) => {
-    console.log('content', content);
-    console.count();
-
     if (content.name === null) {
       return (
         <CardContent
@@ -80,7 +77,8 @@ export const LandlordDashboardTabContent = ({
         ) : (
           <div className="flex items-center justify-center flex-col w-full py-6">
             <div className="pb-4">No tenants</div>
-            <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
+            {/* <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}> */}
+            <Link href={`/sharehouses/${shareHouseId}/edit`}>
               <Button>Add tenant</Button>
             </Link>
           </div>

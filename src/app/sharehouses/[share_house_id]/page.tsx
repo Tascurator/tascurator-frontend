@@ -1,9 +1,8 @@
 // import {Header} from '@/components/ui/header';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LandlordDashboardTabContent } from '@/components/landlord-dashboard/LandlordDashboardTabContent';
 import { ICardContentProps } from '@/types/commons';
 import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
+import DashboardTabs from '@/components/landlord-dashboard/DashboardTabs';
 
 export interface IShareHousePageProps {
   params: {
@@ -112,48 +111,22 @@ const ShareHousePage = async ({
     },
   ];
 
-  const formatDate = (date: string) => {
-    const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-    return formattedDate;
-  };
-
   return (
     <>
       <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-        <div className="relative z-10 p-6">
-          <Tabs defaultValue="current">
-            <TabsList>
-              <TabsTrigger value="current">Current</TabsTrigger>
-              <TabsTrigger value="next">Next</TabsTrigger>
-            </TabsList>
-
-            <div className="text-2xl flex justify-center mt-4">
-              {shareHouseName}
-            </div>
-
-            <LandlordDashboardTabContent
-              tabType="current"
-              progressPercent={data.progressRate as number}
-              startDate={formatDate(data.startDate)}
-              endDate={formatDate(data.endDate)}
-              cardContents={data.categories}
-              // cardContents={cardContentCurrent}
-              shareHouseId={share_house_id}
-            />
-            <LandlordDashboardTabContent
-              tabType="next"
-              progressPercent={0}
-              startDate={nextStartDate}
-              endDate={nextEndDate}
-              cardContents={cardContentNext}
-              shareHouseId={share_house_id}
-            />
-          </Tabs>
-        </div>
+        {/* <div className="relative z-10 p-6">
+				</div> */}
+        <DashboardTabs
+          shareHouseId={share_house_id}
+          shareHouseName={shareHouseName}
+          progressPercent={data.progressRate as number}
+          currentStartDate={data.startDate}
+          currentEndDate={data.endDate}
+          nextStartDate={nextStartDate}
+          nextEndDate={nextEndDate}
+          cardContentCurrent={data.categories}
+          cardContentNext={cardContentNext}
+        />
       </div>
     </>
   );
