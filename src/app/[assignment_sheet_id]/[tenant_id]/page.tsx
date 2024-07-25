@@ -30,7 +30,6 @@ const AssignmentSheetPage = async ({
   const rotations = await res.json();
 
   // Check for error in data and display it if found
-  // TODO: Improve and implement the error message display
   if ('error' in rotations) {
     notFound();
   }

@@ -12,27 +12,23 @@ export default {
        * This checks if the user exists and the password is correct
        */
       authorize: async (credentials) => {
-        try {
-          const validatedFields = loginSchema.safeParse(credentials);
+        const validatedFields = loginSchema.safeParse(credentials);
 
-          if (validatedFields.success) {
-            const { email, password } = validatedFields.data;
+        if (validatedFields.success) {
+          const { email, password } = validatedFields.data;
 
-            const user = await prisma.landlord.findUnique({
-              where: { email },
-            });
+          const user = await prisma.landlord.findUnique({
+            where: { email },
+          });
 
-            if (!user) return null;
+          if (!user) return null;
 
-            const passwordValid = await bcrypt.compare(password, user.password);
+          const passwordValid = await bcrypt.compare(password, user.password);
 
-            if (passwordValid) return user;
-          }
-
-          return null;
-        } catch (error) {
-          return null;
+          if (passwordValid) return user;
         }
+
+        return null;
       },
     }),
   ],
