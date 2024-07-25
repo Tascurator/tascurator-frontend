@@ -337,7 +337,7 @@ const app = new Hono()
         );
 
       // Check for duplicate category names within the provided data
-      const categories = data.categories.map((category) => category.category);
+      const categories = data.categories.map((category) => category.name);
       const isDuplicatedCategoryName = categories.some(
         (category, idx) => categories.indexOf(category) !== idx,
       );
@@ -417,7 +417,7 @@ const app = new Hono()
         for (const categoryData of data.categories) {
           const newCategory = await prisma.category.create({
             data: {
-              name: categoryData.category,
+              name: categoryData.name,
               rotationAssignmentId: newRotationAssignment.id,
               tasks: {
                 create: categoryData.tasks.map((task) => ({
