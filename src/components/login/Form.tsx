@@ -12,6 +12,7 @@ import { FormMessage } from '@/components/ui/formMessage';
 import { toast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import Link from 'next/link';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,11 +43,9 @@ const Form = () => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Login error:', error);
-
       toast({
         variant: 'destructive',
-        description: 'An error occurred while logging in.',
+        description: TOAST_ERROR_MESSAGES.LOGIN_UNKNOWN_ERROR,
       });
       setIsLoading(false);
     }
