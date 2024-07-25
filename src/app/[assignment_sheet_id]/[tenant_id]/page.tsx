@@ -48,6 +48,8 @@ const AssignmentSheetPage = async ({
           startDate={formatDate(new Date(rotations[1].startDate))}
           endDate={formatDate(new Date(rotations[1].endDate))}
           categories={rotations[1].categories}
+          assignmentSheetId={assignment_sheet_id}
+          tenantId={tenant_id}
         />
 
         {/* Future rotations */}

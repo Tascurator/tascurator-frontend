@@ -16,8 +16,9 @@ import { AssignmentCategoryTasks } from '@/components/accordion-assignment-sheet
 import { ITask } from '@/types/commons';
 import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
+import { api } from '@/lib/hono';
 
-interface AccordionAssignmentSheetProps {
+interface IAccordionAssignmentSheetProps {
   startDate: string;
   endDate: string;
   categories: {
@@ -25,6 +26,8 @@ interface AccordionAssignmentSheetProps {
     name: string;
     tasks: (ITask & { isCompleted: boolean })[];
   }[];
+  assignmentSheetId: string;
+  tenantId: string;
 }
 
 interface FormValues {
@@ -38,7 +41,9 @@ export const AccordionAssignmentSheet = ({
   startDate,
   endDate,
   categories,
-}: AccordionAssignmentSheetProps) => {
+  assignmentSheetId,
+  tenantId,
+}: IAccordionAssignmentSheetProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const defaultValues = {
@@ -99,20 +104,43 @@ export const AccordionAssignmentSheet = ({
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    // Filter out only the changed tasks
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const updatedTasks = data.tasks.filter(
       (task, index) =>
         task.isCompleted !== defaultValues.tasks[index].isCompleted,
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast({
-      variant: 'default',
-      description: TOAST_TEXTS.success,
-    });
-
-    console.log('Updated Tasks:', updatedTasks);
+    try {
+      const res = await api.assignments[':assignmentSheetId'][
+        ':tenantId'
+      ].$patch({
+        param: {
+          assignmentSheetId: assignmentSheetId,
+          tenantId: tenantId,
+        },
+        json: {
+          tasks: updatedTasks,
+        },
+      });
+      const data = await res.json();
+      if ('error' in data) {
+        throw new Error(data.error);
+      }
+      toast({
+        variant: 'default',
+        description: TOAST_TEXTS.success,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
