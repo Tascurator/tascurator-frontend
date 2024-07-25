@@ -9,6 +9,10 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 
+import { logout } from '@/actions/logout';
+import { LoadingSpinner } from '../loadingSpinner';
+import { useState } from 'react';
+
 interface ILogOutDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -28,38 +32,50 @@ interface ILogOutDrawer {
  */
 
 export const LogOutDrawer = ({ open, setOpen }: ILogOutDrawer) => {
-  //TODO: implement logout function
-  const handleLogout = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    await logout();
+    setIsLoading(false);
     setOpen(false);
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent asChild>
-        <form onSubmit={handleLogout}>
-          <DrawerTitle>Log out?</DrawerTitle>
-          <DrawerDescription>
-            <span className={'mt-2.5 block'}>
-              Are you sure you want to log out?
-            </span>
-          </DrawerDescription>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button type={'button'} variant={'outline'} className={'flex-1'}>
-                Cancel
+    <>
+      {isLoading && <LoadingSpinner isLoading={isLoading} />}
+
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger />
+        <DrawerContent asChild>
+          <form onSubmit={handleLogout}>
+            <DrawerTitle>Log out?</DrawerTitle>
+            <DrawerDescription>
+              <span className={'mt-2.5 block'}>
+                Are you sure you want to log out?
+              </span>
+            </DrawerDescription>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button
+                  type={'button'}
+                  variant={'outline'}
+                  className={'flex-1'}
+                >
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button
+                type={'submit'}
+                variant={'outline-destructive'}
+                className={'flex-1'}
+              >
+                Log Out
               </Button>
-            </DrawerClose>
-            <Button
-              type={'submit'}
-              variant={'outline-destructive'}
-              className={'flex-1'}
-            >
-              Log Out
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+            </DrawerFooter>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };

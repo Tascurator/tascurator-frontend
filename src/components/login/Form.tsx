@@ -5,20 +5,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
 import { login } from '@/actions/login';
-import { logout } from '@/actions/logout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
-
+import { toast } from '@/components/ui/use-toast';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import Link from 'next/link';
-import { LoadingSpinner } from '../ui/loadingSpinner';
-
-import { useSession } from 'next-auth/react';
-import { toast } from '../ui/use-toast';
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const session = useSession();
 
   const {
     register,
@@ -58,14 +54,7 @@ const Form = () => {
 
   return (
     <>
-      {session?.data && (
-        <form action={logout}>
-          <Button type={'submit'} variant={'destructive'} size={'md'}>
-            Logout
-          </Button>
-        </form>
-      )}
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      {isLoading && <LoadingSpinner isLoading={isLoading} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
