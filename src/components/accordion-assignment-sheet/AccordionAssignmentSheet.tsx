@@ -17,6 +17,8 @@ import { ITask } from '@/types/commons';
 import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
 
 interface IAccordionAssignmentSheetProps {
   startDate: string;
@@ -45,6 +47,8 @@ export const AccordionAssignmentSheet = ({
   tenantId,
 }: IAccordionAssignmentSheetProps) => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const path = usePathname();
 
   const defaultValues = {
     tasks: categories.flatMap((category) =>
@@ -131,6 +135,7 @@ export const AccordionAssignmentSheet = ({
         variant: 'default',
         description: TOAST_TEXTS.success,
       });
+      revalidatePage(path);
     } catch (error) {
       if (error instanceof Error) {
         toast({
