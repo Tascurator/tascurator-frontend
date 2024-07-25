@@ -23,6 +23,8 @@ import { useState } from 'react';
 import { toast } from '../use-toast';
 import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
 
 const { TENANT_NAME, TENANT_EMAIL } = INPUT_TEXTS;
 
@@ -42,12 +44,12 @@ const EditTenantDrawer = ({
   open,
   setOpen,
 }: IEditTenantDrawer) => {
+  const path = usePathname();
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = formControls;
-
   const [isLoading, setIsLoading] = useState(false);
 
   // TODO: Implement the onSubmit click functionality
@@ -60,7 +62,6 @@ const EditTenantDrawer = ({
     // Post the form data
     try {
       if (tenant?.id) {
-        // Post the form data
         const resEditData = await api.tenant[':tenantId'].$patch({
           param: {
             tenantId: tenant.id,
@@ -69,10 +70,10 @@ const EditTenantDrawer = ({
             name: data.name,
           },
         });
-        const datas = await resEditData.json();
+        const editData = await resEditData.json();
 
-        if ('error' in datas) {
-          throw new Error(datas.error);
+        if ('error' in editData) {
+          throw new Error(editData.error);
         }
       } else {
         const resNewData = await api.tenant[':shareHouseId'].$post({
@@ -84,16 +85,17 @@ const EditTenantDrawer = ({
             email: data.email,
           },
         });
-        const datass = await resNewData.json();
+        const newData = await resNewData.json();
 
-        if ('error' in datass) {
-          throw new Error(datass.error);
+        if ('error' in newData) {
+          throw new Error(newData.error);
         }
       }
       toast({
         variant: 'default',
         description: TOAST_TEXTS.success,
       });
+      revalidatePage(path);
     } catch (error) {
       if (error instanceof Error) {
         toast({
