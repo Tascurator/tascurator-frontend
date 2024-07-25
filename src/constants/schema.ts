@@ -165,7 +165,7 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   ]),
   categories: z
     .array(
-      categoryCreationSchema.extend({
+      categoryCreationSchema.pick({ name: true }).extend({
         tasks: z
           .array(taskCreationSchema.omit({ categoryId: true }))
           .min(TASK_MIN_AMOUNT)
