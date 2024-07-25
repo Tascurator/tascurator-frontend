@@ -9,15 +9,6 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
   endDate: string;
 }
 
-// interface CardContentProps extends HTMLAttributes<HTMLDivElement> {
-//   category: string;
-//   tenant: string;
-//   isComplete: boolean;
-//   isLast?: boolean;
-//   taskNum: number;
-//   completedTaskNum: number;
-// }
-
 /**
  * The Card component is the root component for the Card component.
  * It should be used to wrap the CardHeader and CardContent components.
@@ -25,8 +16,8 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
  * @example
  * <Card>
  *  <CardHeader startDate={startDate} endDate={endDate} title={title} />
- *  <CardContent category={category} tenant={tenant} isComplete={isComplete} />
- *  <CardContent category={category} tenant={tenant} isComplete={isComplete} isLast={true} />
+ *  <CardContent name={name} tenant={tenant} isComplete={isComplete} />
+ *  <CardContent name={name} tenant={tenant} isComplete={isComplete} isLast={true} />
  * </Card>
  */
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
@@ -108,41 +99,30 @@ const CardDescription = forwardRef<
 CardDescription.displayName = 'CardDescription';
 
 /**
- * The CardContent component is used to display the category and tenant of the card.
+ * The CardContent component is used to display the name and tenant of the card.
  *
  * @example
- * <CardContent category={category} tenant={tenant} isComplete={isComplete} />
+ * <CardContent name={name} tenant={tenant} isComplete={isComplete} />
  */
-// const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
 const CardContent = forwardRef<HTMLDivElement, ICardContentProps>(
   (
-    {
-      className,
-      category,
-      tenant,
-      isComplete,
-      isLast,
-      taskNum,
-      completedTaskNum,
-      ...props
-    },
+    { className, name, tenant, isComplete, maxTasks, completedTasks, ...props },
     ref,
   ) => (
     <div
       ref={ref}
       className={cn(
         'pl-3.5 pt-2 pb-2.5 pr-4 border-t border-slate-300',
-        isLast && 'border-0',
         className,
       )}
       {...props}
     >
       <CardContentDescription
         tenant={tenant}
-        category={category}
+        name={name}
         isComplete={isComplete}
-        taskNum={taskNum}
-        completedTaskNum={completedTaskNum}
+        maxTasks={maxTasks}
+        completedTasks={completedTasks}
       />
     </div>
   ),
@@ -150,27 +130,18 @@ const CardContent = forwardRef<HTMLDivElement, ICardContentProps>(
 CardContent.displayName = 'CardContent';
 
 /**
- * The CardContentDescription component is used to display the category and tenant of the card.
+ * The CardContentDescription component is used to display the name and tenant of the card.
  * This is only used internally by the CardContent component.
  *
  * @example
- * <CardContentDescription tenant={tenant} category={category} isComplete={isComplete} />
+ * <CardContentDescription tenant={tenant} name={name} isComplete={isComplete} />
  */
 const CardContentDescription = forwardRef<
   HTMLParagraphElement,
-  // CardContentProps
   ICardContentProps
 >(
   (
-    {
-      className,
-      tenant,
-      category,
-      isComplete,
-      taskNum,
-      completedTaskNum,
-      ...props
-    },
+    { className, tenant, name, isComplete, maxTasks, completedTasks, ...props },
     ref,
   ) => (
     <div className="flex items-center">
@@ -187,9 +158,9 @@ const CardContentDescription = forwardRef<
       >
         <div>
           <p className="pb-[7px] text-xl font-medium">
-            {category} ({completedTaskNum}/{taskNum})
+            {name} ({completedTasks}/{maxTasks})
           </p>
-          <p>{tenant}</p>
+          <p>{tenant.name}</p>
         </div>
         <CircleCheck
           className={cn(

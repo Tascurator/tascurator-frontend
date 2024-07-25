@@ -33,30 +33,27 @@ export const LandlordDashboardTabContent = ({
     console.count();
 
     if (content.name === null) {
-      console.log('🐭🐭🐭🐭🐭🐭');
-
       return (
         <CardContent
           key={index}
-          // id={"test"}
-          tenant={content.tenant.name}
+          tenant={content.tenant}
           isComplete={isCurrent}
-          taskNum={0}
-          completedTaskNum={0}
-          category={'--'}
+          maxTasks={0}
+          completedTasks={0}
+          name={'--'}
         />
       );
     }
     return (
       <CardContent
         key={index}
-        category={content.name}
-        tenant={content.tenant.name}
+        name={content.name}
+        tenant={content.tenant}
         isComplete={
           isCurrent ? content.completedTasks === content.maxTasks : false
         }
-        taskNum={content.maxTasks}
-        completedTaskNum={isCurrent ? content.completedTasks : 0}
+        maxTasks={content.maxTasks}
+        completedTasks={isCurrent ? content.completedTasks : 0}
       />
     );
   };
