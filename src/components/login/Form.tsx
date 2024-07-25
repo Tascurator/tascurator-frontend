@@ -4,20 +4,18 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
-// import { login } from '@/actions/login';
-// import { logout } from '@/actions/logout';
+import { login } from '@/actions/login';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
-
+import { toast } from '@/components/ui/use-toast';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import Link from 'next/link';
-import { LoadingSpinner } from '../ui/loadingSpinner';
-
-// import { useSession } from 'next-auth/react';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
-  // const session = useSession();
 
   const {
     register,
@@ -34,30 +32,28 @@ const Form = () => {
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
-        console.log('Form data:', formData);
+        const result = await login(formData);
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // TODO: Implement the proper login logic
-        // await login(formData);
-
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        }
         setIsLoading(false);
       }
     } catch (error) {
-      console.error(error);
+      toast({
+        variant: 'destructive',
+        description: TOAST_ERROR_MESSAGES.LOGIN_UNKNOWN_ERROR,
+      });
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {/* {session?.data && (
-        <form action={logout}>
-          <Button type={'submit'} variant={'destructive'} size={'md'}>
-            Logout
-          </Button>
-        </form>
-      )} */}
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      {isLoading && <LoadingSpinner isLoading={isLoading} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
