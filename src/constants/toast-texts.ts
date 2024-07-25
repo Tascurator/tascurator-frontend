@@ -21,3 +21,9 @@ export const TOAST_TEXTS = {
   success: 'Operation completed successfully.',
   error: 'An error occurred. Please try again.',
 };
+
+export const TOAST_ERROR_MESSAGES = {
+  CREDENTIAL_INVALID: 'Email or password is incorrect.',
+  LOGIN_UNKNOWN_ERROR: 'An error occurred while logging in.',
+  UNKNOWN_ERROR: 'Something went wrong.',
+};
