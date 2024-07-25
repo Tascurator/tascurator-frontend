@@ -21,7 +21,7 @@ export const LandlordDashboardTabContent = ({
   startDate,
   endDate,
   progressPercent,
-  cardContents,
+  cardContents = [],
   shareHouseId,
 }: ILandlordDashboardTabContentProps) => {
   const renderCardContent = (
@@ -29,36 +29,21 @@ export const LandlordDashboardTabContent = ({
     index: Key,
     isCurrent: boolean,
   ) => {
-    console.log('cardContents', cardContents);
-
     console.log('content', content);
+    console.count();
 
-    if (content === null) {
-      // if (content.name === null && !content.tenant.id) {
-      console.log('hey');
+    if (content.name === null) {
+      console.log('🐭🐭🐭🐭🐭🐭');
 
-      return (
-        <div
-          key={index}
-          className="flex items-center justify-center flex-col w-full py-6"
-        >
-          <div className="pb-4">No tenants</div>
-          <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
-            <Button>Add tenant</Button>
-          </Link>
-        </div>
-      );
-    }
-    if (content.name === null && content.tenant.id) {
       return (
         <CardContent
           key={index}
-          id={content.id}
-          tenant={content.tenant}
+          // id={"test"}
+          tenant={content.tenant.name}
           isComplete={isCurrent}
-          maxTasks={0}
-          completedTasks={0}
-          name={'--'}
+          taskNum={0}
+          completedTaskNum={0}
+          category={'--'}
         />
       );
     }
@@ -91,7 +76,6 @@ export const LandlordDashboardTabContent = ({
           endDate={endDate}
           title={'Task assignment'}
         />
-        {/* cardContents が null または undefined の場合に対応 */}
         {cardContents ? (
           cardContents.map((content, index) =>
             renderCardContent(content, index, tabType === 'current'),
