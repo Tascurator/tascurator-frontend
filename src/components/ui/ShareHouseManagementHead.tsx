@@ -5,6 +5,7 @@ import { TenantInvitationDrawer } from './drawers/TenantInvitationDrawer';
 import { CategoryCreationDrawer } from './drawers/CategoryCreationDrawer';
 
 interface IHeaderTitleButtonProps {
+  shareHouseId: string;
   title: string;
   type: 'categories' | 'tenants';
 }
@@ -17,6 +18,7 @@ interface IHeaderTitleButtonProps {
  */
 
 export const ShareHouseManagementHead = ({
+  shareHouseId,
   title,
   type,
 }: IHeaderTitleButtonProps) => {
@@ -47,6 +49,7 @@ export const ShareHouseManagementHead = ({
           setOpen={setOpenTaskDrawer}
         />
         <TenantInvitationDrawer
+          shareHouseId={shareHouseId}
           open={openTenantDrawer}
           setOpen={setOpenTenantDrawer}
         />

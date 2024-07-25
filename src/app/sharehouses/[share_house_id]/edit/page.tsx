@@ -46,10 +46,14 @@ const EditShareHousePage = async ({
 
         {/* Tasks */}
         <TabsContent value="Tasks">
-          <ShareHouseManagementHead title={'Categories'} type={'categories'} />
+          <ShareHouseManagementHead
+            shareHouseId={share_house_id}
+            title={'Categories'}
+            type={'categories'}
+          />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.categories.length}/
-            {CONSTRAINTS.CATEGORY_MAX_AMOUNT}
+            {CONSTRAINTS.CATEGORY_NAME_MAX_LENGTH}
           </div>
           {shareHouseManagement.categories.map((category) => (
             <Accordion
@@ -58,7 +62,7 @@ const EditShareHousePage = async ({
               className="w-full"
               key={category.id}
             >
-              <AccordionItem value={`item-${category.id}`} className="mt-0">
+              <AccordionItem value={`item-${category.id}`}>
                 <AccordionCategoryItem category={category} />
 
                 <AccordionContent
@@ -89,17 +93,19 @@ const EditShareHousePage = async ({
 
         {/* Tenants */}
         <TabsContent value="Tenants">
-          <ShareHouseManagementHead title={'Tenants'} type={'tenants'} />
-          <div className="flex items-center justify-end mt-4 mb-2 text-base">
-            {shareHouseManagement.tenants.length}/
-            {CONSTRAINTS.TENANT_MAX_AMOUNT}
-          </div>
-
+          <ShareHouseManagementHead
+            shareHouseId={share_house_id}
+            title={'Tenants'}
+            type={'tenants'}
+          />
           {shareHouseManagement.tenants.length > 0 ? (
-            <ul>
+            <ul className="mt-6">
               {shareHouseManagement.tenants.map((tenant) => (
                 <li className="mb-4" key={tenant.id}>
-                  <TenantListItem tenant={tenant} />
+                  <TenantListItem
+                    shareHouseId={share_house_id}
+                    tenant={tenant}
+                  />
                 </li>
               ))}
             </ul>
