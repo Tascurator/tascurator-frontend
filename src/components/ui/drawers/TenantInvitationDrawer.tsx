@@ -19,7 +19,6 @@ import {
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { ITenant } from '@/types/commons';
 import { LoadingSpinner } from '../loadingSpinner';
-import { useState } from 'react';
 import { toast } from '../use-toast';
 import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
@@ -48,15 +47,10 @@ const EditTenantDrawer = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = formControls;
-  const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = async (data) => {
-    setIsLoading(true);
-    setOpen(true);
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Post the form data
@@ -96,6 +90,7 @@ const EditTenantDrawer = ({
         description: TOAST_TEXTS.success,
       });
       revalidatePage(path);
+      setOpen(false);
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -103,16 +98,13 @@ const EditTenantDrawer = ({
           description: error.message,
         });
       }
-    } finally {
-      setIsLoading(false);
-      setOpen(false);
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
