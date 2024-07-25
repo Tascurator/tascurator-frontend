@@ -5,105 +5,109 @@ import {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
-  DrawerTrigger,
-  DrawerClose,
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { TShareHouseCreationSchema } from '@/constants/schema';
+import { formatDate } from '@/utils/dates';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
 
 interface ISetupConfirmationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
-  data: TShareHouseCreationSchema;
-  onSubmit: SubmitHandler<TShareHouseCreationSchema>;
+  form: UseFormReturn<TShareHouseCreationSchema>;
 }
 
 export const SetupConfirmationDrawer = ({
   open,
   setOpen,
-  data,
-  onSubmit,
+  form,
 }: ISetupConfirmationDrawer) => {
-  const { handleSubmit } = useForm<TShareHouseCreationSchema>();
+  const { handleSubmit, getValues } = form;
 
+  const data = getValues();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFormSubmit: SubmitHandler<TShareHouseCreationSchema> = async (
-    data,
-  ) => {
+  const onSubmit: SubmitHandler<TShareHouseCreationSchema> = async () => {
     setIsLoading(true);
     try {
-      await onSubmit(data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setIsLoading(false);
+      setOpen(false);
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
-      setOpen(false);
-      console.log('data', data);
     } catch (error) {
+      console.error(error);
       setIsLoading(false);
-      toast({
-        variant: 'destructive',
-        description: 'Error!',
-      });
     }
   };
 
   return (
     <>
       {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger />
-        <DrawerContent>
-          <DrawerTitle>Confirm</DrawerTitle>
-          <DrawerDescription asChild>
-            {data && (
+      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+        <DrawerContent asChild>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* <DrawerClose /> */}
+            <DrawerTitle>Confirm Sharehouse Setup</DrawerTitle>
+            <DrawerDescription asChild>
               <div>
-                <p>Share house name: {data.name}</p>
-                <p>Start date: {data.startDate}</p>
-                <p>Rotation cycle: {data.rotationCycle}</p>
-                <p>Categories number: {data.categories.length}</p>
-                <p>Tenant number: {data.tenants.length}</p>
-                {/* <p>Categories:</p>
-                <ul>
-                  {data.categories.map((category) => (
-                    <li key={category.id}>
-                      <p>{category.name}</p>
-                      <ul>
-                        {category.tasks.map((task) => (
-                          <li key={task.id}>
-                            <p>{task.title}</p>
-                            <p>{task.description}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  ))}
-                </ul> */}
-
-                {/* <p>{JSON.stringify(data)}</p> */}
+                <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
+                  Share house name
+                </div>
+                <p className="text-xl">{data.name}</p>
+                <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
+                  Start date
+                </div>
+                <p className="text-xl">
+                  {formatDate(new Date(data.startDate))}
+                </p>
+                <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
+                  Rotation cycle
+                </div>
+                <p className="text-xl">
+                  {data.rotationCycle === 7
+                    ? 'Weekly'
+                    : data.rotationCycle === 14
+                      ? 'Fortnightly'
+                      : data.rotationCycle}
+                </p>
+                <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
+                  Categories
+                </div>
+                <p className="text-xl">
+                  {data.categories
+                    .map((category) => {
+                      // console.log(JSON.stringify(category, null, 2));
+                      return category.name;
+                    })
+                    .join(', ')}
+                </p>
+                <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
+                  Tenants
+                </div>
+                <p className="text-xl">
+                  {data.tenants.map((tenant) => tenant.name).join(', ')}
+                </p>
               </div>
-            )}
-          </DrawerDescription>
-          <DrawerFooter className="flex justify-between">
-            <DrawerClose asChild>
-              <Button type="button" variant="outline" className="flex-1">
+            </DrawerDescription>
+
+            <DrawerFooter>
+              <Button
+                variant="secondary"
+                onClick={() => setOpen(false)}
+                type="button"
+              >
                 Cancel
               </Button>
-            </DrawerClose>
-            <Button
-              type="submit"
-              className="flex-1"
-              onClick={handleSubmit(handleFormSubmit)}
-            >
-              Create
-            </Button>
-          </DrawerFooter>
+              <Button type="submit">Confirm</Button>
+            </DrawerFooter>
+          </form>
         </DrawerContent>
       </Drawer>
     </>

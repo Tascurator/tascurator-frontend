@@ -21,6 +21,9 @@ import {
 } from '@/constants/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { CONSTRAINTS } from '@/constants/constraints';
+
+const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
 
 interface ISetupStepperProps {
   initialStep: number;
@@ -35,63 +38,48 @@ export const SetupStepper = ({
   tenants,
   categories,
 }: ISetupStepperProps) => {
-  const [currentStep, setCurrentStep] = useState<number>(initialStep);
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [formData, setFormData] = useState<TShareHouseCreationSchema | ''>('');
-
-  const handleBack = () => setCurrentStep(currentStep - 1);
-  const handleOpen = () => setOpenDrawer(true);
+  const formControls = useForm<TShareHouseCreationSchema>({
+    resolver: zodResolver(shareHouseCreationSchema),
+    defaultValues: {
+      name: '',
+      categories,
+      tenants,
+      startDate: new Date().toISOString(),
+      rotationCycle: 7,
+    },
+  });
 
   const {
     register,
     trigger,
-    handleSubmit,
     formState: { errors },
-    getValues,
     setValue,
-  } = useForm<TShareHouseCreationSchema>({
-    resolver: zodResolver(shareHouseCreationSchema),
-    defaultValues: {
-      categories,
-      tenants,
-      rotationCycle: 7,
-      startDate: new Date().toISOString(),
-    },
-  });
+  } = formControls;
 
+  const [currentStep, setCurrentStep] = useState<number>(initialStep);
+  const [open, setOpen] = useState(false);
+
+  const handleBack = () => setCurrentStep(currentStep - 1);
   const handleNext = async () => {
     let isValid = false;
     if (currentStep === 1) {
       isValid = await trigger(['name']);
     } else if (currentStep === 2) {
-      const values = getValues();
-      if (values.categories.length < 1 || values.categories.length > 15) {
-        return;
-      } else {
-        isValid = true;
-      }
+      isValid = await trigger(['categories']);
     } else if (currentStep === 3) {
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
-      console.log('trigger schedule');
-
       isValid = await trigger(['startDate', 'rotationCycle']);
-      console.log(isValid);
     }
     if (isValid && currentStep === maxSteps) {
-      const data = getValues();
-      setFormData(data);
-      handleOpen();
+      setOpen(true);
     }
     if (isValid && currentStep < maxSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
 
-  const onSubmit = (data: TShareHouseCreationSchema) => {
-    console.log('data', data);
-  };
-
+  // step1
   const shareHouseNameSetting = () => {
     return (
       <SetupContents
@@ -115,6 +103,7 @@ export const SetupStepper = ({
     );
   };
 
+  // step2
   const categorySetting = () => {
     return (
       <SetupContents
@@ -125,6 +114,9 @@ export const SetupStepper = ({
         onBack={handleBack}
       >
         <ShareHouseManagementHead title="Categories" type="categories" />
+        <p className="flex justify-end">
+          {categories.length}/{CATEGORY_MAX_AMOUNT}
+        </p>
         {categories.map((category) => (
           <Accordion
             type="single"
@@ -158,6 +150,7 @@ export const SetupStepper = ({
     );
   };
 
+  // step3
   const tenantSetting = () => {
     return (
       <SetupContents
@@ -168,6 +161,9 @@ export const SetupStepper = ({
         onBack={handleBack}
       >
         <ShareHouseManagementHead title="Tenants" type="tenants" />
+        <p className="flex justify-end">
+          {tenants.length}/{TENANT_MAX_AMOUNT}
+        </p>
         {tenants.length > 0 ? (
           <ul className="mt-6">
             {tenants.map((tenant) => (
@@ -186,6 +182,7 @@ export const SetupStepper = ({
     );
   };
 
+  // step4
   const scheduleSetting = () => {
     return (
       <>
@@ -214,13 +211,6 @@ export const SetupStepper = ({
             </p>
           )}
         </SetupContents>
-
-        <SetupConfirmationDrawer
-          open={openDrawer}
-          setOpen={setOpenDrawer}
-          data={formData as TShareHouseCreationSchema}
-          onSubmit={() => handleSubmit(onSubmit)()}
-        />
       </>
     );
   };
@@ -242,7 +232,12 @@ export const SetupStepper = ({
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)}>{renderStep()}</form>
+      {renderStep()}
+      <SetupConfirmationDrawer
+        open={open}
+        setOpen={setOpen}
+        form={formControls}
+      />
     </div>
   );
 };
