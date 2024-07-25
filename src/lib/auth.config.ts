@@ -31,7 +31,6 @@ export default {
 
           return null;
         } catch (error) {
-          console.error('Authorize user:', error);
           return null;
         }
       },

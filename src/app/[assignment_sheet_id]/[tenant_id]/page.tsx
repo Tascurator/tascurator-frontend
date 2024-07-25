@@ -2,6 +2,7 @@ import { AccordionAssignmentSheet } from '@/components/accordion-assignment-shee
 import { AccordionAssignmentSheetFuture } from '@/components/accordion-assignment-sheet/AccordionAssignmentSheetFuture';
 import { api } from '@/lib/hono';
 import { formatDate } from '@/utils/dates';
+import { notFound } from 'next/navigation';
 
 interface IAssignmentSheetPageProps {
   params: {
@@ -31,7 +32,7 @@ const AssignmentSheetPage = async ({
   // Check for error in data and display it if found
   // TODO: Improve and implement the error message display
   if ('error' in rotations) {
-    return <div>{rotations.error}</div>;
+    notFound();
   }
 
   return (

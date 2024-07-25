@@ -63,28 +63,3 @@ export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
-
-/**
- * An array of routes that are accessible to the public.
- * These routes do not require authentication.
- * @type {string[]}
- */
-export const publicRoutes: string[] = [];
-
-/**
- * An array of routes are used for authentication.
- * These routes will redirect logged in users to /sharehouses.
- * @type {string[]}
- */
-export const authRoutes: string[] = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-];
-
-/**
- * The default route to redirect to after logging in.
- * @type {string}
- */
-export const DEFAULT_LOGIN_REDIRECT: string = '/sharehouses';
