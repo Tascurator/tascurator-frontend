@@ -9,54 +9,54 @@ const NewSharehousePage = () => {
       tasks: [
         {
           id: '1',
-          title: 'Mop the floor',
+          title: 'Mor',
           description:
             'Your task is to mop the floor. You can use the mop in the storage room.',
         },
         {
           id: '2',
-          title: 'Wipe the mirror',
+          title: 'Wiperror',
           description:
             "Your task is to wipe the mirror. It's very important to keep the mirror clean.",
         },
       ],
     },
-    // {
-    //   id: '2',
-    //   name: 'Bathroom',
-    //   tasks: [
-    //     {
-    //       id: '3',
-    //       title: 'Clean the toilet',
-    //       description:
-    //         'Your task is to clean the toilet. Make sure to use the toilet brush and disinfectant.',
-    //     },
-    //     {
-    //       id: '4',
-    //       title: 'Scrub the shower tiles',
-    //       description:
-    //         'Your task is to scrub the shower tiles. Use the tile cleaner and a brush to remove any soap scum and mildew.',
-    //     },
-    //   ],
-    // },
-    // {
-    //   id: '3',
-    //   name: 'Living Room',
-    //   tasks: [
-    //     {
-    //       id: '5',
-    //       title: 'Vacuum the carpet',
-    //       description:
-    //         'Your task is to vacuum the carpet. Make sure to move the furniture and get into the corners.',
-    //     },
-    //     {
-    //       id: '6',
-    //       title: 'Dust the shelves',
-    //       description:
-    //         'Your task is to dust the shelves. Use a microfiber cloth to remove any dust and dirt.',
-    //     },
-    //   ],
-    // },
+    {
+      id: '2',
+      name: 'Bathroom',
+      tasks: [
+        {
+          id: '3',
+          title: 'Cleailet',
+          description:
+            'Your task is to clean the toilet. Make sure to use the toilet brush and disinfectant.',
+        },
+        {
+          id: '4',
+          title: 'Scrub thes',
+          description:
+            'Your task is to scrub the shower tiles. Use the tile cleaner and a brush to remove any soap scum and mildew.',
+        },
+      ],
+    },
+    {
+      id: '3',
+      name: 'Livim',
+      tasks: [
+        {
+          id: '5',
+          title: 'Vrpet',
+          description:
+            'Your task is to vacuum the carpet. Make sure to move the furniture and get into the corners.',
+        },
+        {
+          id: '6',
+          title: 'Dustes',
+          description:
+            'Your task is to dust the shelves. Use a microfiber cloth to remove any dust and dirt.',
+        },
+      ],
+    },
     // {
     //   id: '4',
     //   name: 'Bedroom',
@@ -256,21 +256,21 @@ const NewSharehousePage = () => {
       name: 'Alice',
       email: 'asd@ak.com',
     },
-    // {
-    //   id: '2',
-    //   name: 'Bob',
-    //   email: 'bob@bob.com',
-    // },
-    // {
-    //   id: '3',
-    //   name: 'Charlie',
-    //   email: 'c@c.sof',
-    // },
-    // {
-    //   id: '4',
-    //   name: 'David',
-    //   email: 'dav@asd.fon',
-    // },
+    {
+      id: '2',
+      name: 'Bob',
+      email: 'bob@bob.com',
+    },
+    {
+      id: '3',
+      name: 'Charlie',
+      email: 'c@c.sof',
+    },
+    {
+      id: '4',
+      name: 'David',
+      email: 'dav@asd.fon',
+    },
     // {
     //   id: '5',
     //   name: 'Eve',
