@@ -98,8 +98,12 @@ const EditShareHousePage = async ({
             title={'Tenants'}
             type={'tenants'}
           />
+          <div className="flex items-center justify-end mt-4 mb-2 text-base">
+            {shareHouseManagement.tenants.length}/
+            {CONSTRAINTS.TENANT_MAX_AMOUNT}
+          </div>
           {shareHouseManagement.tenants.length > 0 ? (
-            <ul className="mt-6">
+            <ul>
               {shareHouseManagement.tenants.map((tenant) => (
                 <li className="mb-4" key={tenant.id}>
                   <TenantListItem
