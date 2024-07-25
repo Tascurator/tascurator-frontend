@@ -5,7 +5,6 @@ import {
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -46,8 +45,6 @@ export const AccordionAssignmentSheet = ({
   assignmentSheetId,
   tenantId,
 }: IAccordionAssignmentSheetProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const path = usePathname();
 
   const defaultValues = {
@@ -59,7 +56,12 @@ export const AccordionAssignmentSheet = ({
     ),
   };
 
-  const { handleSubmit, watch, setValue } = useForm<FormValues>({
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<FormValues>({
     resolver: zodResolver(taskCompletionUpdateSchema),
     defaultValues,
   });
@@ -107,7 +109,6 @@ export const AccordionAssignmentSheet = ({
   };
 
   const onSubmit = async (data: FormValues) => {
-    setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const updatedTasks = data.tasks.filter(
@@ -143,14 +144,12 @@ export const AccordionAssignmentSheet = ({
           description: error.message,
         });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      {isSubmitting && <LoadingSpinner isLoading={true} />}
       <Accordion
         type="single"
         collapsible
