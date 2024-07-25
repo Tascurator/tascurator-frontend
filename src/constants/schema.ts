@@ -195,7 +195,9 @@ export const rotationCycleUpdateSchema = z.object({
 
 export const loginSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z.string(),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH)),
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
