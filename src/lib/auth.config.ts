@@ -1,4 +1,4 @@
-import { type NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
