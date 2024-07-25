@@ -15,7 +15,7 @@ const app = new Hono()
    */
   .patch(
     '/:categoryId',
-    zValidator('json', categoryCreationSchema.pick({ category: true })),
+    zValidator('json', categoryCreationSchema.pick({ name: true })),
     async (c) => {
       try {
         const session = await auth();
@@ -52,7 +52,7 @@ const app = new Hono()
         // Check if the sharehouse has a category with the same name
         const categoryWithSameName = await prisma.category.findFirst({
           where: {
-            name: data.category,
+            name: data.name,
             rotationAssignment: {
               shareHouseId: shareHouseId,
             },
@@ -76,7 +76,7 @@ const app = new Hono()
             id: categoryId,
           },
           data: {
-            name: data.category,
+            name: data.name,
           },
         });
 
@@ -213,7 +213,7 @@ const app = new Hono()
         // Check if the sharehouse has a category with the same name
         const categoryWithSameName = await prisma.category.findFirst({
           where: {
-            name: data.category,
+            name: data.name,
             rotationAssignment: {
               shareHouseId: shareHouseId,
             },
@@ -234,7 +234,7 @@ const app = new Hono()
 
         const newCategory = await prisma.category.create({
           data: {
-            name: data.category,
+            name: data.name,
             rotationAssignment: {
               connect: {
                 id: rotationAssignment.id,
@@ -242,8 +242,8 @@ const app = new Hono()
             },
             tasks: {
               create: {
-                title: data.title,
-                description: data.description,
+                title: data.task.title,
+                description: data.task.description,
               },
             },
           },
