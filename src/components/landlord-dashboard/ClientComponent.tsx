@@ -12,8 +12,7 @@ export default function ClientComponent({
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const pathname = usePathname();
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const handleTab = (term: string) => {
     const params = new URLSearchParams(searchParams);
@@ -23,7 +22,7 @@ export default function ClientComponent({
     } else {
       params.delete('tab');
     }
-    replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (
