@@ -262,10 +262,12 @@ const app = new Hono()
         /**
          * Return 404 if sharehouse not found
          */
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
-          404,
-        );
+        if (!shareHouse) {
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
+        }
 
         if (!shareHouse.RotationAssignment)
           return c.json(
