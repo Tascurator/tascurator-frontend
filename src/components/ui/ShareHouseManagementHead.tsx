@@ -45,6 +45,7 @@ export const ShareHouseManagementHead = ({
       </div>
       <div className="h-0">
         <CategoryCreationDrawer
+          shareHouseId={shareHouseId}
           open={openTaskDrawer}
           setOpen={setOpenTaskDrawer}
         />
