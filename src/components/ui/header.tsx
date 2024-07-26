@@ -119,6 +119,8 @@ function HeaderItemWithDropDown({
             type={'sharehouse'}
           />
           <DeleteConfirmationDrawer
+            id={sharehouseId}
+            idType={'sharehouse'}
             deleteItem={pageTitle}
             open={openDelete}
             setOpen={setOpenDelete}
@@ -175,6 +177,8 @@ function HeaderItemWithDropDown({
             type={'sharehouse'}
           />
           <DeleteConfirmationDrawer
+            id={sharehouseId}
+            idType={'sharehouse'}
             deleteItem={pageTitle}
             open={openDelete}
             setOpen={setOpenDelete}
