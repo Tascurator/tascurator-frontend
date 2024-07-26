@@ -14,21 +14,23 @@ interface IRotationCyclesProps {
   rotationCycle: RotationCycle;
 }
 
+interface IFormValues {
+  repeat: RotationCycle;
+}
+
 export const RotationCycles = ({
   shareHouseId,
   rotationCycle,
 }: IRotationCyclesProps) => {
   const path = usePathname();
-  interface FormValues {
-    repeat: RotationCycle;
-  }
+
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<IFormValues>({
     defaultValues: {
       repeat:
         rotationCycle === RotationCycle.Weekly
@@ -39,11 +41,11 @@ export const RotationCycles = ({
 
   const selectedOption = watch('repeat');
 
-  const getButtonVariant = (option: FormValues['repeat']) => {
+  const getButtonVariant = (option: IFormValues['repeat']) => {
     return selectedOption === option ? 'default' : 'secondary';
   };
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Post the form data
