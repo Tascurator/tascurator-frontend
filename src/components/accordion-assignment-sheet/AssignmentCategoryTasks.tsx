@@ -4,7 +4,7 @@ import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TaskDescriptionDrawer } from '@/components/ui/drawers/TaskDescriptionDrawer';
 
-interface Category {
+interface ICategory {
   id: string;
   name: string;
   tasks: {
@@ -15,8 +15,8 @@ interface Category {
   }[];
 }
 
-interface AssignmentCategoryTasksProps {
-  category: Category;
+interface IAssignmentCategoryTasksProps {
+  category: ICategory;
   isChecked: { [taskId: string]: boolean };
   handleAllCheckedChange: (categoryId: string) => void;
   handleCheckboxChange: (taskId: string) => void;
@@ -27,7 +27,7 @@ export const AssignmentCategoryTasks = ({
   isChecked,
   handleAllCheckedChange,
   handleCheckboxChange,
-}: AssignmentCategoryTasksProps) => {
+}: IAssignmentCategoryTasksProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentTaskDetails, setCurrentTaskDetails] = useState<{
     title: string;

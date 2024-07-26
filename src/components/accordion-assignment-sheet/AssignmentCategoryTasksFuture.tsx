@@ -1,6 +1,6 @@
 import { Dot, Tag } from 'lucide-react';
 
-interface AssignmentCategoryTasksFutureProps {
+interface IAssignmentCategoryTasksFutureProps {
   category: {
     id: string;
     name: string;
@@ -14,7 +14,7 @@ interface AssignmentCategoryTasksFutureProps {
 
 export const AssignmentCategoryTasksFuture = ({
   category,
-}: AssignmentCategoryTasksFutureProps) => {
+}: IAssignmentCategoryTasksFutureProps) => {
   return (
     <div>
       <div className="flex items-center gap-2 mb-3 font-medium">

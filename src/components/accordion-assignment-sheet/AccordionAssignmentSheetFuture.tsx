@@ -7,7 +7,7 @@ import {
 import { AssignmentCategoryTasksFuture } from '@/components/accordion-assignment-sheet/AssignmentCategoryTasksFuture';
 import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 
-interface AccordionAssignmentSheetFutureProps {
+interface IAccordionAssignmentSheetFutureProps {
   startDate: string;
   endDate: string;
   categories: {
@@ -25,7 +25,7 @@ export const AccordionAssignmentSheetFuture = ({
   startDate,
   endDate,
   categories,
-}: AccordionAssignmentSheetFutureProps) => {
+}: IAccordionAssignmentSheetFutureProps) => {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value={`item-1`}>

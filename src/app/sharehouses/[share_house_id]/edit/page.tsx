@@ -8,7 +8,7 @@ import { TenantListItem } from '@/components/ui/tenantList';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
-import { RotationCycle } from '@/components/sharehouses-management/RotationCycle';
+import { RotationCycles } from '@/components/sharehouses-management/RotationCycles';
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 
@@ -46,7 +46,11 @@ const EditShareHousePage = async ({
 
         {/* Tasks */}
         <TabsContent value="Tasks">
-          <ShareHouseManagementHead title={'Categories'} type={'categories'} />
+          <ShareHouseManagementHead
+            shareHouseId={share_house_id}
+            title={'Categories'}
+            type={'categories'}
+          />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.categories.length}/
             {CONSTRAINTS.CATEGORY_MAX_AMOUNT}
@@ -58,7 +62,7 @@ const EditShareHousePage = async ({
               className="w-full"
               key={category.id}
             >
-              <AccordionItem value={`item-${category.id}`} className="mt-0">
+              <AccordionItem value={`item-${category.id}`}>
                 <AccordionCategoryItem category={category} />
 
                 <AccordionContent
@@ -84,22 +88,31 @@ const EditShareHousePage = async ({
 
         {/* Schedule */}
         <TabsContent value="Schedule">
-          <RotationCycle rotationCycle={shareHouseManagement.rotationCycle} />
+          <RotationCycles
+            shareHouseId={share_house_id}
+            rotationCycle={shareHouseManagement.rotationCycle}
+          />
         </TabsContent>
 
         {/* Tenants */}
         <TabsContent value="Tenants">
-          <ShareHouseManagementHead title={'Tenants'} type={'tenants'} />
+          <ShareHouseManagementHead
+            shareHouseId={share_house_id}
+            title={'Tenants'}
+            type={'tenants'}
+          />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.tenants.length}/
             {CONSTRAINTS.TENANT_MAX_AMOUNT}
           </div>
-
           {shareHouseManagement.tenants.length > 0 ? (
             <ul>
               {shareHouseManagement.tenants.map((tenant) => (
                 <li className="mb-4" key={tenant.id}>
-                  <TenantListItem tenant={tenant} />
+                  <TenantListItem
+                    shareHouseId={share_house_id}
+                    tenant={tenant}
+                  />
                 </li>
               ))}
             </ul>

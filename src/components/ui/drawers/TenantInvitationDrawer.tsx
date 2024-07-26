@@ -19,12 +19,16 @@ import {
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { ITenant } from '@/types/commons';
 import { LoadingSpinner } from '../loadingSpinner';
-import { useState } from 'react';
 import { toast } from '../use-toast';
+import { api } from '@/lib/hono';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
 
 const { TENANT_NAME, TENANT_EMAIL } = INPUT_TEXTS;
 
 interface IEditTenantDrawer {
+  shareHouseId: string;
   tenant?: ITenant;
   formControls: UseFormReturn<TTenantInvitationSchema>;
   open: boolean;
@@ -33,57 +37,74 @@ interface IEditTenantDrawer {
 
 // A drawer component used to edit or invite a tenant.
 const EditTenantDrawer = ({
+  shareHouseId,
   tenant,
   formControls,
   open,
   setOpen,
 }: IEditTenantDrawer) => {
+  const path = usePathname();
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    trigger,
+    formState: { errors, isValid, isSubmitting },
   } = formControls;
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSaveClick = async () => {
-    const isValid = await trigger(['name', 'email']);
-    if (isValid) {
-      console.log('Form is valid');
-    }
-  };
-
-  // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = async (data) => {
-    setIsLoading(true);
-    setOpen(true);
-
-    console.log('clicked!!!!111');
-
-    // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (data) {
-      setIsLoading(false);
+    // Post the form data
+    try {
+      if (tenant?.id) {
+        const resEditData = await api.tenant[':tenantId'].$patch({
+          param: {
+            tenantId: tenant.id,
+          },
+          json: {
+            name: data.name,
+          },
+        });
+        const editData = await resEditData.json();
+
+        if ('error' in editData) {
+          throw new Error(editData.error);
+        }
+      } else {
+        const resNewData = await api.tenant[':shareHouseId'].$post({
+          param: {
+            shareHouseId: shareHouseId,
+          },
+          json: {
+            name: data.name,
+            email: data.email,
+          },
+        });
+        const newData = await resNewData.json();
+
+        if ('error' in newData) {
+          throw new Error(newData.error);
+        }
+      }
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
+      revalidatePage(path);
       setOpen(false);
-    } else {
-      setIsLoading(false);
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -139,12 +160,7 @@ const EditTenantDrawer = ({
                   Cancel
                 </Button>
               </DrawerClose>
-              <Button
-                type={'submit'}
-                className={'flex-1'}
-                disabled={!isValid}
-                onClick={handleSaveClick}
-              >
+              <Button type={'submit'} className={'flex-1'} disabled={!isValid}>
                 Save
               </Button>
             </DrawerFooter>
@@ -156,6 +172,7 @@ const EditTenantDrawer = ({
 };
 
 interface ITenantInvitationDrawer {
+  shareHouseId: string;
   tenant?: ITenant;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -182,6 +199,7 @@ interface ITenantInvitationDrawer {
  * <TenantInvitationDrawer tenant={tenant} open={open} setOpen={setOpen}/>
  */
 export const TenantInvitationDrawer = ({
+  shareHouseId,
   tenant,
   open,
   setOpen,
@@ -192,8 +210,11 @@ export const TenantInvitationDrawer = ({
     defaultValues: tenant,
   });
 
+  console.log('shareHouseId:', shareHouseId);
+
   return (
     <EditTenantDrawer
+      shareHouseId={shareHouseId}
       tenant={tenant}
       formControls={formControls}
       open={open}

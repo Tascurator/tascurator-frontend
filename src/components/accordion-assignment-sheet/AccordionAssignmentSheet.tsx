@@ -5,7 +5,6 @@ import {
   AccordionContent,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -16,8 +15,11 @@ import { AssignmentCategoryTasks } from '@/components/accordion-assignment-sheet
 import { ITask } from '@/types/commons';
 import { NoTaskMessage } from '@/components/accordion-assignment-sheet/NoTaskMessage';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
+import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
 
-interface AccordionAssignmentSheetProps {
+interface IAccordionAssignmentSheetProps {
   startDate: string;
   endDate: string;
   categories: {
@@ -25,6 +27,8 @@ interface AccordionAssignmentSheetProps {
     name: string;
     tasks: (ITask & { isCompleted: boolean })[];
   }[];
+  assignmentSheetId: string;
+  tenantId: string;
 }
 
 interface FormValues {
@@ -38,8 +42,10 @@ export const AccordionAssignmentSheet = ({
   startDate,
   endDate,
   categories,
-}: AccordionAssignmentSheetProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  assignmentSheetId,
+  tenantId,
+}: IAccordionAssignmentSheetProps) => {
+  const path = usePathname();
 
   const defaultValues = {
     tasks: categories.flatMap((category) =>
@@ -50,7 +56,12 @@ export const AccordionAssignmentSheet = ({
     ),
   };
 
-  const { handleSubmit, watch, setValue } = useForm<FormValues>({
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<FormValues>({
     resolver: zodResolver(taskCompletionUpdateSchema),
     defaultValues,
   });
@@ -98,26 +109,47 @@ export const AccordionAssignmentSheet = ({
   };
 
   const onSubmit = async (data: FormValues) => {
-    setIsLoading(true);
-    // Filter out only the changed tasks
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const updatedTasks = data.tasks.filter(
       (task, index) =>
         task.isCompleted !== defaultValues.tasks[index].isCompleted,
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast({
-      variant: 'default',
-      description: TOAST_TEXTS.success,
-    });
-
-    console.log('Updated Tasks:', updatedTasks);
+    try {
+      const res = await api.assignments[':assignmentSheetId'][
+        ':tenantId'
+      ].$patch({
+        param: {
+          assignmentSheetId: assignmentSheetId,
+          tenantId: tenantId,
+        },
+        json: {
+          tasks: updatedTasks,
+        },
+      });
+      const data = await res.json();
+      if ('error' in data) {
+        throw new Error(data.error);
+      }
+      toast({
+        variant: 'default',
+        description: TOAST_TEXTS.success,
+      });
+      revalidatePage(path);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
+    }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      {isSubmitting && <LoadingSpinner isLoading={true} />}
       <Accordion
         type="single"
         collapsible
