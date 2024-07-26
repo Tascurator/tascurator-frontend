@@ -14,10 +14,6 @@ interface IAssignmentSheetPageProps {
 const AssignmentSheetPage = async ({
   params: { assignment_sheet_id, tenant_id },
 }: IAssignmentSheetPageProps) => {
-  console.log(
-    `Assignment Sheet ID: ${assignment_sheet_id}, Tenant ID: ${tenant_id}`,
-  );
-
   // Fetch data for a specific tenant and assignment sheet
   const res = await api.assignments[':assignmentSheetId'][':tenantId'].$get({
     param: {
@@ -48,6 +44,8 @@ const AssignmentSheetPage = async ({
           startDate={formatDate(new Date(rotations[1].startDate))}
           endDate={formatDate(new Date(rotations[1].endDate))}
           categories={rotations[1].categories}
+          assignmentSheetId={assignment_sheet_id}
+          tenantId={tenant_id}
         />
 
         {/* Future rotations */}
