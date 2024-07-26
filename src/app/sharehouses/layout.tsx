@@ -62,7 +62,6 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
   return (
     <>
       {HeaderComponent}
-      {console.log(shareHouseNew)}
       <div className={shareHousePathRegex.test(pathname) ? '' : 'px-6'}>
         {children}
       </div>

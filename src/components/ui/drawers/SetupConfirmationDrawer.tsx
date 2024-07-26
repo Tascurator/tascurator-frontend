@@ -83,7 +83,6 @@ export const SetupConfirmationDrawer = ({
                 <p className="text-xl">
                   {data.categories
                     .map((category) => {
-                      // console.log(JSON.stringify(category, null, 2));
                       return category.name;
                     })
                     .join(', ')}
