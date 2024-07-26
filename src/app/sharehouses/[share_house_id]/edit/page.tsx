@@ -8,7 +8,7 @@ import { TenantListItem } from '@/components/ui/tenantList';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
-import { RotationCycle } from '@/components/sharehouses-management/RotationCycle';
+import { RotationCycles } from '@/components/sharehouses-management/RotationCycles';
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 
@@ -88,7 +88,10 @@ const EditShareHousePage = async ({
 
         {/* Schedule */}
         <TabsContent value="Schedule">
-          <RotationCycle rotationCycle={shareHouseManagement.rotationCycle} />
+          <RotationCycles
+            shareHouseId={share_house_id}
+            rotationCycle={shareHouseManagement.rotationCycle}
+          />
         </TabsContent>
 
         {/* Tenants */}
