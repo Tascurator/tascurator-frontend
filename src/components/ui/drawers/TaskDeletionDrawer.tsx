@@ -66,7 +66,6 @@ export const TaskDeletionDrawer = ({
   } = useForm();
 
   const onSubmit = async () => {
-    setOpen(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
@@ -97,7 +96,7 @@ export const TaskDeletionDrawer = ({
   return (
     <>
       {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen}>
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
