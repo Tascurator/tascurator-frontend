@@ -157,9 +157,13 @@ const CardContentDescription = forwardRef<
         )}
       >
         <div>
-          <p className="pb-[7px] text-xl font-medium">
-            {name} ({completedTasks}/{maxTasks})
-          </p>
+          {maxTasks ? (
+            <p className="pb-[7px] text-xl font-medium">
+              {name} ({completedTasks}/{maxTasks})
+            </p>
+          ) : (
+            <p className="pb-[7px] text-xl font-medium">{name}</p>
+          )}
           <p>{tenant.name}</p>
         </div>
         <CircleCheck
