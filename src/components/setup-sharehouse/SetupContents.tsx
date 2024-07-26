@@ -13,7 +13,7 @@ interface ISetupContentsProps {
   onOpen?: () => void;
 }
 
-const SetupContents = ({
+export const SetupContents = ({
   title,
   currentStep,
   maxSteps,
@@ -50,5 +50,3 @@ const SetupContents = ({
     </div>
   );
 };
-
-export { SetupContents };
