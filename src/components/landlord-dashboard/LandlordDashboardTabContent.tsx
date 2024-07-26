@@ -1,4 +1,3 @@
-'use client';
 import { TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/piechart';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -77,8 +76,7 @@ export const LandlordDashboardTabContent = ({
         ) : (
           <div className="flex items-center justify-center flex-col w-full py-6">
             <div className="pb-4">No tenants</div>
-            {/* <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}> */}
-            <Link href={`/sharehouses/${shareHouseId}/edit`}>
+            <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
               <Button>Add tenant</Button>
             </Link>
           </div>

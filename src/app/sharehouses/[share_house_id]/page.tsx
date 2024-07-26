@@ -2,7 +2,9 @@
 import { ICardContentProps } from '@/types/commons';
 import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
-import DashboardTabs from '@/components/landlord-dashboard/DashboardTabs';
+// import DashboardTabs from "@/components/landlord-dashboard/DashboardTabs";
+import ClientComponent from '@/components/landlord-dashboard/ClientComponent';
+import LandlordDashboardTabContent from '@/components/landlord-dashboard/LandlordDashboardTabContent';
 
 export interface IShareHousePageProps {
   params: {
@@ -43,7 +45,7 @@ const ShareHousePage = async ({
     return <div>{data.error}</div>;
   }
 
-  console.log('data', data);
+  // console.log("data", data);
 
   // console.log("⭐️ShareHousePage ID:", share_house_id);
   // console.log("⭐️ShareHousePage Name:", shareHouseName);
@@ -111,24 +113,42 @@ const ShareHousePage = async ({
     },
   ];
 
+  const formatDate = (date: string) => {
+    const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    return formattedDate;
+  };
+
   return (
-    <>
-      <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-        {/* <div className="relative z-10 p-6">
+    <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
+      {/* <div className="relative z-10 p-6">
 				</div> */}
-        <DashboardTabs
-          shareHouseId={share_house_id}
-          shareHouseName={shareHouseName}
+      <ClientComponent>
+        <div className="text-2xl flex justify-center mt-4">
+          {shareHouseName}
+        </div>
+        <LandlordDashboardTabContent
+          tabType="current"
           progressPercent={data.progressRate as number}
-          currentStartDate={data.startDate}
-          currentEndDate={data.endDate}
-          nextStartDate={nextStartDate}
-          nextEndDate={nextEndDate}
-          cardContentCurrent={data.categories}
-          cardContentNext={cardContentNext}
+          startDate={formatDate(data.startDate)}
+          endDate={formatDate(data.endDate)}
+          cardContents={data.categories}
+          // cardContents={cardContentCurrent}
+          shareHouseId={share_house_id}
         />
-      </div>
-    </>
+        <LandlordDashboardTabContent
+          tabType="next"
+          progressPercent={0}
+          startDate={nextStartDate}
+          endDate={nextEndDate}
+          cardContents={cardContentNext}
+          shareHouseId={share_house_id}
+        />
+      </ClientComponent>
+    </div>
   );
 };
 
