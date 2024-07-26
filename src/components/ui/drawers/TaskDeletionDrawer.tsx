@@ -12,12 +12,16 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '../loadingSpinner';
 import { toast } from '../use-toast';
-import { useState } from 'react';
+import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
 
 interface ITaskDeletionDrawer {
   title: string;
   open: boolean;
   setOpen: (value: boolean) => void;
+  taskId: string;
 }
 
 /**
@@ -52,39 +56,47 @@ export const TaskDeletionDrawer = ({
   title,
   open,
   setOpen,
+  taskId,
 }: ITaskDeletionDrawer) => {
-  const { handleSubmit } = useForm();
+  const path = usePathname();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
 
-  // TODO: Implement the delete click functionality
   const onSubmit = async () => {
-    setIsLoading(true);
-    setOpen(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (title) {
-      console.log('title', title);
-      setIsLoading(false);
-      setOpen(false);
+    try {
+      const res = await api.task[':taskId'].$delete({
+        param: {
+          taskId,
+        },
+      });
+      const data = await res.json();
+      if ('error' in data) {
+        throw new Error(data.error);
+      }
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
-    } else {
-      setIsLoading(false);
-      setOpen(false);
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+      revalidatePage(path);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
