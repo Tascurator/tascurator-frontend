@@ -2,8 +2,7 @@
 import { ICardContentProps } from '@/types/commons';
 import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
-// import DashboardTabs from "@/components/landlord-dashboard/DashboardTabs";
-import ClientComponent from '@/components/landlord-dashboard/ClientComponent';
+import DashboardTabsManager from '@/components/landlord-dashboard/DashboardTabsManager';
 import LandlordDashboardTabContent from '@/components/landlord-dashboard/LandlordDashboardTabContent';
 
 export interface IShareHousePageProps {
@@ -52,7 +51,7 @@ const ShareHousePage = async ({
 
   return (
     <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-      <ClientComponent>
+      <DashboardTabsManager>
         <div className="text-2xl flex justify-center mt-4">
           {shareHouseName}
         </div>
@@ -72,7 +71,7 @@ const ShareHousePage = async ({
           cardContents={data.next.categories}
           shareHouseId={share_house_id}
         />
-      </ClientComponent>
+      </DashboardTabsManager>
     </div>
   );
 };

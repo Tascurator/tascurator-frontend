@@ -4,7 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function ClientComponent({
+export default function DashboardTabsManager({
   children,
 }: {
   children: React.ReactNode;
