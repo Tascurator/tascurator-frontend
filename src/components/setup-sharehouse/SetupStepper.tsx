@@ -47,6 +47,7 @@ export const SetupStepper = ({
       startDate: new Date().toISOString(),
       rotationCycle: 7,
     },
+    mode: 'onBlur',
   });
 
   const {
@@ -113,7 +114,11 @@ export const SetupStepper = ({
         onNext={handleNext}
         onBack={handleBack}
       >
-        <ShareHouseManagementHead title="Categories" type="categories" />
+        <ShareHouseManagementHead
+          title="Categories"
+          type="categories"
+          shareHouseId=""
+        />
         <p className="flex justify-end">
           {categories.length}/{CATEGORY_MAX_AMOUNT}
         </p>
@@ -160,7 +165,11 @@ export const SetupStepper = ({
         onNext={handleNext}
         onBack={handleBack}
       >
-        <ShareHouseManagementHead title="Tenants" type="tenants" />
+        <ShareHouseManagementHead
+          title="Tenants"
+          type="tenants"
+          shareHouseId=""
+        />
         <p className="flex justify-end">
           {tenants.length}/{TENANT_MAX_AMOUNT}
         </p>
@@ -168,7 +177,7 @@ export const SetupStepper = ({
           <ul className="mt-6">
             {tenants.map((tenant) => (
               <li className="mb-4" key={tenant.id}>
-                <TenantListItem tenant={tenant} />
+                <TenantListItem tenant={tenant} shareHouseId="" />
               </li>
             ))}
           </ul>
