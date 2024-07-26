@@ -53,7 +53,7 @@ const EditShareHousePage = async ({
           />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.categories.length}/
-            {CONSTRAINTS.CATEGORY_NAME_MAX_LENGTH}
+            {CONSTRAINTS.CATEGORY_MAX_AMOUNT}
           </div>
           {shareHouseManagement.categories.map((category) => (
             <Accordion
