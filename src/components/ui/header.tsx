@@ -117,6 +117,7 @@ function HeaderItemWithDropDown({
             open={openEdit}
             setOpen={setOpenEdit}
             type={'sharehouse'}
+            shareHouseId={sharehouseId}
           />
           <DeleteConfirmationDrawer
             deleteItem={pageTitle}
@@ -258,7 +259,7 @@ const Header = ({ type, pageTitle, sharehouseId }: IHeaderContainerProps) => {
         ) : type === 'HeaderItemWithDropDown' ? (
           <HeaderItemWithDropDown
             pageTitle={pageTitle}
-            sharehouseId={sharehouseId!}
+            sharehouseId={sharehouseId ?? ''}
           />
         ) : (
           <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />
