@@ -155,6 +155,8 @@ export const AccordionCategoryItem = ({
 
       {/* Category deletion drawer */}
       <DeleteConfirmationDrawer
+        id={category.id}
+        idType={'category'}
         deleteItem={category.name}
         open={isDrawerOpen && userAction === 'delete'}
         setOpen={setIsDrawerOpen}

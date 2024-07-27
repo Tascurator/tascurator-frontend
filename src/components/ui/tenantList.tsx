@@ -86,6 +86,8 @@ const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
           setOpen={setOpenEdit}
         />
         <DeleteConfirmationDrawer
+          id={tenant.id}
+          idType={'tenant'}
           deleteItem={tenant.name}
           open={openDelete}
           setOpen={setOpenDelete}
