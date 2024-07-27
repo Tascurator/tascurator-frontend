@@ -142,6 +142,7 @@ export const AccordionCategoryItem = ({
         open={isDrawerOpen && userAction === 'edit'}
         setOpen={setIsDrawerOpen}
         type={'category'}
+        categoryId={category.id}
       />
 
       {/* Task create drawer */}
