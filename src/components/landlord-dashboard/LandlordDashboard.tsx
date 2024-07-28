@@ -69,6 +69,8 @@ export const LandlordDashboard = ({
       />
 
       <DeleteConfirmationDrawer
+        id={shareHouseId}
+        idType={'sharehouse'}
         deleteItem={shareHouseName}
         open={openDelete}
         setOpen={setOpenDelete}

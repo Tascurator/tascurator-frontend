@@ -319,7 +319,7 @@ interface ICategoryCreationDrawer {
  * const [open, setOpen] = useState(false);
  *
  * // To create a new category
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'categoryCreation'}/>
+ * <CategoryCreationDrawer open={open} setOpen={setOpen} type={'categoryCreation'}/>
  *
  */
 export const CategoryCreationDrawer = ({
