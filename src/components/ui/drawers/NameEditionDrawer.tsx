@@ -34,8 +34,9 @@ interface INameEditionDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
   type: 'sharehouse' | 'category';
-  shareHouseId?: string;
-  categoryId?: string;
+  id?: string;
+  // shareHouseId?: string;
+  // categoryId?: string;
 }
 
 type FormSchema = TShareHouseNameSchema | TCategoryNameSchema;
@@ -55,7 +56,7 @@ const getSchema = (type: 'sharehouse' | 'category') => {
  * @param type - The type to determine if editing a 'sharehouse' or 'category'
  *
  * @example
- *
+ * const [open, setOpen] = useState(false);
  * // To edit the sharehouse name
  * <NameEditionDrawer
  *  name={'sample name'}
@@ -78,8 +79,7 @@ export const NameEditionDrawer = ({
   open,
   setOpen,
   type,
-  shareHouseId,
-  categoryId,
+  id,
 }: INameEditionDrawer) => {
   const path = usePathname();
   const isSharehouse = type === 'sharehouse';
@@ -115,11 +115,9 @@ export const NameEditionDrawer = ({
 
     try {
       if (isSharehouse) {
-        console.log('Updating the Sharehouse:', data.name);
-        console.log('Sharehouse ID:', shareHouseId);
         const resSharehouse = await api.sharehouse[':shareHouseId'].$patch({
           param: {
-            shareHouseId: shareHouseId!,
+            shareHouseId: id,
           },
           json: {
             name: data.name,
@@ -130,11 +128,9 @@ export const NameEditionDrawer = ({
           throw new Error(sharehouseData.error);
         }
       } else {
-        console.log('Updating the Category:', data);
-        console.log('Category ID:', categoryId);
         const resCategory = await api.category[':categoryId'].$patch({
           param: {
-            categoryId: categoryId!,
+            categoryId: id,
           },
           json: {
             name: data.name,

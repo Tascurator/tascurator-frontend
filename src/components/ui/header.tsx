@@ -117,7 +117,7 @@ function HeaderItemWithDropDown({
             open={openEdit}
             setOpen={setOpenEdit}
             type={'sharehouse'}
-            shareHouseId={sharehouseId}
+            id={sharehouseId}
           />
           <DeleteConfirmationDrawer
             id={sharehouseId}
