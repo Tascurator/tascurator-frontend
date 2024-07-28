@@ -117,7 +117,7 @@ export const NameEditionDrawer = ({
       if (isSharehouse) {
         const resSharehouse = await api.sharehouse[':shareHouseId'].$patch({
           param: {
-            shareHouseId: id,
+            shareHouseId: id!,
           },
           json: {
             name: data.name,
@@ -130,7 +130,7 @@ export const NameEditionDrawer = ({
       } else {
         const resCategory = await api.category[':categoryId'].$patch({
           param: {
-            categoryId: id,
+            categoryId: id!,
           },
           json: {
             name: data.name,
