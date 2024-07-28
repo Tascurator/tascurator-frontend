@@ -35,8 +35,6 @@ interface INameEditionDrawer {
   setOpen: (value: boolean) => void;
   type: 'sharehouse' | 'category';
   id?: string;
-  // shareHouseId?: string;
-  // categoryId?: string;
 }
 
 type FormSchema = TShareHouseNameSchema | TCategoryNameSchema;
@@ -108,16 +106,18 @@ export const NameEditionDrawer = ({
     }
   };
 
-  // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
+      if (!id) {
+        throw new Error('Id is required');
+      }
+
       if (isSharehouse) {
         const resSharehouse = await api.sharehouse[':shareHouseId'].$patch({
           param: {
-            shareHouseId: id!,
+            shareHouseId: id,
           },
           json: {
             name: data.name,
@@ -130,7 +130,7 @@ export const NameEditionDrawer = ({
       } else {
         const resCategory = await api.category[':categoryId'].$patch({
           param: {
-            categoryId: id!,
+            categoryId: id,
           },
           json: {
             name: data.name,
