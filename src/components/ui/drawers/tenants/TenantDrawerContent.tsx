@@ -7,14 +7,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 import { Button } from '@/components/ui/button';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { ITenant } from '@/types/commons';
-import {
-  tenantInvitationSchema,
-  TTenantInvitationSchema,
-} from '@/constants/schema';
+import { TTenantInvitationSchema } from '@/constants/schema';
 import { INPUT_TEXTS } from '@/constants/input-texts';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 const { TENANT_NAME, TENANT_EMAIL } = INPUT_TEXTS;
 
@@ -33,21 +29,14 @@ export const TenantDrawerContent = ({
   setOpen,
   onSubmit,
 }: ITenantDrawerContentProps) => {
-  const formControls = useForm<TTenantInvitationSchema>({
-    resolver: zodResolver(tenantInvitationSchema),
-    mode: 'onBlur',
-    defaultValues: tenant,
-  });
-
   const {
     register,
     formState: { errors, isValid },
-  } = formControls;
+  } = useFormContext<TTenantInvitationSchema>();
 
   return (
     <CommonDrawer
       title={tenant?.id ? 'Tenant setting' : 'Invite tenant'}
-      formControls={formControls}
       open={open}
       setOpen={setOpen}
       onSubmit={onSubmit}

@@ -1,5 +1,8 @@
-import { SubmitHandler } from 'react-hook-form';
-import { TTenantInvitationSchema } from '@/constants/schema';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  tenantInvitationSchema,
+  TTenantInvitationSchema,
+} from '@/constants/schema';
 import { ITenant } from '@/types/commons';
 import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
@@ -7,6 +10,7 @@ import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
 import { TenantDrawerContent } from '@/components/ui/drawers/tenants/TenantDrawerContent';
 import { useToast } from '@/components/ui/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ITenantInvitationDrawer {
   shareHouseId: string;
@@ -23,6 +27,12 @@ export const TenantInvitationDrawer = ({
 }: ITenantInvitationDrawer) => {
   const path = usePathname();
   const { toast } = useToast();
+
+  const formControls = useForm<TTenantInvitationSchema>({
+    resolver: zodResolver(tenantInvitationSchema),
+    mode: 'onBlur',
+    defaultValues: tenant,
+  });
 
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -76,11 +86,13 @@ export const TenantInvitationDrawer = ({
   };
 
   return (
-    <TenantDrawerContent
-      tenant={tenant}
-      open={open}
-      setOpen={setOpen}
-      onSubmit={onSubmit}
-    />
+    <FormProvider {...formControls}>
+      <TenantDrawerContent
+        tenant={tenant}
+        open={open}
+        setOpen={setOpen}
+        onSubmit={onSubmit}
+      />
+    </FormProvider>
   );
 };
