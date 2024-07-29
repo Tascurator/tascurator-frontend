@@ -9,7 +9,7 @@ import {
   DropdownMenuItemWithIcon,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TaskCreationDrawer } from '@/components/ui/drawers/TaskCreationDrawer';
+import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDrawer';
 import { TaskDeletionDrawer } from '../drawers/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { ICategoryWithoutTasks } from '@/types/commons';
@@ -141,7 +141,6 @@ export const AccordionTaskItem = ({
         }}
         open={isDrawerOpen && userAction === 'edit'}
         setOpen={setIsDrawerOpen}
-        type={'edit'}
       />
 
       {/* Task deletion drawer */}

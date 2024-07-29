@@ -11,7 +11,7 @@ import {
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { NameEditionDrawer } from '../drawers/NameEditionDrawer';
 import { AccordionTrigger } from '../accordion';
-import { TaskCreationDrawer } from '../drawers/TaskCreationDrawer';
+import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '../drawers/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
 
@@ -150,7 +150,6 @@ export const AccordionCategoryItem = ({
         category={category}
         open={isDrawerOpen && userAction === 'add'}
         setOpen={setIsDrawerOpen}
-        type={'creation'}
       />
 
       {/* Category deletion drawer */}

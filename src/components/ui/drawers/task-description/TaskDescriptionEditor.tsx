@@ -1,22 +1,18 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-
-import { UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { editorExtensions } from '../CategoryCreationDrawer';
-
-import { TTaskCreationSchema, TTaskUpdateSchema } from '@/constants/schema';
 import { EditorButtons } from './EditorButtons';
+import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskDrawerContent';
 
 // Difference between TaskDescriptionEditorForCategory.tsx and TaskDescriptionEditor.tsx is only the schema type used
 interface ITaskDescriptionEditor {
   taskDescription: string;
-  formControls: UseFormReturn<TTaskCreationSchema | TTaskUpdateSchema>;
 }
 
 export const TaskDescriptionEditor = ({
   taskDescription,
-  formControls,
 }: ITaskDescriptionEditor) => {
-  const { setValue } = formControls;
+  const { setValue } = useFormContext<TTaskSchema>();
 
   const editor = useEditor({
     extensions: editorExtensions,
@@ -25,7 +21,7 @@ export const TaskDescriptionEditor = ({
         class: 'p-2 w-full h-full overflow-auto resize-none focus:outline-none',
       },
     },
-    content: taskDescription || '',
+    content: taskDescription ?? '',
     onUpdate: ({ editor }) => {
       const descriptionData = editor.getHTML();
       setValue('description', descriptionData, { shouldValidate: true });
