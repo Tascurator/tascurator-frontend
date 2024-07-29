@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import {
   Drawer,
   DrawerClose,
@@ -23,6 +22,10 @@ import {
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { LoadingSpinner } from '../loadingSpinner';
 import { toast } from '../use-toast';
+import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
 
 const { SHAREHOUSE_NAME, CATEGORY_NAME } = INPUT_TEXTS;
 
@@ -31,6 +34,7 @@ interface INameEditionDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
   type: 'sharehouse' | 'category';
+  id?: string;
 }
 
 type FormSchema = TShareHouseNameSchema | TCategoryNameSchema;
@@ -51,7 +55,6 @@ const getSchema = (type: 'sharehouse' | 'category') => {
  *
  * @example
  * const [open, setOpen] = useState(false);
- *
  * // To edit the sharehouse name
  * <NameEditionDrawer
  *  name={'sample name'}
@@ -74,8 +77,9 @@ export const NameEditionDrawer = ({
   open,
   setOpen,
   type,
+  id,
 }: INameEditionDrawer) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const path = usePathname();
   const isSharehouse = type === 'sharehouse';
   const schema = getSchema(type);
 
@@ -90,7 +94,7 @@ export const NameEditionDrawer = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
     trigger,
   } = formControls;
 
@@ -102,36 +106,61 @@ export const NameEditionDrawer = ({
     }
   };
 
-  // TODO: Implement the onSubmit click functionality
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
-    setIsLoading(true);
-    setOpen(true);
-
-    // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Update the name based on the id
-    if (name) {
-      setIsLoading(false);
+    try {
+      if (!id) {
+        throw new Error('Id is required');
+      }
+
+      if (isSharehouse) {
+        const resSharehouse = await api.sharehouse[':shareHouseId'].$patch({
+          param: {
+            shareHouseId: id,
+          },
+          json: {
+            name: data.name,
+          },
+        });
+        const sharehouseData = await resSharehouse.json();
+        if ('error' in sharehouseData) {
+          throw new Error(sharehouseData.error);
+        }
+      } else {
+        const resCategory = await api.category[':categoryId'].$patch({
+          param: {
+            categoryId: id,
+          },
+          json: {
+            name: data.name,
+          },
+        });
+        const categoryData = await resCategory.json();
+        if ('error' in categoryData) {
+          throw new Error(categoryData.error);
+        }
+      }
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
-      console.log('Updating the name:', data);
+      revalidatePage(path);
       setOpen(false);
-    } else {
-      setIsLoading(false);
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerTrigger />
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>

@@ -65,6 +65,7 @@ export const LandlordDashboard = ({
         open={openEdit}
         setOpen={setOpenEdit}
         type={'sharehouse'}
+        id={shareHouseId}
       />
 
       <DeleteConfirmationDrawer
