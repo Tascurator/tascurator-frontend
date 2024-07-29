@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
-import { TenantInvitationDrawer } from './drawers/TenantInvitationDrawer';
+import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantInvitationDrawer';
 import { CategoryCreationDrawer } from './drawers/CategoryCreationDrawer';
 
 interface IHeaderTitleButtonProps {

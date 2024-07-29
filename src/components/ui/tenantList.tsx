@@ -9,7 +9,7 @@ import {
   DropdownMenuItemWithIcon,
 } from '@/components/ui/dropdown-menu';
 
-import { TenantInvitationDrawer } from '@/components/ui/drawers/TenantInvitationDrawer';
+import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantInvitationDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
