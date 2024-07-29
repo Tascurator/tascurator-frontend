@@ -65,9 +65,12 @@ export const LandlordDashboard = ({
         open={openEdit}
         setOpen={setOpenEdit}
         type={'sharehouse'}
+        id={shareHouseId}
       />
 
       <DeleteConfirmationDrawer
+        id={shareHouseId}
+        idType={'sharehouse'}
         deleteItem={shareHouseName}
         open={openDelete}
         setOpen={setOpenDelete}

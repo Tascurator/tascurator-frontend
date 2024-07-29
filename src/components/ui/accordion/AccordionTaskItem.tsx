@@ -149,6 +149,7 @@ export const AccordionTaskItem = ({
         title={title}
         open={isDrawerOpen && userAction === 'delete'}
         setOpen={setIsDrawerOpen}
+        taskId={id}
       />
     </div>
   );

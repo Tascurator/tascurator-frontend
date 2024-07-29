@@ -24,8 +24,13 @@ import { INPUT_TEXTS } from '@/constants/input-texts';
 import { TaskDescriptionEditor } from '@/components/ui/drawers/task-description/TaskDescriptionEditor';
 import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-description/TaskDescriptionRenderer';
 import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
-import { toast } from '../use-toast';
-import { LoadingSpinner } from '../loadingSpinner';
+import { toast } from '@/components/ui/use-toast';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
+
+import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -164,9 +169,11 @@ const ConfirmTaskDrawer = ({
   const {
     handleSubmit,
     watch,
-    formState: { isValid },
+    formState: { isSubmitting },
+    reset,
   } = formControls;
-  const [isLoading, setIsLoading] = useState(false);
+
+  const path = usePathname();
 
   // for determining if the form data has been changed
   const initialValues = {
@@ -191,52 +198,81 @@ const ConfirmTaskDrawer = ({
   const onSubmit: SubmitHandler<
     TTaskCreationSchema | TTaskUpdateSchema
   > = async (data) => {
-    setIsLoading(true);
-    setOpen(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // For edit an existing task
+      if (type === 'edit') {
+        // if no change for both title and description, return without doing anything
+        if (!isTitleChanged && !isDescriptionChanged) {
+          setOpen(false);
+          return;
+        }
+        // if no change, delete the title from the data object
+        if (!isTitleChanged) {
+          delete data.title;
+        }
+        // if no change, delete the description from the data object
+        if (!isDescriptionChanged) {
+          delete data.description;
+        }
 
-    // Update or create the task based on the taskId
-    if (isValid) {
-      // if no change, delete the title from the data object
-      if (type === 'edit' && !isTitleChanged) {
-        delete data.title;
+        // check if task has id
+        if (task?.id) {
+          const resEditData = await api.task[':taskId'].$patch({
+            param: {
+              taskId: task.id,
+            },
+            json: {
+              title: data.title,
+              description: data.description,
+            },
+          });
+          const editData = await resEditData.json();
+          if ('error' in editData) {
+            throw new Error(editData.error);
+          }
+        }
+      } else {
+        // For creation a new task
+        const creationData = data as TTaskCreationSchema; // To make the type explicit for submit data type
+        const resNewData = await api.task.$post({
+          json: {
+            categoryId: category.id,
+            title: creationData.title,
+            description: creationData.description,
+          },
+        });
+        const newData = await resNewData.json();
+        if ('error' in newData) {
+          throw new Error(newData.error);
+        }
       }
-      // if no change, delete the description from the data object
-      if (type === 'edit' && !isDescriptionChanged) {
-        delete data.description;
-      }
 
-      // if no change for both title and description, return without doing anything
-      if (type === 'edit' && !isTitleChanged && !isDescriptionChanged) {
-        setIsLoading(false);
-        setOpen(false);
-        return;
-      }
-
-      console.log('Updating the task:', data);
-
-      setIsLoading(false);
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
+      revalidatePage(path);
       setOpen(false);
-    } else {
-      setIsLoading(false);
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
-      console.log('Creating a new task:', data);
+      if (type === 'creation') {
+        reset();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <LoadingSpinner isLoading={isSubmitting} />
       <Drawer
-        modal={!isLoading}
+        modal={!isSubmitting}
         open={open}
         onOpenChange={(state) => {
           // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit

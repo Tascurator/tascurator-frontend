@@ -18,6 +18,7 @@ import type { ITenant } from '@/types/commons';
 const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
 
 interface ITenantListItemProps {
+  shareHouseId: string;
   tenant: ITenant;
 }
 
@@ -36,7 +37,7 @@ interface ITenantListItemProps {
  * <TenantListItem tenant={tenant} />
  * ```
  */
-const TenantListItem = ({ tenant }: ITenantListItemProps) => {
+const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -79,11 +80,14 @@ const TenantListItem = ({ tenant }: ITenantListItemProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         <TenantInvitationDrawer
+          shareHouseId={shareHouseId}
           tenant={tenant}
           open={openEdit}
           setOpen={setOpenEdit}
         />
         <DeleteConfirmationDrawer
+          id={tenant.id}
+          idType={'tenant'}
           deleteItem={tenant.name}
           open={openDelete}
           setOpen={setOpenDelete}

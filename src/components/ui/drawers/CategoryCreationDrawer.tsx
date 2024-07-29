@@ -33,6 +33,11 @@ import { TaskDescriptionRenderer } from '@/components/ui/drawers/task-descriptio
 import { toast } from '../use-toast';
 import { LoadingSpinner } from '../loadingSpinner';
 
+import { api } from '@/lib/hono';
+import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { revalidatePage } from '@/actions/revalidation';
+import { usePathname } from 'next/navigation';
+
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
 // Configure the Tiptap editor extensions
@@ -89,7 +94,7 @@ const EditTaskDrawer = ({
 
   const handleSaveClick = async () => {
     // Check if all the fields are valid
-    const isValid = await trigger(['category', 'title', 'description']);
+    const isValid = await trigger(['name', 'task.title', 'task.description']);
 
     // Open the confirmation drawer if all the fields are valid
     if (isValid) {
@@ -109,20 +114,20 @@ const EditTaskDrawer = ({
           <div className={'overflow-y-auto pb-1'}>
             {/* Category input field */}
             <Input
-              {...register('category')}
-              variant={errors.category ? 'destructive' : 'default'}
+              {...register('name')}
+              variant={errors.name ? 'destructive' : 'default'}
               type="text"
               placeholder={CATEGORY_NAME.placeholder}
               label={CATEGORY_NAME.label}
             />
-            {errors.category?.message && (
-              <FormMessage message={errors.category.message} />
+            {errors.name?.message && (
+              <FormMessage message={errors.name.message} />
             )}
 
             {/* Task title input field */}
             <Input
-              {...register('title')}
-              variant={errors.title ? 'destructive' : 'default'}
+              {...register('task.title')}
+              variant={errors.task?.title ? 'destructive' : 'default'}
               type="text"
               placeholder={TASK_TITLE.placeholder}
               label={TASK_TITLE.label}
@@ -130,8 +135,8 @@ const EditTaskDrawer = ({
                 label: 'mt-4',
               }}
             />
-            {errors.title?.message && (
-              <FormMessage message={errors.title.message} />
+            {errors.task?.title?.message && (
+              <FormMessage message={errors.task.title.message} />
             )}
 
             {/* Task description input field */}
@@ -139,18 +144,18 @@ const EditTaskDrawer = ({
             <div
               className={cn(
                 'group w-full flex flex-col mt-1.5 rounded-xl border border-slate-400 bg-background ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
-                errors.description
+                errors.task?.description
                   ? 'border-destructive focus-within:ring-destructive'
                   : 'border-input focus-within:ring-ring',
               )}
             >
               <TaskDescriptionEditor
-                taskDescription={getValues('description') || ''}
+                taskDescription={getValues('task.description') || ''}
                 formControls={formControls}
               />
             </div>
-            {errors.description?.message && (
-              <FormMessage message={errors.description.message} />
+            {errors.task?.description?.message && (
+              <FormMessage message={errors.task.description.message} />
             )}
           </div>
         </DrawerDescription>
@@ -179,6 +184,7 @@ interface ICategoryCreationConfirmationDrawer {
   setOpen: (value: boolean) => void;
   formControls: UseFormReturn<TCategoryCreationSchema>;
   closeConfirmationDrawer: () => void;
+  shareHouseId: string;
 }
 
 /**
@@ -189,41 +195,58 @@ const ConfirmTaskDrawer = ({
   setOpen,
   formControls,
   closeConfirmationDrawer,
+  shareHouseId,
 }: ICategoryCreationConfirmationDrawer) => {
-  const { handleSubmit, watch } = formControls;
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    handleSubmit,
+    watch,
+    formState: { isSubmitting },
+    reset,
+  } = formControls;
+  const path = usePathname();
 
   const onSubmit: SubmitHandler<TCategoryCreationSchema> = async (data) => {
-    setIsLoading(true);
-    setOpen(true);
-
-    // Submit the form data
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    //TODO: create the category and task
-    if (data) {
-      setIsLoading(false);
+    try {
+      const res = await api.category[':shareHouseId'].$post({
+        param: {
+          shareHouseId: shareHouseId,
+        },
+        json: {
+          name: data.name,
+          task: {
+            title: data.task.title,
+            description: data.task.description,
+          },
+        },
+      });
+      const newData = await res.json();
+      if ('error' in newData) {
+        throw new Error(newData.error);
+      }
       toast({
         variant: 'default',
-        description: 'Updated successfully!',
+        description: TOAST_TEXTS.success,
       });
-      console.log('Updating the task:', data);
+      revalidatePage(path);
       setOpen(false);
-    } else {
-      setIsLoading(false);
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
-      console.log('Creating a new task:', data);
+      reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
+      <LoadingSpinner isLoading={isSubmitting} />
       <Drawer
-        modal={!isLoading}
+        modal={!isSubmitting}
         open={open}
         onOpenChange={(state) => {
           // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit
@@ -244,7 +267,7 @@ const ConfirmTaskDrawer = ({
         <DrawerTrigger />
         <DrawerContent className={'h-[90%]'} asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerTitle>{watch('title')}</DrawerTitle>
+            <DrawerTitle>{watch('task.title')}</DrawerTitle>
             <DrawerDescription className={'flex-1'} asChild>
               <div>
                 <div
@@ -252,7 +275,7 @@ const ConfirmTaskDrawer = ({
                     'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
                   }
                 >
-                  {watch('category')}
+                  {watch('name')}
                 </div>
                 <TaskDescriptionRenderer formControls={formControls} />
               </div>
@@ -280,6 +303,7 @@ const ConfirmTaskDrawer = ({
 interface ICategoryCreationDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
+  shareHouseId: string;
 }
 
 /**
@@ -295,12 +319,13 @@ interface ICategoryCreationDrawer {
  * const [open, setOpen] = useState(false);
  *
  * // To create a new category
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'categoryCreation'}/>
+ * <CategoryCreationDrawer open={open} setOpen={setOpen} type={'categoryCreation'}/>
  *
  */
 export const CategoryCreationDrawer = ({
   open,
   setOpen,
+  shareHouseId,
 }: ICategoryCreationDrawer) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
 
@@ -308,9 +333,11 @@ export const CategoryCreationDrawer = ({
     resolver: zodResolver(categoryCreationSchema),
     mode: 'all', // Trigger validation on both blur and change events
     defaultValues: {
-      category: '',
-      title: '',
-      description: '',
+      name: '',
+      task: {
+        title: '',
+        description: '',
+      },
     },
   });
 
@@ -338,6 +365,7 @@ export const CategoryCreationDrawer = ({
         setOpen={setConfirmationOpen}
         formControls={formControls}
         closeConfirmationDrawer={closeConfirmationDrawer}
+        shareHouseId={shareHouseId}
       />
     </>
   );

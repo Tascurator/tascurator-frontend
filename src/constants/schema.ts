@@ -48,9 +48,8 @@ const taskDescriptionLengthMaxValidate = (description: string) => {
 /**
  * The schema for the category creation or update form
  */
-
 export const categoryCreationSchema = z.object({
-  category: z
+  name: z
     .string()
     .min(
       CATEGORY_NAME_MIN_LENGTH,
@@ -60,20 +59,22 @@ export const categoryCreationSchema = z.object({
       CATEGORY_NAME_MAX_LENGTH,
       maxLength('Category', CATEGORY_NAME_MAX_LENGTH),
     ),
-  title: z
-    .string()
-    .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
-    .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  description: z
-    .string()
-    .refine(
-      taskDescriptionLengthMinValidate,
-      minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-    )
-    .refine(
-      taskDescriptionLengthMaxValidate,
-      maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-    ),
+  task: z.object({
+    title: z
+      .string()
+      .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+      .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
+    description: z
+      .string()
+      .refine(
+        taskDescriptionLengthMinValidate,
+        minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+      )
+      .refine(
+        taskDescriptionLengthMaxValidate,
+        maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+      ),
+  }),
 });
 
 /**
@@ -194,7 +195,9 @@ export const rotationCycleUpdateSchema = z.object({
 
 export const loginSchema = z.object({
   email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
-  password: z.string(),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH)),
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;

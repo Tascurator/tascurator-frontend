@@ -14,7 +14,7 @@ export const TaskDescriptionRenderer = ({ formControls }: ITaskDescription) => {
 
   const editor = useEditor({
     extensions: editorExtensions,
-    content: getValues('description') || '',
+    content: getValues('task.description') || '',
     editable: false,
   });
 
