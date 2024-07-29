@@ -39,7 +39,7 @@ export interface ITenant {
  * The object structure for share house data
  */
 export interface ICardContentProps {
-  id?: string | null;
+  id?: string | undefined;
   name: string | null;
   maxTasks?: number | null;
   completedTasks?: number | null;
