@@ -20,7 +20,7 @@ export const LandlordDashboardTabContent = ({
   startDate,
   endDate,
   progressPercent,
-  cardContents = [],
+  cardContents,
   shareHouseId,
 }: ILandlordDashboardTabContentProps) => {
   const renderCardContent = (

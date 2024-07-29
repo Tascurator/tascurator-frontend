@@ -38,8 +38,6 @@ const ShareHousePage = async ({
     return <div>{data.error}</div>;
   }
 
-  console.log('data', data);
-
   const formatDate = (date: string) => {
     const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
       year: 'numeric',
@@ -60,7 +58,7 @@ const ShareHousePage = async ({
           progressPercent={data.current.progressRate as number}
           startDate={formatDate(data.current.startDate)}
           endDate={formatDate(data.current.endDate)}
-          cardContents={data.current.categories}
+          cardContents={data.current.categories as ICardContentProps[]}
           shareHouseId={share_house_id}
         />
         <LandlordDashboardTabContent
@@ -68,7 +66,7 @@ const ShareHousePage = async ({
           progressPercent={0}
           startDate={formatDate(data.next.startDate)}
           endDate={formatDate(data.next.endDate)}
-          cardContents={data.next.categories}
+          cardContents={data.next.categories as ICardContentProps[]}
           shareHouseId={share_house_id}
         />
       </DashboardTabsManager>
