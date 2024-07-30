@@ -14,6 +14,9 @@ interface ISetupNameEditionDrawer {
   id?: string;
 }
 
+/**
+ * A drawer component to edit the name of a share house or a category for the setup page
+ */
 export const SetupNameEditionDrawer = ({
   name,
   open,

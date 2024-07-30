@@ -13,6 +13,9 @@ interface ISetupTenantInvitationDrawer {
   setOpen: (open: boolean) => void;
 }
 
+/**
+ * A drawer component to invite a tenant to a share house for the setup page
+ */
 export const SetupTenantInvitationDrawer = ({
   tenant,
   open,

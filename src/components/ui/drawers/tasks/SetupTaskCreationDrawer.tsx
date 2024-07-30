@@ -16,38 +16,7 @@ interface ISetupTaskCreationDrawer {
 }
 
 /**
- * A drawer component to create a new task or edit an existing task
- *
- * If task is passed, the drawer will be in edit mode.
- * Otherwise, the drawer will be in create mode.
- *
- * @param category - The category object to which the task belongs
- * @param task - The task object to be edited
- * @param editOpen - The state of the drawer
- * @param setEditOpen - The function to set the state of the drawer
- *
- * @example
- * const [editOpen, setEditOpen] = useState(false);
- *
- * // To create a new task
- * const category = {
- * id: '1'
- * title: 'Kitchen',
- * };
- * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} category={category}/>
- *
- * // To edit an existing task
- * const category = {
- * id: '1'
- * title: 'Kitchen',
- * };
- *
- * const task = {
- *  id: '1',
- *  title: 'Clean the kitchen',
- *  description: 'Clean the kitchen and make it shine.',
- * };
- * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} task={task} category={category} />
+ * A drawer component to create or edit a task for the setup page
  */
 export const SetupTaskCreationDrawer = ({
   category,

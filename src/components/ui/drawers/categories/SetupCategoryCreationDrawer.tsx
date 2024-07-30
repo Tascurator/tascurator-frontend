@@ -13,6 +13,9 @@ interface ISetupCategoryCreationDrawer {
   shareHouseId: string;
 }
 
+/**
+ * A drawer component to create a category for the setup page
+ */
 export const SetupCategoryCreationDrawer = ({
   shareHouseId,
   editOpen,

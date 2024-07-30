@@ -9,6 +9,9 @@ interface ISetupDeleteConfirmationDrawerProps {
   setOpen: (open: boolean) => void;
 }
 
+/**
+ * A drawer component to delete an item (share house, category, or tenant) for the setup page
+ */
 export const SetupDeleteConfirmationDrawer = ({
   id,
   idType,

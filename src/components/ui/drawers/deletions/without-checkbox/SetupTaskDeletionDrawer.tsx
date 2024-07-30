@@ -8,6 +8,9 @@ interface ISetupTaskDeletionDrawerProps {
   taskId: string;
 }
 
+/**
+ * A drawer component to delete a task for the setup page
+ */
 export const SetupTaskDeletionDrawer = ({
   title,
   open,
