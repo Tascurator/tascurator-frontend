@@ -52,7 +52,7 @@ interface ICategoryDrawerContent {
   onSubmit: SubmitHandler<TCategoryCreationSchema>;
 }
 
-export const CategoryDrawerContent = ({
+export const CategoryCreationDrawerContent = ({
   editOpen,
   setEditOpen,
   confirmOpen,

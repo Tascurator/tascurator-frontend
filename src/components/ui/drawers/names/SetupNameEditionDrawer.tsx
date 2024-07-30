@@ -1,9 +1,9 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   getNameEditionDrawerSchema,
-  NameDrawerContent,
+  NameEditionDrawerContent,
   TNameEditionDrawerSchema,
-} from '@/components/ui/drawers/names/NameDrawerContent';
+} from '@/components/ui/drawers/names/NameEditionDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ISetupNameEditionDrawer {
@@ -38,7 +38,7 @@ export const SetupNameEditionDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <NameDrawerContent
+      <NameEditionDrawerContent
         type={type}
         open={open}
         setOpen={setOpen}

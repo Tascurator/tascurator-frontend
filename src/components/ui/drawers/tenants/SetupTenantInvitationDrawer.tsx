@@ -4,7 +4,7 @@ import {
   tenantInvitationSchema,
   TTenantInvitationSchema,
 } from '@/constants/schema';
-import { TenantDrawerContent } from '@/components/ui/drawers/tenants/TenantDrawerContent';
+import { TenantInvitationDrawerContent } from '@/components/ui/drawers/tenants/TenantInvitationDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 interface ISetupTenantInvitationDrawer {
@@ -31,7 +31,7 @@ export const SetupTenantInvitationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <TenantDrawerContent
+      <TenantInvitationDrawerContent
         tenant={tenant}
         emailEditable={true}
         open={open}

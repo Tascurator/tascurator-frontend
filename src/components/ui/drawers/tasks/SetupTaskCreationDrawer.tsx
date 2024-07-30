@@ -3,9 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
 import {
-  TaskDrawerContent,
+  TaskCreationDrawerContent,
   TTaskSchema,
-} from '@/components/ui/drawers/tasks/TaskDrawerContent';
+} from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useState } from 'react';
 
 interface ISetupTaskCreationDrawer {
@@ -74,7 +74,7 @@ export const SetupTaskCreationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <TaskDrawerContent
+      <TaskCreationDrawerContent
         category={category}
         editOpen={editOpen}
         setEditOpen={setEditOpen}

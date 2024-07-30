@@ -7,9 +7,9 @@ import { usePathname } from 'next/navigation';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import {
   getNameEditionDrawerSchema,
-  NameDrawerContent,
+  NameEditionDrawerContent,
   TNameEditionDrawerSchema,
-} from '@/components/ui/drawers/names/NameDrawerContent';
+} from '@/components/ui/drawers/names/NameEditionDrawerContent';
 
 interface INameEditionDrawer {
   name: string;
@@ -118,7 +118,7 @@ export const NameEditionDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <NameDrawerContent
+      <NameEditionDrawerContent
         type={type}
         open={open}
         setOpen={setOpen}

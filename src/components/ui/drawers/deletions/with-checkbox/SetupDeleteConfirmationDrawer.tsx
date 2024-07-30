@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
-import { DeleteDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteDrawerContent';
+import { DeleteConfirmationDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawerContent';
 
 interface ISetupDeleteConfirmationDrawerProps {
   id: string;
@@ -25,7 +25,7 @@ export const SetupDeleteConfirmationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <DeleteDrawerContent
+      <DeleteConfirmationDrawerContent
         idType={idType}
         deleteItem={deleteItem}
         open={open}

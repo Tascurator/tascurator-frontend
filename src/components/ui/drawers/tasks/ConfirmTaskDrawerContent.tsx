@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import type { ICategoryWithoutTasks } from '@/types/commons';
 import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
-import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 
 interface IConfirmTaskDrawerContentProps {
   category: ICategoryWithoutTasks;

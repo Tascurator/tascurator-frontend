@@ -13,9 +13,9 @@ import { api } from '@/lib/hono';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
 import {
-  TaskDrawerContent,
+  TaskCreationDrawerContent,
   TTaskSchema,
-} from '@/components/ui/drawers/tasks/TaskDrawerContent';
+} from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useState } from 'react';
 
 interface ITaskCreationDrawer {
@@ -157,7 +157,7 @@ export const TaskCreationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <TaskDrawerContent
+      <TaskCreationDrawerContent
         category={category}
         editOpen={editOpen}
         setEditOpen={setEditOpen}

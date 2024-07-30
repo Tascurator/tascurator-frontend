@@ -9,7 +9,7 @@ import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
-import { CategoryDrawerContent } from '@/components/ui/drawers/categories/CategoryDrawerContent';
+import { CategoryCreationDrawerContent } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
 import { useState } from 'react';
 
 interface ICategoryCreationDrawer {
@@ -97,7 +97,7 @@ export const CategoryCreationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <CategoryDrawerContent
+      <CategoryCreationDrawerContent
         editOpen={editOpen}
         setEditOpen={setEditOpen}
         confirmOpen={confirmOpen}

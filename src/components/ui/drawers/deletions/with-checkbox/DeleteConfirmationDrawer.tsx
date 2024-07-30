@@ -4,7 +4,7 @@ import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
-import { DeleteDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteDrawerContent';
+import { DeleteConfirmationDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawerContent';
 
 interface IDeleteConfirmationDrawerProps {
   id: string;
@@ -110,7 +110,7 @@ export const DeleteConfirmationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <DeleteDrawerContent
+      <DeleteConfirmationDrawerContent
         idType={idType}
         deleteItem={deleteItem}
         open={open}

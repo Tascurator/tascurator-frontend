@@ -8,7 +8,7 @@ import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
-import { TenantDrawerContent } from '@/components/ui/drawers/tenants/TenantDrawerContent';
+import { TenantInvitationDrawerContent } from '@/components/ui/drawers/tenants/TenantInvitationDrawerContent';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -87,7 +87,7 @@ export const TenantInvitationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <TenantDrawerContent
+      <TenantInvitationDrawerContent
         tenant={tenant}
         open={open}
         setOpen={setOpen}

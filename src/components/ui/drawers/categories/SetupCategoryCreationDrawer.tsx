@@ -4,7 +4,7 @@ import {
   categoryCreationSchema,
   TCategoryCreationSchema,
 } from '@/constants/schema';
-import { CategoryDrawerContent } from '@/components/ui/drawers/categories/CategoryDrawerContent';
+import { CategoryCreationDrawerContent } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
 import { useState } from 'react';
 
 interface ISetupCategoryCreationDrawer {
@@ -39,7 +39,7 @@ export const SetupCategoryCreationDrawer = ({
 
   return (
     <FormProvider {...formControls}>
-      <CategoryDrawerContent
+      <CategoryCreationDrawerContent
         editOpen={editOpen}
         setEditOpen={setEditOpen}
         confirmOpen={confirmOpen}

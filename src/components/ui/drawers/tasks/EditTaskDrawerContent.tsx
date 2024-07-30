@@ -12,7 +12,7 @@ import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
 import { useFormContext } from 'react-hook-form';
 import { type ICategoryWithoutTasks, ITask } from '@/types/commons';
 import { INPUT_TEXTS } from '@/constants/input-texts';
-import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 

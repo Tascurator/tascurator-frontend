@@ -16,7 +16,7 @@ interface IDeleteDrawerContentProps {
   onSubmit: () => void;
 }
 
-export const DeleteDrawerContent = ({
+export const DeleteConfirmationDrawerContent = ({
   idType,
   deleteItem,
   open,

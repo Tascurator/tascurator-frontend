@@ -22,7 +22,7 @@ interface ITenantDrawerContentProps {
   onSubmit: SubmitHandler<TTenantInvitationSchema>;
 }
 
-export const TenantDrawerContent = ({
+export const TenantInvitationDrawerContent = ({
   tenant,
   emailEditable = false,
   open,

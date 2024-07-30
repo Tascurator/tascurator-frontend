@@ -35,7 +35,7 @@ interface INameDrawerContentProps {
   onSubmit: SubmitHandler<TNameEditionDrawerSchema>;
 }
 
-export const NameDrawerContent = ({
+export const NameEditionDrawerContent = ({
   type,
   open,
   setOpen,

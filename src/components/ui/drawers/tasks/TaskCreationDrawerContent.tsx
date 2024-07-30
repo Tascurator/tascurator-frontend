@@ -16,7 +16,7 @@ interface ITaskDrawerContent {
   onSubmit: SubmitHandler<TTaskSchema>;
 }
 
-export const TaskDrawerContent = ({
+export const TaskCreationDrawerContent = ({
   category,
   task,
   editOpen,

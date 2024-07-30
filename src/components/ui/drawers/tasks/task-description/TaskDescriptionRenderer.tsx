@@ -1,6 +1,6 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-import { editorExtensions } from '@/components/ui/drawers/categories/CategoryDrawerContent';
-import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import { editorExtensions } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
+import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useFormContext } from 'react-hook-form';
 
 // Difference between TaskDescriptionRendererForCategory.tsx and TaskDescriptionEditor.tsx is only the schema type used
