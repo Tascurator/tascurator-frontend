@@ -24,7 +24,10 @@ export const TaskDescriptionEditor = ({
     content: taskDescription ?? '',
     onUpdate: ({ editor }) => {
       const descriptionData = editor.getHTML();
-      setValue('description', descriptionData, { shouldValidate: true });
+      setValue('description', descriptionData, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     },
   });
 

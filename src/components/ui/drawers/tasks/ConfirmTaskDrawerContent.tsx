@@ -23,7 +23,7 @@ export const ConfirmTaskDrawerContent = ({
 }: IConfirmTaskDrawerContentProps) => {
   const {
     watch,
-    formState: { dirtyFields },
+    formState: { isDirty },
   } = useFormContext<TTaskSchema>();
 
   return (
@@ -67,11 +67,7 @@ export const ConfirmTaskDrawerContent = ({
         >
           Cancel
         </Button>
-        <Button
-          type={'submit'}
-          className={'flex-1'}
-          disabled={!dirtyFields.title && !dirtyFields.description}
-        >
+        <Button type={'submit'} className={'flex-1'} disabled={!isDirty}>
           Publish
         </Button>
       </DrawerFooter>
