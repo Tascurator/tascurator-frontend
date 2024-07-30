@@ -16,6 +16,31 @@ import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 
+interface IShareHouseWithOtherTables {
+  RotationAssignment: {
+    categories: {
+      tasks: {
+        id: string;
+        title: string;
+        description: string;
+        createdAt: Date;
+      }[];
+      id: string;
+      name: string;
+      createdAt: Date;
+    }[];
+    tenantPlaceholders: {
+      tenant: {
+        id: string;
+        name: string;
+        email: string;
+        createdAt: Date;
+      } | null;
+    }[];
+    rotationCycle: number;
+  } | null;
+}
+
 const app = new Hono()
 
   /**
@@ -26,33 +51,43 @@ const app = new Hono()
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
-        where: {
-          id: shareHouseId,
-        },
-        include: {
-          RotationAssignment: {
-            include: {
-              tenantPlaceholders: {
-                include: {
-                  tenant: true,
+      const shareHouseWithOtherTables: IShareHouseWithOtherTables | null =
+        await prisma.shareHouse.findUnique({
+          where: {
+            id: shareHouseId,
+          },
+          include: {
+            RotationAssignment: {
+              include: {
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                  orderBy: [
+                    { tenant: { createdAt: 'asc' } },
+                    { tenant: { id: 'asc' } },
+                  ],
                 },
-              },
-              categories: {
-                include: {
-                  tasks: true,
+                categories: {
+                  include: {
+                    tasks: {
+                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                    },
+                  },
+                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
               },
             },
           },
-        },
-      });
+        });
 
       if (!shareHouseWithOtherTables)
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
           404,
         );
+
+      console.log('shareHouseWithOtherTables', shareHouseWithOtherTables);
 
       if (!shareHouseWithOtherTables.RotationAssignment)
         return c.json(
@@ -68,6 +103,7 @@ const app = new Hono()
                 id: tenantPlaceholder.tenant.id,
                 name: tenantPlaceholder.tenant.name,
                 email: tenantPlaceholder.tenant.email,
+                createdAt: tenantPlaceholder.tenant.createdAt,
               };
             }
             return null;
@@ -84,10 +120,14 @@ const app = new Hono()
               id: task.id,
               title: task.title,
               description: task.description,
+              createdAt: task.createdAt,
             })),
+            createdAt: category.createdAt,
           }),
         ),
       };
+
+      console.log('shareHouseData', shareHouseData);
 
       return c.json(shareHouseData);
     } catch (error) {
