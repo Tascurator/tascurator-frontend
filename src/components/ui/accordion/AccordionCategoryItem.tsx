@@ -12,7 +12,7 @@ import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { NameEditionDrawer } from '../drawers/names/NameEditionDrawer';
 import { AccordionTrigger } from '../accordion';
 import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
-import { DeleteConfirmationDrawer } from '../drawers/DeleteConfirmationDrawer';
+import { DeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
 
 /**

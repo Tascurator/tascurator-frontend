@@ -1,25 +1,12 @@
-'use client';
-import { useEffect, useState } from 'react';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useForm } from 'react-hook-form';
-import { LoadingSpinner } from '../loadingSpinner';
-import { toast } from '../use-toast';
+import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from '../../../use-toast';
 import { api } from '@/lib/hono';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
+import { DeleteDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteDrawerContent';
 
-export interface IDeleteConfirmationDrawerProps {
+interface IDeleteConfirmationDrawerProps {
   id: string;
   idType: 'sharehouse' | 'category' | 'tenant';
   deleteItem: string;
@@ -57,22 +44,7 @@ export const DeleteConfirmationDrawer = ({
   setOpen,
 }: IDeleteConfirmationDrawerProps) => {
   const path = usePathname();
-  const [isChecked, setIsChecked] = useState(false);
-  const {
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm();
-
-  const handleCheckboxChange = () => {
-    setIsChecked((prevChecked) => !prevChecked);
-  };
-
-  useEffect(() => {
-    if (!open) {
-      // Reset checkbox state when drawer is closed
-      setIsChecked(false);
-    }
-  }, [open]);
+  const formControls = useForm();
 
   const onSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -137,59 +109,14 @@ export const DeleteConfirmationDrawer = ({
   };
 
   return (
-    <>
-      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
-        <DrawerTrigger />
-        <DrawerContent asChild>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerTitle>
-              {`Delete ${idType === 'sharehouse' ? 'share house' : idType === 'category' ? 'category' : 'tenant'}`}
-            </DrawerTitle>
-            <DrawerDescription asChild>
-              <div className={'mt-8'}>
-                This action cannot be undone. Are you sure you want to proceed
-                with the deletion?
-                <div>
-                  <label
-                    className={
-                      'flex items-center content-start mt-4 gap-3 cursor-pointer'
-                    }
-                  >
-                    <Checkbox
-                      checked={isChecked}
-                      onCheckedChange={handleCheckboxChange}
-                    />
-                    <p className="font-medium">
-                      {`Yes, I want to delete "`}
-                      <span className="text-red-600 px-1">{deleteItem}</span>
-                      {`".`}
-                    </p>
-                  </label>
-                </div>
-              </div>
-            </DrawerDescription>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button
-                  type={'button'}
-                  variant={'outline'}
-                  className={'flex-1'}
-                >
-                  Cancel
-                </Button>
-              </DrawerClose>
-              <Button
-                variant="destructive"
-                disabled={!isChecked}
-                className={'flex-1'}
-              >
-                Delete
-              </Button>
-            </DrawerFooter>
-          </form>
-        </DrawerContent>
-      </Drawer>
-    </>
+    <FormProvider {...formControls}>
+      <DeleteDrawerContent
+        idType={idType}
+        deleteItem={deleteItem}
+        open={open}
+        setOpen={setOpen}
+        onSubmit={onSubmit}
+      />
+    </FormProvider>
   );
 };
