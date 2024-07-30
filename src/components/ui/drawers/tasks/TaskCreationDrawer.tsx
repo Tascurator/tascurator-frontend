@@ -12,13 +12,17 @@ import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { api } from '@/lib/hono';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
-import { TaskDrawerContent } from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import {
+  TaskDrawerContent,
+  TTaskSchema,
+} from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import { useState } from 'react';
 
 interface ITaskCreationDrawer {
   task?: ITask;
   category: ICategoryWithoutTasks;
-  open: boolean;
-  setOpen: (value: boolean) => void;
+  editOpen: boolean;
+  setEditOpen: (value: boolean) => void;
 }
 
 /**
@@ -29,8 +33,8 @@ interface ITaskCreationDrawer {
  *
  * @param category - The category object to which the task belongs
  * @param task - The task object to be edited
- * @param open - The state of the drawer
- * @param setOpen - The function to set the state of the drawer
+ * @param editOpen - The state of the drawer
+ * @param setEditOpen - The function to set the state of the drawer
  *
  * @example
  * const [open, setOpen] = useState(false);
@@ -40,7 +44,7 @@ interface ITaskCreationDrawer {
  * id: '1'
  * title: 'Kitchen',
  * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'creation'} category={category}/>
+ * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} category={category}/>
  *
  * // To edit an existing task
  * const category = {
@@ -53,15 +57,17 @@ interface ITaskCreationDrawer {
  *  title: 'Clean the kitchen',
  *  description: 'Clean the kitchen and make it shine.',
  * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} task={task} category={category} type={'edit'}/>
+ * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} task={task} category={category}/>
  */
 export const TaskCreationDrawer = ({
   category,
   task,
-  open,
-  setOpen,
+  editOpen,
+  setEditOpen,
 }: ITaskCreationDrawer) => {
   const path = usePathname();
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const formControls = useForm<TTaskCreationSchema | TTaskUpdateSchema>({
     resolver: zodResolver(task ? taskUpdateSchema : taskCreationSchema),
@@ -78,9 +84,7 @@ export const TaskCreationDrawer = ({
     formState: { dirtyFields },
   } = formControls;
 
-  const onSubmit: SubmitHandler<
-    TTaskCreationSchema | TTaskUpdateSchema
-  > = async (data) => {
+  const onSubmit: SubmitHandler<TTaskSchema> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
@@ -88,7 +92,7 @@ export const TaskCreationDrawer = ({
       if (task) {
         // if no change for both title and description, return without doing anything
         if (!dirtyFields.title && !dirtyFields.description) {
-          setOpen(false);
+          setConfirmOpen(false);
           return;
         }
         // if no change, delete the title from the data object
@@ -137,7 +141,7 @@ export const TaskCreationDrawer = ({
         description: TOAST_TEXTS.success,
       });
       revalidatePage(path);
-      setOpen(false);
+      setConfirmOpen(false);
       if (!task) {
         reset();
       }
@@ -155,8 +159,10 @@ export const TaskCreationDrawer = ({
     <FormProvider {...formControls}>
       <TaskDrawerContent
         category={category}
-        open={open}
-        setOpen={setOpen}
+        editOpen={editOpen}
+        setEditOpen={setEditOpen}
+        confirmOpen={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
         onSubmit={onSubmit}
       />
     </FormProvider>

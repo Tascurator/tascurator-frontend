@@ -19,16 +19,16 @@ const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 interface ITaskDrawerContent {
   category: ICategoryWithoutTasks;
   task?: ITask;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  editOpen: boolean;
+  setEditOpen: (open: boolean) => void;
   openConfirmationDrawer: () => void;
 }
 
 export const EditTaskDrawerContent = ({
   category,
   task,
-  open,
-  setOpen,
+  editOpen,
+  setEditOpen,
   openConfirmationDrawer,
 }: ITaskDrawerContent) => {
   const {
@@ -51,14 +51,13 @@ export const EditTaskDrawerContent = ({
   return (
     <CommonDrawer
       title={task?.id ? 'Edit task' : 'Create task'}
-      open={open}
-      setOpen={setOpen}
+      open={editOpen}
+      setOpen={setEditOpen}
       className={'h-[90%]'}
       onSubmit={null}
     >
       <DrawerDescription
         className={'flex-1 flex flex-col items-start overflow-y-auto pb-1'}
-        asChild
       >
         {/* Category input field */}
         <Input

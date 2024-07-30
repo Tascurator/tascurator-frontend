@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { TTaskCreationSchema, TTaskUpdateSchema } from '@/constants/schema';
 import type { ICategoryWithoutTasks, ITask } from '@/types/commons';
@@ -10,28 +9,30 @@ export type TTaskSchema = TTaskCreationSchema | TTaskUpdateSchema;
 interface ITaskDrawerContent {
   task?: ITask;
   category: ICategoryWithoutTasks;
-  open: boolean;
-  setOpen: (value: boolean) => void;
+  editOpen: boolean;
+  setEditOpen: (value: boolean) => void;
+  confirmOpen: boolean;
+  setConfirmOpen: (value: boolean) => void;
   onSubmit: SubmitHandler<TTaskSchema>;
 }
 
 export const TaskDrawerContent = ({
   category,
   task,
-  open,
-  setOpen,
+  editOpen,
+  setEditOpen,
+  confirmOpen,
+  setConfirmOpen,
   onSubmit,
 }: ITaskDrawerContent) => {
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
-
   const openConfirmationDrawer = () => {
-    setOpen(false);
-    setConfirmationOpen(true);
+    setEditOpen(false);
+    setConfirmOpen(true);
   };
 
   const closeConfirmationDrawer = () => {
-    setConfirmationOpen(false);
-    setOpen(true);
+    setConfirmOpen(false);
+    setEditOpen(true);
   };
 
   return (
@@ -39,15 +40,15 @@ export const TaskDrawerContent = ({
       <EditTaskDrawerContent
         category={category}
         task={task}
-        open={open}
-        setOpen={setOpen}
+        editOpen={editOpen}
+        setEditOpen={setEditOpen}
         openConfirmationDrawer={openConfirmationDrawer}
       />
 
       <ConfirmTaskDrawerContent
         category={category}
-        open={confirmationOpen}
-        setOpen={setConfirmationOpen}
+        confirmOpen={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
         closeConfirmationDrawer={closeConfirmationDrawer}
         onSubmit={onSubmit}
       />

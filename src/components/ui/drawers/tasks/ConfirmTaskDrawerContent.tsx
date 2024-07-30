@@ -8,16 +8,16 @@ import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskDrawerContent';
 
 interface IConfirmTaskDrawerContentProps {
   category: ICategoryWithoutTasks;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  confirmOpen: boolean;
+  setConfirmOpen: (open: boolean) => void;
   closeConfirmationDrawer: () => void;
   onSubmit: SubmitHandler<TTaskSchema>;
 }
 
 export const ConfirmTaskDrawerContent = ({
   category,
-  open,
-  setOpen,
+  confirmOpen,
+  setConfirmOpen,
   closeConfirmationDrawer,
   onSubmit,
 }: IConfirmTaskDrawerContentProps) => {
@@ -31,8 +31,8 @@ export const ConfirmTaskDrawerContent = ({
       title={watch('title') ?? ''}
       setOpen={(state) => {
         // Just close the confirmation drawer when the drawer is closed programmatically in onSubmit
-        if (!open && !state) {
-          setOpen(false);
+        if (!confirmOpen && !state) {
+          setConfirmOpen(false);
           return;
         }
 
@@ -42,23 +42,21 @@ export const ConfirmTaskDrawerContent = ({
           return;
         }
 
-        setOpen(true);
+        setConfirmOpen(true);
       }}
-      open={open}
+      open={confirmOpen}
       className={'h-[90%]'}
       onSubmit={onSubmit}
     >
-      <DrawerDescription className={'flex-1'} asChild>
-        <div>
-          <div
-            className={
-              'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
-            }
-          >
-            {category.name}
-          </div>
-          <TaskDescriptionRenderer />
+      <DrawerDescription className={'flex-1'}>
+        <div
+          className={
+            'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
+          }
+        >
+          {category.name}
         </div>
+        <TaskDescriptionRenderer />
       </DrawerDescription>
       <DrawerFooter>
         <Button
@@ -72,7 +70,7 @@ export const ConfirmTaskDrawerContent = ({
         <Button
           type={'submit'}
           className={'flex-1'}
-          disabled={dirtyFields.title || dirtyFields.description}
+          disabled={!dirtyFields.title && !dirtyFields.description}
         >
           Publish
         </Button>

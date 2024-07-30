@@ -1,19 +1,18 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  taskCreationSchema,
-  taskUpdateSchema,
-  TTaskCreationSchema,
-  TTaskUpdateSchema,
-} from '@/constants/schema';
+import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
-import { TaskDrawerContent } from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import {
+  TaskDrawerContent,
+  TTaskSchema,
+} from '@/components/ui/drawers/tasks/TaskDrawerContent';
+import { useState } from 'react';
 
 interface ISetupTaskCreationDrawer {
   task?: ITask;
   category: ICategoryWithoutTasks;
-  open: boolean;
-  setOpen: (value: boolean) => void;
+  editOpen: boolean;
+  setEditOpen: (value: boolean) => void;
 }
 
 /**
@@ -24,18 +23,18 @@ interface ISetupTaskCreationDrawer {
  *
  * @param category - The category object to which the task belongs
  * @param task - The task object to be edited
- * @param open - The state of the drawer
- * @param setOpen - The function to set the state of the drawer
+ * @param editOpen - The state of the drawer
+ * @param setEditOpen - The function to set the state of the drawer
  *
  * @example
- * const [open, setOpen] = useState(false);
+ * const [editOpen, setEditOpen] = useState(false);
  *
  * // To create a new task
  * const category = {
  * id: '1'
  * title: 'Kitchen',
  * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} type={'creation'} category={category}/>
+ * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} category={category}/>
  *
  * // To edit an existing task
  * const category = {
@@ -48,15 +47,17 @@ interface ISetupTaskCreationDrawer {
  *  title: 'Clean the kitchen',
  *  description: 'Clean the kitchen and make it shine.',
  * };
- * <TaskCreationDrawer open={open} setOpen={setOpen} task={task} category={category} type={'edit'}/>
+ * <TaskCreationDrawer editOpen={editOpen} setEditOpen={setEditOpen} task={task} category={category} />
  */
 export const SetupTaskCreationDrawer = ({
   category,
   task,
-  open,
-  setOpen,
+  editOpen,
+  setEditOpen,
 }: ISetupTaskCreationDrawer) => {
-  const formControls = useForm<TTaskCreationSchema | TTaskUpdateSchema>({
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const formControls = useForm<TTaskSchema>({
     resolver: zodResolver(task ? taskUpdateSchema : taskCreationSchema),
     mode: 'onBlur',
     defaultValues: {
@@ -66,9 +67,7 @@ export const SetupTaskCreationDrawer = ({
     },
   });
 
-  const onSubmit: SubmitHandler<TTaskCreationSchema | TTaskUpdateSchema> = (
-    data,
-  ) => {
+  const onSubmit: SubmitHandler<TTaskSchema> = (data) => {
     // Please add the logic to handle the tenant data for a new share house
     console.log(data);
   };
@@ -77,8 +76,10 @@ export const SetupTaskCreationDrawer = ({
     <FormProvider {...formControls}>
       <TaskDrawerContent
         category={category}
-        open={open}
-        setOpen={setOpen}
+        editOpen={editOpen}
+        setEditOpen={setEditOpen}
+        confirmOpen={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
         onSubmit={onSubmit}
       />
     </FormProvider>
