@@ -1,5 +1,5 @@
 import { DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
-import { TaskDescriptionRendererForCategory } from '@/components/ui/drawers/task-description/TaskDescriptionRendererForCategory';
+import { TaskDescriptionRendererForCategory } from '@/components/ui/drawers/tasks/task-description/TaskDescriptionRendererForCategory';
 import { Button } from '@/components/ui/button';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { TCategoryCreationSchema } from '@/constants/schema';
