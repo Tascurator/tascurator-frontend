@@ -107,9 +107,3 @@ export const CategoryCreationDrawer = ({
     </FormProvider>
   );
 };
-
-/**
- * Thank you for today. I sincerely apologize for that I haven't been able to contribute to your project as much as I had told you initially. I should have told you about this earlier, but for the past 2 months, I've been working on a team project for the final project of my school. I had to spend a lot of time to lead the project because every teammate is a beginner in programming. In a result, I couldn't spend much time on your project. I'm really sorry for that.
- *
- * I'm going to finish the project by this weekend. Therefore, I can promise you that I will be able to dedicate most of my time and put all my effort into your project. I again apologize for that I hadn't been able to do so until now and not told you about this earlier.
- */
