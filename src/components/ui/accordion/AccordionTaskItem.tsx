@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDrawer';
-import { TaskDeletionDrawer } from '../drawers/TaskDeletionDrawer';
+import { TaskDeletionDrawer } from '../drawers/deletions/without-checkbox/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { ICategoryWithoutTasks } from '@/types/commons';
 
