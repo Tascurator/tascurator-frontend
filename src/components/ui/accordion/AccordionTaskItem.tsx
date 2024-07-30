@@ -139,8 +139,8 @@ export const AccordionTaskItem = ({
           title,
           description,
         }}
-        open={isDrawerOpen && userAction === 'edit'}
-        setOpen={setIsDrawerOpen}
+        editOpen={isDrawerOpen && userAction === 'edit'}
+        setEditOpen={setIsDrawerOpen}
       />
 
       {/* Task deletion drawer */}

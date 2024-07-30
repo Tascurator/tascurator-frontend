@@ -148,8 +148,8 @@ export const AccordionCategoryItem = ({
       {/* Task create drawer */}
       <TaskCreationDrawer
         category={category}
-        open={isDrawerOpen && userAction === 'add'}
-        setOpen={setIsDrawerOpen}
+        editOpen={isDrawerOpen && userAction === 'add'}
+        setEditOpen={setIsDrawerOpen}
       />
 
       {/* Category deletion drawer */}
