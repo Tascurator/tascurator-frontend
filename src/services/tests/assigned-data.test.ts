@@ -443,6 +443,7 @@ describe('AssignedData class', () => {
         name: 'Tenant 3',
         email: 'tenant_3@tascurator.com',
         extraAssignedCount: 0,
+        createdAt: new Date(),
       };
 
       const categories = sharehouse.RotationAssignment!.categories;
