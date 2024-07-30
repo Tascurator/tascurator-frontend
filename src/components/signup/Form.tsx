@@ -27,12 +27,10 @@ const {
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
     trigger,
     watch,
   } = useForm<TSignupSchema>({
@@ -47,8 +45,6 @@ const Form = () => {
 
   const [conditions, setConditions] = useState({
     length: false,
-    // minLength: false,
-    // maxLength: true,
     uppercase: false,
     lowercase: false,
     specialChar: false,
@@ -99,18 +95,13 @@ const Form = () => {
 
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TSignupSchema) => {
-    setIsLoading(true);
-
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
-        console.log('Form data:', formData);
-
+        console.log('formData', formData);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // await signup(formData);
-
-        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -119,7 +110,7 @@ const Form = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
