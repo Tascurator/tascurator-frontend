@@ -87,8 +87,6 @@ const app = new Hono()
           404,
         );
 
-      console.log('shareHouseWithOtherTables', shareHouseWithOtherTables);
-
       if (!shareHouseWithOtherTables.RotationAssignment)
         return c.json(
           { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
@@ -126,8 +124,6 @@ const app = new Hono()
           }),
         ),
       };
-
-      console.log('shareHouseData', shareHouseData);
 
       return c.json(shareHouseData);
     } catch (error) {
