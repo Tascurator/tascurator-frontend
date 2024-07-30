@@ -8,7 +8,7 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { Ellipsis } from 'lucide-react';
-import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
+import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import Link from 'next/link';

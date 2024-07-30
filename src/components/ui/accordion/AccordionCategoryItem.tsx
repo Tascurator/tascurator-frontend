@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
-import { NameEditionDrawer } from '../drawers/NameEditionDrawer';
+import { NameEditionDrawer } from '../drawers/names/NameEditionDrawer';
 import { AccordionTrigger } from '../accordion';
 import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '../drawers/DeleteConfirmationDrawer';

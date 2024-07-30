@@ -16,7 +16,7 @@ import {
   DropdownMenuItemWithIcon,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
+import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
 import { LogOutDrawer } from '@/components/ui/drawers/LogOutDrawer';
 import { useState } from 'react';
