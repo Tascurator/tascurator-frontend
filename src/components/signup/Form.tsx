@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema, TSignupSchema } from '@/constants/schema';
+import { signup } from '@/actions/signup';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
@@ -93,15 +94,13 @@ const Form = () => {
     },
   ];
 
-  // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TSignupSchema) => {
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
-        console.log('formData', formData);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // await signup(formData);
+        await signup(formData);
       }
     } catch (error) {
       console.error(error);

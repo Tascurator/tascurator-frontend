@@ -1,8 +1,8 @@
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
-import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { getUserByEmail } from '@/utils/prisma-helper';
 
 export default {
   providers: [
@@ -17,9 +17,7 @@ export default {
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
 
-          const user = await prisma.landlord.findUnique({
-            where: { email },
-          });
+          const user = await getUserByEmail(email);
 
           if (!user) return null;
 
