@@ -1,8 +1,12 @@
-import type { NextAuthConfig } from 'next-auth';
+import { type NextAuthConfig, CredentialsSignin } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
 import { getUserByEmail } from '@/utils/prisma-helper';
+import { generateVerificationToken } from '@/utils/tokens';
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = 'email_not_verified';
+}
 
 export default {
   providers: [
@@ -19,7 +23,16 @@ export default {
 
           const user = await getUserByEmail(email);
 
-          if (!user) return null;
+          // If the user does not exist or the email or password is not provided
+          if (!user || !user.email || !user.password) return null;
+
+          if (!user.emailVerified) {
+            const verificationToken = await generateVerificationToken(
+              user.email,
+            );
+            console.log(verificationToken);
+            throw new EmailNotVerifiedError();
+          }
 
           const passwordValid = await bcrypt.compare(password, user.password);
 

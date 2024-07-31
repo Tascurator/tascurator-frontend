@@ -2,7 +2,7 @@
 
 import { signIn } from '@/lib/auth';
 import { TLoginSchema } from '@/constants/schema';
-import { AuthError } from 'next-auth';
+import { AuthError, CredentialsSignin } from 'next-auth';
 
 import { redirect } from 'next/navigation';
 import { AUTH_INDEX_PAGE_REDIRECT } from '@/middleware';
@@ -16,6 +16,14 @@ export const login = async (credentials: TLoginSchema) => {
       redirect: false,
     });
   } catch (error) {
+    if (error instanceof CredentialsSignin) {
+      switch (error.code) {
+        case 'email_not_verified':
+          return { error: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED };
+        default:
+          return { error: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR };
+      }
+    }
     if (error instanceof AuthError) {
       switch (error.type) {
         // This error is thrown when the credentials are invalid.
