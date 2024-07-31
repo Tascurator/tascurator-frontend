@@ -3,7 +3,7 @@
 import { signupSchema, TSignupSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
 import prisma from '@/lib/prisma';
-import { getUserByEmail } from '@/utils/prisma-helper';
+import { getUserByEmail } from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 const { CREDENTIAL_FIELDS_INVALID, EXISTING_EMAIL } = TOAST_ERROR_MESSAGES;

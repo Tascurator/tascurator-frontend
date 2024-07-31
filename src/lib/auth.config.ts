@@ -2,7 +2,7 @@ import { type NextAuthConfig, CredentialsSignin } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
-import { getUserByEmail } from '@/utils/prisma-helper';
+import { getUserByEmail } from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
 class EmailNotVerifiedError extends CredentialsSignin {
   code = 'email_not_verified';
