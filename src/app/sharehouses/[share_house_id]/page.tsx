@@ -4,6 +4,7 @@ import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
 import DashboardTabsManager from '@/components/landlord-dashboard/DashboardTabsManager';
 import LandlordDashboardTabContent from '@/components/landlord-dashboard/LandlordDashboardTabContent';
+import { formatDate, convertToPDT } from '@/utils/dates';
 
 export interface IShareHousePageProps {
   params: {
@@ -38,15 +39,6 @@ const ShareHousePage = async ({
     throw new Error(data.error);
   }
 
-  const formatDate = (date: string) => {
-    const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-    return formattedDate;
-  };
-
   return (
     <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
       <DashboardTabsManager>
@@ -56,16 +48,16 @@ const ShareHousePage = async ({
         <LandlordDashboardTabContent
           tabType="current"
           progressPercent={data.current.progressRate as number}
-          startDate={formatDate(data.current.startDate)}
-          endDate={formatDate(data.current.endDate)}
+          startDate={formatDate(convertToPDT(new Date(data.current.startDate)))}
+          endDate={formatDate(convertToPDT(new Date(data.current.endDate)))}
           cardContents={data.current.categories as ICardContentProps[]}
           shareHouseId={share_house_id}
         />
         <LandlordDashboardTabContent
           tabType="next"
           progressPercent={0}
-          startDate={formatDate(data.next.startDate)}
-          endDate={formatDate(data.next.endDate)}
+          startDate={formatDate(convertToPDT(new Date(data.next.startDate)))}
+          endDate={formatDate(convertToPDT(new Date(data.next.endDate)))}
           cardContents={data.next.categories as ICardContentProps[]}
           shareHouseId={share_house_id}
         />
