@@ -51,7 +51,7 @@ const UserActionsDropdownMenu = ({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger />
-      <DropdownMenuContent align={'end'} className={'-mt-10'}>
+      <DropdownMenuContent align={'end'} className={'-mt-5'}>
         <DropdownMenuGroup>
           {/* Edit option */}
           <DropdownMenuItemWithIcon
