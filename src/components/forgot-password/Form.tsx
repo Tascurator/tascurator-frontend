@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
+import { sendForgotPasswordEmail } from '@/actions/reset-password';
 
 const Form = () => {
   const [open, setOpen] = useState(false);
@@ -31,12 +32,8 @@ const Form = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
-      console.log('Form data:', formData);
-
-      // submit the form data
-
-      // await forgotPassword(formData);
-      // Send the email to the user with the reset password link
+      // Send the forgot password email with generated token
+      await sendForgotPasswordEmail(formData);
 
       setOpen(true);
     } catch (error) {
