@@ -35,7 +35,7 @@ const ShareHousePage = async ({
 
   // Check for error in data and display it if found
   if ('error' in data) {
-    return <div>{data.error}</div>;
+    throw new Error(data.error);
   }
 
   const formatDate = (date: string) => {
