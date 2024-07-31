@@ -9,8 +9,8 @@ import {
   DropdownMenuItemWithIcon,
 } from '@/components/ui/dropdown-menu';
 
-import { TenantInvitationDrawer } from '@/components/ui/drawers/TenantInvitationDrawer';
-import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
+import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantInvitationDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import type { ITenant } from '@/types/commons';
@@ -86,6 +86,8 @@ const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
           setOpen={setOpenEdit}
         />
         <DeleteConfirmationDrawer
+          id={tenant.id}
+          idType={'tenant'}
           deleteItem={tenant.name}
           open={openDelete}
           setOpen={setOpenDelete}
