@@ -26,6 +26,7 @@ export default {
           // If the user does not exist or the email or password is not provided
           if (!user || !user.email || !user.password) return null;
 
+          // If the user has not verified their email, throw an error
           if (!user.emailVerified) {
             const verificationToken = await generateVerificationToken(
               user.email,

@@ -12,6 +12,17 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
+export const getUserById = async (id: string) => {
+  try {
+    const user = await prisma.landlord.findUnique({
+      where: { id },
+    });
+    return user;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const getVerificationTokenByToken = async (token: string) => {
   try {
     const verificationToken = await prisma.verificationToken.findUnique({
