@@ -16,15 +16,7 @@ type CategoryData = {
   tenant: {
     id: string;
     name: string;
-  } | null;
-} | null;
-
-type RotationData = {
-  name: string;
-  startDate: string;
-  endDate: string;
-  progressRate: number | string;
-  categories: CategoryData[] | null;
+  };
 };
 
 const app = new Hono()
@@ -86,85 +78,57 @@ const app = new Hono()
       const assignedData = shareHouse.assignmentSheet
         .assignedData as unknown as IAssignedData;
 
-      const areAllTenantsNull = assignedData.assignments.every(
-        (assignment) => assignment.tenant === null,
-      );
+      let totalTasks = 0;
+      let totalCompletedTasks = 0;
 
-      let currentRotationData: RotationData;
-      if (areAllTenantsNull) {
-        currentRotationData = {
-          name: shareHouse.name,
-          startDate: shareHouse.assignmentSheet.startDate.toISOString(),
-          endDate: addDays(
-            shareHouse.assignmentSheet.endDate,
-            -1,
-          ).toISOString(),
-          progressRate: 0,
-          categories: null,
-        };
-      } else {
-        let totalTasks = 0;
-        let totalCompletedTasks = 0;
+      const categories: CategoryData[] = assignedData.assignments
+        .map((assignment) => {
+          const maxTasks = assignment.tasks ? assignment.tasks.length : null;
+          const completedTasks = assignment.tasks
+            ? assignment.tasks.filter((task) => task.isCompleted === true)
+                .length
+            : null;
 
-        const missingTenant = assignedData.assignments.find(
-          (assignment) => !assignment.tenant,
-        );
-        if (missingTenant)
-          return c.json(
-            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-            500,
-          );
+          if (maxTasks !== null) totalTasks += maxTasks;
+          if (completedTasks !== null) totalCompletedTasks += completedTasks;
 
-        const categories: CategoryData[] = assignedData.assignments.map(
-          (assignment) => {
-            const maxTasks = assignment.tasks ? assignment.tasks.length : null;
-            const completedTasks = assignment.tasks
-              ? assignment.tasks.filter((task) => task.isCompleted === true)
-                  .length
-              : null;
+          const categoryId = assignment.category
+            ? assignment.category.id
+            : null;
+          const categoryName = assignment.category
+            ? assignment.category.name
+            : null;
 
-            if (maxTasks !== null) totalTasks += maxTasks;
-            if (completedTasks !== null) totalCompletedTasks += completedTasks;
+          if (!assignment.tenant) return null;
 
-            const categoryId = assignment.category
-              ? assignment.category.id
-              : null;
-            const categoryName = assignment.category
-              ? assignment.category.name
-              : null;
+          const tenantId = assignment.tenant.id;
+          const tenantName = assignment.tenant.name;
 
-            const tenantId = assignment.tenant!.id;
-            const tenantName = assignment.tenant!.name;
+          return {
+            id: categoryId,
+            name: categoryName,
+            maxTasks: maxTasks,
+            completedTasks: completedTasks,
+            tenant: {
+              id: tenantId,
+              name: tenantName,
+            },
+          };
+        })
+        .filter((assignment) => assignment !== null);
 
-            return {
-              id: categoryId,
-              name: categoryName,
-              maxTasks: maxTasks,
-              completedTasks: completedTasks,
-              tenant: {
-                id: tenantId,
-                name: tenantName,
-              },
-            };
-          },
-        );
+      const progressRate =
+        totalTasks > 0
+          ? ((totalCompletedTasks / totalTasks) * 100).toFixed(1)
+          : 0;
 
-        const progressRate =
-          totalTasks > 0
-            ? ((totalCompletedTasks / totalTasks) * 100).toFixed(1)
-            : 0;
-
-        currentRotationData = {
-          name: shareHouse.name,
-          startDate: shareHouse.assignmentSheet.startDate.toISOString(),
-          endDate: addDays(
-            shareHouse.assignmentSheet.endDate,
-            -1,
-          ).toISOString(),
-          progressRate: progressRate,
-          categories: categories,
-        };
-      }
+      const currentRotationData = {
+        name: shareHouse.name,
+        startDate: shareHouse.assignmentSheet.startDate.toISOString(),
+        endDate: addDays(shareHouse.assignmentSheet.endDate, -1).toISOString(),
+        progressRate: progressRate,
+        categories: categories,
+      };
 
       // Next rotation data
       /**
@@ -208,7 +172,7 @@ const app = new Hono()
               },
             };
           })
-          .filter((assignment) => assignment !== null) as CategoryData[],
+          .filter((assignment) => assignment !== null),
       };
 
       /**
