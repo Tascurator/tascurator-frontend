@@ -1,21 +1,10 @@
-'use client';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerTrigger,
-  DrawerClose,
-} from '@/components/ui/drawer';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '../loadingSpinner';
-import { toast } from '../use-toast';
+import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from '../../../use-toast';
 import { api } from '@/lib/hono';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { TaskDeletionDrawerContent } from '@/components/ui/drawers/deletions/without-checkbox/TaskDeletionDrawerContent';
 
 interface ITaskDeletionDrawer {
   title: string;
@@ -60,10 +49,7 @@ export const TaskDeletionDrawer = ({
 }: ITaskDeletionDrawer) => {
   const path = usePathname();
 
-  const {
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm();
+  const formControls = useForm();
 
   const onSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -94,38 +80,13 @@ export const TaskDeletionDrawer = ({
   };
 
   return (
-    <>
-      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
-        <DrawerTrigger />
-        <DrawerContent asChild>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerTitle>Delete</DrawerTitle>
-            <DrawerDescription asChild>
-              <p className={'mt-8'}>You want to delete &quot;{title}&quot; ?</p>
-            </DrawerDescription>
-            <DrawerFooter className={'flex justify-between'}>
-              <DrawerClose asChild>
-                <Button
-                  type={'button'}
-                  variant={'outline'}
-                  className={'flex-1'}
-                >
-                  Cancel
-                </Button>
-              </DrawerClose>
-
-              <Button
-                type={'submit'}
-                variant={'destructive'}
-                className={'flex-1'}
-              >
-                Delete
-              </Button>
-            </DrawerFooter>
-          </form>
-        </DrawerContent>
-      </Drawer>
-    </>
+    <FormProvider {...formControls}>
+      <TaskDeletionDrawerContent
+        title={title}
+        open={open}
+        setOpen={setOpen}
+        onSubmit={onSubmit}
+      />
+    </FormProvider>
   );
 };
