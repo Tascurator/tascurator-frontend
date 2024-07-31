@@ -27,5 +27,6 @@ export const TOAST_ERROR_MESSAGES = {
   CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
   EXISTING_EMAIL: 'Email already in use.',
   LOGIN_UNKNOWN_ERROR: 'An error occurred while logging in.',
+  SIGNUP_UNKNOWN_ERROR: 'An error occurred while signing up.',
   UNKNOWN_ERROR: 'Something went wrong.',
 };

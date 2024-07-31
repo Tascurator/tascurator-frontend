@@ -10,11 +10,13 @@ import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
 import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '../ui/loadingSpinner';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
+import { toast } from '@/components/ui/use-toast';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 const {
   PASSWORD_MIN_LENGTH,
@@ -100,10 +102,25 @@ const Form = () => {
       if (isValid) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        await signup(formData);
+        const result = await signup(formData);
+
+        if (result?.success) {
+          toast({
+            variant: 'default',
+            description: result.success,
+          });
+        } else if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        }
       }
     } catch (error) {
-      console.error(error);
+      toast({
+        variant: 'destructive',
+        description: TOAST_ERROR_MESSAGES.SIGNUP_UNKNOWN_ERROR,
+      });
     }
   };
 

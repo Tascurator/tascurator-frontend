@@ -80,3 +80,12 @@ model TenantPlaceholder {
 
   @@id([rotationAssignmentId, index])
 }
+
+model VerificationToken {
+  id String @id @default(cuid())
+  email String
+  token String @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
