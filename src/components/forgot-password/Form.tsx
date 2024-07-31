@@ -13,39 +13,34 @@ import { toast } from '@/components/ui/use-toast';
 import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
 
 const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    trigger,
+    formState: { errors, isSubmitting, isValid },
   } = useForm<TForgotPassword>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
   // TODO: Implement the proper forgot password logic
   const onSubmit = async (formData: TForgotPassword) => {
-    setIsLoading(true);
+    /**
+     * Wait for 1 second for user experience purposes
+     */
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
-      const isValid = await trigger(['email']);
+      console.log('Form data:', formData);
 
-      if (isValid) {
-        console.log('Form data:', formData);
+      // submit the form data
 
-        // submit the form data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        // await forgotPassword(formData);
-        // Send the email to the user with the reset password link
+      // await forgotPassword(formData);
+      // Send the email to the user with the reset password link
 
-        setIsLoading(false);
-        setOpen(true);
-      }
+      setOpen(true);
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
       // TODO: modify the error message
       toast({
         variant: 'destructive',
@@ -56,7 +51,7 @@ const Form = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      <LoadingSpinner isLoading={isSubmitting} />
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-10'}>
           <Input
@@ -72,7 +67,7 @@ const Form = () => {
             <FormMessage message={errors.email.message} />
           )}
         </div>
-        <Button type="submit" className={'mx-auto mb-4'}>
+        <Button type="submit" className={'mx-auto mb-4'} disabled={!isValid}>
           Reset password
         </Button>
       </form>
