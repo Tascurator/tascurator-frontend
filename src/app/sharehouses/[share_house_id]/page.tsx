@@ -47,7 +47,7 @@ const ShareHousePage = async ({
         </div>
         <LandlordDashboardTabContent
           tabType="current"
-          progressPercent={data.current.progressRate as number}
+          progressPercent={data.current.progressRate}
           startDate={formatDate(convertToPDT(new Date(data.current.startDate)))}
           endDate={formatDate(convertToPDT(new Date(data.current.endDate)))}
           cardContents={data.current.categories as ICardContentProps[]}

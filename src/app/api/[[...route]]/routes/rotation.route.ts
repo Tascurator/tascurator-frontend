@@ -119,7 +119,7 @@ const app = new Hono()
 
       const progressRate =
         totalTasks > 0
-          ? ((totalCompletedTasks / totalTasks) * 100).toFixed(1)
+          ? Number(((totalCompletedTasks / totalTasks) * 100).toFixed(1))
           : 0;
 
       const currentRotationData = {
