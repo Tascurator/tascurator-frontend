@@ -26,6 +26,7 @@ interface INameEditionDrawer {
  * @param open - The state of the drawer
  * @param setOpen - The function to set the state of the drawer
  * @param type - The type to determine if editing a 'sharehouse' or 'category'
+ * @param id - The id of the sharehouse or category
  *
  * @example
  * const [open, setOpen] = useState(false);
@@ -35,6 +36,7 @@ interface INameEditionDrawer {
  *  open={open}
  *  setOpen={setOpen}
  *  type={'sharehouse'}
+ *  id={'sample id'}
  * />
  *
  * // To edit the category name
@@ -43,9 +45,9 @@ interface INameEditionDrawer {
  *  open={open}
  *  setOpen={setOpen}
  *  type={'category'}
+ *  id={'sample id'}
  * />
  */
-
 export const NameEditionDrawer = ({
   name,
   open,
