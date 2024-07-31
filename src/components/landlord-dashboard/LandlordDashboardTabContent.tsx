@@ -69,7 +69,7 @@ export const LandlordDashboardTabContent = ({
           endDate={endDate}
           title={'Task assignment'}
         />
-        {cardContents ? (
+        {cardContents && cardContents.length >= 1 ? (
           cardContents.map((content, index) =>
             renderCardContent(content, index, tabType === 'current'),
           )
