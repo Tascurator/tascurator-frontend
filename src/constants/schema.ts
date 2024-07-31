@@ -226,6 +226,7 @@ export const resetPasswordSchema = z
   .object({
     password: z
       .string()
+      .trim()
       .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
       .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
       .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
