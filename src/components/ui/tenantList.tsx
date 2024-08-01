@@ -62,7 +62,7 @@ const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
           <DropdownMenuTrigger asChild>
             <Ellipsis />
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent align={'end'}>
             <DropdownMenuGroup>
               <DropdownMenuItemWithIcon
                 icon={EDIT_TENANT.icon}
