@@ -7,12 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * These routes will redirect logged in users to /sharehouses.
  * @type {string[]}
  */
-const DEFAULT_ROUTES: string[] = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-];
+const DEFAULT_ROUTES: string[] = ['/login', '/signup', '/forgot-password'];
 
 /**
  * An array of routes are used for authentication.
