@@ -29,14 +29,12 @@ const {
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
 const ResetPasswordForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    trigger,
+    formState: { errors, isValid, isSubmitting },
     watch,
   } = useForm<TResetPassword>({
     resolver: zodResolver(resetPasswordSchema),
@@ -107,27 +105,20 @@ const ResetPasswordForm = () => {
 
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
-    setIsLoading(true);
-
     try {
-      const isValid = await trigger(['password', 'confirmPassword']);
-      if (isValid) {
-        console.log('ForgotPasswordRequestForm data:', formData);
-        const { password } = formData;
-        console.log('Password:', password);
-        // await resetPassword(formData);
+      console.log('ForgotPasswordRequestForm data:', formData);
+      const { password } = formData;
+      console.log('Password:', password);
+      // await resetPassword(formData);
 
-        // submit the form data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        // await forgotPassword(formData);
-        // Send the email to the user with the reset password link
+      // submit the form data
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await forgotPassword(formData);
+      // Send the email to the user with the reset password link
 
-        setIsLoading(false);
-        setOpen(true);
-      }
+      setOpen(true);
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
       // TODO: modify the error message
       toast({
         variant: 'destructive',
@@ -138,7 +129,7 @@ const ResetPasswordForm = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         {/* hidden username input ** Don't delete! It's necessary for accessibility. ** */}
