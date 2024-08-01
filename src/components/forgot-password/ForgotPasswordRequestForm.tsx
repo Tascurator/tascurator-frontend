@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forgotPasswordSchema, TForgotPassword } from '@/constants/schema';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
 import { useState } from 'react';
-import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
 import { sendForgotPasswordEmail } from '@/actions/forgot-password';
@@ -16,29 +15,31 @@ import { sendForgotPasswordEmail } from '@/actions/forgot-password';
 const ForgotPasswordRequestForm = () => {
   const [open, setOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-    reset,
-  } = useForm<TForgotPassword>({
+  const formControls = useForm<TForgotPassword>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = formControls;
+
   const onSubmit = async (formData: TForgotPassword) => {
-    /**
-     * Wait for 1 second for user experience purposes
-     */
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setOpen(false);
 
     try {
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       /**
        * Send the forgot password email with generated token
        */
       await sendForgotPasswordEmail(formData);
 
       setOpen(true);
-      reset();
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -50,9 +51,7 @@ const ForgotPasswordRequestForm = () => {
   };
 
   return (
-    <>
-      <LoadingSpinner isLoading={isSubmitting} />
-
+    <FormProvider {...formControls}>
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-10'}>
           <Input
@@ -71,10 +70,10 @@ const ForgotPasswordRequestForm = () => {
         <Button type="submit" className={'mx-auto mb-4'} disabled={!isValid}>
           Reset password
         </Button>
-      </form>
 
-      <EmailSentDrawer open={open} setOpen={setOpen} />
-    </>
+        <EmailSentDrawer open={open} setOpen={setOpen} onSubmit={onSubmit} />
+      </form>
+    </FormProvider>
   );
 };
 

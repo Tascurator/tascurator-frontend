@@ -13,7 +13,6 @@ import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
 
-import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
 import { resetPassword } from '@/actions/forgot-password';
@@ -39,7 +38,7 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
     watch,
     reset,
   } = useForm<TResetPassword>({
@@ -135,8 +134,6 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
 
   return (
     <>
-      <LoadingSpinner isLoading={isSubmitting} />
-
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         {/* hidden username input ** Don't delete! It's necessary for accessibility. ** */}
         <input
