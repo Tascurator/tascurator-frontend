@@ -39,7 +39,7 @@ export const signup = async (credentials: TSignupSchema) => {
     to: verificationToken.email,
     subject: SIGNUP_CONFIRMATION.subject,
     html: SIGNUP_CONFIRMATION.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/verify-email?token=${verificationToken.token}`,
+      `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/signup?token=${verificationToken.token}`,
     ),
   });
 
