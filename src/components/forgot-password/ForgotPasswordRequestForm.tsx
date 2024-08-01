@@ -13,7 +13,7 @@ import { toast } from '@/components/ui/use-toast';
 import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
 import { sendForgotPasswordEmail } from '@/actions/reset-password';
 
-const Form = () => {
+const ForgotPasswordRequestForm = () => {
   const [open, setOpen] = useState(false);
 
   const {
@@ -73,4 +73,4 @@ const Form = () => {
   );
 };
 
-export { Form };
+export { ForgotPasswordRequestForm };
