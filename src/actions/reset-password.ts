@@ -44,7 +44,7 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
     to: data.email,
     subject: PASSWORD_RESET.subject,
     html: PASSWORD_RESET.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/reset-password?token=${token.token}`,
+      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/forgot-password?token=${token.token}`,
     ),
   });
 };
