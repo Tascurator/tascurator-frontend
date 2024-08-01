@@ -22,12 +22,14 @@ describe('AssignedData class', () => {
             id: '1',
             rotationAssignmentId: '1',
             name: 'Category 1',
+            createdAt: new Date(),
             tasks: [
               {
                 id: '1',
                 title: 'Task 1',
                 description: 'Description 1',
                 categoryId: '1',
+                createdAt: new Date(),
               },
             ],
           },
@@ -42,6 +44,7 @@ describe('AssignedData class', () => {
               name: 'Tenant 1',
               email: 'tenant1@test.com',
               extraAssignedCount: 0,
+              createdAt: new Date(),
             },
           },
         ],
@@ -137,12 +140,14 @@ describe('AssignedData class', () => {
         id: '2',
         rotationAssignmentId: '1',
         name: 'Category 2',
+        createdAt: new Date(),
         tasks: [
           {
             id: '2',
             title: 'Task 2',
             description: 'Description 2',
             categoryId: '2',
+            createdAt: new Date(),
           },
         ],
       });
@@ -156,6 +161,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 2',
           email: 'tenant_2@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -372,6 +378,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 3',
           email: 'tenant_3@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -436,6 +443,7 @@ describe('AssignedData class', () => {
         name: 'Tenant 3',
         email: 'tenant_3@tascurator.com',
         extraAssignedCount: 0,
+        createdAt: new Date(),
       };
 
       const categories = sharehouse.RotationAssignment!.categories;
@@ -529,12 +537,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -605,12 +615,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -619,12 +631,14 @@ describe('AssignedData class', () => {
         id: '4',
         rotationAssignmentId: '1',
         name: 'Category 4',
+        createdAt: new Date(),
         tasks: [
           {
             id: '4',
             title: 'Task 4',
             description: 'Description 4',
             categoryId: '4',
+            createdAt: new Date(),
           },
         ],
       });
@@ -753,12 +767,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -822,6 +838,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 3',
           email: 'tenant_3@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -885,6 +902,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 3',
           email: 'tenant_3@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
       44;
@@ -967,12 +985,14 @@ describe('AssignedData class', () => {
         id: '2',
         rotationAssignmentId: '1',
         name: 'Category 2',
+        createdAt: new Date(),
         tasks: [
           {
             id: '2',
             title: 'Task 2',
             description: 'Description 2',
             categoryId: '2',
+            createdAt: new Date(),
           },
         ],
       });
@@ -986,6 +1006,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 2',
           email: 'tenant_2@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -1050,12 +1071,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1091,12 +1114,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1105,12 +1130,14 @@ describe('AssignedData class', () => {
         id: '4',
         rotationAssignmentId: '1',
         name: 'Category 4',
+        createdAt: new Date(),
         tasks: [
           {
             id: '4',
             title: 'Task 4',
             description: 'Description 4',
             categoryId: '4',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1150,12 +1177,14 @@ describe('AssignedData class', () => {
         id: '3',
         rotationAssignmentId: '1',
         name: 'Category 3',
+        createdAt: new Date(),
         tasks: [
           {
             id: '3',
             title: 'Task 3',
             description: 'Description 3',
             categoryId: '3',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1164,12 +1193,14 @@ describe('AssignedData class', () => {
         id: '4',
         rotationAssignmentId: '1',
         name: 'Category 4',
+        createdAt: new Date(),
         tasks: [
           {
             id: '4',
             title: 'Task 4',
             description: 'Description 4',
             categoryId: '4',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1178,12 +1209,14 @@ describe('AssignedData class', () => {
         id: '5',
         rotationAssignmentId: '1',
         name: 'Category 5',
+        createdAt: new Date(),
         tasks: [
           {
             id: '5',
             title: 'Task 5',
             description: 'Description 5',
             categoryId: '5',
+            createdAt: new Date(),
           },
         ],
       });
@@ -1271,6 +1304,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 5',
           email: 'tenant_5@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -1312,6 +1346,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 3',
           email: 'tenant_3@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
@@ -1331,6 +1366,7 @@ describe('AssignedData class', () => {
           name: 'Tenant 5',
           email: 'tenant_5@tascurator.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       });
 
