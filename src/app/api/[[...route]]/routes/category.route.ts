@@ -197,7 +197,8 @@ const app = new Hono()
         }
 
         if (
-          rotationAssignment.categories.length > CONSTRAINTS.CATEGORY_MAX_AMOUNT
+          rotationAssignment.categories.length >=
+          CONSTRAINTS.CATEGORY_MAX_AMOUNT
         ) {
           return c.json(
             {
