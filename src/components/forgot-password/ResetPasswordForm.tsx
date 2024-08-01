@@ -16,7 +16,7 @@ import { CONSTRAINTS } from '@/constants/constraints';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
-import { resetPassword } from '@/actions/reset-password';
+import { resetPassword } from '@/actions/forgot-password';
 
 const {
   PASSWORD_MIN_LENGTH,

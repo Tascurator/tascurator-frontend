@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
-import { sendForgotPasswordEmail } from '@/actions/reset-password';
+import { sendForgotPasswordEmail } from '@/actions/forgot-password';
 
 const ForgotPasswordRequestForm = () => {
   const [open, setOpen] = useState(false);
