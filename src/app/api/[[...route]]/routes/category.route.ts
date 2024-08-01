@@ -47,6 +47,8 @@ const app = new Hono()
             404,
           );
 
+        if (data.name === category.name) return c.json({}, 200);
+
         const shareHouseId = category.rotationAssignment.shareHouseId;
 
         // Check if the sharehouse has a category with the same name
