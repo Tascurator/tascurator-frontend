@@ -70,6 +70,7 @@ const app = new Hono()
         );
 
       const shareHouseData = {
+        name: shareHouseWithOtherTables.name,
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {

@@ -36,7 +36,7 @@ function HeaderItemForTop() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink className="p-2" href="/">
-                <Home className="w-6 h-6" />
+                <Home className="w-5 h-5" />
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbItem>
@@ -64,130 +64,76 @@ function HeaderItemWithDropDown({
 }) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  // If sharehouseId is not null, then render the dropdown menu with the sharehouseId
-  if (sharehouseId)
-    return (
-      <>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="pl-1">
-                <BreadcrumbLink className="p-1" href="/">
-                  <Home className="w-6 h-6" />
+  return (
+    <>
+      <div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem className="pl-1">
+              <BreadcrumbLink className="p-1" href="/">
+                <Home className="w-5 h-5" />
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="pl-1">
+                <BreadcrumbLink
+                  className="text-xl line-clamp-1"
+                  href={`/sharehouses/${sharehouseId}`}
+                >
+                  {pageTitle}
                 </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="pl-1">{pageTitle}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-2">
-                <Ellipsis />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align={'end'}>
-              <DropdownMenuGroup>
-                <DropdownMenuItemWithIcon
-                  icon={EDIT_SHAREHOUSE_NAME.icon}
-                  onClick={() => setOpenEdit(true)}
-                >
-                  {EDIT_SHAREHOUSE_NAME.text}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2">
+              <Ellipsis />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align={'end'}>
+            <DropdownMenuGroup>
+              <DropdownMenuItemWithIcon
+                icon={EDIT_SHAREHOUSE_NAME.icon}
+                onClick={() => setOpenEdit(true)}
+              >
+                {EDIT_SHAREHOUSE_NAME.text}
+              </DropdownMenuItemWithIcon>
+              <Link href={`/sharehouses/${sharehouseId}/edit`}>
+                <DropdownMenuItemWithIcon icon={MANAGE_SHAREHOUSE.icon}>
+                  {MANAGE_SHAREHOUSE.text}
                 </DropdownMenuItemWithIcon>
-                <Link href={`/sharehouses/${sharehouseId}/edit`}>
-                  <DropdownMenuItemWithIcon icon={MANAGE_SHAREHOUSE.icon}>
-                    {MANAGE_SHAREHOUSE.text}
-                  </DropdownMenuItemWithIcon>
-                </Link>
-                <DropdownMenuItemWithIcon
-                  icon={DELETE_SHAREHOUSE.icon}
-                  onClick={() => setOpenDelete(true)}
-                >
-                  {DELETE_SHAREHOUSE.text}
-                </DropdownMenuItemWithIcon>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <NameEditionDrawer
-            name={pageTitle}
-            open={openEdit}
-            setOpen={setOpenEdit}
-            type={'sharehouse'}
-            id={sharehouseId}
-          />
-          <DeleteConfirmationDrawer
-            id={sharehouseId}
-            idType={'sharehouse'}
-            deleteItem={pageTitle}
-            open={openDelete}
-            setOpen={setOpenDelete}
-          />
-        </div>
-      </>
-    );
-  else {
-    return (
-      <>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="pl-1">
-                <BreadcrumbLink className="p-1" href="/">
-                  <Home className="w-6 h-6" />
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="pl-1">{pageTitle}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-2">
-                <Ellipsis />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align={'end'}>
-              <DropdownMenuGroup>
-                <DropdownMenuItemWithIcon
-                  icon={EDIT_SHAREHOUSE_NAME.icon}
-                  onClick={() => setOpenEdit(true)}
-                >
-                  {EDIT_SHAREHOUSE_NAME.text}
-                </DropdownMenuItemWithIcon>
-                <DropdownMenuItemWithIcon
-                  icon={DELETE_SHAREHOUSE.icon}
-                  onClick={() => setOpenDelete(true)}
-                >
-                  {DELETE_SHAREHOUSE.text}
-                </DropdownMenuItemWithIcon>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <NameEditionDrawer
-            name={pageTitle}
-            open={openEdit}
-            setOpen={setOpenEdit}
-            type={'sharehouse'}
-          />
-          <DeleteConfirmationDrawer
-            id={sharehouseId}
-            idType={'sharehouse'}
-            deleteItem={pageTitle}
-            open={openDelete}
-            setOpen={setOpenDelete}
-          />
-        </div>
-      </>
-    );
-  }
+              </Link>
+              <DropdownMenuItemWithIcon
+                icon={DELETE_SHAREHOUSE.icon}
+                onClick={() => setOpenDelete(true)}
+              >
+                {DELETE_SHAREHOUSE.text}
+              </DropdownMenuItemWithIcon>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <NameEditionDrawer
+          name={pageTitle}
+          open={openEdit}
+          setOpen={setOpenEdit}
+          type={'sharehouse'}
+          id={sharehouseId}
+        />
+        <DeleteConfirmationDrawer
+          id={sharehouseId}
+          idType={'sharehouse'}
+          deleteItem={pageTitle}
+          open={openDelete}
+          setOpen={setOpenDelete}
+        />
+      </div>
+    </>
+  );
 }
 
 function HeaderItemOnlyBreadcrumb({ pageTitle }: { pageTitle: string }) {
@@ -254,7 +200,11 @@ interface IHeaderContainerProps {
  * ```
  */
 
-const Header = ({ type, pageTitle, sharehouseId }: IHeaderContainerProps) => {
+export const Header = ({
+  type,
+  pageTitle,
+  sharehouseId,
+}: IHeaderContainerProps) => {
   return (
     <header className="bg-primary text-white max-w-screen-sm w-full">
       <div className="container flex items-center justify-between h-14 py-4 px-4">
@@ -272,5 +222,3 @@ const Header = ({ type, pageTitle, sharehouseId }: IHeaderContainerProps) => {
     </header>
   );
 };
-
-export { Header };
