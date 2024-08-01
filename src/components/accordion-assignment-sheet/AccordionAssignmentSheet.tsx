@@ -132,6 +132,7 @@ export const AccordionAssignmentSheet = ({
       if ('error' in data) {
         throw new Error(data.error);
       }
+
       toast({
         variant: 'default',
         description: TOAST_TEXTS.success,
@@ -168,29 +169,31 @@ export const AccordionAssignmentSheet = ({
               {categories.length === 0 ? (
                 <NoTaskMessage />
               ) : (
-                categories.map((category) => (
-                  <AssignmentCategoryTasks
-                    key={category.id}
-                    category={category}
-                    isChecked={watchedFields.reduce(
-                      (acc, task) => {
-                        acc[task.id] = task.isCompleted;
-                        return acc;
-                      },
-                      {} as { [taskId: string]: boolean },
-                    )}
-                    handleAllCheckedChange={handleAllCheckedChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                  />
-                ))
+                <>
+                  {categories.map((category) => (
+                    <AssignmentCategoryTasks
+                      key={category.id}
+                      category={category}
+                      isChecked={watchedFields.reduce(
+                        (acc, task) => {
+                          acc[task.id] = task.isCompleted;
+                          return acc;
+                        },
+                        {} as { [taskId: string]: boolean },
+                      )}
+                      handleAllCheckedChange={handleAllCheckedChange}
+                      handleCheckboxChange={handleCheckboxChange}
+                    />
+                  ))}
+                  <Button
+                    type="submit"
+                    className="w-full mt-6"
+                    disabled={!isEnabled}
+                  >
+                    Save
+                  </Button>
+                </>
               )}
-              <Button
-                type="submit"
-                className="w-full mt-6"
-                disabled={!isEnabled}
-              >
-                Save
-              </Button>
             </AccordionContent>
           </AccordionItem>
         </form>
