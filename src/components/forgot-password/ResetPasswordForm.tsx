@@ -188,6 +188,7 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
           Reset password
         </Button>
       </form>
+
       <PasswordChangedDrawer open={open} setOpen={setOpen} />
     </>
   );

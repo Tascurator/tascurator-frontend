@@ -52,6 +52,7 @@ const ForgotPasswordRequestForm = () => {
   return (
     <>
       <LoadingSpinner isLoading={isSubmitting} />
+
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-10'}>
           <Input
@@ -71,6 +72,7 @@ const ForgotPasswordRequestForm = () => {
           Reset password
         </Button>
       </form>
+
       <EmailSentDrawer open={open} setOpen={setOpen} />
     </>
   );
