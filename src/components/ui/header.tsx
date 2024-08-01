@@ -90,7 +90,7 @@ function HeaderItemWithDropDown({
                 <Ellipsis />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align={'end'}>
               <DropdownMenuGroup>
                 <DropdownMenuItemWithIcon
                   icon={EDIT_SHAREHOUSE_NAME.icon}
@@ -154,7 +154,7 @@ function HeaderItemWithDropDown({
                 <Ellipsis />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align={'end'}>
               <DropdownMenuGroup>
                 <DropdownMenuItemWithIcon
                   icon={EDIT_SHAREHOUSE_NAME.icon}
