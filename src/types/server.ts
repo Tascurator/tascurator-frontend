@@ -149,3 +149,26 @@ export type TPrismaTask = Prisma.TaskGetPayload<NonNullable<unknown>>;
 export type TPrismaTenantPlaceholder = Prisma.TenantPlaceholderGetPayload<{
   include: { tenant: true };
 }>;
+
+/**
+ * Type representing the ShareHouse object with RotationAssignment, Categories, Tasks, TenantPlaceholders and Tenants included.
+ */
+export type TPrismaShareHouseWithOtherTables = Prisma.ShareHouseGetPayload<{
+  include: {
+    RotationAssignment: {
+      include: {
+        rotationCycle: true;
+        categories: {
+          include: {
+            tasks: true;
+          };
+        };
+        tenantPlaceholders: {
+          include: {
+            tenant: true;
+          };
+        };
+      };
+    };
+  };
+}>;
