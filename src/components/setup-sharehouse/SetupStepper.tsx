@@ -182,9 +182,9 @@ export const SetupStepper = ({
           shareHouseId=""
         />
         <p className="flex justify-end">
-          {tenants.length}/{TENANT_MAX_AMOUNT}
+          {getValues().tenants.length}/{TENANT_MAX_AMOUNT}
         </p>
-        {tenants.length > 0 ? (
+        {getValues().tenants.length > 0 ? (
           <ul className="mt-6">
             {tenants.map((tenant) => (
               <li className="mb-4" key={tenant.id}>
