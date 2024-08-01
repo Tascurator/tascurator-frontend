@@ -36,12 +36,12 @@ const ForgotPasswordRequestForm = () => {
 
       setOpen(true);
     } catch (error) {
-      console.error(error);
-      // TODO: modify the error message
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: 'error!',
+        });
+      }
     }
   };
 

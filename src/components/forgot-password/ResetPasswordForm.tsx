@@ -125,7 +125,6 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
       reset();
     } catch (error) {
       if (error instanceof Error) {
-        console.error(error);
         toast({
           variant: 'destructive',
           description: error.message,
