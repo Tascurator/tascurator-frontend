@@ -18,7 +18,7 @@ const ForgotPasswordPage = async ({
   searchParams,
 }: IForgotPasswordPageProps) => {
   const token = searchParams.token;
-  let expired = true;
+  let expired = false;
 
   /**
    * If token is present in the URL, we will show the reset password form.
@@ -32,26 +32,27 @@ const ForgotPasswordPage = async ({
     /**
      * If token is valid, let's display the reset password form
      */
-    if (data && isTokenValid(token, data.expiresAt)) {
-      /**
-       * Set expired to false if the token is valid
-       */
-      expired = false;
-
-      return (
-        <div className={'flex flex-col px-6'}>
-          {/* hide logo on mobile and show on tablet & laptop */}
-          <Logo responsive={true} />
-          <div className={'mb-6 mt-24 md:mt-0'}>
-            <h1 className={'text-2xl font-bold text-center mb-3'}>
-              Reset your password
-            </h1>
-            <p className={'text-center'}>Please enter a new password.</p>
+    if (data)
+      if (isTokenValid(token, data.expiresAt)) {
+        return (
+          <div className={'flex flex-col px-6'}>
+            {/* hide logo on mobile and show on tablet & laptop */}
+            <Logo responsive={true} />
+            <div className={'mb-6 mt-24 md:mt-0'}>
+              <h1 className={'text-2xl font-bold text-center mb-3'}>
+                Reset your password
+              </h1>
+              <p className={'text-center'}>Please enter a new password.</p>
+            </div>
+            <ResetPasswordForm token={token} />
           </div>
-          <ResetPasswordForm token={token} />
-        </div>
-      );
-    }
+        );
+      } else {
+        /**
+         * Set expired to true if the token is not valid
+         */
+        expired = true;
+      }
   }
 
   return (
