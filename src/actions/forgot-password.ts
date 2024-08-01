@@ -6,7 +6,7 @@ import {
   TForgotPassword,
   TResetPassword,
 } from '@/constants/schema';
-import { generatePasswordResetToken } from '@/utils/tokens';
+import { generatePasswordResetToken, isTokenValid } from '@/utils/tokens';
 import {
   getLandlordByEmail,
   getPasswordResetDataByToken,
@@ -15,8 +15,11 @@ import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import prisma from '@/lib/prisma';
 import { hashPassword } from '@/utils/password-hashing';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
+
+const { INVALID_TOKEN, COMPLETION_ERROR } = SERVER_ERROR_MESSAGES;
 
 /**
  * Send email to the landlord with a link to reset their password
@@ -64,7 +67,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
   const validData = resetPasswordSchema.safeParse(data);
 
   if (!validData.success) {
-    throw new Error('Invalid data');
+    throw new Error(COMPLETION_ERROR('resetting the password'));
   }
 
   /**
@@ -75,8 +78,8 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
   /**
    * If the token does not exist or is expired, throw an error
    */
-  if (!tokenData || tokenData.expiresAt < new Date()) {
-    throw new Error('Invalid or expired token');
+  if (!tokenData || isTokenValid(token, tokenData.expiresAt)) {
+    throw new Error(INVALID_TOKEN);
   }
 
   try {
@@ -110,7 +113,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
      */
     await sendPasswordResetSuccessEmail(deletedTokenData.email);
   } catch (error) {
-    throw new Error('Failed to reset password');
+    throw new Error(COMPLETION_ERROR('resetting the password'));
   }
 };
 

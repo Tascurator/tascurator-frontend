@@ -1,4 +1,7 @@
 import bcrypt, { genSaltSync } from 'bcryptjs';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+
+const { ENV_KEYS_MISSING, COMPLETION_ERROR } = SERVER_ERROR_MESSAGES;
 
 /**
  * Hashes a password using bcrypt
@@ -10,13 +13,11 @@ export const hashPassword = async (password: string) => {
   const salt = process.env.PASSWORD_SALT_ROUNDS;
 
   if (!salt) {
-    throw new Error('PASSWORD_SALT_ROUNDS environment variable is not set');
+    throw new Error(ENV_KEYS_MISSING(['PASSWORD_SALT_ROUNDS']));
   }
 
   if (Number.isNaN(Number(salt))) {
-    throw new Error(
-      'PASSWORD_SALT_ROUNDS environment variable is not a number',
-    );
+    throw new Error(COMPLETION_ERROR('hashing the password'));
   }
 
   return bcrypt.hash(password, genSaltSync(Number(salt)));

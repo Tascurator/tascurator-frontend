@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 export const InvalidTokenToast = () => {
   const { toast } = useToast();
@@ -13,9 +14,7 @@ export const InvalidTokenToast = () => {
 
   useEffect(() => {
     toast({
-      title: 'Invalid token',
-      description:
-        'The token is invalid or has expired. Please request a password reset again.',
+      description: SERVER_ERROR_MESSAGES.INVALID_TOKEN,
       variant: 'destructive',
     });
   }, [mounted]);
