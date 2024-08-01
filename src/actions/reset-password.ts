@@ -2,7 +2,7 @@
 
 import { forgotPasswordSchema, TForgotPassword } from '@/constants/schema';
 import { generatePasswordResetToken } from '@/utils/tokens';
-import { getLandlordByEmail } from '@/utils/prisma-helper';
+import { getLandlordByEmail } from '@/utils/prisma-helpers';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 
