@@ -16,6 +16,7 @@ import { CONSTRAINTS } from '@/constants/constraints';
 import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
+import { resetPassword } from '@/actions/reset-password';
 
 const {
   PASSWORD_MIN_LENGTH,
@@ -28,7 +29,11 @@ const {
 
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
-const ResetPasswordForm = () => {
+interface IResetPasswordFormProps {
+  token: string;
+}
+
+const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
   const [open, setOpen] = useState(false);
 
   const {
@@ -36,6 +41,7 @@ const ResetPasswordForm = () => {
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
     watch,
+    reset,
   } = useForm<TResetPassword>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -106,24 +112,26 @@ const ResetPasswordForm = () => {
   // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
     try {
-      console.log('ForgotPasswordRequestForm data:', formData);
-      const { password } = formData;
-      console.log('Password:', password);
-      // await resetPassword(formData);
-
-      // submit the form data
+      /**
+       * Wait for 1 second for user experience purposes
+       */
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // await forgotPassword(formData);
-      // Send the email to the user with the reset password link
+
+      /**
+       * Reset the password and send a success email
+       */
+      await resetPassword(token, formData);
 
       setOpen(true);
+      reset();
     } catch (error) {
-      console.error(error);
-      // TODO: modify the error message
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+      if (error instanceof Error) {
+        console.error(error);
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
@@ -139,7 +147,6 @@ const ResetPasswordForm = () => {
           autoComplete="username"
           className="hidden"
           aria-hidden="true"
-          required
         />
         {/* End: hidden username input */}
 
