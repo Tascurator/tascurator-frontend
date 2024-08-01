@@ -4,6 +4,9 @@ import { loginSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
 import { getUserByEmail } from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
+import { sendEmail } from '@/lib/resend';
+import { EMAILS } from '@/constants/emails';
+const { SIGNUP_CONFIRMATION } = EMAILS;
 class EmailNotVerifiedError extends CredentialsSignin {
   code = 'email_not_verified';
 }
@@ -31,7 +34,13 @@ export default {
             const verificationToken = await generateVerificationToken(
               user.email,
             );
-            console.log(verificationToken);
+            await sendEmail({
+              to: verificationToken.email,
+              subject: SIGNUP_CONFIRMATION.subject,
+              html: SIGNUP_CONFIRMATION.html(
+                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/verify-email?token=${verificationToken.token}`,
+              ),
+            });
             throw new EmailNotVerifiedError();
           }
 

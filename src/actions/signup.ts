@@ -5,6 +5,9 @@ import bcrypt from 'bcryptjs';
 import prisma from '@/lib/prisma';
 import { getUserByEmail } from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
+import { sendEmail } from '@/lib/resend';
+import { EMAILS } from '@/constants/emails';
+const { SIGNUP_CONFIRMATION } = EMAILS;
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 const { CREDENTIAL_FIELDS_INVALID, EXISTING_EMAIL } = TOAST_ERROR_MESSAGES;
 
@@ -30,9 +33,15 @@ export const signup = async (credentials: TSignupSchema) => {
     },
   });
 
+  // Send the confirmation email
   const verificationToken = await generateVerificationToken(email);
-  console.log(verificationToken);
-  // TODO: Send an email to the user
+  await sendEmail({
+    to: verificationToken.email,
+    subject: SIGNUP_CONFIRMATION.subject,
+    html: SIGNUP_CONFIRMATION.html(
+      `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/verify-email?token=${verificationToken.token}`,
+    ),
+  });
 
   return { success: 'Confirmation email sent.' };
 };
