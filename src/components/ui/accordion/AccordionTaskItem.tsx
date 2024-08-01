@@ -13,6 +13,7 @@ import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDr
 import { TaskDeletionDrawer } from '../drawers/deletions/without-checkbox/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { ICategoryWithoutTasks } from '@/types/commons';
+import { removeHtmlTags } from '@/utils/task-description';
 
 /**
  * Constants used in the dropdown menu.
@@ -50,7 +51,7 @@ const UserActionsDropdownMenu = ({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger />
-      <DropdownMenuContent align={'end'} className={'-mt-10'}>
+      <DropdownMenuContent align={'end'} className={'-mt-5'}>
         <DropdownMenuGroup>
           {/* Edit option */}
           <DropdownMenuItemWithIcon
@@ -115,7 +116,7 @@ export const AccordionTaskItem = ({
     <div className={'bg-white flex rounded-xl'}>
       <div className={'flex-1 flex flex-col pl-4 py-4 gap-y-2'}>
         <h3 className={'text-base font-medium'}>{title}</h3>
-        <p className={'text-sm line-clamp-2'}>{description}</p>
+        <p className={'text-sm line-clamp-2'}>{removeHtmlTags(description)}</p>
       </div>
       <button
         className={'flex justify-center items-center px-4 hover:cursor-pointer'}

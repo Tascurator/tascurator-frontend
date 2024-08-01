@@ -15,6 +15,7 @@ import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import { TPrismaShareHouseWithOtherTables } from '@/types/server';
 
 const app = new Hono()
 
@@ -26,27 +27,35 @@ const app = new Hono()
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
-        where: {
-          id: shareHouseId,
-        },
-        include: {
-          RotationAssignment: {
-            include: {
-              tenantPlaceholders: {
-                include: {
-                  tenant: true,
+      const shareHouseWithOtherTables: TPrismaShareHouseWithOtherTables | null =
+        await prisma.shareHouse.findUnique({
+          where: {
+            id: shareHouseId,
+          },
+          include: {
+            RotationAssignment: {
+              include: {
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                  orderBy: [
+                    { tenant: { createdAt: 'asc' } },
+                    { tenant: { id: 'asc' } },
+                  ],
                 },
-              },
-              categories: {
-                include: {
-                  tasks: true,
+                categories: {
+                  include: {
+                    tasks: {
+                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                    },
+                  },
+                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
               },
             },
           },
-        },
-      });
+        });
 
       if (!shareHouseWithOtherTables)
         return c.json(
@@ -68,6 +77,7 @@ const app = new Hono()
                 id: tenantPlaceholder.tenant.id,
                 name: tenantPlaceholder.tenant.name,
                 email: tenantPlaceholder.tenant.email,
+                createdAt: tenantPlaceholder.tenant.createdAt,
               };
             }
             return null;
@@ -84,7 +94,9 @@ const app = new Hono()
               id: task.id,
               title: task.title,
               description: task.description,
+              createdAt: task.createdAt,
             })),
+            createdAt: category.createdAt,
           }),
         ),
       };
