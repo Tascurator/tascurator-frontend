@@ -1,5 +1,5 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-import { editorExtensions } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
+import { editorExtensions } from '@/constants/tiptap-editor';
 import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useFormContext } from 'react-hook-form';
 

@@ -31,7 +31,7 @@ export const LoadingOverlay = () => {
 
   return (
     <>
-      <div className="fixed left-0 top-0 z-[9999] bg-black/50 w-full h-full flex justify-center items-center">
+      <div className="fixed left-0 top-0 z-[9999] bg-black/50 w-full h-full flex justify-center items-center pointer-events-auto">
         <div className=" border-gray-200 h-12 w-12 animate-spin rounded-full border-4 border-t-primary" />
       </div>
     </>
