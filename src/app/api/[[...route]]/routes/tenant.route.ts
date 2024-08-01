@@ -7,6 +7,7 @@ import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import { CONSTRAINTS } from '@/constants/constraints';
 
 const app = new Hono()
 
@@ -206,7 +207,11 @@ const app = new Hono()
           include: {
             RotationAssignment: {
               include: {
-                tenantPlaceholders: true,
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                },
               },
             },
             assignmentSheet: true,
@@ -228,6 +233,25 @@ const app = new Hono()
             },
             404,
           );
+
+        const tenants = RotationAssignment.tenantPlaceholders.map(
+          (tenantPlaceholder) => {
+            return tenantPlaceholder.tenant;
+          },
+        );
+
+        if (tenants.length >= CONSTRAINTS.TENANT_MAX_AMOUNT) {
+          return c.json(
+            {
+              error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
+                'tenants',
+                CONSTRAINTS.TENANT_MAX_AMOUNT,
+              ),
+            },
+            400,
+          );
+        }
+        console.log('tenant', tenants);
 
         // Check if the sharehouse has a tenant with the same name
         const tenantWithSameName = await prisma.tenant.findFirst({
