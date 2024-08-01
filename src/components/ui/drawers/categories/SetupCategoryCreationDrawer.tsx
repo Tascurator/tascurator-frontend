@@ -6,20 +6,24 @@ import {
 } from '@/constants/schema';
 import { CategoryCreationDrawerContent } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
 import { useState } from 'react';
+import { ICategory } from '@/types/commons';
+// import { randomUUID } from 'crypto';
 
 interface ISetupCategoryCreationDrawer {
   editOpen: boolean;
   setEditOpen: (value: boolean) => void;
   shareHouseId: string;
+  addCategory: (category: ICategory) => void;
 }
 
 /**
  * A drawer component to create a category for the setup page
  */
 export const SetupCategoryCreationDrawer = ({
-  shareHouseId,
+  // shareHouseId,
   editOpen,
   setEditOpen,
+  addCategory,
 }: ISetupCategoryCreationDrawer) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -35,9 +39,30 @@ export const SetupCategoryCreationDrawer = ({
     },
   });
 
+  const {
+    // register,
+    // handleSubmit,
+    reset,
+    // formState: { errors },
+  } = formControls;
+
   const onSubmit: SubmitHandler<TCategoryCreationSchema> = (data) => {
     // Please add the logic to handle the category data for a new share house
-    console.log(shareHouseId, data);
+    // console.log(shareHouseId, data);
+    const newCategory = {
+      id: self.crypto.randomUUID(),
+      name: data.name,
+      tasks: [
+        {
+          id: self.crypto.randomUUID(),
+          title: data.task.title,
+          description: data.task.description,
+        },
+      ],
+    };
+    addCategory(newCategory);
+    setConfirmOpen(false);
+    reset();
   };
 
   return (

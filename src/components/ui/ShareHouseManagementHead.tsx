@@ -3,11 +3,17 @@ import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantInvitationDrawer';
 import { CategoryCreationDrawer } from './drawers/categories/CategoryCreationDrawer';
+import { SetupCategoryCreationDrawer } from '@/components/ui/drawers/categories/SetupCategoryCreationDrawer';
+import { SetupTenantInvitationDrawer } from '@/components/ui/drawers/tenants/SetupTenantInvitationDrawer';
+import { ICategory } from '@/types/commons';
 
 interface IHeaderTitleButtonProps {
   shareHouseId: string;
   title: string;
-  type: 'categories' | 'tenants';
+  type: 'categories' | 'tenants' | 'setupCategories' | 'setupTenants';
+  // todo change any to the correct type
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  onsubmitData?: (data: any) => void;
 }
 
 /**
@@ -21,15 +27,22 @@ export const ShareHouseManagementHead = ({
   shareHouseId,
   title,
   type,
+  onsubmitData,
 }: IHeaderTitleButtonProps) => {
   const [openTaskDrawer, setOpenTaskDrawer] = useState(false);
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
+  const [openSetupCategoryDrawer, setOpenSetupCategoryDrawer] = useState(false);
+  const [openSetupTenantDrawer, setOpenSetupTenantDrawer] = useState(false);
 
   const handleClick = () => {
     if (type === 'categories') {
       setOpenTaskDrawer(true);
     } else if (type === 'tenants') {
       setOpenTenantDrawer(true);
+    } else if (type === 'setupCategories') {
+      setOpenSetupCategoryDrawer(true);
+    } else if (type === 'setupTenants') {
+      setOpenSetupTenantDrawer(true);
     }
   };
 
@@ -53,6 +66,16 @@ export const ShareHouseManagementHead = ({
           shareHouseId={shareHouseId}
           open={openTenantDrawer}
           setOpen={setOpenTenantDrawer}
+        />
+        <SetupCategoryCreationDrawer
+          shareHouseId={shareHouseId}
+          editOpen={openSetupCategoryDrawer}
+          setEditOpen={setOpenSetupCategoryDrawer}
+          addCategory={onsubmitData as (category: ICategory) => void}
+        />
+        <SetupTenantInvitationDrawer
+          open={openSetupTenantDrawer}
+          setOpen={setOpenSetupTenantDrawer}
         />
       </div>
     </>

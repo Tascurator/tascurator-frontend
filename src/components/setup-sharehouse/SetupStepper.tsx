@@ -2,13 +2,6 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { ICategory, ITenant } from '@/types/commons';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionContent,
-} from '@/components/ui/accordion';
-import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
-import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
 import { ScheduleSetting } from './ScheduleSetting';
 import { TenantListItem } from '../ui/tenantList';
@@ -22,6 +15,15 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CONSTRAINTS } from '@/constants/constraints';
+
+// comment out the following imports
+// import {
+//   Accordion,
+//   AccordionItem,
+//   AccordionContent,
+// } from '@/components/ui/accordion';
+// import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
+// import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
 
@@ -55,6 +57,7 @@ export const SetupStepper = ({
     trigger,
     formState: { errors },
     setValue,
+    getValues,
   } = formControls;
 
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
@@ -104,6 +107,13 @@ export const SetupStepper = ({
     );
   };
 
+  const addCategory = (category: ICategory) => {
+    // console.log('addCategory', category);
+    const newCategories = [...getValues().categories, category];
+    setValue('categories', newCategories, { shouldValidate: true });
+    console.log('getValues().categories', getValues().categories);
+  };
+
   // step2
   const categorySetting = () => {
     return (
@@ -116,13 +126,14 @@ export const SetupStepper = ({
       >
         <ShareHouseManagementHead
           title="Categories"
-          type="categories"
+          type="setupCategories"
           shareHouseId=""
+          onsubmitData={addCategory}
         />
         <p className="flex justify-end">
-          {categories.length}/{CATEGORY_MAX_AMOUNT}
+          {getValues().categories.length}/{CATEGORY_MAX_AMOUNT}
         </p>
-        {categories.map((category) => (
+        {/* {getValues().categories.map((category) => (
           <Accordion
             type="single"
             collapsible
@@ -144,7 +155,7 @@ export const SetupStepper = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        ))}
+        ))} */}
         {errors.categories && (
           <p className="text-red-500 text-sm">{errors.categories.message}</p>
         )}
