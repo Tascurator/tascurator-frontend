@@ -1,10 +1,20 @@
 'use server';
 
-import { forgotPasswordSchema, TForgotPassword } from '@/constants/schema';
+import {
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  TForgotPassword,
+  TResetPassword,
+} from '@/constants/schema';
 import { generatePasswordResetToken } from '@/utils/tokens';
-import { getLandlordByEmail } from '@/utils/prisma-helpers';
+import {
+  getLandlordByEmail,
+  getPasswordResetDataByToken,
+} from '@/utils/prisma-helpers';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import prisma from '@/lib/prisma';
+import { hashPassword } from '@/utils/password-hashing';
 
 const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
@@ -37,6 +47,60 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
       `${process.env.NEXT_PUBLIC_APPLICATION_URL}/reset-password?token=${token.token}`,
     ),
   });
+};
+
+export const resetPassword = async (token: string, data: TResetPassword) => {
+  const validData = resetPasswordSchema.safeParse(data);
+
+  if (!validData.success) {
+    throw new Error('Invalid data');
+  }
+
+  /**
+   * Find the token in the database
+   */
+  const tokenData = await getPasswordResetDataByToken(token);
+
+  /**
+   * If the token does not exist or is expired, throw an error
+   */
+  if (!tokenData || tokenData.expiresAt < new Date()) {
+    throw new Error('Invalid or expired token');
+  }
+
+  try {
+    const deletedTokenData = await prisma.$transaction(async (prisma) => {
+      /**
+       * Hash the new password
+       */
+      const hashedPassword = await hashPassword(data.password);
+
+      /**
+       * Update the user's password
+       */
+      await prisma.landlord.update({
+        where: {
+          email: tokenData.email,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
+
+      return prisma.passwordResetToken.delete({
+        where: {
+          id: tokenData.id,
+        },
+      });
+    });
+
+    /**
+     * Send a success email
+     */
+    await sendPasswordResetSuccessEmail(deletedTokenData.email);
+  } catch (error) {
+    throw new Error('Failed to reset password');
+  }
 };
 
 export const sendPasswordResetSuccessEmail = async (email: string) => {
