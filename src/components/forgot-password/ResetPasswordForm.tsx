@@ -44,6 +44,7 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
     reset,
   } = useForm<TResetPassword>({
     resolver: zodResolver(resetPasswordSchema),
+    mode: 'onBlur',
     defaultValues: {
       password: '',
       confirmPassword: '',

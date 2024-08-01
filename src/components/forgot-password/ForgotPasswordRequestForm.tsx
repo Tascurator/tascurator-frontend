@@ -17,6 +17,7 @@ const ForgotPasswordRequestForm = () => {
 
   const formControls = useForm<TForgotPassword>({
     resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onBlur',
   });
 
   const {
