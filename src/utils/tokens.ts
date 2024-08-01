@@ -1,10 +1,13 @@
 import prisma from '@/lib/prisma';
 import { randomUUID } from 'node:crypto';
+import { CONSTRAINTS } from '@/constants/constraints';
 import { getPasswordResetTokenByEmail } from '@/utils/prisma-helpers';
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = randomUUID();
-  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour from now;
+  const expiresAt = new Date(
+    new Date().getTime() + CONSTRAINTS.PASSWORD_RESET_TOKEN_EXPIRATION_TIME,
+  );
 
   const existingToken = await getPasswordResetTokenByEmail(email);
 
