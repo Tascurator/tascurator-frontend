@@ -20,12 +20,14 @@ export const createSharehouse = (
         id: '1',
         rotationAssignmentId: '1',
         name: 'Category 1',
+        createdAt: new Date(),
         tasks: [
           {
             id: '1',
             title: 'Task 1',
             description: 'Description 1',
             categoryId: '1',
+            createdAt: new Date(),
           },
         ],
       },
@@ -40,6 +42,7 @@ export const createSharehouse = (
           name: 'Tenant 1',
           email: 'tests@test.com',
           extraAssignedCount: 0,
+          createdAt: new Date(),
         },
       },
     ],
@@ -66,12 +69,14 @@ describe('InitialAssignedData class', () => {
       id,
       rotationAssignmentId: '1',
       name: `Category ${id}`,
+      createdAt: new Date(),
       tasks: [
         {
           id,
           title,
           description,
           categoryId: id,
+          createdAt: new Date(),
         },
       ],
     });
@@ -87,6 +92,7 @@ describe('InitialAssignedData class', () => {
         name,
         email: `${name.toLowerCase().replace(' ', '')}@test.com`,
         extraAssignedCount: 0,
+        createdAt: new Date(),
       },
     });
   };

@@ -5,6 +5,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { editorExtensions } from '@/constants/tiptap-editor';
+import { EditorContent, useEditor } from '@tiptap/react';
 
 interface ITaskDescriptionDrawer {
   title: string;
@@ -34,23 +36,26 @@ export const TaskDescriptionDrawer = ({
   open,
   setOpen,
 }: ITaskDescriptionDrawer) => {
-  const handleLogout = () => {
-    setOpen(false);
-  };
+  const editor = useEditor({
+    extensions: editorExtensions,
+    content: description,
+    editable: false,
+  });
+
+  if (!editor) {
+    return null;
+  }
+
+  editor.commands.setContent(description);
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger />
-      <DrawerContent className={'h-[90%]'} asChild>
-        <form onSubmit={handleLogout}>
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription asChild>
-            <div
-              id="taskDescriptionHtml"
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-          </DrawerDescription>
-        </form>
+      <DrawerContent className={'h-[90%]'}>
+        <DrawerTitle>{title}</DrawerTitle>
+        <DrawerDescription asChild>
+          <EditorContent editor={editor} />
+        </DrawerDescription>
       </DrawerContent>
     </Drawer>
   );
