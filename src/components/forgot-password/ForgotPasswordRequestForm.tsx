@@ -39,7 +39,7 @@ const ForgotPasswordRequestForm = () => {
       if (error instanceof Error) {
         toast({
           variant: 'destructive',
-          description: 'error!',
+          description: error.message,
         });
       }
     }
