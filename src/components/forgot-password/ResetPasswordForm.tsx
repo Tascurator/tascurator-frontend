@@ -28,7 +28,7 @@ const {
 
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
-const Form = () => {
+const ResetPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -112,7 +112,7 @@ const Form = () => {
     try {
       const isValid = await trigger(['password', 'confirmPassword']);
       if (isValid) {
-        console.log('Form data:', formData);
+        console.log('ForgotPasswordRequestForm data:', formData);
         const { password } = formData;
         console.log('Password:', password);
         // await resetPassword(formData);
@@ -197,4 +197,4 @@ const Form = () => {
   );
 };
 
-export { Form };
+export { ResetPasswordForm };
