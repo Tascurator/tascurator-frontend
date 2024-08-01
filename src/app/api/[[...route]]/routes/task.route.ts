@@ -29,6 +29,8 @@ const app = new Hono()
       if (!task)
         return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
+      if (data.title === task.title) return c.json({}, 200);
+
       const updateData: { title?: string; description?: string } = {};
       if (data.title) updateData.title = data.title;
       if (data.description) updateData.description = data.description;
