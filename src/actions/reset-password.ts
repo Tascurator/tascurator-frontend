@@ -18,6 +18,11 @@ import { hashPassword } from '@/utils/password-hashing';
 
 const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
+/**
+ * Send email to the landlord with a link to reset their password
+ *
+ * @param data - The object containing the email address
+ */
 export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
   const validData = forgotPasswordSchema.safeParse(data);
 
@@ -28,7 +33,7 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
   const doesExist = await getLandlordByEmail(data.email);
 
   /**
-   * Even if the user does not exist, we should not show this information to the user. We pretend that the email was sent.
+   * Even if the landlord does not exist, we should not show this information to the landlord. We pretend that the email was sent.
    */
   if (!doesExist) return;
 
@@ -49,6 +54,12 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
   });
 };
 
+/**
+ * Reset the landlord's password with the token and given data
+ *
+ * @param token - The token that was sent to the landlord
+ * @param data - The object containing the new password
+ */
 export const resetPassword = async (token: string, data: TResetPassword) => {
   const validData = resetPasswordSchema.safeParse(data);
 
@@ -76,7 +87,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
       const hashedPassword = await hashPassword(data.password);
 
       /**
-       * Update the user's password
+       * Update the landlord's password
        */
       await prisma.landlord.update({
         where: {
@@ -103,6 +114,11 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
   }
 };
 
+/**
+ * Send email to the landlord that their password was successfully reset
+ *
+ * @param email - The email address of the landlord
+ */
 export const sendPasswordResetSuccessEmail = async (email: string) => {
   await sendEmail({
     to: email,
