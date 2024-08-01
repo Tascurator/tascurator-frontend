@@ -1,7 +1,7 @@
 import { EditorContent, useEditor } from '@tiptap/react';
 
 import { useFormContext } from 'react-hook-form';
-import { editorExtensions } from '@/components/ui/drawers/categories/CategoryCreationDrawerContent';
+import { editorExtensions } from '@/constants/tiptap-editor';
 
 import { TCategoryCreationSchema } from '@/constants/schema';
 import { EditorButtons } from './EditorButtons';
