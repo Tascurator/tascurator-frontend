@@ -30,7 +30,7 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
   const validData = forgotPasswordSchema.safeParse(data);
 
   if (!validData.success) {
-    throw new Error('Invalid data');
+    throw new Error(COMPLETION_ERROR('sending the email'));
   }
 
   const doesExist = await getLandlordByEmail(data.email);
