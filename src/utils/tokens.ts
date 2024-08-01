@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { randomUUID } from 'node:crypto';
+import { getPasswordResetTokenByEmail } from '@/utils/prisma-helpers';
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = randomUUID();
@@ -22,16 +23,4 @@ export const generatePasswordResetToken = async (email: string) => {
       expiresAt,
     },
   });
-};
-
-export const getPasswordResetTokenByEmail = async (email: string) => {
-  try {
-    return await prisma.passwordResetToken.findFirst({
-      where: {
-        email,
-      },
-    });
-  } catch {
-    return null;
-  }
 };

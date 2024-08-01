@@ -19,6 +19,24 @@ export const getLandlordByEmail = async (email: string) => {
 };
 
 /**
+ * Get a password reset token by email address
+ *
+ * @param email - The email address of the landlord
+ * @returns A promise that resolves with the password reset token
+ */
+export const getPasswordResetTokenByEmail = async (email: string) => {
+  try {
+    return await prisma.passwordResetToken.findFirst({
+      where: {
+        email,
+      },
+    });
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Get the associated password reset token data for a given token
  *
  * @param token - The token to search for
