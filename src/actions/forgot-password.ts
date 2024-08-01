@@ -78,7 +78,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
   /**
    * If the token does not exist or is expired, throw an error
    */
-  if (!tokenData || isTokenValid(token, tokenData.expiresAt)) {
+  if (!tokenData || !isTokenValid(token, tokenData.expiresAt)) {
     throw new Error(INVALID_TOKEN);
   }
 
