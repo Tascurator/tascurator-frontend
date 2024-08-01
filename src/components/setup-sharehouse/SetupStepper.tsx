@@ -178,7 +178,7 @@ export const SetupStepper = ({
       >
         <ShareHouseManagementHead
           title="Tenants"
-          type="tenants"
+          type="setupTenants"
           shareHouseId=""
         />
         <p className="flex justify-end">
