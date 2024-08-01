@@ -15,31 +15,7 @@ import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
-
-interface IShareHouseWithOtherTables {
-  RotationAssignment: {
-    categories: {
-      tasks: {
-        id: string;
-        title: string;
-        description: string;
-        createdAt: Date;
-      }[];
-      id: string;
-      name: string;
-      createdAt: Date;
-    }[];
-    tenantPlaceholders: {
-      tenant: {
-        id: string;
-        name: string;
-        email: string;
-        createdAt: Date;
-      } | null;
-    }[];
-    rotationCycle: number;
-  } | null;
-}
+import { TPrismaShareHouseWithOtherTables } from '@/types/server';
 
 const app = new Hono()
 
@@ -51,7 +27,7 @@ const app = new Hono()
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables: IShareHouseWithOtherTables | null =
+      const shareHouseWithOtherTables: TPrismaShareHouseWithOtherTables | null =
         await prisma.shareHouse.findUnique({
           where: {
             id: shareHouseId,
