@@ -27,3 +27,13 @@ export const generatePasswordResetToken = async (email: string) => {
     },
   });
 };
+
+/**
+ * Check if the token is valid by checking the expiration time
+ *
+ * @param token - The token to check
+ * @param expirationTime - The expiration time of the token
+ * @returns A boolean indicating if the token is valid
+ */
+export const isTokenValid = (token: string, expirationTime: Date) =>
+  new Date() < expirationTime;
