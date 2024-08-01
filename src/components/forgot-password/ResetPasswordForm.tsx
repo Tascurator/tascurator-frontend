@@ -109,7 +109,6 @@ const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
     },
   ];
 
-  // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
     try {
       /**

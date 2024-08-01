@@ -24,7 +24,6 @@ const ForgotPasswordRequestForm = () => {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  // TODO: Implement the proper forgot password logic
   const onSubmit = async (formData: TForgotPassword) => {
     /**
      * Wait for 1 second for user experience purposes
