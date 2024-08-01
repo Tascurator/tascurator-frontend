@@ -20,6 +20,7 @@ const ForgotPasswordRequestForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
+    reset,
   } = useForm<TForgotPassword>({
     resolver: zodResolver(forgotPasswordSchema),
   });
@@ -31,10 +32,13 @@ const ForgotPasswordRequestForm = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
-      // Send the forgot password email with generated token
+      /**
+       * Send the forgot password email with generated token
+       */
       await sendForgotPasswordEmail(formData);
 
       setOpen(true);
+      reset();
     } catch (error) {
       if (error instanceof Error) {
         toast({
