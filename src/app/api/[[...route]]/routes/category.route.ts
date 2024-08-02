@@ -44,7 +44,8 @@ const app = new Hono()
         if (!category)
           return c.json({ error: SERVER_MESSAGES.NOT_FOUND('category') }, 404);
 
-        if (data.name === category.name) return c.json({}, 200);
+        if (data.name === category.name)
+          return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
 
         const shareHouseId = category.rotationAssignment.shareHouseId;
 

@@ -149,7 +149,8 @@ const app = new Hono()
             404,
           );
 
-        if (data.name === shareHouse.name) return c.json({}, 200);
+        if (data.name === shareHouse.name)
+          return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
 
         // Check if the landlord has a share house with the same name
         const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
