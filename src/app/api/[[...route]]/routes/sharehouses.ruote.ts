@@ -29,6 +29,7 @@ const app = new Hono()
                 },
               },
             },
+            orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
           },
         },
       });

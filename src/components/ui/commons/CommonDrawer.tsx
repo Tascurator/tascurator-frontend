@@ -64,17 +64,35 @@ export const CommonDrawer = <T extends FieldValues>({
     handleSubmit,
   } = useFormContext<T>();
 
+  const onOpenChange = (open: boolean) => {
+    /**
+     * Prevent the drawer from closing if the form is submitting
+     */
+    if (isSubmitting && !open) return;
+
+    setOpen(open);
+  };
+
   return (
     <>
       {/* Lading spinner if the loadingSpinner === true */}
       {onSubmit && <LoadingSpinner isLoading={isSubmitting} />}
 
       {/* Drawer */}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
+      <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerTrigger />
         <DrawerContent className={className} asChild={!!onSubmit}>
           {onSubmit ? (
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+              onSubmit={(e) => {
+                /**
+                 * In case the form is nested in another form, prevent submitting the parent form by stopping the event propagation
+                 */
+                e.stopPropagation();
+
+                void handleSubmit(onSubmit)(e);
+              }}
+            >
               <DrawerTitle>{title}</DrawerTitle>
               {children}
             </form>
