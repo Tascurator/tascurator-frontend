@@ -25,6 +25,9 @@ export const SERVER_ERROR_MESSAGES = {
     'An error occurred while sending the email. Please try again later.',
   ENV_KEYS_MISSING: (keys: string[]) =>
     `The following environment key(s) are missing: ${keys.join(', ')}.`,
-  INVALID_TOKEN:
+  INVALID_TOKEN_RESET_PASSWORD:
     'Invalid or expired token. Please try resetting your password again.',
+  INVALID_TOKEN_VERIFICATION:
+    'Invalid or expired token. Please resend the email and verify your account again.',
+  NOT_EXISTING_USER: 'Email does not exist.',
 };

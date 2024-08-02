@@ -14,7 +14,7 @@ export const InvalidTokenToast = () => {
 
   useEffect(() => {
     toast({
-      description: SERVER_ERROR_MESSAGES.INVALID_TOKEN,
+      description: SERVER_ERROR_MESSAGES.INVALID_TOKEN_RESET_PASSWORD,
       variant: 'destructive',
     });
   }, [mounted]);
