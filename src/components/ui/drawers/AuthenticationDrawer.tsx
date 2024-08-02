@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 
-import { MailCheck, CircleCheck } from 'lucide-react';
+import { MailCheck, CircleCheck, MailWarning } from 'lucide-react';
 
 import { ReactNode } from 'react';
 import {
@@ -69,6 +69,7 @@ interface IAuthenticationChildrenDrawer<T extends FieldValues> {
   open: boolean;
   setOpen: (value: boolean) => void;
   onSubmit?: SubmitHandler<T>;
+  errorMessages?: string;
 }
 
 /**
@@ -139,7 +140,71 @@ export const PasswordChangedDrawer = <T extends FieldValues>({
         icon={
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
-        buttonLabel={'Log In'}
+        buttonLabel={'Log in'}
+        onSubmit={onSubmit}
+        open={open}
+        setOpen={setOpen}
+      />
+    </FormProvider>
+  );
+};
+
+/**
+ * A success verification drawer component to confirm the email verification
+ */
+export const SuccessVerificationDrawer = <T extends FieldValues>({
+  open,
+  setOpen,
+}: IAuthenticationChildrenDrawer<T>) => {
+  const router = useRouter();
+
+  const formControls = useForm();
+
+  const onSubmit = () => {
+    router.push('/login');
+  };
+  return (
+    <FormProvider {...formControls}>
+      <AuthenticationDrawer
+        title={'Email verification is complete!'}
+        description={[
+          'Your email has been successfully verified.',
+          'You can now log in to your account.',
+        ]}
+        icon={
+          <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
+        }
+        buttonLabel={'Log in'}
+        onSubmit={onSubmit}
+        open={open}
+        setOpen={setOpen}
+      />
+    </FormProvider>
+  );
+};
+
+/**
+ * A failed verification drawer component to show the error message and resend email button
+ */
+export const FailedVerificationDrawer = <T extends FieldValues>({
+  open,
+  setOpen,
+  errorMessages,
+}: IAuthenticationChildrenDrawer<T>) => {
+  const formControls = useForm();
+
+  const onSubmit = () => {
+    console.log('Resend email');
+  };
+  return (
+    <FormProvider {...formControls}>
+      <AuthenticationDrawer
+        title={'Email verification has failed'}
+        description={
+          errorMessages || 'We could not verify your email. Please try again.'
+        }
+        icon={<MailWarning className="w-full h-full stroke-destructive" />}
+        buttonLabel={'Resend email'}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
