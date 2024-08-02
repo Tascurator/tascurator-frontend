@@ -1,4 +1,4 @@
-import bcrypt, { genSaltSync } from 'bcryptjs';
+import bcrypt, { genSalt } from 'bcryptjs';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const { ENV_KEYS_MISSING, COMPLETION_ERROR } = SERVER_ERROR_MESSAGES;
@@ -20,5 +20,7 @@ export const hashPassword = async (password: string) => {
     throw new Error(COMPLETION_ERROR('hashing the password'));
   }
 
-  return bcrypt.hash(password, genSaltSync(Number(salt)));
+  const saltRounds = await genSalt(Number(salt));
+
+  return bcrypt.hash(password, saltRounds);
 };
