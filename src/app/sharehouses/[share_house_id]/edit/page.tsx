@@ -6,11 +6,12 @@ import {
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { TenantListItem } from '@/components/ui/tenantList';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { TabsContent } from '@/components/ui/tabs';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
 import { RotationCycles } from '@/components/sharehouses-management/RotationCycles';
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
+import EditTabsManager from '@/components/edit/EditTabsManager';
 
 interface IEditShareHousePageProps {
   params: {
@@ -36,13 +37,7 @@ const EditShareHousePage = async ({
 
   return (
     <>
-      <Tabs defaultValue="Tasks" className="mt-4 mb-6">
-        <TabsList>
-          <TabsTrigger value="Tasks">Tasks</TabsTrigger>
-          <TabsTrigger value="Schedule">Schedule</TabsTrigger>
-          <TabsTrigger value="Tenants">Tenants</TabsTrigger>
-        </TabsList>
-
+      <EditTabsManager>
         {/* Tasks */}
         <TabsContent value="Tasks">
           <ShareHouseManagementHead
@@ -119,7 +114,7 @@ const EditShareHousePage = async ({
             <p className="text-center">No tenant</p>
           )}
         </TabsContent>
-      </Tabs>
+      </EditTabsManager>
     </>
   );
 };
