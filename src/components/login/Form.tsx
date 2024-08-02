@@ -85,14 +85,24 @@ const Form = () => {
           )}
         </div>
         <div className="flex justify-end">
-          <Button type="button" variant={'link'} className={'mb-8 justify-end'}>
+          <Button
+            type="button"
+            variant={'link'}
+            className={'mb-8 justify-end'}
+            asChild
+          >
             <Link href="/forgot-password">Forgot password?</Link>
           </Button>
         </div>
         <Button type="submit" className={'mx-auto mb-4'} disabled={!isValid}>
           Log in
         </Button>
-        <Button type="button" className={'mx-auto'} variant={'secondary'}>
+        <Button
+          type="button"
+          className={'mx-auto'}
+          variant={'secondary'}
+          asChild
+        >
           <Link href="/signup">Sign up</Link>
         </Button>
       </form>

@@ -12,7 +12,7 @@ const SignUpPage = () => {
         <Logo responsive={false} />
         <Form />
         <div className="flex justify-center">
-          <Button type="button" variant={'link'}>
+          <Button type="button" variant={'link'} asChild>
             <Link href="/login" className={'text-[1rem]'}>
               Already have an account?
             </Link>
