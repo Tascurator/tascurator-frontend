@@ -34,6 +34,8 @@ export const TenantInvitationDrawer = ({
     defaultValues: tenant,
   });
 
+  const { reset } = formControls;
+
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -75,6 +77,7 @@ export const TenantInvitationDrawer = ({
       });
       revalidatePage(path);
       setOpen(false);
+      reset();
     } catch (error) {
       if (error instanceof Error) {
         toast({
