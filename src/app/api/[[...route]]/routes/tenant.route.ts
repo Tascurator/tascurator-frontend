@@ -251,7 +251,6 @@ const app = new Hono()
             400,
           );
         }
-        console.log('tenant', tenants);
 
         // Check if the sharehouse has a tenant with the same name
         const tenantWithSameName = await prisma.tenant.findFirst({
