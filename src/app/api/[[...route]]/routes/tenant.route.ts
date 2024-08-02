@@ -59,6 +59,12 @@ const app = new Hono()
         const shareHouseId =
           tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
 
+        if (data.name === tenant.name)
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
+          );
+
         // Check if the sharehouse has a tenant with the same name
         const tenantWithSameName = await prisma.tenant.findFirst({
           where: {
