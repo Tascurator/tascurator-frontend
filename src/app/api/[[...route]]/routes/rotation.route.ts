@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import type { IAssignedData } from '@/types/server';
@@ -58,7 +58,7 @@ const app = new Hono()
       if (!shareHouse) {
         return c.json(
           {
-            error: SERVER_MESSAGES.NOT_FOUND('share house'),
+            error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house'),
           },
           404,
         );
@@ -68,7 +68,10 @@ const app = new Hono()
        * Return 500 if RotationAssignment or AssignmentSheet not found
        */
       if (!shareHouse.RotationAssignment || !shareHouse.assignmentSheet) {
-        return c.json({ error: SERVER_MESSAGES.INTERNAL_SERVER_ERROR }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
       }
 
       // Current rotation data
@@ -183,14 +186,14 @@ const app = new Hono()
       return c.json(combinedData);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
           'fetching the data for the current rotation',
         ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR(
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
             'fetching the data for the current rotation',
           ),
         },
@@ -225,13 +228,16 @@ const app = new Hono()
          */
         if (!shareHouse) {
           return c.json(
-            { error: SERVER_MESSAGES.NOT_FOUND('share house') },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
             404,
           );
         }
 
         if (!shareHouse.RotationAssignment)
-          return c.json({ error: SERVER_MESSAGES.INTERNAL_SERVER_ERROR }, 500);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+            500,
+          );
 
         const updateRotationCycle = await prisma.rotationAssignment.update({
           where: {
@@ -245,14 +251,14 @@ const app = new Hono()
         return c.json(updateRotationCycle, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
             'updates the rotation cycle',
           ),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR(
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
               'updates the rotation cycle',
             ),
           },

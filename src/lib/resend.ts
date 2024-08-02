@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const senderEmail = process.env.RESEND_SENDER_EMAIL;
@@ -24,7 +24,7 @@ export const sendEmail = async ({ to, subject, html }: ISendEmailProps) => {
    */
   if (!senderEmail || !senderName) {
     throw new Error(
-      SERVER_MESSAGES.ENV_KEYS_MISSING([
+      SERVER_ERROR_MESSAGES.ENV_KEYS_MISSING([
         'RESEND_SENDER_EMAIL',
         'RESEND_SENDER_NAME',
       ]),
@@ -45,8 +45,8 @@ export const sendEmail = async ({ to, subject, html }: ISendEmailProps) => {
    * If there is an error, throw an error with the message.
    */
   if (error) {
-    console.error(SERVER_MESSAGES.EMAIL_SEND_ERROR, error.message);
-    throw new Error(SERVER_MESSAGES.EMAIL_SEND_ERROR);
+    console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error.message);
+    throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
   }
 
   /**

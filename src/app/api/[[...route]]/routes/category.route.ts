@@ -5,7 +5,7 @@ import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -23,7 +23,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: SERVER_MESSAGES.AUTH_REQUIRED,
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -42,10 +42,16 @@ const app = new Hono()
         });
 
         if (!category)
-          return c.json({ error: SERVER_MESSAGES.NOT_FOUND('category') }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+            404,
+          );
 
         if (data.name === category.name)
-          return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
+          );
 
         const shareHouseId = category.rotationAssignment.shareHouseId;
 
@@ -62,7 +68,7 @@ const app = new Hono()
         if (categoryWithSameName)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'name',
                 'category',
                 'share house',
@@ -83,12 +89,16 @@ const app = new Hono()
         return c.json(updateCategory, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the category'),
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'updating the category',
+          ),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR('updating the category'),
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the category',
+            ),
           },
           500,
         );
@@ -109,7 +119,10 @@ const app = new Hono()
         },
       });
       if (!category)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('category') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
 
       const categories = await prisma.category.findMany({
         where: {
@@ -120,7 +133,7 @@ const app = new Hono()
       if (categories.length <= 1)
         return c.json(
           {
-            error: SERVER_MESSAGES.DELETE_NOT_ALLOWED('category'),
+            error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('category'),
           },
           403,
         );
@@ -134,12 +147,14 @@ const app = new Hono()
       return c.json(deleteCategory, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the category:'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the category:',
+        ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR('delete the category'),
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('delete the category'),
         },
         500,
       );
@@ -160,7 +175,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: SERVER_MESSAGES.AUTH_REQUIRED,
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -181,7 +196,7 @@ const app = new Hono()
         if (!rotationAssignment) {
           return c.json(
             {
-              error: SERVER_MESSAGES.NOT_FOUND('rotationAssignment'),
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
             },
             404,
           );
@@ -192,7 +207,7 @@ const app = new Hono()
         ) {
           return c.json(
             {
-              error: SERVER_MESSAGES.MAX_LIMIT_REACHED(
+              error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
                 'categories',
                 CONSTRAINTS.CATEGORY_MAX_AMOUNT,
               ),
@@ -214,7 +229,7 @@ const app = new Hono()
         if (categoryWithSameName)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'name',
                 'category',
                 'share house',
@@ -243,12 +258,16 @@ const app = new Hono()
         return c.json(newCategory, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the category'),
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+            'creating the category',
+          ),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR('creating the category'),
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the category',
+            ),
           },
           500,
         );

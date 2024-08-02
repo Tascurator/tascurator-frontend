@@ -4,7 +4,7 @@ import { zValidator } from '@hono/zod-validator';
 import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const app = new Hono()
 
@@ -18,7 +18,7 @@ const app = new Hono()
       const data = c.req.valid('json');
 
       if (!data || Object.keys(data).length === 0)
-        return c.json({ error: SERVER_MESSAGES.NO_DATA_PROVIDED }, 400);
+        return c.json({ error: SERVER_ERROR_MESSAGES.NO_DATA_PROVIDED }, 400);
 
       const task = await prisma.task.findUnique({
         where: {
@@ -27,10 +27,10 @@ const app = new Hono()
       });
 
       if (!task)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('task') }, 404);
+        return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
       if (data.title === task.title)
-        return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
+        return c.json({ message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME }, 200);
 
       const updateData: { title?: string; description?: string } = {};
       if (data.title) updateData.title = data.title;
@@ -46,12 +46,12 @@ const app = new Hono()
       return c.json(updateTask, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the task'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the task'),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR('updating the task'),
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('updating the task'),
         },
         500,
       );
@@ -75,13 +75,16 @@ const app = new Hono()
       });
 
       if (!category) {
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('category') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
+          404,
+        );
       }
 
       if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
         return c.json(
           {
-            error: SERVER_MESSAGES.MAX_LIMIT_REACHED(
+            error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
               'tasks',
               CONSTRAINTS.TASK_MAX_AMOUNT,
             ),
@@ -102,11 +105,11 @@ const app = new Hono()
       return c.json(newTask, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the task'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the task'),
         error,
       );
       return c.json(
-        { error: SERVER_MESSAGES.COMPLETION_ERROR('creating the task') },
+        { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('creating the task') },
         500,
       );
     }
@@ -126,7 +129,7 @@ const app = new Hono()
       });
 
       if (!task)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('task') }, 404);
+        return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
       const tasks = await prisma.task.findMany({
         where: {
@@ -136,7 +139,7 @@ const app = new Hono()
 
       if (tasks.length <= 1)
         return c.json(
-          { error: SERVER_MESSAGES.DELETE_NOT_ALLOWED('task') },
+          { error: SERVER_ERROR_MESSAGES.DELETE_NOT_ALLOWED('task') },
           403,
         );
 
@@ -149,11 +152,11 @@ const app = new Hono()
       return c.json(deleteTask, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the task'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the task'),
         error,
       );
       return c.json(
-        { error: SERVER_MESSAGES.COMPLETION_ERROR('deleting the task') },
+        { error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the task') },
         500,
       );
     }

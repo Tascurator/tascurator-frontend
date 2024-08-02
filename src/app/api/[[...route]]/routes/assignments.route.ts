@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import prisma from '@/lib/prisma';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
@@ -55,7 +55,7 @@ const app = new Hono()
         !assignmentSheet.ShareHouse.RotationAssignment
       ) {
         return c.json(
-          { error: SERVER_MESSAGES.NOT_FOUND('assignmentSheet') },
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
           500,
         );
       }
@@ -68,7 +68,10 @@ const app = new Hono()
           (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
         )
       ) {
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('tenant') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
       }
 
       /**
@@ -157,14 +160,14 @@ const app = new Hono()
       return c.json(rotationScheduleForecast);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
           'fetching data for the tenant',
         ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR(
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
             'fetching data for the tenant',
           ),
         },
@@ -189,7 +192,10 @@ const app = new Hono()
        * Check if the tasks array is empty.
        */
       if (data.tasks.length === 0) {
-        return c.json({ error: SERVER_MESSAGES.EMPTY_ARRAY('task') }, 400);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.EMPTY_ARRAY('task') },
+          400,
+        );
       }
 
       try {
@@ -204,7 +210,7 @@ const app = new Hono()
          */
         if (!assignmentSheet) {
           return c.json(
-            { error: SERVER_MESSAGES.NOT_FOUND('assignmentSheet') },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
             500,
           );
         }
@@ -222,7 +228,10 @@ const app = new Hono()
          * Check if the tenant exists in the assignedData.
          */
         if (!assignedData.hasTenant(tenantId)) {
-          return c.json({ error: SERVER_MESSAGES.NOT_FOUND('tenant') }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
         }
 
         /**
@@ -239,7 +248,7 @@ const app = new Hono()
           )
         ) {
           return c.json(
-            { error: SERVER_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
+            { error: SERVER_ERROR_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
             400,
           );
         }
@@ -271,14 +280,14 @@ const app = new Hono()
         return c.json({ message: 'Task completion updated' });
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
             'updating the task completion',
           ),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR(
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
               'updating the task completion',
             ),
           },

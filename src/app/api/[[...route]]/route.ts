@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
 
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import sharehouseRoute from '@/app/api/[[...route]]/routes/sharehouse.route';
@@ -34,7 +34,7 @@ const routes = app
     if (!session) {
       return c.json(
         {
-          error: SERVER_MESSAGES.AUTH_REQUIRED,
+          error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
         },
         401,
       );
@@ -45,7 +45,7 @@ const routes = app
     });
 
     return c.json({
-      message: SERVER_MESSAGES.AUTH_REQUIRED,
+      message: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
       session,
       landlord,
     });

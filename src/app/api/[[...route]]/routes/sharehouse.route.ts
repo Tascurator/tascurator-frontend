@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 
 import { CONSTRAINTS } from '@/constants/constraints';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
   shareHouseCreationSchema,
   shareHouseNameSchema,
@@ -58,10 +58,16 @@ const app = new Hono()
         });
 
       if (!shareHouseWithOtherTables)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('share house') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       if (!shareHouseWithOtherTables.RotationAssignment)
-        return c.json({ error: SERVER_MESSAGES.INTERNAL_SERVER_ERROR }, 500);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+          500,
+        );
 
       const shareHouseData = {
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
@@ -98,14 +104,14 @@ const app = new Hono()
       return c.json(shareHouseData);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
           'fetching data for the share house',
         ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR(
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
             'fetching data for the share house',
           ),
         },
@@ -128,7 +134,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: SERVER_MESSAGES.AUTH_REQUIRED,
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -145,12 +151,15 @@ const app = new Hono()
 
         if (!shareHouse)
           return c.json(
-            { error: SERVER_MESSAGES.NOT_FOUND('share house') },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
             404,
           );
 
         if (data.name === shareHouse.name)
-          return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
+          );
 
         // Check if the landlord has a share house with the same name
         const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
@@ -163,7 +172,7 @@ const app = new Hono()
         if (ShareHouseWithSameName)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'name',
                 'share house',
                 'landlord',
@@ -184,14 +193,14 @@ const app = new Hono()
         return c.json(updateShareHouse, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
             'updating data for the share house',
           ),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR(
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
               'updating data for the share house',
             ),
           },
@@ -215,7 +224,10 @@ const app = new Hono()
       });
 
       if (!shareHouse)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('share house') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          404,
+        );
 
       const transaction = await prisma.$transaction(async (prisma) => {
         const deleteShareHouse = await prisma.shareHouse.delete({
@@ -261,12 +273,16 @@ const app = new Hono()
       return c.json(transaction, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the share house'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
+          'deleting the share house',
+        ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR('deleting the share house'),
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+            'deleting the share house',
+          ),
         },
         500,
       );
@@ -284,7 +300,7 @@ const app = new Hono()
       if (!session) {
         return c.json(
           {
-            error: SERVER_MESSAGES.AUTH_REQUIRED,
+            error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
           },
           401,
         );
@@ -302,7 +318,10 @@ const app = new Hono()
       });
 
       if (!landlord)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('landlord') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('landlord') },
+          404,
+        );
 
       // Check if the landlord has a share house with the same name
       const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
@@ -315,7 +334,7 @@ const app = new Hono()
       if (ShareHouseWithSameName)
         return c.json(
           {
-            error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
               'name',
               'share house',
               'landlord',
@@ -327,7 +346,7 @@ const app = new Hono()
       if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
           {
-            error: SERVER_MESSAGES.MAX_LIMIT_REACHED(
+            error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
               'shareHouses',
               CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT,
             ),
@@ -343,7 +362,7 @@ const app = new Hono()
       if (isDuplicatedCategoryName)
         return c.json(
           {
-            error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
               'name',
               'category',
               'provided data',
@@ -360,7 +379,7 @@ const app = new Hono()
       if (isDuplicatedTenantName)
         return c.json(
           {
-            error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
               'name',
               'tenant',
               'provided data',
@@ -376,7 +395,7 @@ const app = new Hono()
       if (isDuplicatedTenantEmail)
         return c.json(
           {
-            error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
               'email',
               'tenant',
               'provided data',
@@ -469,7 +488,7 @@ const app = new Hono()
         });
 
         if (!sharehouse || !sharehouse.RotationAssignment) {
-          throw new Error(SERVER_MESSAGES.NOT_FOUND('shareHouse'));
+          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('shareHouse'));
         }
 
         const newInitialAssignedData = new InitialAssignedData(
@@ -503,10 +522,10 @@ const app = new Hono()
             });
           }
         } catch (error) {
-          console.error(SERVER_MESSAGES.EMAIL_SEND_ERROR, error);
+          console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
           return c.json(
             {
-              error: SERVER_MESSAGES.EMAIL_SEND_ERROR,
+              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
             },
             500,
           );
@@ -523,14 +542,14 @@ const app = new Hono()
       return c.json(transaction, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR(
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
           'creating data for the share house',
         ),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR(
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
             'creating data for the share house',
           ),
         },

@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { Tenant } from '@prisma/client';
 import { tenantInvitationSchema } from '@/constants/schema';
-import { SERVER_MESSAGES } from '@/constants/server-messages';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
@@ -24,7 +24,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: SERVER_MESSAGES.AUTH_REQUIRED,
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -51,13 +51,19 @@ const app = new Hono()
         });
 
         if (!tenant)
-          return c.json({ error: SERVER_MESSAGES.NOT_FOUND('tenant') }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+            404,
+          );
 
         const shareHouseId =
           tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
 
         if (data.name === tenant.name)
-          return c.json({ message: SERVER_MESSAGES.CHANGE_SAME_NAME }, 200);
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
+          );
 
         // Check if the sharehouse has a tenant with the same name
         const tenantWithSameName = await prisma.tenant.findFirst({
@@ -76,7 +82,7 @@ const app = new Hono()
         if (tenantWithSameName)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'name',
                 'tenant',
                 'share house',
@@ -97,12 +103,14 @@ const app = new Hono()
         return c.json(updateTenant, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the tenant'),
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('updating the tenant'),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR('updating the tenant'),
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'updating the tenant',
+            ),
           },
           500,
         );
@@ -123,7 +131,10 @@ const app = new Hono()
         },
       });
       if (!tenant)
-        return c.json({ error: SERVER_MESSAGES.NOT_FOUND('tenant') }, 404);
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
 
       const deleteTenant = await prisma.tenant.delete({
         where: {
@@ -133,12 +144,12 @@ const app = new Hono()
       return c.json(deleteTenant, 201);
     } catch (error) {
       console.error(
-        SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the tenant'),
+        SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the tenant'),
         error,
       );
       return c.json(
         {
-          error: SERVER_MESSAGES.COMPLETION_ERROR('deleting the tenant'),
+          error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR('deleting the tenant'),
         },
         500,
       );
@@ -159,7 +170,7 @@ const app = new Hono()
         if (!session) {
           return c.json(
             {
-              error: SERVER_MESSAGES.AUTH_REQUIRED,
+              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
             },
             401,
           );
@@ -185,7 +196,7 @@ const app = new Hono()
         if (existingTenant)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'email',
                 'tenant',
                 'share house',
@@ -217,7 +228,7 @@ const app = new Hono()
         if (!RotationAssignment || !assignmentSheet)
           return c.json(
             {
-              error: SERVER_MESSAGES.NOT_FOUND(
+              error: SERVER_ERROR_MESSAGES.NOT_FOUND(
                 'share house, rotationAssignment, or assignmentSheet',
               ),
             },
@@ -241,7 +252,7 @@ const app = new Hono()
         if (tenantWithSameName)
           return c.json(
             {
-              error: SERVER_MESSAGES.DUPLICATE_ENTRY(
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
                 'name',
                 'tenant',
                 'share house',
@@ -304,8 +315,8 @@ const app = new Hono()
               ),
             });
           } catch (error) {
-            console.error(SERVER_MESSAGES.EMAIL_SEND_ERROR, error);
-            throw new Error(SERVER_MESSAGES.EMAIL_SEND_ERROR);
+            console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+            throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
           }
 
           return newTenant;
@@ -314,12 +325,14 @@ const app = new Hono()
         return c.json(transaction, 201);
       } catch (error) {
         console.error(
-          SERVER_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the tenant'),
+          SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('creating the tenant'),
           error,
         );
         return c.json(
           {
-            error: SERVER_MESSAGES.COMPLETION_ERROR('creating the tenant'),
+            error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
+              'creating the tenant',
+            ),
           },
           500,
         );
