@@ -42,7 +42,7 @@ export const getPasswordResetTokenByEmail = async (email: string) => {
  * @param token - The token to search for
  * @returns A promise that resolves with the password reset token data
  */
-export const getPasswordResetDataByToken = async (token: string) => {
+export const getPasswordResetTokenDataByToken = async (token: string) => {
   try {
     return await prisma.passwordResetToken.findUnique({
       where: {

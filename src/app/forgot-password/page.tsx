@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/ui/Logo';
 import { ForgotPasswordRequestForm } from '@/components/forgot-password/ForgotPasswordRequestForm';
 import { Button } from '@/components/ui/button';
-import { getPasswordResetDataByToken } from '@/utils/prisma-helpers';
+import { getPasswordResetTokenDataByToken } from '@/utils/prisma-helpers';
 import { ResetPasswordForm } from '@/components/forgot-password/ResetPasswordForm';
 import { isTokenValid } from '@/utils/tokens';
 import { InvalidTokenToast } from '@/components/forgot-password/InvalidTokenToast';
@@ -27,7 +27,7 @@ const ForgotPasswordPage = async ({
     /**
      * Firstly, check if the token does exist in the database
      */
-    const data = await getPasswordResetDataByToken(token);
+    const data = await getPasswordResetTokenDataByToken(token);
 
     /**
      * If token is valid, let's display the reset password form

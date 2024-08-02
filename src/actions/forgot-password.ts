@@ -9,7 +9,7 @@ import {
 import { generatePasswordResetToken, isTokenValid } from '@/utils/tokens';
 import {
   getLandlordByEmail,
-  getPasswordResetDataByToken,
+  getPasswordResetTokenDataByToken,
 } from '@/utils/prisma-helpers';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
@@ -73,7 +73,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
   /**
    * Find the token in the database
    */
-  const tokenData = await getPasswordResetDataByToken(token);
+  const tokenData = await getPasswordResetTokenDataByToken(token);
 
   /**
    * If the token does not exist or is expired, throw an error
