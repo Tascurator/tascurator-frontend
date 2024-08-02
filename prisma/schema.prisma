@@ -87,20 +87,20 @@ model TenantPlaceholder {
   @@id([rotationAssignmentId, index])
 }
 
-model PasswordResetToken {
-  id        String   @id @default(uuid())
-  email     String
-  token     String   @unique
+model VerificationToken {
+  id String @id @default(uuid())
+  email String
+  token String @unique
   expiresAt DateTime
 
   @@unique([email, token])
 }
 
-model VerificationToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
-  expires DateTime
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
 
   @@unique([email, token])
 }

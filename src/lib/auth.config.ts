@@ -2,7 +2,7 @@ import { type NextAuthConfig, CredentialsSignin } from 'next-auth';
 import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
-import { getUserByEmail } from '@/utils/prisma-helpers';
+import { getLandlordByEmail } from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
@@ -24,7 +24,7 @@ export default {
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
 
-          const user = await getUserByEmail(email);
+          const user = await getLandlordByEmail(email);
 
           // If the user does not exist or the email or password is not provided
           if (!user || !user.email || !user.password) return null;

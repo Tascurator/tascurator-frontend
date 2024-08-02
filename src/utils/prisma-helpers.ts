@@ -18,7 +18,13 @@ export const getLandlordByEmail = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: string) => {
+/**
+ * Get a landlord by ID
+ *
+ * @param id - The ID of the landlord
+ * @returns A promise that resolves with the landlord
+ */
+export const getLandlordById = async (id: string) => {
   try {
     const user = await prisma.landlord.findUnique({
       where: { id },
@@ -64,10 +70,18 @@ export const getPasswordResetTokenDataByToken = async (token: string) => {
     return null;
   }
 };
-export const getVerificationTokenByToken = async (token: string) => {
+
+// TODO: Update tsdoc comments
+/**
+ * Get the verification token by email address
+ *
+ * @param email - The email address of the landlord
+ * @returns A promise that resolves with the verification email token
+ */
+export const getVerificationTokenByEmail = async (email: string) => {
   try {
-    const verificationToken = await prisma.verificationToken.findUnique({
-      where: { token },
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { email },
     });
     return verificationToken;
   } catch (error) {
@@ -75,10 +89,16 @@ export const getVerificationTokenByToken = async (token: string) => {
   }
 };
 
-export const getVerificationTokenByEmail = async (email: string) => {
+/**
+ * Get the verification token data for a given token
+ *
+ * @param token - The token to search for
+ * @returns A promise that resolves with the verification email token data
+ */
+export const getVerificationTokenByToken = async (token: string) => {
   try {
-    const verificationToken = await prisma.verificationToken.findFirst({
-      where: { email },
+    const verificationToken = await prisma.verificationToken.findUnique({
+      where: { token },
     });
     return verificationToken;
   } catch (error) {
