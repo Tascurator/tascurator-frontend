@@ -81,7 +81,7 @@ const app = new Hono()
         );
       }
 
-      if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
+      if (category.tasks.length >= CONSTRAINTS.TASK_MAX_AMOUNT)
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
