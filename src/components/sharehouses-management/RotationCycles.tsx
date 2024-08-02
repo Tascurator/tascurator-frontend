@@ -8,6 +8,7 @@ import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
 import { RotationCycle } from '@/types/commons';
+import { RotationCycleInformationMessage } from '@/components/ui/drawers/RotationCycleInformationMessage';
 
 interface IRotationCyclesProps {
   shareHouseId: string;
@@ -83,7 +84,8 @@ export const RotationCycles = ({
       {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
       {/* Schedule */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <p>Repeat</p>
+        <p className="mb-2">Repeat</p>
+        <RotationCycleInformationMessage />
         <div className="flex flex-col items-center justify-between mt-6">
           <div className="flex justify-between gap-4 w-full">
             <Button

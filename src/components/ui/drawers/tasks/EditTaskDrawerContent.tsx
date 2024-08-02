@@ -13,6 +13,7 @@ import { useFormContext } from 'react-hook-form';
 import { type ICategoryWithoutTasks, ITask } from '@/types/commons';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
+import { RotationCycleInformationMessage } from '@/components/ui/drawers/RotationCycleInformationMessage';
 
 const { CATEGORY_NAME, TASK_TITLE, TASK_DESCRIPTION } = INPUT_TEXTS;
 
@@ -100,20 +101,23 @@ export const EditTaskDrawerContent = ({
           <FormMessage message={errors.description.message} />
         )}
       </DrawerDescription>
-      <DrawerFooter>
-        <DrawerClose asChild>
-          <Button type={'button'} variant={'outline'} className={'flex-1'}>
-            Cancel
+      <DrawerFooter className="flex flex-col gap-4">
+        <RotationCycleInformationMessage />
+        <div className="flex gap-6">
+          <DrawerClose asChild>
+            <Button type={'button'} variant={'outline'} className={'flex-1'}>
+              Cancel
+            </Button>
+          </DrawerClose>
+          <Button
+            type={'button'}
+            className={'flex-1'}
+            disabled={!isValid}
+            onClick={handleSaveClick}
+          >
+            Save
           </Button>
-        </DrawerClose>
-        <Button
-          type={'button'}
-          className={'flex-1'}
-          disabled={!isValid}
-          onClick={handleSaveClick}
-        >
-          Save
-        </Button>
+        </div>
       </DrawerFooter>
     </CommonDrawer>
   );

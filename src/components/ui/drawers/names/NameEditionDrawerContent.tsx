@@ -15,6 +15,7 @@ import {
 } from '@/constants/schema';
 import { SubmitHandler, useFormContext } from 'react-hook-form';
 import { INPUT_TEXTS } from '@/constants/input-texts';
+import { RotationCycleInformationMessage } from '@/components/ui/drawers/RotationCycleInformationMessage';
 
 const { SHAREHOUSE_NAME, CATEGORY_NAME } = INPUT_TEXTS;
 
@@ -80,15 +81,18 @@ export const NameEditionDrawerContent = ({
           )}
         </div>
       </DrawerDescription>
-      <DrawerFooter>
-        <DrawerClose asChild>
-          <Button type={'button'} variant={'outline'} className={'flex-1'}>
-            Cancel
+      <DrawerFooter className="flex flex-col gap-4">
+        <RotationCycleInformationMessage />
+        <div className="flex gap-6">
+          <DrawerClose asChild>
+            <Button type={'button'} variant={'outline'} className={'flex-1'}>
+              Cancel
+            </Button>
+          </DrawerClose>
+          <Button type={'submit'} className={'flex-1'} disabled={!isValid}>
+            Save
           </Button>
-        </DrawerClose>
-        <Button type={'submit'} className={'flex-1'} disabled={!isValid}>
-          Save
-        </Button>
+        </div>
       </DrawerFooter>
     </CommonDrawer>
   );
