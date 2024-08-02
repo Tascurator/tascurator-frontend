@@ -30,9 +30,8 @@ const EditShareHousePage = async ({
   const shareHouseManagement = await res.json();
 
   // Check for error in data and display it if found
-  // TODO: Improve and implement the error message display
   if ('error' in shareHouseManagement) {
-    return <div>{shareHouseManagement.error}</div>;
+    throw new Error(shareHouseManagement.error);
   }
 
   return (
