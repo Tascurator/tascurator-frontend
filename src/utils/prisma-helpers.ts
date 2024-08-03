@@ -71,7 +71,6 @@ export const getPasswordResetTokenDataByToken = async (token: string) => {
   }
 };
 
-// TODO: Update tsdoc comments
 /**
  * Get the verification token by email address
  *
@@ -95,7 +94,7 @@ export const getVerificationTokenByEmail = async (email: string) => {
  * @param token - The token to search for
  * @returns A promise that resolves with the verification email token data
  */
-export const getVerificationTokenByToken = async (token: string) => {
+export const getVerificationTokenDataByToken = async (token: string) => {
   try {
     const verificationToken = await prisma.verificationToken.findUnique({
       where: { token },

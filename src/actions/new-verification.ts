@@ -2,13 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { getLandlordByEmail } from '@/utils/prisma-helpers';
-import { getVerificationTokenByToken } from '@/utils/prisma-helpers';
+import { getVerificationTokenDataByToken } from '@/utils/prisma-helpers';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { isTokenValid } from '@/utils/tokens';
 const { INVALID_TOKEN_VERIFICATION, NOT_EXISTING_USER } = SERVER_ERROR_MESSAGES;
 
 export const newVerification = async (token: string) => {
-  const existingToken = await getVerificationTokenByToken(token);
+  const existingToken = await getVerificationTokenDataByToken(token);
 
   // Check if the token exists in the database and is valid
   if (!existingToken || !isTokenValid(token, existingToken.expiresAt)) {
