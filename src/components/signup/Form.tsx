@@ -16,7 +16,10 @@ import { toast } from '@/components/ui/use-toast';
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
-import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+import {
+  TOAST_ERROR_MESSAGES,
+  TOAST_SUCCESS_MESSAGES,
+} from '@/constants/toast-texts';
 
 const {
   PASSWORD_MIN_LENGTH,
@@ -100,19 +103,22 @@ const Form = () => {
     try {
       const isValid = await trigger(['email', 'password']);
       if (isValid) {
+        /**
+         * Wait for 1 second for user experience purposes
+         */
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const result = await signup(formData);
 
-        if (result?.success) {
-          toast({
-            variant: 'default',
-            description: result.success,
-          });
-        } else if (result?.error) {
+        if (result?.error) {
           toast({
             variant: 'destructive',
             description: result.error,
+          });
+        } else {
+          toast({
+            variant: 'default',
+            description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
           });
         }
       }
