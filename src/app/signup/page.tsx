@@ -4,8 +4,14 @@ import { Logo } from '@/components/ui/Logo';
 import { Form } from '@/components/signup/Form';
 import { Button } from '@/components/ui/button';
 import { EmailVerificationDrawer } from '@/components/ui/drawers/EmailVerificationDrawer';
+interface IForgotPasswordPageProps {
+  searchParams: {
+    token?: string;
+  };
+}
+const SignUpPage = ({ searchParams }: IForgotPasswordPageProps) => {
+  const token = searchParams.token;
 
-const SignUpPage = () => {
   return (
     <>
       <div className={'flex flex-col px-6'}>
@@ -19,7 +25,7 @@ const SignUpPage = () => {
           </Button>
         </div>
       </div>
-      <EmailVerificationDrawer />
+      {token && <EmailVerificationDrawer />}
     </>
   );
 };
