@@ -12,8 +12,12 @@ import { hashPassword } from '@/utils/password-hashing';
 import { EMAILS } from '@/constants/emails';
 const { SIGNUP_CONFIRMATION } = EMAILS;
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-const { CREDENTIAL_FIELDS_INVALID, EXISTING_EMAIL, NOT_EXISTING_USER } =
-  SERVER_ERROR_MESSAGES;
+const {
+  CREDENTIAL_FIELDS_INVALID,
+  EXISTING_EMAIL,
+  NOT_EXISTING_USER,
+  INVALID_TOKEN_VERIFICATION,
+} = SERVER_ERROR_MESSAGES;
 
 export const signup = async (credentials: TSignupSchema) => {
   const validatedFields = signupSchema.safeParse(credentials);
@@ -57,13 +61,11 @@ export const resendVerificationEmail = async (token: string) => {
 
   // Check if the token exists in the database and is valid
   if (!existingToken) {
-    return { error: NOT_EXISTING_USER };
+    return { error: INVALID_TOKEN_VERIFICATION };
   }
 
   // Check if the user exists
-  const existingUser = existingToken
-    ? await getLandlordByEmail(existingToken.email)
-    : null;
+  const existingUser = await getLandlordByEmail(existingToken.email);
   if (!existingUser) {
     return { error: NOT_EXISTING_USER };
   }
