@@ -2,14 +2,18 @@
 
 import { signupSchema, TSignupSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
-import { getLandlordByEmail } from '@/utils/prisma-helpers';
+import {
+  getLandlordByEmail,
+  getVerificationTokenDataByToken,
+} from '@/utils/prisma-helpers';
 import { generateVerificationToken } from '@/utils/tokens';
 import { sendEmail } from '@/lib/resend';
+import { hashPassword } from '@/utils/password-hashing';
 import { EMAILS } from '@/constants/emails';
 const { SIGNUP_CONFIRMATION } = EMAILS;
-import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
-import { hashPassword } from '@/utils/password-hashing';
-const { CREDENTIAL_FIELDS_INVALID, EXISTING_EMAIL } = TOAST_ERROR_MESSAGES;
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+const { CREDENTIAL_FIELDS_INVALID, EXISTING_EMAIL, NOT_EXISTING_USER } =
+  SERVER_ERROR_MESSAGES;
 
 export const signup = async (credentials: TSignupSchema) => {
   const validatedFields = signupSchema.safeParse(credentials);
@@ -34,6 +38,10 @@ export const signup = async (credentials: TSignupSchema) => {
   });
 
   // Send the confirmation email
+  await sendVerificationEmail(email);
+};
+
+export const sendVerificationEmail = async (email: string) => {
   const verificationToken = await generateVerificationToken(email);
   await sendEmail({
     to: verificationToken.email,
@@ -42,6 +50,23 @@ export const signup = async (credentials: TSignupSchema) => {
       `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/signup?token=${verificationToken.token}`,
     ),
   });
+};
 
-  return { success: 'Confirmation email sent.' };
+export const resendVerificationEmail = async (token: string) => {
+  const existingToken = await getVerificationTokenDataByToken(token);
+
+  // Check if the token exists in the database and is valid
+  if (!existingToken) {
+    return { error: NOT_EXISTING_USER };
+  }
+
+  // Check if the user exists
+  const existingUser = existingToken
+    ? await getLandlordByEmail(existingToken.email)
+    : null;
+  if (!existingUser) {
+    return { error: NOT_EXISTING_USER };
+  }
+
+  await sendVerificationEmail(existingToken.email);
 };

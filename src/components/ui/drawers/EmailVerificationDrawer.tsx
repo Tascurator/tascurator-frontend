@@ -7,7 +7,7 @@ import {
   SuccessVerificationDrawer,
   FailedVerificationDrawer,
 } from '@/components/ui/drawers/AuthenticationDrawer';
-const { MISSING_TOKEN, GENERAL_ERROR } = ERROR_MESSAGES;
+const { GENERAL_ERROR, MISSING_TOKEN } = ERROR_MESSAGES;
 
 export const EmailVerificationDrawer = () => {
   const [success, setSuccess] = useState<boolean | undefined>();
@@ -16,7 +16,10 @@ export const EmailVerificationDrawer = () => {
 
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+
   const onSubmit = useCallback(() => {
+    if (success || error) return;
+
     if (!token) {
       setOpen(true);
       setError(MISSING_TOKEN);
@@ -24,31 +27,32 @@ export const EmailVerificationDrawer = () => {
     }
     newVerification(token)
       .then((data) => {
-        setOpen(true);
         setSuccess(data.success);
         setError(data.error);
+        setOpen(true);
       })
       .catch(() => {
-        setOpen(true);
         setError(GENERAL_ERROR);
+        setOpen(true);
       });
-  }, [token]);
+  }, [token, success, error]);
 
   useEffect(() => {
+    if (!token) return;
     onSubmit();
-  }, [onSubmit]);
+  }, [token, onSubmit]);
 
-  // if there is no token, don't show the drawer
   if (!token) return null;
 
   return (
     <>
       {success && <SuccessVerificationDrawer open={open} setOpen={setOpen} />}
-      {error && (
+      {!success && error && (
         <FailedVerificationDrawer
           open={open}
           setOpen={setOpen}
           errorMessages={error}
+          token={token}
         />
       )}
     </>

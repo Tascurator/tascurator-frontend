@@ -22,10 +22,12 @@ export const TOAST_TEXTS = {
   error: 'An error occurred. Please try again.',
 };
 
+export const TOAST_SUCCESS_MESSAGES = {
+  EMAIL_SENT: 'Verification email sent successfully.',
+};
+
 export const TOAST_ERROR_MESSAGES = {
   CREDENTIAL_INVALID: 'Email or password is incorrect.',
-  CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
-  EXISTING_EMAIL: 'Email already in use.',
   EMAIL_NOT_VERIFIED:
     'Email not verified. Please check your inbox to verify before logging in.',
   LOGIN_UNKNOWN_ERROR: 'An error occurred while logging in.',

@@ -17,6 +17,14 @@ import {
 import { TForgotPassword } from '@/constants/schema';
 import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
 import { useRouter } from 'next/navigation';
+import { resendVerificationEmail } from '@/actions/signup';
+import { toast } from '@/components/ui/use-toast';
+import {
+  TOAST_SUCCESS_MESSAGES,
+  TOAST_ERROR_MESSAGES,
+} from '@/constants/toast-texts';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
 
 interface IAuthenticationDrawer<T extends FieldValues> {
   title: string;
@@ -58,7 +66,14 @@ const AuthenticationDrawer = <T extends FieldValues>({
       </DrawerDescription>
       <DrawerFooter>
         <DrawerClose asChild>
-          <Button type={'submit'}>{buttonLabel}</Button>
+          {/* if buttonLabel = 'Close', add type={'button'} variant={'outline'} to attribute */}
+          {buttonLabel === 'Close' ? (
+            <Button type={'button'} variant={'outline'}>
+              {buttonLabel}
+            </Button>
+          ) : (
+            <Button type={'submit'}>{buttonLabel}</Button>
+          )}
         </DrawerClose>
       </DrawerFooter>
     </CommonDrawer>
@@ -69,7 +84,6 @@ interface IAuthenticationChildrenDrawer<T extends FieldValues> {
   open: boolean;
   setOpen: (value: boolean) => void;
   onSubmit?: SubmitHandler<T>;
-  errorMessages?: string;
 }
 
 /**
@@ -183,6 +197,12 @@ export const SuccessVerificationDrawer = <T extends FieldValues>({
   );
 };
 
+interface IFailedVerificationDrawer<T extends FieldValues>
+  extends IAuthenticationChildrenDrawer<T> {
+  errorMessages: string;
+  token: string;
+}
+
 /**
  * A failed verification drawer component to show the error message and resend email button
  */
@@ -190,12 +210,43 @@ export const FailedVerificationDrawer = <T extends FieldValues>({
   open,
   setOpen,
   errorMessages,
-}: IAuthenticationChildrenDrawer<T>) => {
+  token,
+}: IFailedVerificationDrawer<T>) => {
   const formControls = useForm();
 
-  const onSubmit = () => {
-    console.log('Resend email');
+  const onSubmit = async () => {
+    if (errorMessages === EXPIRED_TOKEN_VERIFICATION) {
+      try {
+        /**
+         * Wait for 1 second for user experience purposes
+         */
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const result = await resendVerificationEmail(token);
+
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        }
+
+        toast({
+          variant: 'default',
+          description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
+        });
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          description: TOAST_ERROR_MESSAGES.SIGNUP_UNKNOWN_ERROR,
+        });
+      }
+    } else {
+      // Close the drawer if there is no token
+      setOpen(false);
+    }
   };
+
   return (
     <FormProvider {...formControls}>
       <AuthenticationDrawer
@@ -204,7 +255,7 @@ export const FailedVerificationDrawer = <T extends FieldValues>({
           errorMessages || 'We could not verify your email. Please try again.'
         }
         icon={<MailWarning className="w-full h-full stroke-destructive" />}
-        buttonLabel={'Resend email'}
+        buttonLabel={`${errorMessages === EXPIRED_TOKEN_VERIFICATION ? 'Resend email' : 'Close'}`}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}

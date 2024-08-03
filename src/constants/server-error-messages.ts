@@ -27,7 +27,10 @@ export const SERVER_ERROR_MESSAGES = {
     `The following environment key(s) are missing: ${keys.join(', ')}.`,
   INVALID_TOKEN_RESET_PASSWORD:
     'Invalid or expired token. Please try resetting your password again.',
-  INVALID_TOKEN_VERIFICATION:
-    'Invalid or expired token. Please resend the email and verify your account again.',
+  INVALID_TOKEN_VERIFICATION: 'Invalid token. Please try signing up.',
+  EXPIRED_TOKEN_VERIFICATION:
+    'The token has expired. Please resend the email and verify your account again.',
   NOT_EXISTING_USER: 'Email does not exist.',
+  EXISTING_EMAIL: 'Email already in use. please log in.',
+  CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
 };
