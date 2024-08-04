@@ -20,7 +20,8 @@
     "prisma:push": "dotenv -e .env.local -- prisma db push",
     "prisma:generate": "dotenv -e .env.local -- prisma generate",
     "prisma:reset": "dotenv -e .env.local -- prisma migrate reset",
-    "prisma:seed": "dotenv -e .env.local -- prisma db seed"
+    "prisma:seed": "dotenv -e .env.local -- prisma db seed",
+    "postinstall": "npm run prisma:generate"
   },
   "prisma": {
     "seed": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
