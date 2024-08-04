@@ -15,7 +15,6 @@ import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
-import { TPrismaShareHouseWithOtherTables } from '@/types/server';
 
 const app = new Hono()
 
@@ -27,35 +26,39 @@ const app = new Hono()
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables: TPrismaShareHouseWithOtherTables | null =
-        await prisma.shareHouse.findUnique({
-          where: {
-            id: shareHouseId,
-          },
-          include: {
-            RotationAssignment: {
-              include: {
-                tenantPlaceholders: {
-                  include: {
-                    tenant: true,
-                  },
-                  orderBy: [
-                    { tenant: { createdAt: 'asc' } },
-                    { tenant: { id: 'asc' } },
-                  ],
+      const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
+        where: {
+          id: shareHouseId,
+        },
+        include: {
+          RotationAssignment: {
+            include: {
+              tenantPlaceholders: {
+                include: {
+                  tenant: true,
                 },
-                categories: {
-                  include: {
-                    tasks: {
-                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-                    },
+                orderBy: [
+                  { tenant: { createdAt: 'asc' } },
+                  { tenant: { id: 'asc' } },
+                ],
+              },
+              categories: {
+                include: {
+                  tasks: {
+                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                   },
-                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
+                orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
               },
             },
           },
-        });
+          assignmentSheet: {
+            select: {
+              endDate: true,
+            },
+          },
+        },
+      });
 
       if (!shareHouseWithOtherTables)
         return c.json(
@@ -70,6 +73,10 @@ const app = new Hono()
         );
 
       const shareHouseData = {
+        nextRotationStartDate: addDays(
+          shareHouseWithOtherTables.assignmentSheet.endDate,
+          1,
+        ).toISOString(),
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {
