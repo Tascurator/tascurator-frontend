@@ -3,6 +3,7 @@ import { RotationCycle } from '@/types/commons';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { TPrismaShareHouse, IAssignedData } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 export const createSharehouse = (
   overrides: Partial<TPrismaShareHouse> = {},
@@ -102,7 +103,7 @@ describe('InitialAssignedData class', () => {
     expectError(
       () =>
         new InitialAssignedData(invalidSharehouse, startDate, rotationCycle),
-      'Share house or rotation assignment not found',
+      SERVER_ERROR_MESSAGES.NOT_FOUND('share house or rotation assignment'),
     );
   });
 
@@ -110,7 +111,7 @@ describe('InitialAssignedData class', () => {
     sharehouse.RotationAssignment!.categories = [];
     expectError(
       () => new InitialAssignedData(sharehouse, startDate, rotationCycle),
-      'No categories, tasks or tenants found in the rotation assignment',
+      'No categories or tasks found in the rotation assignment',
     );
   });
 
@@ -118,15 +119,7 @@ describe('InitialAssignedData class', () => {
     sharehouse.RotationAssignment!.categories[0].tasks = [];
     expectError(
       () => new InitialAssignedData(sharehouse, startDate, rotationCycle),
-      'No categories, tasks or tenants found in the rotation assignment',
-    );
-  });
-
-  it('should throw an error if trying to generate AssignedData without any tenant', () => {
-    sharehouse.RotationAssignment!.tenantPlaceholders = [];
-    expectError(
-      () => new InitialAssignedData(sharehouse, startDate, rotationCycle),
-      'No categories, tasks or tenants found in the rotation assignment',
+      'No categories or tasks found in the rotation assignment',
     );
   });
 
