@@ -73,10 +73,8 @@ const app = new Hono()
         );
 
       const shareHouseData = {
-        nextRotationStartDate: addDays(
-          shareHouseWithOtherTables.assignmentSheet.endDate,
-          1,
-        ).toISOString(),
+        nextRotationStartDate:
+          shareHouseWithOtherTables.assignmentSheet.endDate.toISOString(),
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {
