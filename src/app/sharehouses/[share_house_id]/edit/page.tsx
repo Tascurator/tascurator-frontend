@@ -1,3 +1,4 @@
+import { CalendarClock } from 'lucide-react';
 import {
   Accordion,
   AccordionItem,
@@ -12,6 +13,7 @@ import { RotationCycles } from '@/components/sharehouses-management/RotationCycl
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 import EditTabsManager from '@/components/edit/EditTabsManager';
+import { convertToPDT, formatDate } from '@/utils/dates';
 
 interface IEditShareHousePageProps {
   params: {
@@ -35,9 +37,23 @@ const EditShareHousePage = async ({
     throw new Error(shareHouseManagement.error);
   }
 
+  const nextRotationStartDate = convertToPDT(
+    new Date(shareHouseManagement.nextRotationStartDate),
+  );
+
   return (
     <>
       <EditTabsManager>
+        <div className="flex gap-2 items-center mt-2 text-gray-600">
+          <CalendarClock className="w-4 stroke-destructive" />
+          <p className="text-sm flex-1">
+            {`The edited information will take effect on `}
+            <span className="font-medium text-sm">
+              {formatDate(nextRotationStartDate)}
+            </span>
+            {`.`}
+          </p>
+        </div>
         {/* Tasks */}
         <TabsContent value="Tasks">
           <ShareHouseManagementHead
