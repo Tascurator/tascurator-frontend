@@ -7,7 +7,7 @@
  * @returns {string} The base URL of the application
  */
 export const getBaseUrl = (): string => {
-  return process.env.VERCEL_ENV === 'production'
+  return process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
     : process.env.NEXT_PUBLIC_VERCEL_URL
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
