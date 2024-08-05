@@ -5,6 +5,7 @@
  * If the environment is not Vercel, the base URL will be http://localhost:3000.
  *
  * @returns {string} The base URL of the application
+ * @credit https://github.com/vercel/next.js/discussions/16429#discussioncomment-8469640
  */
 export const getBaseUrl = (): string => {
   return process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
