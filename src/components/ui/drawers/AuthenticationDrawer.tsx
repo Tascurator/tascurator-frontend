@@ -1,68 +1,74 @@
 import {
-  Drawer,
   DrawerClose,
-  DrawerContent,
   DrawerDescription,
   DrawerFooter,
-  DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 
 import { MailCheck, CircleCheck } from 'lucide-react';
 
 import { ReactNode } from 'react';
-import Link from 'next/link';
+import {
+  FieldValues,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import { TForgotPassword } from '@/constants/schema';
+import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
+import { useRouter } from 'next/navigation';
 
-interface IAuthenticationDrawer {
+interface IAuthenticationDrawer<T extends FieldValues> {
   title: string;
   description: string | string[];
   icon: ReactNode;
-  button: ReactNode;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void | null;
+  buttonLabel: string;
+  onSubmit?: SubmitHandler<T>;
   open: boolean;
   setOpen: (value: boolean) => void;
 }
 
-const AuthenticationDrawer = ({
+const AuthenticationDrawer = <T extends FieldValues>({
   title,
   description,
   icon,
-  button,
-  handleSubmit,
+  buttonLabel,
+  onSubmit,
   open,
   setOpen,
-}: IAuthenticationDrawer) => {
+}: IAuthenticationDrawer<T>) => {
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger />
-      <DrawerContent asChild>
-        <form onSubmit={handleSubmit}>
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>
-            <span className={'w-20 h-20 mx-auto block mb-2.5'}>{icon}</span>
-            {Array.isArray(description) ? (
-              description.map((desc, index) => (
-                <span key={index} className={'block'}>
-                  {desc}
-                </span>
-              ))
-            ) : (
-              <span>{description}</span>
-            )}
-          </DrawerDescription>
-          <DrawerFooter>
-            <DrawerClose asChild>{button}</DrawerClose>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+    <CommonDrawer
+      title={title}
+      open={open}
+      setOpen={setOpen}
+      onSubmit={onSubmit ?? null}
+    >
+      <DrawerDescription>
+        <span className={'w-20 h-20 mx-auto block mb-2.5'}>{icon}</span>
+        {Array.isArray(description) ? (
+          description.map((desc, index) => (
+            <span key={index} className={'block'}>
+              {desc}
+            </span>
+          ))
+        ) : (
+          <span>{description}</span>
+        )}
+      </DrawerDescription>
+      <DrawerFooter>
+        <DrawerClose asChild>
+          <Button type={'submit'}>{buttonLabel}</Button>
+        </DrawerClose>
+      </DrawerFooter>
+    </CommonDrawer>
   );
 };
 
-interface IAuthenticationChildrenDrawer {
+interface IAuthenticationChildrenDrawer<T extends FieldValues> {
   open: boolean;
   setOpen: (value: boolean) => void;
+  onSubmit?: SubmitHandler<T>;
 }
 
 /**
@@ -74,72 +80,70 @@ interface IAuthenticationChildrenDrawer {
  * @example
  * const [open, setOpen] = useState(false);
  *
+ * const onSubmit = async (formData: TForgotPassword) => {
+ *   // Do something
+ *   setOpen(false);
+ * };
+ *
  * // To show the email sent message and resend email button
- * <EmailSentDrawer open={open} setOpen={setOpen} />
+ * <EmailSentDrawer open={open} setOpen={setOpen} onSubmit={onSubmit} />
  *
  * // To show the password changed message
- * <PasswordChangedDrawer open={open} setOpen={setOpen} />
+ * <PasswordChangedDrawer open={open} setOpen={setOpen} onSubmit={onSubmit} />
  */
 
 /**
  * A email sent drawer component to confirm the task creation or update
  */
-export const EmailSentDrawer = ({
+export const EmailSentDrawer = <T extends TForgotPassword>({
   open,
   setOpen,
-}: IAuthenticationChildrenDrawer) => {
-  const button = <Button type={'submit'}>Resend Email</Button>;
-
-  //TODO: Add the request(form) to resend the email
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setOpen(false);
-  };
-
+  onSubmit,
+}: IAuthenticationChildrenDrawer<T>) => {
   return (
-    <>
-      <AuthenticationDrawer
-        title={'Email Sent!'}
-        description={[
-          'We have sent you an email.',
-          'Please check your email within 3 hours and complete the update.',
-        ]}
-        icon={<MailCheck className="w-full h-full stroke-secondary-light" />}
-        button={button}
-        handleSubmit={handleSubmit}
-        open={open}
-        setOpen={setOpen}
-      />
-    </>
+    <AuthenticationDrawer
+      title={'Email Sent!'}
+      description={[
+        'We have sent you an email.',
+        'Please check your email within 3 hours and complete the update.',
+      ]}
+      icon={<MailCheck className="w-full h-full stroke-secondary-light" />}
+      buttonLabel={'Resend Email'}
+      onSubmit={onSubmit}
+      open={open}
+      setOpen={setOpen}
+    />
   );
 };
 
 /**
  * A password changed drawer component to confirm the task creation or update
  */
-export const PasswordChangedDrawer = ({
+export const PasswordChangedDrawer = <T extends FieldValues>({
   open,
   setOpen,
-}: IAuthenticationChildrenDrawer) => {
-  const button = (
-    <Link href="/">
-      <Button type={'button'}>Log In</Button>
-    </Link>
-  );
+}: IAuthenticationChildrenDrawer<T>) => {
+  const router = useRouter();
+
+  const formControls = useForm();
+
+  const onSubmit = () => {
+    router.push('/login');
+  };
 
   return (
-    <>
+    <FormProvider {...formControls}>
       <AuthenticationDrawer
         title={'Password changed!'}
         description={'Your password has been changed successfully.'}
         icon={
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
-        button={button}
-        handleSubmit={() => null}
+        buttonLabel={'Log In'}
+        onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
       />
-    </>
+    </FormProvider>
   );
 };

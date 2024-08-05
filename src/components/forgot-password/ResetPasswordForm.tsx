@@ -13,9 +13,10 @@ import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
 
-import { LoadingSpinner } from '../ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
+import { resetPassword } from '@/actions/forgot-password';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 
 const {
   PASSWORD_MIN_LENGTH,
@@ -28,18 +29,22 @@ const {
 
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
-const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
+interface IResetPasswordFormProps {
+  token: string;
+}
+
+const ResetPasswordForm = ({ token }: IResetPasswordFormProps) => {
   const [open, setOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    trigger,
+    formState: { errors, isValid, isSubmitting },
     watch,
+    reset,
   } = useForm<TResetPassword>({
     resolver: zodResolver(resetPasswordSchema),
+    mode: 'onBlur',
     defaultValues: {
       password: '',
       confirmPassword: '',
@@ -105,40 +110,33 @@ const Form = () => {
     },
   ];
 
-  // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TResetPassword) => {
-    setIsLoading(true);
-
     try {
-      const isValid = await trigger(['password', 'confirmPassword']);
-      if (isValid) {
-        console.log('Form data:', formData);
-        const { password } = formData;
-        console.log('Password:', password);
-        // await resetPassword(formData);
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // submit the form data
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        // await forgotPassword(formData);
-        // Send the email to the user with the reset password link
+      /**
+       * Reset the password and send a success email
+       */
+      await resetPassword(token, formData);
 
-        setIsLoading(false);
-        setOpen(true);
-      }
+      setOpen(true);
+      reset();
     } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-      // TODO: modify the error message
-      toast({
-        variant: 'destructive',
-        description: 'error!',
-      });
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         {/* hidden username input ** Don't delete! It's necessary for accessibility. ** */}
@@ -148,7 +146,6 @@ const Form = () => {
           autoComplete="username"
           className="hidden"
           aria-hidden="true"
-          required
         />
         {/* End: hidden username input */}
 
@@ -192,9 +189,10 @@ const Form = () => {
           Reset password
         </Button>
       </form>
+
       <PasswordChangedDrawer open={open} setOpen={setOpen} />
     </>
   );
 };
 
-export { Form };
+export { ResetPasswordForm };

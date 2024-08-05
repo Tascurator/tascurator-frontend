@@ -1,3 +1,4 @@
+import { CalendarClock } from 'lucide-react';
 import {
   Accordion,
   AccordionItem,
@@ -11,6 +12,7 @@ import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHe
 import { RotationCycles } from '@/components/sharehouses-management/RotationCycles';
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { convertToPDT, formatDate } from '@/utils/dates';
 
 interface IEditShareHousePageProps {
   params: {
@@ -30,10 +32,13 @@ const EditShareHousePage = async ({
   const shareHouseManagement = await res.json();
 
   // Check for error in data and display it if found
-  // TODO: Improve and implement the error message display
   if ('error' in shareHouseManagement) {
-    return <div>{shareHouseManagement.error}</div>;
+    throw new Error(shareHouseManagement.error);
   }
+
+  const nextRotationStartDate = convertToPDT(
+    new Date(shareHouseManagement.nextRotationStartDate),
+  );
 
   return (
     <>
@@ -43,6 +48,17 @@ const EditShareHousePage = async ({
           <TabsTrigger value="Schedule">Schedule</TabsTrigger>
           <TabsTrigger value="Tenants">Tenants</TabsTrigger>
         </TabsList>
+
+        <div className="flex gap-2 items-center mt-2 text-gray-600">
+          <CalendarClock className="w-4 stroke-destructive" />
+          <p className="text-sm flex-1">
+            {`The edited information will take effect on `}
+            <span className="font-medium text-sm">
+              {formatDate(nextRotationStartDate)}
+            </span>
+            {`.`}
+          </p>
+        </div>
 
         {/* Tasks */}
         <TabsContent value="Tasks">

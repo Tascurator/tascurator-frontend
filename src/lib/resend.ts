@@ -1,8 +1,6 @@
 import { Resend } from 'resend';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
-console.log('RESEND_API_KEY', process.env.RESEND_API_KEY);
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 const senderEmail = process.env.RESEND_SENDER_EMAIL;
 const senderName = process.env.RESEND_SENDER_NAME;
