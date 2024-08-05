@@ -16,6 +16,7 @@ import { EMAILS } from '@/constants/emails';
 import prisma from '@/lib/prisma';
 import { hashPassword } from '@/utils/password-hashing';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { getBaseUrl } from '@/utils/base-url';
 
 const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
@@ -52,7 +53,7 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
     to: data.email,
     subject: PASSWORD_RESET.subject,
     html: PASSWORD_RESET.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/forgot-password?token=${token.token}`,
+      `${getBaseUrl()}/forgot-password?token=${token.token}`,
     ),
   });
 };
@@ -126,8 +127,6 @@ export const sendPasswordResetSuccessEmail = async (email: string) => {
   await sendEmail({
     to: email,
     subject: PASSWORD_RESET_SUCCESS.subject,
-    html: PASSWORD_RESET_SUCCESS.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/login`,
-    ),
+    html: PASSWORD_RESET_SUCCESS.html(`${getBaseUrl()}/login`),
   });
 };
