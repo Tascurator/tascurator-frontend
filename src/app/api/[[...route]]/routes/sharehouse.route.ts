@@ -16,6 +16,7 @@ import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import { TPrismaShareHouseWithOtherTables } from '@/types/server';
+import { getBaseUrl } from '@/utils/base-url';
 
 const app = new Hono()
 
@@ -511,7 +512,7 @@ const app = new Hono()
               to: tenant.email,
               subject: EMAILS.TENANT_INVITATION.subject,
               html: EMAILS.TENANT_INVITATION.html(
-                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
+                `${getBaseUrl()}/${newAssignmentSheet.id}/${tenant.id}`,
               ),
             });
           }

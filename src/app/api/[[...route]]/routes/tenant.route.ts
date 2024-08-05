@@ -7,6 +7,7 @@ import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import { getBaseUrl } from '@/utils/base-url';
 
 const app = new Hono()
 
@@ -305,7 +306,7 @@ const app = new Hono()
               to: sanitizedEmail,
               subject: EMAILS.TENANT_INVITATION.subject,
               html: EMAILS.TENANT_INVITATION.html(
-                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
+                `${getBaseUrl()}/${assignmentSheet.id}/${newTenant.id}`,
               ),
             });
           } catch (error) {
