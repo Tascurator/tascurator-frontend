@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -16,10 +17,10 @@ model Landlord {
 }
 
 model ShareHouse {
-  id                String @id @default(uuid())
+  id                String   @id @default(uuid())
   name              String
   landlordId        String
-  assignmentSheetId String @unique
+  assignmentSheetId String   @unique
   createdAt         DateTime @default(now())
 
   landlord           Landlord            @relation(fields: [landlordId], references: [id], onDelete: Cascade)
@@ -46,20 +47,19 @@ model AssignmentSheet {
 }
 
 model Category {
-  id                   String @id @default(uuid())
+  id                   String   @id @default(uuid())
   rotationAssignmentId String
   name                 String
   tasks                Task[]
   createdAt            DateTime @default(now())
 
-
   rotationAssignment RotationAssignment @relation(fields: [rotationAssignmentId], references: [id], onDelete: Cascade)
 }
 
 model Task {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
-  description String @db.Text
+  description String   @db.Text
   categoryId  String
   createdAt   DateTime @default(now())
 
@@ -67,7 +67,7 @@ model Task {
 }
 
 model Tenant {
-  id                 String              @id @default(uuid())
+  id                 String   @id @default(uuid())
   email              String
   name               String
   extraAssignedCount Int
