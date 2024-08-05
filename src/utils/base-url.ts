@@ -7,9 +7,12 @@
  * @returns {string} The base URL of the application
  */
 export const getBaseUrl = (): string => {
-  return process.env.VERCEL_ENV === 'production'
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : `http://localhost:3000`;
+  const url =
+    process.env.VERCEL_ENV === 'production'
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:3000`;
+  console.log('url', url);
+  return url;
 };
