@@ -33,7 +33,7 @@ jobs:
     needs: Run-Tests
     runs-on: ubuntu-latest
     environment:
-      name: preview
+      name: Vercel Preview Deployment
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Checkout Code
