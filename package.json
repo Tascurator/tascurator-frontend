@@ -21,7 +21,7 @@
     "prisma:generate": "dotenv -e .env.local -- prisma generate",
     "prisma:reset": "dotenv -e .env.local -- prisma migrate reset",
     "prisma:seed": "dotenv -e .env.local -- prisma db seed",
-    "postinstall": "npm run prisma:generate"
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node -r tsconfig-paths/register --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
