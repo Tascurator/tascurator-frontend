@@ -229,12 +229,12 @@ export const FailedVerificationDrawer = <T extends FieldValues>({
             variant: 'destructive',
             description: result.error,
           });
+        } else {
+          toast({
+            variant: 'default',
+            description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
+          });
         }
-
-        toast({
-          variant: 'default',
-          description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
-        });
       } catch (error) {
         toast({
           variant: 'destructive',
