@@ -46,19 +46,20 @@ export const DeleteConfirmationDrawerContent = ({
         This action cannot be undone. Are you sure you want to proceed with the
         deletion?
         <div className="flex items-center my-4">
-          <label className={'cursor-pointer pr-4'}>
+          <label className="flex items-center cursor-pointer">
             <Checkbox
               checked={isChecked}
               onCheckedChange={handleCheckboxChange}
+              className="mr-4"
             />
+            <div className="flex">
+              <p className="font-medium">
+                {`Yes, I want to delete "`}
+                <span className="text-red-600 px-1">{deleteItem}</span>
+                {`".`}
+              </p>
+            </div>
           </label>
-          <div>
-            <p className="font-medium">
-              {`Yes, I want to delete "`}
-              <span className="text-red-600 px-1">{deleteItem}</span>
-              {`".`}
-            </p>
-          </div>
         </div>
       </DrawerDescription>
       <DrawerFooter>
