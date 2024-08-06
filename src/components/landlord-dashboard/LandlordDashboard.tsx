@@ -8,8 +8,8 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { Ellipsis } from 'lucide-react';
-import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
-import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
+import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import Link from 'next/link';
 
@@ -35,7 +35,7 @@ export const LandlordDashboard = ({
           <DropdownMenuTrigger>
             <Ellipsis />
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent align={'end'}>
             <DropdownMenuGroup>
               <DropdownMenuItemWithIcon
                 icon={EDIT_SHAREHOUSE_NAME.icon}
@@ -65,9 +65,12 @@ export const LandlordDashboard = ({
         open={openEdit}
         setOpen={setOpenEdit}
         type={'sharehouse'}
+        id={shareHouseId}
       />
 
       <DeleteConfirmationDrawer
+        id={shareHouseId}
+        idType={'sharehouse'}
         deleteItem={shareHouseName}
         open={openDelete}
         setOpen={setOpenDelete}

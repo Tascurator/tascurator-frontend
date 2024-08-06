@@ -16,8 +16,8 @@ import {
   DropdownMenuItemWithIcon,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { NameEditionDrawer } from '@/components/ui/drawers/NameEditionDrawer';
-import { DeleteConfirmationDrawer } from '@/components/ui/drawers/DeleteConfirmationDrawer';
+import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import { LogOutDrawer } from '@/components/ui/drawers/LogOutDrawer';
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
@@ -90,7 +90,7 @@ function HeaderItemWithDropDown({
                 <Ellipsis />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align={'end'}>
               <DropdownMenuGroup>
                 <DropdownMenuItemWithIcon
                   icon={EDIT_SHAREHOUSE_NAME.icon}
@@ -117,8 +117,11 @@ function HeaderItemWithDropDown({
             open={openEdit}
             setOpen={setOpenEdit}
             type={'sharehouse'}
+            id={sharehouseId}
           />
           <DeleteConfirmationDrawer
+            id={sharehouseId}
+            idType={'sharehouse'}
             deleteItem={pageTitle}
             open={openDelete}
             setOpen={setOpenDelete}
@@ -151,7 +154,7 @@ function HeaderItemWithDropDown({
                 <Ellipsis />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align={'end'}>
               <DropdownMenuGroup>
                 <DropdownMenuItemWithIcon
                   icon={EDIT_SHAREHOUSE_NAME.icon}
@@ -175,6 +178,8 @@ function HeaderItemWithDropDown({
             type={'sharehouse'}
           />
           <DeleteConfirmationDrawer
+            id={sharehouseId}
+            idType={'sharehouse'}
             deleteItem={pageTitle}
             open={openDelete}
             setOpen={setOpenDelete}
@@ -258,7 +263,7 @@ const Header = ({ type, pageTitle, sharehouseId }: IHeaderContainerProps) => {
         ) : type === 'HeaderItemWithDropDown' ? (
           <HeaderItemWithDropDown
             pageTitle={pageTitle}
-            sharehouseId={sharehouseId!}
+            sharehouseId={sharehouseId ?? ''}
           />
         ) : (
           <HeaderItemOnlyBreadcrumb pageTitle={pageTitle} />

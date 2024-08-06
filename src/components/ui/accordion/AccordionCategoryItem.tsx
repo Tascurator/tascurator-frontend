@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
-import { NameEditionDrawer } from '../drawers/NameEditionDrawer';
+import { NameEditionDrawer } from '../drawers/names/NameEditionDrawer';
 import { AccordionTrigger } from '../accordion';
-import { TaskCreationDrawer } from '../drawers/TaskCreationDrawer';
-import { DeleteConfirmationDrawer } from '../drawers/DeleteConfirmationDrawer';
+import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
+import { DeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
 
 /**
@@ -51,7 +51,7 @@ const UserActionsDropdownMenu = ({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger />
-      <DropdownMenuContent align={'end'} className={'-mt-5'}>
+      <DropdownMenuContent align={'end'} className={'-mt-2'}>
         <DropdownMenuGroup>
           {/* Edit option */}
           <DropdownMenuItemWithIcon
@@ -142,18 +142,20 @@ export const AccordionCategoryItem = ({
         open={isDrawerOpen && userAction === 'edit'}
         setOpen={setIsDrawerOpen}
         type={'category'}
+        id={category.id}
       />
 
       {/* Task create drawer */}
       <TaskCreationDrawer
         category={category}
-        open={isDrawerOpen && userAction === 'add'}
-        setOpen={setIsDrawerOpen}
-        type={'creation'}
+        editOpen={isDrawerOpen && userAction === 'add'}
+        setEditOpen={setIsDrawerOpen}
       />
 
       {/* Category deletion drawer */}
       <DeleteConfirmationDrawer
+        id={category.id}
+        idType={'category'}
         deleteItem={category.name}
         open={isDrawerOpen && userAction === 'delete'}
         setOpen={setIsDrawerOpen}

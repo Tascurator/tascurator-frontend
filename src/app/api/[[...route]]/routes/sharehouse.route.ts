@@ -37,12 +37,24 @@ const app = new Hono()
                 include: {
                   tenant: true,
                 },
+                orderBy: [
+                  { tenant: { createdAt: 'asc' } },
+                  { tenant: { id: 'asc' } },
+                ],
               },
               categories: {
                 include: {
-                  tasks: true,
+                  tasks: {
+                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                  },
                 },
+                orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
               },
+            },
+          },
+          assignmentSheet: {
+            select: {
+              endDate: true,
             },
           },
         },
@@ -61,6 +73,8 @@ const app = new Hono()
         );
 
       const shareHouseData = {
+        nextRotationStartDate:
+          shareHouseWithOtherTables.assignmentSheet.endDate.toISOString(),
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {
@@ -68,6 +82,7 @@ const app = new Hono()
                 id: tenantPlaceholder.tenant.id,
                 name: tenantPlaceholder.tenant.name,
                 email: tenantPlaceholder.tenant.email,
+                createdAt: tenantPlaceholder.tenant.createdAt,
               };
             }
             return null;
@@ -84,7 +99,9 @@ const app = new Hono()
               id: task.id,
               title: task.title,
               description: task.description,
+              createdAt: task.createdAt,
             })),
+            createdAt: category.createdAt,
           }),
         ),
       };
@@ -141,6 +158,12 @@ const app = new Hono()
           return c.json(
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
             404,
+          );
+
+        if (data.name === shareHouse.name)
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
           );
 
         // Check if the landlord has a share house with the same name

@@ -20,6 +20,7 @@ model ShareHouse {
   name              String
   landlordId        String
   assignmentSheetId String @unique
+  createdAt         DateTime @default(now())
 
   landlord           Landlord            @relation(fields: [landlordId], references: [id], onDelete: Cascade)
   assignmentSheet    AssignmentSheet     @relation(fields: [assignmentSheetId], references: [id], onDelete: Cascade)
@@ -49,6 +50,8 @@ model Category {
   rotationAssignmentId String
   name                 String
   tasks                Task[]
+  createdAt            DateTime @default(now())
+
 
   rotationAssignment RotationAssignment @relation(fields: [rotationAssignmentId], references: [id], onDelete: Cascade)
 }
@@ -58,6 +61,7 @@ model Task {
   title       String
   description String @db.Text
   categoryId  String
+  createdAt   DateTime @default(now())
 
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
@@ -67,6 +71,8 @@ model Tenant {
   email              String
   name               String
   extraAssignedCount Int
+  createdAt          DateTime @default(now())
+
   tenantPlaceholders TenantPlaceholder[]
 }
 
@@ -79,4 +85,13 @@ model TenantPlaceholder {
   tenant             Tenant?            @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@id([rotationAssignmentId, index])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+
+  @@unique([email, token])
 }

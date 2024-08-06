@@ -32,7 +32,7 @@ const ShareHousesLayout = ({ children }: IShareHousesLayoutProps) => {
       <Header
         type={'HeaderItemWithDropDown'}
         pageTitle={shareHouseName}
-        // sharehouseId={sharehouseId}
+        sharehouseId={sharehouseId}
       />
     );
     // dashboard

@@ -21,9 +21,8 @@ const ShareHousesPage = async () => {
   const data = await res.json();
 
   // Check for error in data and display it if found
-  // TODO: Improve and implement the error message display
   if ('error' in data) {
-    return <div>{data.error}</div>;
+    throw new Error(data.error);
   }
 
   // Extract 'shareHouses' from data
@@ -61,7 +60,7 @@ const ShareHousesPage = async () => {
       <div className="flex items-center justify-end mt-4 mb-2 text-base">
         {shareHouses.length}/{CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT}
       </div>
-      <div className="fixed right-6 bottom-6">
+      <div className="fixed z-10 bottom-6 right-6 sm:right-[calc(50%-18.5rem)]">
         <Link href={`/sharehouses/new`}>
           <FloatingActionButton />
         </Link>

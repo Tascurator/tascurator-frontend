@@ -1,4 +1,3 @@
-'use client';
 import { TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/piechart';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -12,7 +11,7 @@ interface ILandlordDashboardTabContentProps {
   startDate: string;
   endDate: string;
   progressPercent: number;
-  cardContents: ICardContentProps[];
+  cardContents: ICardContentProps[] | null;
   shareHouseId: string;
 }
 
@@ -29,38 +28,28 @@ export const LandlordDashboardTabContent = ({
     index: Key,
     isCurrent: boolean,
   ) => {
-    if (content.category === null && !content.tenant) {
-      return (
-        <div
-          key={index}
-          className="flex items-center justify-center flex-col w-full py-6"
-        >
-          <div className="pb-4">No tenants</div>
-          <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
-            <Button>Add tenant</Button>
-          </Link>
-        </div>
-      );
-    } else if (content.category === null && content.tenant) {
+    if (content.name === null) {
       return (
         <CardContent
           key={index}
           tenant={content.tenant}
           isComplete={isCurrent}
-          taskNum={0}
-          completedTaskNum={0}
-          category={'--'}
+          maxTasks={0}
+          completedTasks={0}
+          name={'--'}
         />
       );
     }
     return (
       <CardContent
         key={index}
-        category={content.category}
+        name={content.name}
         tenant={content.tenant}
-        isComplete={isCurrent ? content.isComplete : false}
-        taskNum={content.taskNum}
-        completedTaskNum={isCurrent ? content.completedTaskNum : 0}
+        isComplete={
+          isCurrent ? content.completedTasks === content.maxTasks : false
+        }
+        maxTasks={content.maxTasks}
+        completedTasks={isCurrent ? content.completedTasks : 0}
       />
     );
   };
@@ -80,8 +69,17 @@ export const LandlordDashboardTabContent = ({
           endDate={endDate}
           title={'Task assignment'}
         />
-        {cardContents.map((content, index) =>
-          renderCardContent(content, index, tabType === 'current'),
+        {cardContents && cardContents.length >= 1 ? (
+          cardContents.map((content, index) =>
+            renderCardContent(content, index, tabType === 'current'),
+          )
+        ) : (
+          <div className="flex items-center justify-center flex-col w-full py-6">
+            <div className="pb-4">No tenants</div>
+            <Link href={`/sharehouses/${shareHouseId}/edit?tab=Tenants`}>
+              <Button>Add tenant</Button>
+            </Link>
+          </div>
         )}
       </Card>
     </TabsContent>

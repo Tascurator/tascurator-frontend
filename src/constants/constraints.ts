@@ -37,4 +37,7 @@ export const CONSTRAINTS = {
   // Rotation
   ROTATION_WEEKLY: 7,
   ROTATION_FORTNIGHTLY: 14,
+
+  // Password reset token expiration time
+  PASSWORD_RESET_TOKEN_EXPIRATION_TIME: 3 * 60 * 60 * 1000, // 3 hours
 };
