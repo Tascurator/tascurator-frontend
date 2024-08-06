@@ -12,7 +12,7 @@ import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHe
 import { RotationCycles } from '@/components/sharehouses-management/RotationCycles';
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
-import EditTabsManager from '@/components/edit/EditTabsManager';
+import { EditTabsManager } from '@/components/edit/EditTabsManager';
 import { convertToPDT, formatDate } from '@/utils/dates';
 
 interface IEditShareHousePageProps {

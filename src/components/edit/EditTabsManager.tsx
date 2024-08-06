@@ -4,11 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function EditTabsManager({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const EditTabsManager = ({ children }: { children: React.ReactNode }) => {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const pathname = usePathname();
@@ -39,4 +35,6 @@ export default function EditTabsManager({
       {children}
     </Tabs>
   );
-}
+};
+
+export { EditTabsManager };
