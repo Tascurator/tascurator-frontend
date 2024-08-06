@@ -31,12 +31,18 @@ const app = new Hono()
                   rotationCycle: true,
                   categories: {
                     include: {
-                      tasks: true,
+                      tasks: {
+                        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                      },
                     },
+                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                   },
                   tenantPlaceholders: {
                     include: {
                       tenant: true,
+                    },
+                    orderBy: {
+                      index: 'asc',
                     },
                   },
                 },
