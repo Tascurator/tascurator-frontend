@@ -17,13 +17,13 @@ import { useForm } from 'react-hook-form';
 import { CONSTRAINTS } from '@/constants/constraints';
 
 // comment out the following imports
-// import {
-//   Accordion,
-//   AccordionItem,
-//   AccordionContent,
-// } from '@/components/ui/accordion';
-// import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
-// import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionContent,
+} from '@/components/ui/accordion';
+import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
+import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
 
@@ -51,6 +51,8 @@ export const SetupStepper = ({
     },
     mode: 'onBlur',
   });
+
+  console.log('categories', categories);
 
   const {
     register,
@@ -108,10 +110,20 @@ export const SetupStepper = ({
   };
 
   const addCategory = (category: ICategory) => {
-    // console.log('addCategory', category);
-    const newCategories = [...getValues().categories, category];
+    const transformedCategory = {
+      id: category.id,
+      name: category.name,
+      tasks: category.tasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+      })),
+    };
+
+    // Update the categories in the form state
+    const newCategories = [...getValues().categories, transformedCategory];
     setValue('categories', newCategories, { shouldValidate: true });
-    console.log('getValues().categories', getValues().categories);
+    console.log('getValues().categories', newCategories);
   };
 
   // step2
@@ -133,7 +145,7 @@ export const SetupStepper = ({
         <p className="flex justify-end">
           {getValues().categories.length}/{CATEGORY_MAX_AMOUNT}
         </p>
-        {/* {getValues().categories.map((category) => (
+        {getValues().categories.map((category) => (
           <Accordion
             type="single"
             collapsible
@@ -155,7 +167,7 @@ export const SetupStepper = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        ))} */}
+        ))}
         {errors.categories && (
           <p className="text-red-500 text-sm">{errors.categories.message}</p>
         )}

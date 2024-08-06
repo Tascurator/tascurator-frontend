@@ -8,8 +8,8 @@ const {
   TENANT_MAX_AMOUNT,
   TENANT_NAME_MIN_LENGTH,
   TENANT_NAME_MAX_LENGTH,
-  TASK_MIN_AMOUNT,
-  TASK_MAX_AMOUNT,
+  // TASK_MIN_AMOUNT,
+  // TASK_MAX_AMOUNT,
   TASK_TITLE_MIN_LENGTH,
   TASK_TITLE_MAX_LENGTH,
   TASK_DESCRIPTION_MIN_LENGTH,
@@ -158,6 +158,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
  * The schema for the shareHouse creation form
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
+  id: z.string(),
   startDate: z.string().datetime(),
   rotationCycle: z.union([
     z.literal(ROTATION_WEEKLY),
@@ -166,10 +167,35 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   categories: z
     .array(
       categoryCreationSchema.pick({ name: true }).extend({
-        tasks: z
-          .array(taskCreationSchema.omit({ categoryId: true }))
-          .min(TASK_MIN_AMOUNT)
-          .max(TASK_MAX_AMOUNT),
+        id: z.string(),
+
+        tasks: z.array(
+          // .array(taskCreationSchema.omit({ categoryId: true }))
+          // .array(taskCreationSchema)
+          z.object({
+            id: z.string().uuid(),
+            title: z
+              .string()
+              .min(
+                TASK_TITLE_MIN_LENGTH,
+                minLength('Title', TASK_TITLE_MIN_LENGTH),
+              )
+              .max(
+                TASK_TITLE_MAX_LENGTH,
+                maxLength('Title', TASK_TITLE_MAX_LENGTH),
+              ),
+            description: z
+              .string()
+              .refine(
+                taskDescriptionLengthMinValidate,
+                minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+              )
+              .refine(
+                taskDescriptionLengthMaxValidate,
+                maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+              ),
+          }),
+        ),
       }),
     )
     .min(CATEGORY_MIN_AMOUNT)

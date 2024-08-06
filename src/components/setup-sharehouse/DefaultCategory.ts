@@ -1,4 +1,6 @@
-export const DefaultCategory = [
+import { ICategory } from '@/types/commons';
+
+export const DefaultCategory: ICategory[] = [
   {
     id: 'bde250a4-116a-4641-b0f0-2718abf34bc5',
     name: 'Kitchen',
