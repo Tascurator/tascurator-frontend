@@ -24,6 +24,7 @@ const Form = () => {
     trigger,
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
   });
 
   const onSubmit = async (formData: TLoginSchema) => {

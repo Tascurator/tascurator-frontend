@@ -45,6 +45,7 @@ const Form = () => {
       email: '',
       password: '',
     },
+    mode: 'onBlur',
   });
 
   const password = watch('password');
