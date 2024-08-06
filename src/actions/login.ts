@@ -20,18 +20,17 @@ export const login = async (credentials: TLoginSchema) => {
   } catch (error) {
     if (error instanceof CredentialsSignin) {
       switch (error.code) {
+        // This error is thrown when the email is not verified.
         case 'email_not_verified':
           return { error: EMAIL_NOT_VERIFIED };
+        // This error is thrown when the credentials are invalid.
+        case 'credentials':
+          return { error: CREDENTIAL_INVALID };
         default:
           return { error: UNKNOWN_ERROR };
       }
-    }
-    if (error instanceof AuthError) {
+    } else if (error instanceof AuthError) {
       switch (error.type) {
-        // This error is thrown when the credentials are invalid.
-        case 'CredentialsSignin':
-          return { error: CREDENTIAL_INVALID };
-
         // This error is thrown when the callback route is not found.
         case 'CallbackRouteError':
           return { error: UNKNOWN_ERROR };
