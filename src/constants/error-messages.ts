@@ -20,6 +20,5 @@ export const ERROR_MESSAGES = {
 
   //Static error messages
   EMAIL_INVALID: 'Invalid email address.',
-  MISSING_TOKEN: 'Missing token.',
   GENERAL_ERROR: 'Something went wrong. Please try again.',
 };

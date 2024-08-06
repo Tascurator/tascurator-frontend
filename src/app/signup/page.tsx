@@ -25,7 +25,7 @@ const SignUpPage = ({ searchParams }: IForgotPasswordPageProps) => {
           </Button>
         </div>
       </div>
-      {token && <EmailVerificationDrawer />}
+      {token && <EmailVerificationDrawer token={token} />}
     </>
   );
 };

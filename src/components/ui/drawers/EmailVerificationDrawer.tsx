@@ -1,41 +1,45 @@
 'use client';
 import { newVerification } from '@/actions/new-verification';
-import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { ERROR_MESSAGES } from '@/constants/error-messages';
 import {
   SuccessVerificationDrawer,
   FailedVerificationDrawer,
 } from '@/components/ui/drawers/AuthenticationDrawer';
-const { GENERAL_ERROR, MISSING_TOKEN } = ERROR_MESSAGES;
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
+const { GENERAL_ERROR } = ERROR_MESSAGES;
 
-export const EmailVerificationDrawer = () => {
+interface IEmailVerificationDrawer {
+  token: string;
+}
+
+export const EmailVerificationDrawer = ({
+  token,
+}: IEmailVerificationDrawer) => {
   const [success, setSuccess] = useState<boolean | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
-
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const [isLoading, setIsLoading] = useState(true);
 
   const onSubmit = useCallback(() => {
+    /**
+     * Wait for 1 second for user experience purposes
+     */
     if (success || error) return;
-
-    if (!token) {
-      setOpen(true);
-      setError(MISSING_TOKEN);
-      return;
-    }
+    if (!token) return;
     newVerification(token)
       .then((data) => {
         setSuccess(data.success);
         setError(data.error);
+        setIsLoading(false);
         setOpen(true);
       })
       .catch(() => {
         setError(GENERAL_ERROR);
+        setIsLoading(false);
         setOpen(true);
       });
-  }, [token, success, error]);
+  }, [token, success, error]); // set success and error as dependencies
 
   useEffect(() => {
     if (!token) return;
@@ -46,6 +50,7 @@ export const EmailVerificationDrawer = () => {
 
   return (
     <>
+      <LoadingSpinner isLoading={isLoading} />
       {success && <SuccessVerificationDrawer open={open} setOpen={setOpen} />}
       {!success && error && (
         <FailedVerificationDrawer
