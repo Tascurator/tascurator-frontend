@@ -157,7 +157,7 @@ export const tenantInvitationSchema = z.object({
     .trim()
     .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
     .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
@@ -166,7 +166,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
  * The schema for the shareHouse creation form
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
-  startDate: z.string().datetime().trim(),
+  startDate: z.string().trim().datetime(),
   rotationCycle: z.union([
     z.literal(ROTATION_WEEKLY),
     z.literal(ROTATION_FORTNIGHTLY),
@@ -202,7 +202,7 @@ export const rotationCycleUpdateSchema = z.object({
  */
 
 export const loginSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
   password: z
     .string()
     .trim()
@@ -212,7 +212,7 @@ export const loginSchema = z.object({
 export type TLoginSchema = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
   password: z
     .string()
     .trim()
@@ -227,7 +227,7 @@ export const signupSchema = z.object({
 export type TSignupSchema = z.infer<typeof signupSchema>;
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
 });
 
 export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
