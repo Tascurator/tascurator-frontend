@@ -7,6 +7,8 @@ import { AuthError, CredentialsSignin } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { AUTH_INDEX_PAGE_REDIRECT } from '@/middleware';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+const { EMAIL_NOT_VERIFIED, CREDENTIAL_INVALID, UNKNOWN_ERROR } =
+  TOAST_ERROR_MESSAGES;
 
 export const login = async (credentials: TLoginSchema) => {
   try {
@@ -19,26 +21,26 @@ export const login = async (credentials: TLoginSchema) => {
     if (error instanceof CredentialsSignin) {
       switch (error.code) {
         case 'email_not_verified':
-          return { error: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED };
+          return { error: EMAIL_NOT_VERIFIED };
         default:
-          return { error: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR };
+          return { error: UNKNOWN_ERROR };
       }
     }
     if (error instanceof AuthError) {
       switch (error.type) {
         // This error is thrown when the credentials are invalid.
         case 'CredentialsSignin':
-          return { error: TOAST_ERROR_MESSAGES.CREDENTIAL_INVALID };
+          return { error: CREDENTIAL_INVALID };
 
         // This error is thrown when the callback route is not found.
         case 'CallbackRouteError':
-          return { error: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR };
+          return { error: UNKNOWN_ERROR };
 
         default:
-          return { error: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR };
+          return { error: UNKNOWN_ERROR };
       }
     }
-    return { error: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR };
+    return { error: UNKNOWN_ERROR };
   }
 
   redirect(AUTH_INDEX_PAGE_REDIRECT);
