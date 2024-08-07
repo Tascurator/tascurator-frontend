@@ -1,8 +1,9 @@
 /**
- * This file contains all the error messages displayed in the application.
+ * This file contains all the messages displayed in the application.
  */
 export const SERVER_ERROR_MESSAGES = {
   AUTH_REQUIRED: 'You are not logged in. Please log in to continue.',
+  CHANGE_SAME_NAME: 'The name is the same as before the change.',
   COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
   CONSOLE_COMPLETION_ERROR: (action: string) => `Error ${action}.`,
   DELETE_NOT_ALLOWED: (entity: string) =>

@@ -288,11 +288,19 @@ const main = async () => {
           select: {
             rotationCycle: true,
             categories: {
-              include: { tasks: true },
+              include: {
+                tasks: {
+                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                },
+              },
+              orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
             },
             tenantPlaceholders: {
               include: {
                 tenant: true,
+              },
+              orderBy: {
+                index: 'asc',
               },
             },
           },

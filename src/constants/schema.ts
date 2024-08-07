@@ -51,6 +51,7 @@ const taskDescriptionLengthMaxValidate = (description: string) => {
 export const categoryCreationSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(
       CATEGORY_NAME_MIN_LENGTH,
       minLength('Category', CATEGORY_NAME_MIN_LENGTH),
@@ -62,10 +63,12 @@ export const categoryCreationSchema = z.object({
   task: z.object({
     title: z
       .string()
+      .trim()
       .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
       .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
     description: z
       .string()
+      .trim()
       .refine(
         taskDescriptionLengthMinValidate,
         minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
@@ -82,13 +85,15 @@ export const categoryCreationSchema = z.object({
  */
 
 export const taskCreationSchema = z.object({
-  categoryId: z.string(),
+  categoryId: z.string().trim().uuid(),
   title: z
     .string()
+    .trim()
     .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
     .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
   description: z
     .string()
+    .trim()
     .refine(
       taskDescriptionLengthMinValidate,
       minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
@@ -110,6 +115,7 @@ export const taskUpdateSchema = taskCreationSchema
 export const shareHouseNameSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(
       SHAREHOUSE_NAME_MIN_LENGTH,
       minLength('ShareHouse name', SHAREHOUSE_NAME_MIN_LENGTH),
@@ -127,6 +133,7 @@ export const shareHouseNameSchema = z.object({
 export const categoryNameSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(
       CATEGORY_NAME_MIN_LENGTH,
       minLength('Category name', CATEGORY_NAME_MIN_LENGTH),
@@ -147,9 +154,10 @@ export type TCategoryNameSchema = z.infer<typeof categoryNameSchema>;
 export const tenantInvitationSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(TENANT_NAME_MIN_LENGTH, minLength('Name', TENANT_NAME_MIN_LENGTH))
     .max(TENANT_NAME_MAX_LENGTH, maxLength('Name', TENANT_NAME_MAX_LENGTH)),
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID).trim(),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
 });
 
 export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
@@ -158,7 +166,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
  * The schema for the shareHouse creation form
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
-  startDate: z.string().datetime(),
+  startDate: z.string().trim().datetime(),
   rotationCycle: z.union([
     z.literal(ROTATION_WEEKLY),
     z.literal(ROTATION_FORTNIGHTLY),
@@ -194,18 +202,20 @@ export const rotationCycleUpdateSchema = z.object({
  */
 
 export const loginSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
   password: z
     .string()
+    .trim()
     .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH)),
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
   password: z
     .string()
+    .trim()
     .min(PASSWORD_MIN_LENGTH, minLength('Password', PASSWORD_MIN_LENGTH))
     .max(PASSWORD_MAX_LENGTH, maxLength('Password', PASSWORD_MAX_LENGTH))
     .regex(/[A-Z]/, minLength('Password', PASSWORD_MIN_CAPITAL_LETTERS))
@@ -217,7 +227,7 @@ export const signupSchema = z.object({
 export type TSignupSchema = z.infer<typeof signupSchema>;
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email(ERROR_MESSAGES.EMAIL_INVALID),
+  email: z.string().trim().email(ERROR_MESSAGES.EMAIL_INVALID),
 });
 
 export type TForgotPassword = z.infer<typeof forgotPasswordSchema>;
@@ -248,7 +258,7 @@ export type TResetPassword = z.infer<typeof resetPasswordSchema>;
 export const taskCompletionUpdateSchema = z.object({
   tasks: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.string().trim().uuid(),
       isCompleted: z.boolean(),
     }),
   ),
