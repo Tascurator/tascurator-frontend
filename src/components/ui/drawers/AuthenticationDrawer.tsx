@@ -31,6 +31,7 @@ interface IAuthenticationDrawer<T extends FieldValues> {
   description: string | string[];
   icon: ReactNode;
   buttonLabel: string;
+  buttonType: 'button' | 'submit';
   onSubmit?: SubmitHandler<T>;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -41,6 +42,7 @@ const AuthenticationDrawer = <T extends FieldValues>({
   description,
   icon,
   buttonLabel,
+  buttonType,
   onSubmit,
   open,
   setOpen,
@@ -65,13 +67,13 @@ const AuthenticationDrawer = <T extends FieldValues>({
         )}
       </DrawerDescription>
       <DrawerFooter>
-        <DrawerClose asChild>
-          {/* if buttonLabel = 'Close', add type={'button'} variant={'outline'} to attribute */}
-          {buttonLabel === 'Close' ? (
+        <DrawerClose>
+          {buttonType === 'button' && (
             <Button type={'button'} variant={'outline'}>
               {buttonLabel}
             </Button>
-          ) : (
+          )}
+          {buttonType === 'submit' && (
             <Button type={'submit'}>{buttonLabel}</Button>
           )}
         </DrawerClose>
@@ -124,6 +126,7 @@ export const EmailSentDrawer = <T extends TForgotPassword>({
       ]}
       icon={<MailCheck className="w-full h-full stroke-secondary-light" />}
       buttonLabel={'Resend Email'}
+      buttonType={'submit'}
       onSubmit={onSubmit}
       open={open}
       setOpen={setOpen}
@@ -155,6 +158,7 @@ export const PasswordChangedDrawer = <T extends FieldValues>({
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
         buttonLabel={'Log in'}
+        buttonType={'submit'}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
@@ -189,6 +193,7 @@ export const SuccessVerificationDrawer = <T extends FieldValues>({
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
         buttonLabel={'Log in'}
+        buttonType={'submit'}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
@@ -256,6 +261,7 @@ export const FailedVerificationDrawer = <T extends FieldValues>({
         }
         icon={<MailWarning className="w-full h-full stroke-destructive" />}
         buttonLabel={`${errorMessages === EXPIRED_TOKEN_VERIFICATION ? 'Resend email' : 'Close'}`}
+        buttonType={`${errorMessages === EXPIRED_TOKEN_VERIFICATION ? 'submit' : 'button'}`}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
