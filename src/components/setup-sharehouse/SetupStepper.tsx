@@ -130,13 +130,14 @@ export const SetupStepper = ({
       console.log('taskkkkkkkk', task);
       const newTasks = getValues().categories.map((category) => {
         if (category.id === task.categoryId) {
+          console.log('categoryyyyyyyyy', category);
           return {
             ...category,
             tasks: [
               ...category.tasks,
               {
                 ...task,
-                categoryId: category.id,
+                // categoryId: category.id,
               },
             ],
           };
