@@ -70,6 +70,7 @@ export const SetupStepper = ({
       isValid = await trigger(['name']);
     } else if (currentStep === 2) {
       isValid = await trigger(['categories']);
+      console.log('isValid', isValid);
     } else if (currentStep === 3) {
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
@@ -115,7 +116,6 @@ export const SetupStepper = ({
         id: task.id,
         title: task.title,
         description: task.description,
-        categoryId: category.id,
       })),
     };
 

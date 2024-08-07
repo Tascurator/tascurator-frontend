@@ -202,7 +202,6 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
                 taskDescriptionLengthMaxValidate,
                 maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
               ),
-            categoryId: z.string().trim().uuid(),
           }),
         ),
       }),
