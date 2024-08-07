@@ -153,7 +153,7 @@ export const SetupStepper = ({
             key={category.id}
           >
             <AccordionItem value={`item-${category.id}`}>
-              <AccordionCategoryItem category={category} />
+              <AccordionCategoryItem category={category} type="setup" />
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
                 {category.tasks.map((task) => (
                   <AccordionTaskItem

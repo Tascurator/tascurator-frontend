@@ -9,11 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
-import { NameEditionDrawer } from '../drawers/names/NameEditionDrawer';
-import { AccordionTrigger } from '../accordion';
-import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
-import { DeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
+import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDrawer';
+import { AccordionTrigger } from '@/components/ui/accordion';
+import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDrawer';
+import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
+import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
 
 /**
  * Constants used in the dropdown menu.
@@ -84,6 +85,7 @@ const UserActionsDropdownMenu = ({
 
 interface IAccordionCategoryItemProps {
   category: ICategory;
+  type?: string;
 }
 
 /**
@@ -94,6 +96,7 @@ interface IAccordionCategoryItemProps {
  */
 export const AccordionCategoryItem = ({
   category,
+  type,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -146,11 +149,19 @@ export const AccordionCategoryItem = ({
       />
 
       {/* Task create drawer */}
-      <TaskCreationDrawer
-        category={category}
-        editOpen={isDrawerOpen && userAction === 'add'}
-        setEditOpen={setIsDrawerOpen}
-      />
+      {type === 'setup' ? (
+        <SetupTaskCreationDrawer
+          category={category}
+          editOpen={isDrawerOpen && userAction === 'add'}
+          setEditOpen={setIsDrawerOpen}
+        />
+      ) : (
+        <TaskCreationDrawer
+          category={category}
+          editOpen={isDrawerOpen && userAction === 'add'}
+          setEditOpen={setIsDrawerOpen}
+        />
+      )}
 
       {/* Category deletion drawer */}
       <DeleteConfirmationDrawer
