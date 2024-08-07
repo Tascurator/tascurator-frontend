@@ -33,7 +33,7 @@ export const newVerification = async (token: string) => {
   // Update the user's email and emailVerified fields
   await prisma.landlord.update({
     where: { id: existingUser.id },
-    data: { emailVerified: new Date(), email: existingToken.email },
+    data: { emailVerified: new Date() },
   });
 
   // Delete the verification token

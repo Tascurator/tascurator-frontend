@@ -3,7 +3,7 @@ import Credentials from '@auth/core/providers/credentials';
 import { loginSchema } from '@/constants/schema';
 import bcrypt from 'bcryptjs';
 import { getLandlordByEmail } from '@/utils/prisma-helpers';
-import { sendVerificationEmail } from '@/actions/signup';
+import { sendVerificationEmail } from '@/utils/send-email';
 class EmailNotVerifiedError extends CredentialsSignin {
   code = 'email_not_verified';
 }
@@ -24,7 +24,7 @@ export default {
           const user = await getLandlordByEmail(email);
 
           // If the user does not exist or the email or password is not provided
-          if (!user || !user.email || !user.password) return null;
+          if (!user) return null;
 
           // If the user has not verified their email, throw an error
           if (!user.emailVerified) {

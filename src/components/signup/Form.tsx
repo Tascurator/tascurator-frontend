@@ -37,7 +37,6 @@ const Form = () => {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
-    trigger,
     watch,
   } = useForm<TSignupSchema>({
     resolver: zodResolver(signupSchema),
@@ -102,26 +101,23 @@ const Form = () => {
 
   const onSubmit = async (formData: TSignupSchema) => {
     try {
-      const isValid = await trigger(['email', 'password']);
-      if (isValid) {
-        /**
-         * Wait for 1 second for user experience purposes
-         */
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const result = await signup(formData);
+      const result = await signup(formData);
 
-        if (result?.error) {
-          toast({
-            variant: 'destructive',
-            description: result.error,
-          });
-        } else {
-          toast({
-            variant: 'default',
-            description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
-          });
-        }
+      if (result?.error) {
+        toast({
+          variant: 'destructive',
+          description: result.error,
+        });
+      } else {
+        toast({
+          variant: 'default',
+          description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
+        });
       }
     } catch (error) {
       toast({

@@ -21,7 +21,6 @@ const Form = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    trigger,
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
@@ -31,18 +30,15 @@ const Form = () => {
     setIsLoading(true);
 
     try {
-      const isValid = await trigger(['email', 'password']);
-      if (isValid) {
-        const result = await login(formData);
+      const result = await login(formData);
 
-        if (result?.error) {
-          toast({
-            variant: 'destructive',
-            description: result.error,
-          });
-        }
-        setIsLoading(false);
+      if (result?.error) {
+        toast({
+          variant: 'destructive',
+          description: result.error,
+        });
       }
+      setIsLoading(false);
     } catch (error) {
       toast({
         variant: 'destructive',
