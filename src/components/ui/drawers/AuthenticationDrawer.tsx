@@ -17,7 +17,7 @@ import {
 import { TForgotPassword } from '@/constants/schema';
 import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
 import { useRouter } from 'next/navigation';
-import { resendVerificationEmail } from '@/actions/signup';
+import { resendVerificationEmailByToken } from '@/actions/signup';
 import { toast } from '@/components/ui/use-toast';
 import {
   TOAST_SUCCESS_MESSAGES,
@@ -227,7 +227,7 @@ export const FailedVerificationDrawer = <T extends FieldValues>({
          */
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const result = await resendVerificationEmail(token);
+        const result = await resendVerificationEmailByToken(token);
 
         if (result?.error) {
           toast({

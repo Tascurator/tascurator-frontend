@@ -41,7 +41,7 @@ export const signup = async (credentials: TSignupSchema) => {
   await sendVerificationEmail(email);
 };
 
-export const resendVerificationEmail = async (token: string) => {
+export const resendVerificationEmailByToken = async (token: string) => {
   const existingToken = await getVerificationTokenDataByToken(token);
 
   // Check if the token exists in the database and is valid
@@ -50,4 +50,8 @@ export const resendVerificationEmail = async (token: string) => {
   }
 
   await sendVerificationEmail(existingToken.email);
+};
+
+export const resendVerificationEmailByEmail = async (email: string) => {
+  await sendVerificationEmail(email);
 };
