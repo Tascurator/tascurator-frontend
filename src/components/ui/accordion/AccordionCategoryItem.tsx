@@ -91,6 +91,7 @@ interface IAccordionCategoryItemProps {
   // todo change any to the correct type
   /* eslint-disable @typescript-eslint/no-explicit-any */
   onsubmitData: (data: any) => void;
+  onDelete?: (id: string) => void;
 }
 
 /**
@@ -103,6 +104,7 @@ export const AccordionCategoryItem = ({
   category,
   type,
   onsubmitData,
+  onDelete,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -178,6 +180,7 @@ export const AccordionCategoryItem = ({
           deleteItem={category.name}
           open={isDrawerOpen && userAction === 'delete'}
           setOpen={setIsDrawerOpen}
+          onDelete={() => (onDelete ? onDelete(category.id) : {})}
         />
       ) : (
         <DeleteConfirmationDrawer

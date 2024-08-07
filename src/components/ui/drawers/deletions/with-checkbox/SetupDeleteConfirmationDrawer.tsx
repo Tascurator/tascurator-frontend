@@ -7,6 +7,7 @@ interface ISetupDeleteConfirmationDrawerProps {
   deleteItem: string;
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDelete: () => void;
 }
 
 /**
@@ -18,6 +19,7 @@ export const SetupDeleteConfirmationDrawer = ({
   deleteItem,
   open,
   setOpen,
+  onDelete,
 }: ISetupDeleteConfirmationDrawerProps) => {
   const formControls = useForm();
 
@@ -29,11 +31,11 @@ export const SetupDeleteConfirmationDrawer = ({
 
   const onSubmit = () => {
     // Please add the logic to delete the item for a new share house
-
     // get data from the form
     console.log('id', id);
     console.log('idType', idType);
     console.log('deleteItem', deleteItem);
+    onDelete();
   };
 
   return (

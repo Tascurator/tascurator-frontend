@@ -147,6 +147,13 @@ export const SetupStepper = ({
     }
   };
 
+  const deleteCategory = (categoryId: string) => {
+    const newCategories = getValues().categories.filter(
+      (category) => category.id !== categoryId,
+    );
+    setValue('categories', newCategories, { shouldValidate: true });
+  };
+
   // step2
   const categorySetting = () => {
     return (
@@ -178,6 +185,7 @@ export const SetupStepper = ({
                 category={category}
                 type="setup"
                 onsubmitData={addTask}
+                onDelete={deleteCategory}
               />
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
                 {category.tasks.map((task) => (
