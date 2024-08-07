@@ -181,7 +181,7 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
           // .array(taskCreationSchema.omit({ categoryId: true }))
           // .array(taskCreationSchema)
           z.object({
-            id: z.string().uuid(),
+            id: z.string().trim().uuid(),
             title: z
               .string()
               .min(
@@ -202,12 +202,32 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
                 taskDescriptionLengthMaxValidate,
                 maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
               ),
+            categoryId: z.string().trim().uuid(),
           }),
         ),
       }),
     )
     .min(CATEGORY_MIN_AMOUNT)
     .max(CATEGORY_MAX_AMOUNT),
+  tasks: z.array(
+    z.object({
+      id: z.string().trim().uuid(),
+      title: z
+        .string()
+        .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+        .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
+      description: z
+        .string()
+        .refine(
+          taskDescriptionLengthMinValidate,
+          minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+        )
+        .refine(
+          taskDescriptionLengthMaxValidate,
+          maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+        ),
+    }),
+  ),
   tenants: z.array(tenantInvitationSchema).max(TENANT_MAX_AMOUNT),
 });
 

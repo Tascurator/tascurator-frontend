@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { ICategory, ITenant } from '@/types/commons';
+import { ICategory, ITask, ITenant } from '@/types/commons';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
 import { ScheduleSetting } from './ScheduleSetting';
 import { TenantListItem } from '../ui/tenantList';
@@ -51,8 +51,6 @@ export const SetupStepper = ({
     },
     mode: 'onBlur',
   });
-
-  console.log('categories', categories);
 
   const {
     register,
@@ -117,6 +115,7 @@ export const SetupStepper = ({
         id: task.id,
         title: task.title,
         description: task.description,
+        categoryId: category.id,
       })),
     };
 
@@ -124,6 +123,28 @@ export const SetupStepper = ({
     const newCategories = [...getValues().categories, transformedCategory];
     setValue('categories', newCategories, { shouldValidate: true });
     console.log('getValues().categories', newCategories);
+  };
+
+  const addTask = (task: ITask) => {
+    {
+      console.log('taskkkkkkkk', task);
+      const newTasks = getValues().categories.map((category) => {
+        if (category.id === task.categoryId) {
+          return {
+            ...category,
+            tasks: [
+              ...category.tasks,
+              {
+                ...task,
+                categoryId: category.id,
+              },
+            ],
+          };
+        }
+        return category;
+      });
+      setValue('categories', newTasks, { shouldValidate: true });
+    }
   };
 
   // step2
@@ -153,7 +174,11 @@ export const SetupStepper = ({
             key={category.id}
           >
             <AccordionItem value={`item-${category.id}`}>
-              <AccordionCategoryItem category={category} type="setup" />
+              <AccordionCategoryItem
+                category={category}
+                type="setup"
+                onsubmitData={addTask}
+              />
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
                 {category.tasks.map((task) => (
                   <AccordionTaskItem

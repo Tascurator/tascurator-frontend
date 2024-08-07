@@ -13,6 +13,7 @@ interface ITaskDrawerContent {
   setEditOpen: (value: boolean) => void;
   confirmOpen: boolean;
   setConfirmOpen: (value: boolean) => void;
+  // onSubmit: SubmitHandler<TTaskCreationSchema>;
   onSubmit: SubmitHandler<TTaskSchema>;
 }
 

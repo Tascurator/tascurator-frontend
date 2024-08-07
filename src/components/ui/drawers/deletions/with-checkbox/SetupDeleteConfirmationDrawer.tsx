@@ -21,9 +21,19 @@ export const SetupDeleteConfirmationDrawer = ({
 }: ISetupDeleteConfirmationDrawerProps) => {
   const formControls = useForm();
 
+  // const {
+  // formState: { errors },
+  // setValue,
+  // getValues,
+  // } = formControls;
+
   const onSubmit = () => {
     // Please add the logic to delete the item for a new share house
-    console.log('Item deleted', id);
+
+    // get data from the form
+    console.log('id', id);
+    console.log('idType', idType);
+    console.log('deleteItem', deleteItem);
   };
 
   return (

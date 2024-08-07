@@ -13,8 +13,9 @@ import { NameEditionDrawer } from '@/components/ui/drawers/names/NameEditionDraw
 import { AccordionTrigger } from '@/components/ui/accordion';
 import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
-import type { ICategory } from '@/types/commons';
+import { ICategory, ITask } from '@/types/commons';
 import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
+import { SetupDeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
 
 /**
  * Constants used in the dropdown menu.
@@ -86,6 +87,10 @@ const UserActionsDropdownMenu = ({
 interface IAccordionCategoryItemProps {
   category: ICategory;
   type?: string;
+
+  // todo change any to the correct type
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  onsubmitData: (data: any) => void;
 }
 
 /**
@@ -97,6 +102,7 @@ interface IAccordionCategoryItemProps {
 export const AccordionCategoryItem = ({
   category,
   type,
+  onsubmitData,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -154,6 +160,7 @@ export const AccordionCategoryItem = ({
           category={category}
           editOpen={isDrawerOpen && userAction === 'add'}
           setEditOpen={setIsDrawerOpen}
+          addTask={onsubmitData as (task: ITask) => void}
         />
       ) : (
         <TaskCreationDrawer
@@ -164,13 +171,23 @@ export const AccordionCategoryItem = ({
       )}
 
       {/* Category deletion drawer */}
-      <DeleteConfirmationDrawer
-        id={category.id}
-        idType={'category'}
-        deleteItem={category.name}
-        open={isDrawerOpen && userAction === 'delete'}
-        setOpen={setIsDrawerOpen}
-      />
+      {type === 'setup' ? (
+        <SetupDeleteConfirmationDrawer
+          id={category.id}
+          idType={'category'}
+          deleteItem={category.name}
+          open={isDrawerOpen && userAction === 'delete'}
+          setOpen={setIsDrawerOpen}
+        />
+      ) : (
+        <DeleteConfirmationDrawer
+          id={category.id}
+          idType={'category'}
+          deleteItem={category.name}
+          open={isDrawerOpen && userAction === 'delete'}
+          setOpen={setIsDrawerOpen}
+        />
+      )}
     </div>
   );
 };
