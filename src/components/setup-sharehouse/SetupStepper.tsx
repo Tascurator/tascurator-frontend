@@ -127,10 +127,10 @@ export const SetupStepper = ({
 
   const addTask = (task: ITask) => {
     {
-      console.log('taskkkkkkkk', task);
+      console.log('⭐️task', task);
       const newTasks = getValues().categories.map((category) => {
         if (category.id === task.categoryId) {
-          console.log('categoryyyyyyyyy', category);
+          console.log('🌼category', category);
           return {
             ...category,
             tasks: [
@@ -153,6 +153,16 @@ export const SetupStepper = ({
       (category) => category.id !== categoryId,
     );
     setValue('categories', newCategories, { shouldValidate: true });
+  };
+
+  const deleteTask = (taskId: string) => {
+    const newTasks = getValues().categories.map((category) => {
+      return {
+        ...category,
+        tasks: category.tasks.filter((task) => task.id !== taskId),
+      };
+    });
+    setValue('categories', newTasks, { shouldValidate: true });
   };
 
   // step2
@@ -191,11 +201,13 @@ export const SetupStepper = ({
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
                 {category.tasks.map((task) => (
                   <AccordionTaskItem
+                    type="setup"
                     key={task.id}
                     id={task.id}
                     category={category}
                     title={task.title}
                     description={task.description}
+                    onDelete={deleteTask}
                   />
                 ))}
               </AccordionContent>

@@ -6,6 +6,7 @@ interface ISetupTaskDeletionDrawerProps {
   open: boolean;
   setOpen: (value: boolean) => void;
   taskId: string;
+  onDelete: (taskId: string) => void;
 }
 
 /**
@@ -16,12 +17,14 @@ export const SetupTaskDeletionDrawer = ({
   open,
   setOpen,
   taskId,
+  onDelete,
 }: ISetupTaskDeletionDrawerProps) => {
   const formControls = useForm();
 
   const onSubmit = () => {
     // Please add the logic to handle the task deletion for a new share house
     console.log(taskId);
+    onDelete(taskId);
   };
 
   return (

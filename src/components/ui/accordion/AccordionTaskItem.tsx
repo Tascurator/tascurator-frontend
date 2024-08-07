@@ -14,6 +14,7 @@ import { TaskDeletionDrawer } from '../drawers/deletions/without-checkbox/TaskDe
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import { ICategoryWithoutTasks } from '@/types/commons';
 import { removeHtmlTags } from '@/utils/task-description';
+import { SetupTaskDeletionDrawer } from '../drawers/deletions/without-checkbox/SetupTaskDeletionDrawer';
 
 /**
  * Constants used in the dropdown menu.
@@ -75,10 +76,12 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionTaskItemProps {
+  type?: string;
   id: string;
   title: string;
   description: string;
   category: ICategoryWithoutTasks;
+  onDelete: (taskId: string) => void;
 }
 
 /**
@@ -88,10 +91,12 @@ interface IAccordionTaskItemProps {
  * <AccordionTaskItem id="1" category="Category" title="Task title" description="Task description" />
  */
 export const AccordionTaskItem = ({
+  type,
   id,
   category,
   title,
   description,
+  onDelete,
 }: IAccordionTaskItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -145,12 +150,22 @@ export const AccordionTaskItem = ({
       />
 
       {/* Task deletion drawer */}
-      <TaskDeletionDrawer
-        title={title}
-        open={isDrawerOpen && userAction === 'delete'}
-        setOpen={setIsDrawerOpen}
-        taskId={id}
-      />
+      {type === 'setup' ? (
+        <SetupTaskDeletionDrawer
+          title={title}
+          open={isDrawerOpen && userAction === 'delete'}
+          setOpen={setIsDrawerOpen}
+          taskId={id}
+          onDelete={onDelete}
+        />
+      ) : (
+        <TaskDeletionDrawer
+          title={title}
+          open={isDrawerOpen && userAction === 'delete'}
+          setOpen={setIsDrawerOpen}
+          taskId={id}
+        />
+      )}
     </div>
   );
 };
