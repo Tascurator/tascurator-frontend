@@ -70,7 +70,6 @@ export const SetupStepper = ({
       isValid = await trigger(['name']);
     } else if (currentStep === 2) {
       isValid = await trigger(['categories']);
-      console.log('isValid', isValid);
     } else if (currentStep === 3) {
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
@@ -245,6 +244,13 @@ export const SetupStepper = ({
     console.log('getValues().tenants', getValues().tenants);
   };
 
+  const deleteTenant = (tenantId: string) => {
+    const newTenants = getValues().tenants.filter(
+      (tenant) => tenant.id !== tenantId,
+    );
+    setValue('tenants', newTenants, { shouldValidate: true });
+  };
+
   // step3
   const tenantSetting = () => {
     return (
@@ -268,7 +274,12 @@ export const SetupStepper = ({
           <ul className="mt-6">
             {getValues().tenants.map((tenant) => (
               <li className="mb-4" key={tenant.id}>
-                <TenantListItem tenant={tenant} shareHouseId="" />
+                <TenantListItem
+                  tenant={tenant}
+                  shareHouseId=""
+                  type="setup"
+                  onDelete={deleteTenant}
+                />
               </li>
             ))}
           </ul>
