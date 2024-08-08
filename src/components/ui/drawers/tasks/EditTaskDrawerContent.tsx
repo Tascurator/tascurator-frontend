@@ -10,7 +10,7 @@ import { TaskDescriptionEditor } from '@/components/ui/drawers/tasks/task-descri
 import { Button } from '@/components/ui/button';
 import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
 import { useFormContext } from 'react-hook-form';
-import { type ICategoryWithoutTasks, ITask } from '@/types/commons';
+import type { ICategoryWithoutTasks, ITask } from '@/types/commons';
 import { INPUT_TEXTS } from '@/constants/input-texts';
 import { TTaskSchema } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 
@@ -103,7 +103,7 @@ export const EditTaskDrawerContent = ({
       <DrawerFooter>
         <DrawerClose asChild>
           <Button type={'button'} variant={'outline'} className={'flex-1'}>
-            Cancel
+            Cancel!!!!
           </Button>
         </DrawerClose>
         <Button
@@ -112,7 +112,7 @@ export const EditTaskDrawerContent = ({
           disabled={!isValid}
           onClick={handleSaveClick}
         >
-          Save
+          Save:)
         </Button>
       </DrawerFooter>
     </CommonDrawer>
