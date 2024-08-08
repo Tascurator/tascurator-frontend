@@ -12,4 +12,6 @@ export const sendVerificationEmail = async (email: string) => {
       `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/signup?token=${verificationToken.token}`,
     ),
   });
+
+  return verificationToken;
 };

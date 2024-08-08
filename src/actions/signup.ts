@@ -49,7 +49,9 @@ export const resendVerificationEmailByToken = async (token: string) => {
     return { error: INVALID_TOKEN_VERIFICATION };
   }
 
-  await sendVerificationEmail(existingToken.email);
+  const newVerificationToken = await sendVerificationEmail(existingToken.email);
+
+  return { token: newVerificationToken.token };
 };
 
 export const resendVerificationEmailByEmail = async (email: string) => {

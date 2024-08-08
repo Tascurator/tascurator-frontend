@@ -4,10 +4,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { ERROR_MESSAGES } from '@/constants/error-messages';
 import {
   SuccessVerificationDrawer,
-  FailedVerificationDrawer,
+  ExpiredVerificationTokenDrawer,
+  EmailSentDrawer,
 } from '@/components/ui/drawers/AuthenticationDrawer';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 const { GENERAL_ERROR } = ERROR_MESSAGES;
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { toast } from '../use-toast';
+import { resendVerificationEmailByToken } from '@/actions/signup';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+import { FormProvider, useForm } from 'react-hook-form';
+const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
 
 interface IEmailVerificationDrawer {
   token: string;
@@ -20,8 +27,9 @@ export const EmailVerificationDrawer = ({
   const [error, setError] = useState<string | undefined>();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [newToken, setNewToken] = useState<string | undefined>();
 
-  const onSubmit = useCallback(() => {
+  const onLoadSubmit = useCallback(() => {
     /**
      * Wait for 1 second for user experience purposes
      */
@@ -32,7 +40,15 @@ export const EmailVerificationDrawer = ({
         setSuccess(data.success);
         setError(data.error);
         setIsLoading(false);
-        setOpen(true);
+        // Only if the token is expired, open the failed verification drawer
+        if (data.error === EXPIRED_TOKEN_VERIFICATION) {
+          setOpen(true);
+        } else {
+          toast({
+            variant: 'destructive',
+            description: data.error,
+          });
+        }
       })
       .catch(() => {
         setError(GENERAL_ERROR);
@@ -43,8 +59,37 @@ export const EmailVerificationDrawer = ({
 
   useEffect(() => {
     if (!token) return;
-    onSubmit();
-  }, [token, onSubmit]);
+    onLoadSubmit();
+  }, [token, onLoadSubmit]);
+
+  const formControls = useForm();
+
+  const onResendEmail = async () => {
+    try {
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const result = await resendVerificationEmailByToken(newToken ?? token);
+
+      if (result?.error) {
+        toast({
+          variant: 'destructive',
+          description: result.error,
+        });
+      } else {
+        setNewToken(result?.token);
+        console.log('new token', newToken);
+        setOpen(true);
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        description: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR,
+      });
+    }
+  };
 
   if (!token) return null;
 
@@ -52,13 +97,24 @@ export const EmailVerificationDrawer = ({
     <>
       <LoadingSpinner isLoading={isLoading} />
       {success && <SuccessVerificationDrawer open={open} setOpen={setOpen} />}
-      {!success && error && (
-        <FailedVerificationDrawer
-          open={open}
-          setOpen={setOpen}
-          errorMessages={error}
-          token={token}
-        />
+      {!success && error === EXPIRED_TOKEN_VERIFICATION && (
+        <FormProvider {...formControls}>
+          <ExpiredVerificationTokenDrawer
+            open={open}
+            setOpen={setOpen}
+            errorMessages={error}
+            onSubmit={onResendEmail}
+          />
+        </FormProvider>
+      )}
+      {newToken && (
+        <FormProvider {...formControls}>
+          <EmailSentDrawer
+            open={open}
+            setOpen={setOpen}
+            onSubmit={onResendEmail}
+          />
+        </FormProvider>
       )}
     </>
   );

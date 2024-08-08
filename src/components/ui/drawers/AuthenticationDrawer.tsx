@@ -17,21 +17,12 @@ import {
 import { TForgotPassword } from '@/constants/schema';
 import { CommonDrawer } from '@/components/ui/commons/CommonDrawer';
 import { useRouter } from 'next/navigation';
-import { resendVerificationEmailByToken } from '@/actions/signup';
-import { toast } from '@/components/ui/use-toast';
-import {
-  TOAST_SUCCESS_MESSAGES,
-  TOAST_ERROR_MESSAGES,
-} from '@/constants/toast-texts';
-import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
 
 interface IAuthenticationDrawer<T extends FieldValues> {
   title: string;
   description: string | string[];
   icon: ReactNode;
   buttonLabel: string;
-  buttonType: 'button' | 'submit';
   onSubmit?: SubmitHandler<T>;
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -42,7 +33,6 @@ const AuthenticationDrawer = <T extends FieldValues>({
   description,
   icon,
   buttonLabel,
-  buttonType,
   onSubmit,
   open,
   setOpen,
@@ -67,15 +57,8 @@ const AuthenticationDrawer = <T extends FieldValues>({
         )}
       </DrawerDescription>
       <DrawerFooter>
-        <DrawerClose>
-          {buttonType === 'button' && (
-            <Button type={'button'} variant={'outline'}>
-              {buttonLabel}
-            </Button>
-          )}
-          {buttonType === 'submit' && (
-            <Button type={'submit'}>{buttonLabel}</Button>
-          )}
+        <DrawerClose asChild>
+          <Button type={'submit'}>{buttonLabel}</Button>
         </DrawerClose>
       </DrawerFooter>
     </CommonDrawer>
@@ -126,7 +109,6 @@ export const EmailSentDrawer = <T extends TForgotPassword>({
       ]}
       icon={<MailCheck className="w-full h-full stroke-secondary-light" />}
       buttonLabel={'Resend Email'}
-      buttonType={'submit'}
       onSubmit={onSubmit}
       open={open}
       setOpen={setOpen}
@@ -158,7 +140,6 @@ export const PasswordChangedDrawer = <T extends FieldValues>({
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
         buttonLabel={'Log in'}
-        buttonType={'submit'}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
@@ -193,7 +174,6 @@ export const SuccessVerificationDrawer = <T extends FieldValues>({
           <CircleCheck className="w-full h-full fill-secondary-light stroke-white" />
         }
         buttonLabel={'Log in'}
-        buttonType={'submit'}
         onSubmit={onSubmit}
         open={open}
         setOpen={setOpen}
@@ -205,67 +185,28 @@ export const SuccessVerificationDrawer = <T extends FieldValues>({
 interface IFailedVerificationDrawer<T extends FieldValues>
   extends IAuthenticationChildrenDrawer<T> {
   errorMessages: string;
-  token: string;
 }
 
 /**
  * A failed verification drawer component to show the error message and resend email button
  */
-export const FailedVerificationDrawer = <T extends FieldValues>({
+export const ExpiredVerificationTokenDrawer = <T extends FieldValues>({
   open,
   setOpen,
   errorMessages,
-  token,
+  onSubmit,
 }: IFailedVerificationDrawer<T>) => {
-  const formControls = useForm();
-
-  const onSubmit = async () => {
-    if (errorMessages === EXPIRED_TOKEN_VERIFICATION) {
-      try {
-        /**
-         * Wait for 1 second for user experience purposes
-         */
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const result = await resendVerificationEmailByToken(token);
-
-        if (result?.error) {
-          toast({
-            variant: 'destructive',
-            description: result.error,
-          });
-        } else {
-          toast({
-            variant: 'default',
-            description: TOAST_SUCCESS_MESSAGES.EMAIL_SENT,
-          });
-        }
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          description: TOAST_ERROR_MESSAGES.SIGNUP_UNKNOWN_ERROR,
-        });
-      }
-    } else {
-      // Close the drawer if there is no token
-      setOpen(false);
-    }
-  };
-
   return (
-    <FormProvider {...formControls}>
-      <AuthenticationDrawer
-        title={'Email verification has failed'}
-        description={
-          errorMessages || 'We could not verify your email. Please try again.'
-        }
-        icon={<MailWarning className="w-full h-full stroke-destructive" />}
-        buttonLabel={`${errorMessages === EXPIRED_TOKEN_VERIFICATION ? 'Resend email' : 'Close'}`}
-        buttonType={`${errorMessages === EXPIRED_TOKEN_VERIFICATION ? 'submit' : 'button'}`}
-        onSubmit={onSubmit}
-        open={open}
-        setOpen={setOpen}
-      />
-    </FormProvider>
+    <AuthenticationDrawer
+      title={'Email verification has failed'}
+      description={
+        errorMessages || 'We could not verify your email. Please try again.'
+      }
+      icon={<MailWarning className="w-full h-full stroke-destructive" />}
+      buttonLabel={'Resend email'}
+      onSubmit={onSubmit}
+      open={open}
+      setOpen={setOpen}
+    />
   );
 };
