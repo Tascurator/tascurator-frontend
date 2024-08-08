@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { Ellipsis, Home, LogOutIcon } from 'lucide-react';
 import {
   Breadcrumb,
@@ -21,7 +22,7 @@ import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with
 import { LogOutDrawer } from '@/components/ui/drawers/LogOutDrawer';
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
-import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const { EDIT_SHAREHOUSE_NAME, MANAGE_SHAREHOUSE, DELETE_SHAREHOUSE } =
   DROPDOWN_ITEMS;
@@ -64,6 +65,11 @@ function HeaderItemWithDropDown({
 }) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+
+  const path = usePathname();
+  const pathShareHouseId = `/sharehouses/${sharehouseId}`;
+  const pathShareHouseIdEdit = `/sharehouses/${sharehouseId}/edit`;
+
   return (
     <>
       <div>
@@ -77,12 +83,18 @@ function HeaderItemWithDropDown({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbPage className="pl-1">
-                <BreadcrumbLink
-                  className="text-xl line-clamp-1"
-                  href={`/sharehouses/${sharehouseId}`}
-                >
-                  {pageTitle}
-                </BreadcrumbLink>
+                {path === pathShareHouseId && (
+                  <div className="text-xl line-clamp-1">{pageTitle}</div>
+                )}
+
+                {path === pathShareHouseIdEdit && (
+                  <BreadcrumbLink
+                    className="text-xl line-clamp-1"
+                    href={pathShareHouseId}
+                  >
+                    {pageTitle}
+                  </BreadcrumbLink>
+                )}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -103,11 +115,16 @@ function HeaderItemWithDropDown({
               >
                 {EDIT_SHAREHOUSE_NAME.text}
               </DropdownMenuItemWithIcon>
-              <Link href={`/sharehouses/${sharehouseId}/edit`}>
-                <DropdownMenuItemWithIcon icon={MANAGE_SHAREHOUSE.icon}>
-                  {MANAGE_SHAREHOUSE.text}
-                </DropdownMenuItemWithIcon>
-              </Link>
+
+              {path === pathShareHouseId && (
+                <Link href={pathShareHouseIdEdit}>
+                  <DropdownMenuItemWithIcon icon={MANAGE_SHAREHOUSE.icon}>
+                    {MANAGE_SHAREHOUSE.text}
+                  </DropdownMenuItemWithIcon>
+                </Link>
+              )}
+              {path === pathShareHouseIdEdit && <></>}
+
               <DropdownMenuItemWithIcon
                 icon={DELETE_SHAREHOUSE.icon}
                 onClick={() => setOpenDelete(true)}

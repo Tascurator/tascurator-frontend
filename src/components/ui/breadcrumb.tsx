@@ -108,7 +108,11 @@ const BreadcrumbLink = forwardRef<
   const Comp = asChild ? Slot : 'a';
 
   return (
-    <Comp ref={ref} className={cn('transition-colors', className)} {...props} />
+    <Comp
+      ref={ref}
+      className={cn('hover:opacity-70 transition duration-300', className)}
+      {...props}
+    />
   );
 });
 BreadcrumbLink.displayName = 'BreadcrumbLink';
