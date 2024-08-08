@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import type { ITenant } from '@/types/commons';
 import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
+import { SetupTenantInvitationDrawer } from '@/components/ui/drawers/tenants/SetupTenantInvitationDrawer';
 
 const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
 
@@ -23,6 +24,7 @@ interface ITenantListItemProps {
   tenant: ITenant;
   type?: string;
   onDelete?: (id: string) => void;
+  onUpdate?: (tenantId: string, tenant: ITenant) => void;
 }
 
 /**
@@ -45,6 +47,7 @@ const TenantListItem = ({
   tenant,
   type,
   onDelete,
+  onUpdate,
 }: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -87,12 +90,22 @@ const TenantListItem = ({
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <TenantInvitationDrawer
-          shareHouseId={shareHouseId}
-          tenant={tenant}
-          open={openEdit}
-          setOpen={setOpenEdit}
-        />
+
+        {type === 'setup' ? (
+          <SetupTenantInvitationDrawer
+            tenant={tenant}
+            open={openEdit}
+            setOpen={setOpenEdit}
+            editTenant={onUpdate}
+          />
+        ) : (
+          <TenantInvitationDrawer
+            shareHouseId={shareHouseId}
+            tenant={tenant}
+            open={openEdit}
+            setOpen={setOpenEdit}
+          />
+        )}
 
         {type === 'setup' ? (
           <SetupDeleteConfirmationDrawer

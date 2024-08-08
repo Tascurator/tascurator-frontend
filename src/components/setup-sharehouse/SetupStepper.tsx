@@ -275,6 +275,13 @@ export const SetupStepper = ({
     console.log('getValues().tenants', getValues().tenants);
   };
 
+  const updateTenantInfo = (tenantId: string, newTenant: ITenant) => {
+    const newTenants = getValues().tenants.map((tenant) =>
+      tenant.id === tenantId ? newTenant : tenant,
+    );
+    setValue('tenants', newTenants, { shouldValidate: true });
+  };
+
   const deleteTenant = (tenantId: string) => {
     const newTenants = getValues().tenants.filter(
       (tenant) => tenant.id !== tenantId,
@@ -310,6 +317,7 @@ export const SetupStepper = ({
                   shareHouseId=""
                   type="setup"
                   onDelete={deleteTenant}
+                  onUpdate={updateTenantInfo}
                 />
               </li>
             ))}

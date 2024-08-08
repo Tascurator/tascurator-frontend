@@ -11,7 +11,8 @@ interface ISetupTenantInvitationDrawer {
   tenant?: ITenant;
   open: boolean;
   setOpen: (open: boolean) => void;
-  addTenant: (tenant: ITenant) => void;
+  addTenant?: (tenant: ITenant) => void;
+  editTenant?: (tenantId: string, tenant: ITenant) => void;
 }
 
 /**
@@ -22,6 +23,7 @@ export const SetupTenantInvitationDrawer = ({
   open,
   setOpen,
   addTenant,
+  editTenant,
 }: ISetupTenantInvitationDrawer) => {
   const formControls = useForm<TTenantInvitationSchema>({
     resolver: zodResolver(tenantInvitationSchema),
@@ -39,7 +41,12 @@ export const SetupTenantInvitationDrawer = ({
       id: self.crypto.randomUUID(),
       ...data,
     };
-    addTenant(newTenant);
+    if (addTenant) {
+      addTenant(newTenant);
+    }
+    if (editTenant && tenant) {
+      editTenant(tenant.id, newTenant);
+    }
     setOpen(false);
     reset();
   };
