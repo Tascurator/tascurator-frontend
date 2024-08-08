@@ -70,7 +70,6 @@ export const SetupStepper = ({
       isValid = await trigger(['name']);
     } else if (currentStep === 2) {
       isValid = await trigger(['categories']);
-      console.log('isValid', isValid);
     } else if (currentStep === 3) {
       isValid = await trigger(['tenants']);
     } else if (currentStep === 4) {
@@ -268,6 +267,21 @@ export const SetupStepper = ({
     );
   };
 
+  const addTenant = (tenant: ITenant) => {
+    console.log('⭐️tenant', tenant);
+    setValue('tenants', [...getValues().tenants, tenant], {
+      shouldValidate: true,
+    });
+    console.log('getValues().tenants', getValues().tenants);
+  };
+
+  const deleteTenant = (tenantId: string) => {
+    const newTenants = getValues().tenants.filter(
+      (tenant) => tenant.id !== tenantId,
+    );
+    setValue('tenants', newTenants, { shouldValidate: true });
+  };
+
   // step3
   const tenantSetting = () => {
     return (
@@ -282,15 +296,21 @@ export const SetupStepper = ({
           title="Tenants"
           type="setupTenants"
           shareHouseId=""
+          onsubmitData={addTenant}
         />
         <p className="flex justify-end">
           {getValues().tenants.length}/{TENANT_MAX_AMOUNT}
         </p>
         {getValues().tenants.length > 0 ? (
           <ul className="mt-6">
-            {tenants.map((tenant) => (
+            {getValues().tenants.map((tenant) => (
               <li className="mb-4" key={tenant.id}>
-                <TenantListItem tenant={tenant} shareHouseId="" />
+                <TenantListItem
+                  tenant={tenant}
+                  shareHouseId=""
+                  type="setup"
+                  onDelete={deleteTenant}
+                />
               </li>
             ))}
           </ul>

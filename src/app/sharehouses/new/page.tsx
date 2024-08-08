@@ -4,21 +4,11 @@ import { DefaultCategory } from '@/components/setup-sharehouse/DefaultCategory';
 const NewSharehousePage = () => {
   const categories: ICategory[] = DefaultCategory;
   const tenants: ITenant[] = [
-    {
-      id: '1',
-      name: 'Alice',
-      email: 'asd@ak.com',
-    },
-    {
-      id: '2',
-      name: 'Bob',
-      email: 'bob@bob.com',
-    },
-    {
-      id: '3',
-      name: 'Charlie',
-      email: 'c@c.sof',
-    },
+    // {
+    //   id: 'eddd31de-5d39-40df-92d6-3ec017d8e9cd',
+    //   name: 'test',
+    //   email: 'test@tascurator.com',
+    // },
   ];
 
   return (

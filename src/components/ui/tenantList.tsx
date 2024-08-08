@@ -14,12 +14,15 @@ import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import type { ITenant } from '@/types/commons';
+import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
 
 const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
 
 interface ITenantListItemProps {
   shareHouseId: string;
   tenant: ITenant;
+  type?: string;
+  onDelete?: (id: string) => void;
 }
 
 /**
@@ -37,7 +40,12 @@ interface ITenantListItemProps {
  * <TenantListItem tenant={tenant} />
  * ```
  */
-const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
+const TenantListItem = ({
+  shareHouseId,
+  tenant,
+  type,
+  onDelete,
+}: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -85,13 +93,25 @@ const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
           open={openEdit}
           setOpen={setOpenEdit}
         />
-        <DeleteConfirmationDrawer
-          id={tenant.id}
-          idType={'tenant'}
-          deleteItem={tenant.name}
-          open={openDelete}
-          setOpen={setOpenDelete}
-        />
+
+        {type === 'setup' ? (
+          <SetupDeleteConfirmationDrawer
+            id={tenant.id}
+            idType={'tenant'}
+            deleteItem={tenant.name}
+            open={openDelete}
+            setOpen={setOpenDelete}
+            onDelete={() => (onDelete ? onDelete(tenant.id) : {})}
+          />
+        ) : (
+          <DeleteConfirmationDrawer
+            id={tenant.id}
+            idType={'tenant'}
+            deleteItem={tenant.name}
+            open={openDelete}
+            setOpen={setOpenDelete}
+          />
+        )}
       </div>
     </div>
   );

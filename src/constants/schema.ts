@@ -166,7 +166,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
  * The schema for the shareHouse creation form
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
-  id: z.string(),
+  id: z.string().trim().uuid(),
   startDate: z.string().trim().datetime(),
   rotationCycle: z.union([
     z.literal(ROTATION_WEEKLY),
@@ -175,7 +175,7 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   categories: z
     .array(
       categoryCreationSchema.pick({ name: true }).extend({
-        id: z.string(),
+        id: z.string().trim().uuid(),
 
         tasks: z.array(
           // .array(taskCreationSchema.omit({ categoryId: true }))
@@ -227,7 +227,13 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
         ),
     }),
   ),
-  tenants: z.array(tenantInvitationSchema).max(TENANT_MAX_AMOUNT),
+  tenants: z
+    .array(
+      tenantInvitationSchema.pick({ name: true, email: true }).extend({
+        id: z.string().trim().uuid(),
+      }),
+    )
+    .max(TENANT_MAX_AMOUNT),
 });
 
 export type TShareHouseCreationSchema = z.infer<
