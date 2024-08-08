@@ -7,8 +7,12 @@ import { AuthError, CredentialsSignin } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { AUTH_INDEX_PAGE_REDIRECT } from '@/middleware';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
-const { EMAIL_NOT_VERIFIED, CREDENTIAL_INVALID, UNKNOWN_ERROR } =
-  TOAST_ERROR_MESSAGES;
+const {
+  EMAIL_NOT_VERIFIED,
+  EMAIL_NOT_VERIFIED_COOLDOWN,
+  CREDENTIAL_INVALID,
+  UNKNOWN_ERROR,
+} = TOAST_ERROR_MESSAGES;
 
 export const login = async (credentials: TLoginSchema) => {
   try {
@@ -23,6 +27,9 @@ export const login = async (credentials: TLoginSchema) => {
         // This error is thrown when the email is not verified.
         case 'email_not_verified':
           return { error: EMAIL_NOT_VERIFIED };
+        // This error is thrown when the email is not verified and the cooldown time has not passed.
+        case 'email_not_verified_cooldown':
+          return { error: EMAIL_NOT_VERIFIED_COOLDOWN };
         // This error is thrown when the credentials are invalid.
         case 'credentials':
           return { error: CREDENTIAL_INVALID };
