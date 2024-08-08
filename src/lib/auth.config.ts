@@ -42,12 +42,8 @@ export default {
               verificationToken &&
               isWithin30MinutesOfEmailSent(verificationToken.expiresAt)
             ) {
-              console.log('Email not verified cooldown');
               throw new EmailNotVerifiedCoolDownError();
             } else {
-              console.log(
-                'Email not verified. We have to send a new verification email',
-              );
               await sendVerificationEmail(user.email);
               throw new EmailNotVerifiedError();
             }
