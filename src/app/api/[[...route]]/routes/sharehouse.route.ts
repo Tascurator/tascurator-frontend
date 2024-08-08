@@ -15,7 +15,6 @@ import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
-import { TPrismaShareHouseWithOtherTables } from '@/types/server';
 
 const app = new Hono()
 
@@ -27,35 +26,39 @@ const app = new Hono()
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables: TPrismaShareHouseWithOtherTables | null =
-        await prisma.shareHouse.findUnique({
-          where: {
-            id: shareHouseId,
-          },
-          include: {
-            RotationAssignment: {
-              include: {
-                tenantPlaceholders: {
-                  include: {
-                    tenant: true,
-                  },
-                  orderBy: [
-                    { tenant: { createdAt: 'asc' } },
-                    { tenant: { id: 'asc' } },
-                  ],
+      const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
+        where: {
+          id: shareHouseId,
+        },
+        include: {
+          RotationAssignment: {
+            include: {
+              tenantPlaceholders: {
+                include: {
+                  tenant: true,
                 },
-                categories: {
-                  include: {
-                    tasks: {
-                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-                    },
+                orderBy: [
+                  { tenant: { createdAt: 'asc' } },
+                  { tenant: { id: 'asc' } },
+                ],
+              },
+              categories: {
+                include: {
+                  tasks: {
+                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                   },
-                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
+                orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
               },
             },
           },
-        });
+          assignmentSheet: {
+            select: {
+              endDate: true,
+            },
+          },
+        },
+      });
 
       if (!shareHouseWithOtherTables)
         return c.json(
@@ -71,6 +74,8 @@ const app = new Hono()
 
       const shareHouseData = {
         name: shareHouseWithOtherTables.name,
+        nextRotationStartDate:
+          shareHouseWithOtherTables.assignmentSheet.endDate.toISOString(),
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {
@@ -154,6 +159,12 @@ const app = new Hono()
           return c.json(
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
             404,
+          );
+
+        if (data.name === shareHouse.name)
+          return c.json(
+            { message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME },
+            200,
           );
 
         // Check if the landlord has a share house with the same name
@@ -470,11 +481,19 @@ const app = new Hono()
               select: {
                 rotationCycle: true,
                 categories: {
-                  include: { tasks: true },
+                  include: {
+                    tasks: {
+                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                    },
+                  },
+                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
                 tenantPlaceholders: {
                   include: {
                     tenant: true,
+                  },
+                  orderBy: {
+                    index: 'asc',
                   },
                 },
               },

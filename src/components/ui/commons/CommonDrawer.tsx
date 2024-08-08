@@ -83,7 +83,16 @@ export const CommonDrawer = <T extends FieldValues>({
         <DrawerTrigger />
         <DrawerContent className={className} asChild={!!onSubmit}>
           {onSubmit ? (
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+              onSubmit={(e) => {
+                /**
+                 * In case the form is nested in another form, prevent submitting the parent form by stopping the event propagation
+                 */
+                e.stopPropagation();
+
+                void handleSubmit(onSubmit)(e);
+              }}
+            >
               <DrawerTitle>{title}</DrawerTitle>
               {children}
             </form>

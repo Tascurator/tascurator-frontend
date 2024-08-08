@@ -1,8 +1,9 @@
 /**
- * This file contains all the error messages displayed in the application.
+ * This file contains all the messages displayed in the application.
  */
 export const SERVER_ERROR_MESSAGES = {
   AUTH_REQUIRED: 'You are not logged in. Please log in to continue.',
+  CHANGE_SAME_NAME: 'The name is the same as before the change.',
   COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
   CONSOLE_COMPLETION_ERROR: (action: string) => `Error ${action}.`,
   DELETE_NOT_ALLOWED: (entity: string) =>
@@ -24,5 +25,7 @@ export const SERVER_ERROR_MESSAGES = {
   EMAIL_SEND_ERROR:
     'An error occurred while sending the email. Please try again later.',
   ENV_KEYS_MISSING: (keys: string[]) =>
-    `The following environment keys are missing: ${keys.join(', ')}.`,
+    `The following environment key(s) are missing: ${keys.join(', ')}.`,
+  INVALID_TOKEN:
+    'Invalid or expired token. Please try resetting your password again.',
 };

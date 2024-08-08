@@ -29,6 +29,9 @@ const app = new Hono()
       if (!task)
         return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
+      if (data.title === task.title)
+        return c.json({ message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME }, 200);
+
       const updateData: { title?: string; description?: string } = {};
       if (data.title) updateData.title = data.title;
       if (data.description) updateData.description = data.description;
@@ -78,7 +81,7 @@ const app = new Hono()
         );
       }
 
-      if (category.tasks.length > CONSTRAINTS.TASK_MAX_AMOUNT)
+      if (category.tasks.length >= CONSTRAINTS.TASK_MAX_AMOUNT)
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(

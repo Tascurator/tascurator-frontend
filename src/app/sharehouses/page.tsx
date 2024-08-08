@@ -22,9 +22,8 @@ const ShareHousesPage = async () => {
   const data = await res.json();
 
   // Check for error in data and display it if found
-  // TODO: Improve and implement the error message display
   if ('error' in data) {
-    return <div>{data.error}</div>;
+    throw new Error(data.error);
   }
 
   // Extract 'shareHouses' from data

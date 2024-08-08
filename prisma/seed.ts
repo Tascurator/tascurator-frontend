@@ -1,26 +1,12 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import bcrypt, { genSaltSync } from 'bcryptjs';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { addDays, convertToUTC, getToday } from '@/utils/dates';
+import { hashPassword } from '@/utils/password-hashing';
 
 const prisma = new PrismaClient();
 
 const createLandlord = async () => {
-  let salt: number | string | undefined = process.env.PASSWORD_SALT_ROUNDS;
-
-  if (!salt) {
-    throw new Error('PASSWORD_SALT_ROUNDS environment variable is not set');
-  }
-
-  if (Number.isNaN(Number(salt))) {
-    throw new Error(
-      'PASSWORD_SALT_ROUNDS environment variable is not a number',
-    );
-  }
-
-  salt = Number(salt);
-
-  const hashedPassword = await bcrypt.hash('password', genSaltSync(salt));
+  const hashedPassword = await hashPassword('password');
 
   return prisma.landlord.create({
     data: {
@@ -302,11 +288,19 @@ const main = async () => {
           select: {
             rotationCycle: true,
             categories: {
-              include: { tasks: true },
+              include: {
+                tasks: {
+                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                },
+              },
+              orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
             },
             tenantPlaceholders: {
               include: {
                 tenant: true,
+              },
+              orderBy: {
+                index: 'asc',
               },
             },
           },
