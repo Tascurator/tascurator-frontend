@@ -59,7 +59,6 @@ const ShareHousesPage = async () => {
             />
           </div>
         ))}
-        ;
       </div>
     </>
   );
