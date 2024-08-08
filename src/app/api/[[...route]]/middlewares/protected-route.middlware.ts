@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 import { auth } from '@/lib/auth';
-import { Env } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/app/api/[[...route]]/route';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 /**
@@ -8,7 +8,7 @@ import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
  * If the user is not logged in, return 401.
  * If the user is logged in, set the session in the context.
  */
-export const protectedRouteMiddleware = createMiddleware<Env>(
+export const protectedRouteMiddleware = createMiddleware<THonoEnv>(
   async (c, next) => {
     const session = await auth();
 

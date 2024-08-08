@@ -1,8 +1,6 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
 
-import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import sharehouseRoute from '@/app/api/[[...route]]/routes/sharehouse.route';
 import sharehousesRoute from '@/app/api/[[...route]]/routes/sharehouses.ruote';
@@ -11,42 +9,48 @@ import categoryRoute from '@/app/api/[[...route]]/routes/category.route';
 import taskRoute from '@/app/api/[[...route]]/routes/task.route';
 import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
 import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
+import { Session } from 'next-auth';
+import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
 
-const app = new Hono();
+export type THonoEnv = {
+  Variables: {
+    session: Session;
+  };
+};
+
+const app = new Hono<THonoEnv>();
 
 const routes = app
   .basePath('/api')
+
+  /**
+   * Public routes that do not require the user to be logged in.
+   */
+  .route('/assignments', assignmentsRoute)
+
+  /**
+   * Protected routes that require the user to be logged in.
+   */
+  .use(protectedRouteMiddleware)
   .route('/sharehouse', sharehouseRoute)
   .route('/sharehouses', sharehousesRoute)
   .route('/rotation', rotationRoute)
   .route('/category', categoryRoute)
   .route('/task', taskRoute)
   .route('/tenant', tenantRoute)
-  .route('/assignments', assignmentsRoute)
 
   /**
    * This is a test route to check if the user is logged in.
    * TODO: Remove this route before deploying to production.
    */
   .get('/whoami', async (c) => {
-    const session = await auth();
-
-    if (!session) {
-      return c.json(
-        {
-          error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-        },
-        401,
-      );
-    }
-
     const landlord = await prisma.landlord.findUnique({
-      where: { id: session.user.id },
+      where: { id: c.get('session').user.id },
     });
 
     return c.json({
-      message: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-      session,
+      message: 'You are logged in!',
+      session: c.get('session'),
       landlord,
     });
   });
