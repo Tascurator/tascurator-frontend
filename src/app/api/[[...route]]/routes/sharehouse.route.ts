@@ -5,7 +5,7 @@ import { zValidator } from '@hono/zod-validator';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
-  shareHouseCreationSchema,
+  shareHouseConfirmSchema,
   shareHouseNameSchema,
 } from '@/constants/schema';
 import { auth } from '@/lib/auth';
@@ -298,7 +298,7 @@ const app = new Hono()
    * Creates a shareHouse
    * @route POST /api/shareHouse
    */
-  .post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
+  .post('/', zValidator('json', shareHouseConfirmSchema), async (c) => {
     try {
       const session = await auth();
 
