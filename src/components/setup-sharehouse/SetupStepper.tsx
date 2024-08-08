@@ -160,6 +160,9 @@ export const SetupStepper = ({
   };
 
   const deleteCategory = (categoryId: string) => {
+    if (getValues().categories.length <= CONSTRAINTS.CATEGORY_MIN_AMOUNT)
+      return;
+
     const newCategories = getValues().categories.filter(
       (category) => category.id !== categoryId,
     );
@@ -167,13 +170,41 @@ export const SetupStepper = ({
   };
 
   const deleteTask = (taskId: string) => {
-    const newTasks = getValues().categories.map((category) => {
+    const categories = getValues().categories;
+    const category = categories.find(
+      (c) => c.tasks.findIndex((t) => t.id === taskId) !== -1,
+    );
+
+    if (!category) return;
+
+    /**
+     * Don't allow deleting the last category with last task
+     */
+    if (categories.length === 1 && category.tasks.length === 1) return;
+
+    /**
+     * Delete the category itself when the number of the tasks is 1, meaning the landlord is deleting the last task
+     */
+    if (category.tasks.length === 1) {
+      setValue(
+        'categories',
+        categories.filter((c) => c.id !== category.id),
+        { shouldValidate: true },
+      );
+      return;
+    }
+
+    /**
+     * Delete the task from the associated category
+     */
+    const updatedCategories = getValues().categories.map((category) => {
       return {
         ...category,
         tasks: category.tasks.filter((task) => task.id !== taskId),
       };
     });
-    setValue('categories', newTasks, { shouldValidate: true });
+
+    setValue('categories', updatedCategories, { shouldValidate: true });
   };
 
   // step2
