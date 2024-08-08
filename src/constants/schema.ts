@@ -240,6 +240,52 @@ export type TShareHouseCreationSchema = z.infer<
   typeof shareHouseCreationSchema
 >;
 
+export const shareHouseConfirmSchema = shareHouseCreationSchema
+  .omit({
+    id: true,
+    categories: true,
+    tasks: true,
+    tenants: true,
+  })
+  .extend({
+    categories: z
+      .array(
+        categoryCreationSchema.pick({ name: true }).extend({
+          tasks: z.array(
+            z.object({
+              title: z
+                .string()
+                .min(
+                  TASK_TITLE_MIN_LENGTH,
+                  minLength('Title', TASK_TITLE_MIN_LENGTH),
+                )
+                .max(
+                  TASK_TITLE_MAX_LENGTH,
+                  maxLength('Title', TASK_TITLE_MAX_LENGTH),
+                ),
+              description: z
+                .string()
+                .refine(
+                  taskDescriptionLengthMinValidate,
+                  minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+                )
+                .refine(
+                  taskDescriptionLengthMaxValidate,
+                  maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+                ),
+            }),
+          ),
+        }),
+      )
+      .min(CATEGORY_MIN_AMOUNT)
+      .max(CATEGORY_MAX_AMOUNT),
+    tenants: z
+      .array(tenantInvitationSchema.pick({ name: true, email: true }))
+      .max(TENANT_MAX_AMOUNT),
+  });
+
+export type TShareHouseConfirmSchema = z.infer<typeof shareHouseConfirmSchema>;
+
 /**
  * The schema for the rotation cycle update form
  */
