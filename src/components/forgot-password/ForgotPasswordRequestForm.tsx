@@ -9,7 +9,7 @@ import { FormMessage } from '@/components/ui/formMessage';
 
 import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
-import { EmailSentDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
+import { EmailSentDrawer } from '@/components/ui/drawers/auth/AuthenticationDrawer';
 import { sendForgotPasswordEmail } from '@/actions/forgot-password';
 
 const ForgotPasswordRequestForm = () => {

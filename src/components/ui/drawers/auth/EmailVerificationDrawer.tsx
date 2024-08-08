@@ -6,11 +6,11 @@ import {
   SuccessVerificationDrawer,
   ExpiredVerificationTokenDrawer,
   EmailSentDrawer,
-} from '@/components/ui/drawers/AuthenticationDrawer';
+} from '@/components/ui/drawers/auth/AuthenticationDrawer';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 const { GENERAL_ERROR } = ERROR_MESSAGES;
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { toast } from '../use-toast';
+import { toast } from '../../use-toast';
 import { resendVerificationEmailByToken } from '@/actions/signup';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 import { FormProvider, useForm } from 'react-hook-form';

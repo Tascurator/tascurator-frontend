@@ -17,7 +17,7 @@ import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
-import { EmailSentDrawer } from '../ui/drawers/AuthenticationDrawer';
+import { EmailSentDrawer } from '../ui/drawers/auth/AuthenticationDrawer';
 
 const {
   PASSWORD_MIN_LENGTH,

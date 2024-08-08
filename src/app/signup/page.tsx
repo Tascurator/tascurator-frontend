@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { Logo } from '@/components/ui/Logo';
 import { Form } from '@/components/signup/Form';
 import { Button } from '@/components/ui/button';
-import { EmailVerificationDrawer } from '@/components/ui/drawers/EmailVerificationDrawer';
+import { EmailVerificationDrawer } from '@/components/ui/drawers/auth/EmailVerificationDrawer';
 import { getVerificationTokenDataByToken } from '@/utils/prisma-helpers';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { InvalidTokenToast } from '@/components/forgot-password/InvalidTokenToast';
+import { InvalidTokenToast } from '@/components/ui/InvalidTokenToast';
 const INVALID_TOKEN_VERIFICATION =
   SERVER_ERROR_MESSAGES.INVALID_TOKEN_VERIFICATION;
 
