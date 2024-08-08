@@ -4,13 +4,24 @@ import { Logo } from '@/components/ui/Logo';
 import { Form } from '@/components/signup/Form';
 import { Button } from '@/components/ui/button';
 import { EmailVerificationDrawer } from '@/components/ui/drawers/EmailVerificationDrawer';
+import { getVerificationTokenDataByToken } from '@/utils/prisma-helpers';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { InvalidTokenToast } from '@/components/forgot-password/InvalidTokenToast';
+const INVALID_TOKEN_VERIFICATION =
+  SERVER_ERROR_MESSAGES.INVALID_TOKEN_VERIFICATION;
+
 interface IForgotPasswordPageProps {
   searchParams: {
     token?: string;
   };
 }
-const SignUpPage = ({ searchParams }: IForgotPasswordPageProps) => {
+const SignUpPage = async ({ searchParams }: IForgotPasswordPageProps) => {
   const token = searchParams.token;
+  let isValidToken = false;
+  if (token) {
+    const existingToken = await getVerificationTokenDataByToken(token);
+    if (existingToken) isValidToken = true;
+  }
 
   return (
     <>
@@ -25,7 +36,10 @@ const SignUpPage = ({ searchParams }: IForgotPasswordPageProps) => {
           </Button>
         </div>
       </div>
-      {token && <EmailVerificationDrawer token={token} />}
+      {token && isValidToken && <EmailVerificationDrawer token={token} />}
+      {token && !isValidToken && (
+        <InvalidTokenToast errorMessage={INVALID_TOKEN_VERIFICATION} />
+      )}
     </>
   );
 };

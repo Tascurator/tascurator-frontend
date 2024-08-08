@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
-export const InvalidTokenToast = () => {
+interface IInvalidTokenToastProps {
+  errorMessage: string;
+}
+
+export const InvalidTokenToast = ({
+  errorMessage,
+}: IInvalidTokenToastProps) => {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
 
@@ -14,7 +19,7 @@ export const InvalidTokenToast = () => {
 
   useEffect(() => {
     toast({
-      description: SERVER_ERROR_MESSAGES.INVALID_TOKEN_RESET_PASSWORD,
+      description: errorMessage,
       variant: 'destructive',
     });
   }, [mounted]);
