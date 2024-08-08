@@ -125,27 +125,38 @@ export const SetupStepper = ({
     console.log('getValues().categories', newCategories);
   };
 
-  const addTask = (task: ITask) => {
-    {
-      console.log('⭐️task', task);
-      const newTasks = getValues().categories.map((category) => {
-        if (category.id === task.categoryId) {
-          console.log('🌼category', category);
+  const upsertTask = (task: ITask) => {
+    const upsertTasks = getValues().categories.map((category) => {
+      if (category.id === task.categoryId) {
+        const existingTaskIndex = category.tasks.findIndex(
+          (taskItem) => taskItem.id === task.id,
+        );
+
+        if (existingTaskIndex > -1) {
+          // Update the task
+          const updateTasks = category.tasks.map((tasks) =>
+            tasks.id === task.id ? { ...task } : tasks,
+          );
+          return { ...category, tasks: updateTasks };
+        } else {
+          // Add the task
           return {
             ...category,
-            tasks: [
-              ...category.tasks,
-              {
-                ...task,
-                // categoryId: category.id,
-              },
-            ],
+            tasks: [...category.tasks, task],
           };
         }
-        return category;
-      });
-      setValue('categories', newTasks, { shouldValidate: true });
-    }
+      }
+      return category;
+    });
+
+    setValue('categories', upsertTasks, { shouldValidate: true });
+  };
+
+  const updateCategoryName = (categoryId: string, newName: string) => {
+    const newCategories = getValues().categories.map((category) =>
+      category.id === categoryId ? { ...category, name: newName } : category,
+    );
+    setValue('categories', newCategories, { shouldValidate: true });
   };
 
   const deleteCategory = (categoryId: string) => {
@@ -195,7 +206,8 @@ export const SetupStepper = ({
               <AccordionCategoryItem
                 category={category}
                 type="setup"
-                onsubmitData={addTask}
+                onUpdateName={updateCategoryName}
+                onUpsertTask={upsertTask}
                 onDelete={deleteCategory}
               />
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
@@ -207,6 +219,7 @@ export const SetupStepper = ({
                     category={category}
                     title={task.title}
                     description={task.description}
+                    onUpsertTask={upsertTask}
                     onDelete={deleteTask}
                   />
                 ))}

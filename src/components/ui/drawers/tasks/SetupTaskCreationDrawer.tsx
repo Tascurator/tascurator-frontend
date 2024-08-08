@@ -1,7 +1,6 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
-// import { taskCreationSchema, taskUpdateSchema, TTaskCreationSchema } from '@/constants/schema';
 import type { ITask, ICategoryWithoutTasks } from '@/types/commons';
 import {
   TaskCreationDrawerContent,
@@ -14,7 +13,7 @@ interface ISetupTaskCreationDrawer {
   category: ICategoryWithoutTasks;
   editOpen: boolean;
   setEditOpen: (value: boolean) => void;
-  addTask: (task: ITask) => void;
+  onUpsertTask: (task: ITask) => void;
 }
 
 /**
@@ -25,7 +24,7 @@ export const SetupTaskCreationDrawer = ({
   task,
   editOpen,
   setEditOpen,
-  addTask,
+  onUpsertTask,
 }: ISetupTaskCreationDrawer) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -39,32 +38,22 @@ export const SetupTaskCreationDrawer = ({
     },
   });
 
-  const {
-    // register,
-    // handleSubmit,
-    reset,
-    // formState: { errors },
-  } = formControls;
-
-  // const onSubmit: SubmitHandler<TTaskCreationSchema> = (data) => {
   const onSubmit: SubmitHandler<TTaskSchema> = (data) => {
-    // Please add the logic to handle the tenant data for a new share house
     const newTask = {
       id: task?.id || self.crypto.randomUUID(),
       categoryId: category.id,
       title: data.title || '',
       description: data.description || '',
     };
-    // console.log(newTask);
-    addTask(newTask);
+    onUpsertTask(newTask);
     setConfirmOpen(false);
-    reset();
   };
 
   return (
     <FormProvider {...formControls}>
       <TaskCreationDrawerContent
         category={category}
+        task={task}
         editOpen={editOpen}
         setEditOpen={setEditOpen}
         confirmOpen={confirmOpen}

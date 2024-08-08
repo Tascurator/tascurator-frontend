@@ -15,7 +15,8 @@ import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDr
 import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import { ICategory, ITask } from '@/types/commons';
 import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
-import { SetupDeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
+import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
+import { SetupNameEditionDrawer } from '@/components/ui/drawers/names/SetupNameEditionDrawer';
 
 /**
  * Constants used in the dropdown menu.
@@ -88,9 +89,8 @@ interface IAccordionCategoryItemProps {
   category: ICategory;
   type?: string;
 
-  // todo change any to the correct type
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  onsubmitData: (data: any) => void;
+  onUpsertTask: (task: ITask) => void;
+  onUpdateName: (id: string, newName: string) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -103,7 +103,8 @@ interface IAccordionCategoryItemProps {
 export const AccordionCategoryItem = ({
   category,
   type,
-  onsubmitData,
+  onUpsertTask,
+  onUpdateName,
   onDelete,
 }: IAccordionCategoryItemProps) => {
   /**
@@ -126,6 +127,10 @@ export const AccordionCategoryItem = ({
    */
   const [userAction, setUserAction] = useState<TUserAction>('edit');
 
+  const handleUpdateName = (newName: string) => {
+    onUpdateName(category.id, newName);
+  };
+
   return (
     <div className={'flex rounded-xl'}>
       <div className="flex items-center w-full">
@@ -147,49 +152,62 @@ export const AccordionCategoryItem = ({
         setUserAction={setUserAction}
       />
 
-      {/* Category name edit drawer */}
-      <NameEditionDrawer
-        name={category.name}
-        open={isDrawerOpen && userAction === 'edit'}
-        setOpen={setIsDrawerOpen}
-        type={'category'}
-        id={category.id}
-      />
-
-      {/* Task create drawer */}
       {type === 'setup' ? (
-        <SetupTaskCreationDrawer
-          category={category}
-          editOpen={isDrawerOpen && userAction === 'add'}
-          setEditOpen={setIsDrawerOpen}
-          addTask={onsubmitData as (task: ITask) => void}
-        />
-      ) : (
-        <TaskCreationDrawer
-          category={category}
-          editOpen={isDrawerOpen && userAction === 'add'}
-          setEditOpen={setIsDrawerOpen}
-        />
-      )}
+        <>
+          {/* Task create drawer */}
+          <SetupTaskCreationDrawer
+            category={category}
+            editOpen={isDrawerOpen && userAction === 'add'}
+            setEditOpen={setIsDrawerOpen}
+            onUpsertTask={onUpsertTask}
+          />
 
-      {/* Category deletion drawer */}
-      {type === 'setup' ? (
-        <SetupDeleteConfirmationDrawer
-          id={category.id}
-          idType={'category'}
-          deleteItem={category.name}
-          open={isDrawerOpen && userAction === 'delete'}
-          setOpen={setIsDrawerOpen}
-          onDelete={() => (onDelete ? onDelete(category.id) : {})}
-        />
+          {/* Category name edit drawer */}
+          <SetupNameEditionDrawer
+            name={category.name}
+            open={isDrawerOpen && userAction === 'edit'}
+            setOpen={setIsDrawerOpen}
+            type={'category'}
+            onUpdateName={handleUpdateName}
+          />
+
+          {/* Category deletion drawer */}
+          <SetupDeleteConfirmationDrawer
+            id={category.id}
+            idType={'category'}
+            deleteItem={category.name}
+            open={isDrawerOpen && userAction === 'delete'}
+            setOpen={setIsDrawerOpen}
+            onDelete={() => (onDelete ? onDelete(category.id) : {})}
+          />
+        </>
       ) : (
-        <DeleteConfirmationDrawer
-          id={category.id}
-          idType={'category'}
-          deleteItem={category.name}
-          open={isDrawerOpen && userAction === 'delete'}
-          setOpen={setIsDrawerOpen}
-        />
+        <>
+          {/* Task create drawer */}
+          <TaskCreationDrawer
+            category={category}
+            editOpen={isDrawerOpen && userAction === 'add'}
+            setEditOpen={setIsDrawerOpen}
+          />
+
+          {/* Category name edit drawer */}
+          <NameEditionDrawer
+            name={category.name}
+            open={isDrawerOpen && userAction === 'edit'}
+            setOpen={setIsDrawerOpen}
+            type={'category'}
+            id={category.id}
+          />
+
+          {/* Category deletion drawer */}
+          <DeleteConfirmationDrawer
+            id={category.id}
+            idType={'category'}
+            deleteItem={category.name}
+            open={isDrawerOpen && userAction === 'delete'}
+            setOpen={setIsDrawerOpen}
+          />
+        </>
       )}
     </div>
   );

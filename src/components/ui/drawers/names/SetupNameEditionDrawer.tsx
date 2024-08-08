@@ -11,7 +11,7 @@ interface ISetupNameEditionDrawer {
   open: boolean;
   setOpen: (value: boolean) => void;
   type: 'sharehouse' | 'category';
-  id?: string;
+  onUpdateName: (newName: string) => void;
 }
 
 /**
@@ -22,7 +22,7 @@ export const SetupNameEditionDrawer = ({
   open,
   setOpen,
   type,
-  id,
+  onUpdateName,
 }: ISetupNameEditionDrawer) => {
   const schema = getNameEditionDrawerSchema(type);
 
@@ -34,9 +34,12 @@ export const SetupNameEditionDrawer = ({
     },
   });
 
-  const onSubmit: SubmitHandler<TNameEditionDrawerSchema> = (data) => {
-    // Please add the logic to handle the data for a new share house
-    console.log(id, data);
+  const { getValues } = formControls;
+
+  const onSubmit: SubmitHandler<TNameEditionDrawerSchema> = () => {
+    const newName = getValues('name');
+    onUpdateName(newName);
+    setOpen(false);
   };
 
   return (
