@@ -5,7 +5,7 @@ import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantIn
 import { CategoryCreationDrawer } from './drawers/categories/CategoryCreationDrawer';
 import { SetupCategoryCreationDrawer } from '@/components/ui/drawers/categories/SetupCategoryCreationDrawer';
 import { SetupTenantInvitationDrawer } from '@/components/ui/drawers/tenants/SetupTenantInvitationDrawer';
-import { ICategory } from '@/types/commons';
+import { ICategory, ITenant } from '@/types/commons';
 
 interface IHeaderTitleButtonProps {
   shareHouseId: string;
@@ -76,6 +76,7 @@ export const ShareHouseManagementHead = ({
         <SetupTenantInvitationDrawer
           open={openSetupTenantDrawer}
           setOpen={setOpenSetupTenantDrawer}
+          addTenant={onsubmitData as (tenant: ITenant) => void}
         />
       </div>
     </>

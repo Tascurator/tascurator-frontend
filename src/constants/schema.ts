@@ -227,7 +227,13 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
         ),
     }),
   ),
-  tenants: z.array(tenantInvitationSchema).max(TENANT_MAX_AMOUNT),
+  tenants: z
+    .array(
+      tenantInvitationSchema.pick({ name: true, email: true }).extend({
+        id: z.string().trim().uuid(),
+      }),
+    )
+    .max(TENANT_MAX_AMOUNT),
 });
 
 export type TShareHouseCreationSchema = z.infer<

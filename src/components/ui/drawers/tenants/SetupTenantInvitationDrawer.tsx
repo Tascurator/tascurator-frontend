@@ -11,6 +11,7 @@ interface ISetupTenantInvitationDrawer {
   tenant?: ITenant;
   open: boolean;
   setOpen: (open: boolean) => void;
+  addTenant: (tenant: ITenant) => void;
 }
 
 /**
@@ -20,6 +21,7 @@ export const SetupTenantInvitationDrawer = ({
   tenant,
   open,
   setOpen,
+  addTenant,
 }: ISetupTenantInvitationDrawer) => {
   const formControls = useForm<TTenantInvitationSchema>({
     resolver: zodResolver(tenantInvitationSchema),
@@ -27,9 +29,19 @@ export const SetupTenantInvitationDrawer = ({
     defaultValues: tenant,
   });
 
+  const { reset } = formControls;
+
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = (data) => {
     // Please add the logic to handle the tenant data for a new share house
-    console.log(data);
+    // console.log(data);
+
+    const newTenant: ITenant = {
+      id: self.crypto.randomUUID(),
+      ...data,
+    };
+    addTenant(newTenant);
+    setOpen(false);
+    reset();
   };
 
   return (
