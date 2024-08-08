@@ -23,11 +23,11 @@ interface IEmailVerificationDrawer {
 export const EmailVerificationDrawer = ({
   token,
 }: IEmailVerificationDrawer) => {
-  const [success, setSuccess] = useState<boolean | undefined>();
-  const [error, setError] = useState<string | undefined>();
+  const [success, setSuccess] = useState<boolean | null>();
+  const [error, setError] = useState<string | null>();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [newToken, setNewToken] = useState<string | undefined>();
+  const [newToken, setNewToken] = useState<string | null>();
 
   const onLoadSubmit = useCallback(() => {
     /**
@@ -43,11 +43,13 @@ export const EmailVerificationDrawer = ({
         // Only if the token is expired, open the failed verification drawer
         if (data.error === EXPIRED_TOKEN_VERIFICATION) {
           setOpen(true);
-        } else {
+        } else if (data.error) {
           toast({
             variant: 'destructive',
             description: data.error,
           });
+        } else {
+          setOpen(true);
         }
       })
       .catch(() => {
@@ -60,7 +62,7 @@ export const EmailVerificationDrawer = ({
   useEffect(() => {
     if (!token) return;
     onLoadSubmit();
-  }, [token, onLoadSubmit]);
+  }, [onLoadSubmit]);
 
   const formControls = useForm();
 
@@ -80,7 +82,6 @@ export const EmailVerificationDrawer = ({
         });
       } else {
         setNewToken(result?.token);
-        console.log('new token', newToken);
         setOpen(true);
       }
     } catch (error) {
