@@ -34,6 +34,9 @@ export default {
           // If the user does not exist or the email or password is not provided
           if (!user) return null;
 
+          // Check if the password is correct
+          const passwordValid = await bcrypt.compare(password, user.password);
+
           // If the user has not verified their email, throw an error
           if (!user.emailVerified) {
             const verificationToken = await getVerificationTokenByEmail(email);
@@ -48,8 +51,6 @@ export default {
               throw new EmailNotVerifiedError();
             }
           }
-
-          const passwordValid = await bcrypt.compare(password, user.password);
 
           if (passwordValid) return user;
         }
