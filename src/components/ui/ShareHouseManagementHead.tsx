@@ -11,9 +11,7 @@ interface IHeaderTitleButtonProps {
   shareHouseId: string;
   title: string;
   type: 'categories' | 'tenants' | 'setupCategories' | 'setupTenants';
-  // todo change any to the correct type
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  onsubmitData?: (data: any) => void;
+  onsubmitData?: (data: ICategory | ITenant) => void;
 }
 
 /**
