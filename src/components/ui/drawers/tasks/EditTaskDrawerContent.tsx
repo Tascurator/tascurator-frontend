@@ -103,7 +103,7 @@ export const EditTaskDrawerContent = ({
       <DrawerFooter>
         <DrawerClose asChild>
           <Button type={'button'} variant={'outline'} className={'flex-1'}>
-            Cancel!!!!
+            Cancel
           </Button>
         </DrawerClose>
         <Button
@@ -112,7 +112,7 @@ export const EditTaskDrawerContent = ({
           disabled={!isValid}
           onClick={handleSaveClick}
         >
-          Save:)
+          Save
         </Button>
       </DrawerFooter>
     </CommonDrawer>
