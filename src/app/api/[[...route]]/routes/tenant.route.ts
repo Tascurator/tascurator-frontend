@@ -8,6 +8,8 @@ import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { AssignedData } from '@/services/AssignedData';
+import { IAssignedData } from '@/types/server';
 
 const app = new Hono()
 
@@ -126,23 +128,199 @@ const app = new Hono()
   .delete('/:tenantId', async (c) => {
     try {
       const tenantId = c.req.param('tenantId');
-      const tenant = await prisma.tenant.findUnique({
-        where: {
-          id: tenantId,
-        },
-      });
-      if (!tenant)
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
-          404,
+
+      const result = await prisma.$transaction(async (prisma) => {
+        /**
+         * Get the tenant by its ID
+         */
+        const tenant = await prisma.tenant.findUnique({
+          where: {
+            id: tenantId,
+          },
+        });
+
+        /**
+         * Throw an error if the tenant is not found
+         */
+        if (!tenant) {
+          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('tenant'));
+        }
+
+        /**
+         * Get the tenant placeholder by the tenant ID
+         */
+        const assignmentSheet = await prisma.tenantPlaceholder.findFirst({
+          where: {
+            tenantId: tenantId,
+          },
+          include: {
+            rotationAssignment: {
+              include: {
+                shareHouse: {
+                  include: {
+                    assignmentSheet: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        /**
+         * Throw an error if the tenant placeholder is not found
+         */
+        if (!assignmentSheet) {
+          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet'));
+        }
+
+        /**
+         * Delete the tenant by its tenant ID
+         */
+        const deletedTenant = await prisma.tenant.delete({
+          where: {
+            id: tenantId,
+          },
+        });
+
+        /**
+         * Instantiate the AssignedData class with the assigned data
+         */
+        const assignedData = new AssignedData(
+          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet
+            .assignedData as unknown as IAssignedData,
+          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet.startDate,
+          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet.endDate,
         );
 
-      const deleteTenant = await prisma.tenant.delete({
-        where: {
-          id: tenantId,
-        },
+        /**
+         * Get the previous tenant placeholders in the AssignedData
+         */
+        const previousTenantPlaceholders = assignedData.getTenantPlaceholders();
+
+        /**
+         * Get the current tenant placeholders in the rotation assignment (sorted by index)
+         */
+        const currentTenantPlaceholders =
+          await prisma.tenantPlaceholder.findMany({
+            where: {
+              rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+            },
+            orderBy: {
+              index: 'asc',
+            },
+          });
+
+        const lastAssignedTenantPlaceholder =
+          currentTenantPlaceholders.findLastIndex((tp) => tp.tenantId !== null);
+
+        /**
+         * Check if each tenant placeholder has a tenant assigned until the last assigned tenant placeholder. If so, just return the deleted tenant.
+         *
+         * @example
+         * If the tenant placeholders after the deletion are...
+         *
+         * [A, B, C, D], stop here and return the deleted tenant
+         * [A, null, C, D, E], proceed to the next step and update the tenant placeholders
+         */
+        if (
+          currentTenantPlaceholders
+            .slice(0, lastAssignedTenantPlaceholder + 1)
+            .every((tp) => tp.tenantId !== null)
+        ) {
+          return deletedTenant;
+        }
+
+        /**
+         * Calculate the newly added tenants in the current tenant placeholders by comparing the previous tenant placeholders
+         */
+        const newTenants = currentTenantPlaceholders
+          .map((tenantPlaceholder) => {
+            if (tenantPlaceholder.tenantId === null) return null;
+
+            return {
+              index: tenantPlaceholder.index,
+              tenantId: tenantPlaceholder.tenantId,
+            };
+          })
+          .filter((tenantPlaceholder) => tenantPlaceholder !== null)
+          .filter((tenantPlaceholder) =>
+            previousTenantPlaceholders.every(
+              (previousTenantPlaceholder) =>
+                previousTenantPlaceholder.tenant?.id !==
+                tenantPlaceholder.tenantId,
+            ),
+          );
+
+        /**
+         * Update the tenant placeholders with the new tenants
+         *
+         * @example
+         * Previous tenant placeholders: [A, B, C, D]
+         * Current tenant placeholders: [A, null, C, D, E] after deleting tenant B
+         * --->
+         * Updated current tenant placeholders: [A, E, C, D, null]
+         */
+        for (let i = 0; i < currentTenantPlaceholders.length; i++) {
+          /**
+           * Break the loop if there are no new tenants
+           */
+          if (newTenants.length === 0) break;
+
+          /**
+           * Skip the tenant placeholder if the tenant ID is the same as the previous tenant placeholder with the same index
+           */
+          if (
+            i < previousTenantPlaceholders.length &&
+            currentTenantPlaceholders[i].tenantId ===
+              previousTenantPlaceholders[i].tenant?.id
+          ) {
+            continue;
+          }
+
+          /**
+           * Get the first new tenant
+           */
+          const newTenant = newTenants.shift();
+
+          if (newTenant) {
+            /**
+             * Update the tenant placeholder with the new tenant
+             */
+            await prisma.tenantPlaceholder.update({
+              where: {
+                rotationAssignmentId_index: {
+                  rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+                  index: currentTenantPlaceholders[i].index,
+                },
+              },
+              data: {
+                tenantId: newTenant.tenantId,
+              },
+            });
+
+            /**
+             * If it's the last tenant, update the original tenant placeholder with null
+             */
+            if (newTenants.length === 0) {
+              await prisma.tenantPlaceholder.update({
+                where: {
+                  rotationAssignmentId_index: {
+                    rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+                    index: newTenant.index,
+                  },
+                },
+                data: {
+                  tenantId: null,
+                },
+              });
+            }
+          }
+        }
+
+        return deletedTenant;
       });
-      return c.json(deleteTenant, 201);
+
+      return c.json(result, 201);
     } catch (error) {
       console.error(
         SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR('deleting the tenant'),
@@ -216,6 +394,9 @@ const app = new Hono()
                 tenantPlaceholders: {
                   include: {
                     tenant: true,
+                  },
+                  orderBy: {
+                    index: 'asc',
                   },
                 },
               },
