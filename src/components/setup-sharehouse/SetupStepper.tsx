@@ -77,6 +77,7 @@ export const SetupStepper = ({
     }
     if (isValid && currentStep === maxSteps) {
       setOpen(true);
+      // console.log('getValues()', getValues());
     }
     if (isValid && currentStep < maxSteps) {
       setCurrentStep(currentStep + 1);
