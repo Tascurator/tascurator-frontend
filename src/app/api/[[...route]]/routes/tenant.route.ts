@@ -4,14 +4,14 @@ import { Tenant } from '@prisma/client';
 import { tenantInvitationSchema } from '@/constants/schema';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
-import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData } from '@/types/server';
+import { THonoEnv } from '@/app/api/[[...route]]/route';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Updates the tenant name by its ID
@@ -22,17 +22,6 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema.pick({ name: true })),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const tenantId = c.req.param('tenantId');
         const data = c.req.valid('json');
 
@@ -344,17 +333,6 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 

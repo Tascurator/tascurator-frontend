@@ -2,10 +2,10 @@ import { Hono } from 'hono';
 
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
-import { auth } from '@/lib/auth';
 import type { IAssignedData } from '@/types/server';
+import { THonoEnv } from '@/app/api/[[...route]]/route';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Retrieve all share houses with their progress rate
@@ -13,13 +13,8 @@ const app = new Hono()
    */
   .get('/', async (c) => {
     try {
-      const session = await auth();
-
-      if (!session)
-        return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
-
       const shareHouses = await prisma.landlord.findUnique({
-        where: { id: session.user.id },
+        where: { id: c.get('session').user.id },
         include: {
           shareHouses: {
             include: {

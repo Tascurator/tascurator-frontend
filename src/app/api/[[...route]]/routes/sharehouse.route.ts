@@ -8,15 +8,15 @@ import {
   shareHouseCreationSchema,
   shareHouseNameSchema,
 } from '@/constants/schema';
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import { THonoEnv } from '@/app/api/[[...route]]/route';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Retrieves the categories, tasks, rotation cycles, and tenants of a shareHouse by its ID
@@ -134,17 +134,7 @@ const app = new Hono()
     zValidator('json', shareHouseNameSchema),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-        const landlordId = session.user.id;
+        const landlordId = c.get('session').user.id;
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
@@ -300,17 +290,7 @@ const app = new Hono()
    */
   .post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
     try {
-      const session = await auth();
-
-      if (!session) {
-        return c.json(
-          {
-            error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-          },
-          401,
-        );
-      }
-      const landlordId = session.user.id;
+      const landlordId = c.get('session').user.id;
       const data = c.req.valid('json');
 
       const landlord = await prisma.landlord.findUnique({

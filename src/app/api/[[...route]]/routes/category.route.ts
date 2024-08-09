@@ -3,7 +3,6 @@ import { zValidator } from '@hono/zod-validator';
 
 import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
@@ -18,17 +17,6 @@ const app = new Hono()
     zValidator('json', categoryCreationSchema.pick({ name: true })),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const categoryId = c.req.param('categoryId');
         const data = c.req.valid('json');
 
@@ -170,17 +158,6 @@ const app = new Hono()
     zValidator('json', categoryCreationSchema),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
