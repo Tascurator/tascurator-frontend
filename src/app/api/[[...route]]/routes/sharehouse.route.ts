@@ -533,6 +533,8 @@ const app = new Hono()
                 `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
               ),
             });
+
+            await new Promise((resolve) => setTimeout(resolve, 650));
           }
         } catch (error) {
           console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
