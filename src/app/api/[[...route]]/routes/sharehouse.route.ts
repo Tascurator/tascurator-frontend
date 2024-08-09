@@ -536,12 +536,7 @@ const app = new Hono()
           }
         } catch (error) {
           console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
-            },
-            500,
-          );
+          throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
         }
 
         return {
