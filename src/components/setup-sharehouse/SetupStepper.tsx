@@ -239,6 +239,7 @@ export const SetupStepper = ({
                 category={category}
                 type="setup"
                 onUpdateName={updateCategoryName}
+                categoryData={getValues().categories}
                 onUpsertTask={upsertTask}
                 onDelete={deleteCategory}
               />

@@ -91,6 +91,7 @@ interface IAccordionCategoryItemProps {
 
   onUpsertTask: (task: ITask) => void;
   onUpdateName: (id: string, newName: string) => void;
+  categoryData?: ICategory[];
   onDelete?: (id: string) => void;
 }
 
@@ -106,6 +107,7 @@ export const AccordionCategoryItem = ({
   onUpsertTask,
   onUpdateName,
   onDelete,
+  categoryData,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -168,6 +170,7 @@ export const AccordionCategoryItem = ({
             open={isDrawerOpen && userAction === 'edit'}
             setOpen={setIsDrawerOpen}
             type={'category'}
+            categoryData={categoryData}
             onUpdateName={handleUpdateName}
           />
 
