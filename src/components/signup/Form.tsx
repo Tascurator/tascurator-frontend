@@ -122,6 +122,7 @@ const Form = () => {
           description: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED_COOLDOWN,
         });
       } else if (emailSent) {
+        // if email is already sent but not within 30 minutes, resend the email
         const newTokenData = await resendVerificationEmailByEmail(
           formData.email,
         );
@@ -158,6 +159,7 @@ const Form = () => {
               variant={errors.email ? 'destructive' : 'default'}
               autoComplete="email"
               required
+              disabled={emailSent}
             />
             {errors.email?.message && (
               <FormMessage message={errors.email.message} />
@@ -172,6 +174,7 @@ const Form = () => {
               variant={errors.password ? 'destructive' : 'default'}
               autoComplete="new-password"
               required
+              disabled={emailSent}
             />
             {errors.password?.message && (
               <FormMessage message={errors.password.message} />
