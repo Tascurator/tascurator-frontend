@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
@@ -15,20 +14,16 @@ import Link from 'next/link';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
   const onSubmit = async (formData: TLoginSchema) => {
-    setIsLoading(true);
-
     try {
       const result = await login(formData);
 
@@ -38,19 +33,17 @@ const Form = () => {
           description: result.error,
         });
       }
-      setIsLoading(false);
     } catch (error) {
       toast({
         variant: 'destructive',
         description: TOAST_ERROR_MESSAGES.LOGIN_UNKNOWN_ERROR,
       });
-      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={isLoading} />}
+      {<LoadingSpinner isLoading={isSubmitting} />}
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
