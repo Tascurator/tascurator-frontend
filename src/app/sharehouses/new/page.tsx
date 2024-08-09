@@ -2,15 +2,33 @@ import { SetupStepper } from '@/components/setup-sharehouse/SetupStepper';
 import { ICategory, ITenant } from '@/types/commons';
 import { DefaultCategory } from '@/components/setup-sharehouse/DefaultCategory';
 import { Header } from '@/components/ui/header';
-const NewSharehousePage = () => {
+import { api } from '@/lib/hono';
+import { headers } from 'next/headers';
+
+const NewSharehousePage = async () => {
   const categories: ICategory[] = DefaultCategory;
-  const tenants: ITenant[] = [
-    // {
-    //   id: 'eddd31de-5d39-40df-92d6-3ec017d8e9cd',
-    //   name: 'test',
-    //   email: 'test@tascurator.com',
-    // },
-  ];
+  const tenants: ITenant[] = [];
+
+  const res = await api.sharehouses.$get(
+    {},
+    {
+      headers: {
+        cookie: headers().get('cookie') || '', // Add cookies to headers
+      },
+    },
+  );
+  // Convert response to JSON
+  const data = await res.json();
+
+  // Check for error in data and display it if found
+  if ('error' in data) {
+    throw new Error(data.error);
+  }
+
+  // Extract 'shareHouses' from data
+  const { shareHouses } = data;
+
+  // console.log(shareHouses);
 
   return (
     <>
@@ -21,6 +39,7 @@ const NewSharehousePage = () => {
           maxSteps={4}
           tenants={tenants}
           categories={categories}
+          sharehouses={shareHouses}
         />
       </div>
     </>

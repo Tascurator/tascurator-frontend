@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { ICategory, ITask, ITenant } from '@/types/commons';
+import { ICategory, IShareHouse, ITask, ITenant } from '@/types/commons';
 import { ShareHouseManagementHead } from '@/components/ui/ShareHouseManagementHead';
 import { ScheduleSetting } from './ScheduleSetting';
 import { TenantListItem } from '../ui/tenantList';
@@ -15,6 +15,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { useToast } from '@/components/ui/use-toast';
 
 // comment out the following imports
 import {
@@ -32,6 +33,7 @@ interface ISetupStepperProps {
   maxSteps: number;
   tenants: ITenant[];
   categories: ICategory[];
+  sharehouses: IShareHouse[];
 }
 
 export const SetupStepper = ({
@@ -39,6 +41,7 @@ export const SetupStepper = ({
   maxSteps,
   tenants,
   categories,
+  sharehouses,
 }: ISetupStepperProps) => {
   const formControls = useForm<TShareHouseCreationSchema>({
     resolver: zodResolver(shareHouseCreationSchema),
@@ -59,6 +62,7 @@ export const SetupStepper = ({
     setValue,
     getValues,
   } = formControls;
+  const { toast } = useToast();
 
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [open, setOpen] = useState(false);
@@ -67,7 +71,18 @@ export const SetupStepper = ({
   const handleNext = async () => {
     let isValid = false;
     if (currentStep === 1) {
+      console.log(sharehouses);
       isValid = await trigger(['name']);
+      sharehouses.map((sharehouse) => {
+        if (sharehouse.name === getValues().name) {
+          isValid = false;
+          toast({
+            description: 'Share house name already exists',
+            variant: 'destructive',
+          });
+          // setValue('name', '', { shouldValidate: true });
+        }
+      });
     } else if (currentStep === 2) {
       isValid = await trigger(['categories']);
     } else if (currentStep === 3) {
