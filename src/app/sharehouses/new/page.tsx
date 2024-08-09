@@ -1,6 +1,7 @@
 import { SetupStepper } from '@/components/setup-sharehouse/SetupStepper';
 import { ICategory, ITenant } from '@/types/commons';
 import { DefaultCategory } from '@/components/setup-sharehouse/DefaultCategory';
+import { Header } from '@/components/ui/header';
 const NewSharehousePage = () => {
   const categories: ICategory[] = DefaultCategory;
   const tenants: ITenant[] = [
@@ -12,12 +13,17 @@ const NewSharehousePage = () => {
   ];
 
   return (
-    <SetupStepper
-      initialStep={1}
-      maxSteps={4}
-      tenants={tenants}
-      categories={categories}
-    />
+    <>
+      <Header type={'HeaderItemOnlyBreadcrumb'} pageTitle={'Setup'} />
+      <div className="px-6">
+        <SetupStepper
+          initialStep={1}
+          maxSteps={4}
+          tenants={tenants}
+          categories={categories}
+        />
+      </div>
+    </>
   );
 };
 
