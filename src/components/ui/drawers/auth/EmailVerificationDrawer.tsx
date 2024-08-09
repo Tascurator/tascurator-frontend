@@ -12,7 +12,6 @@ const { GENERAL_ERROR } = ERROR_MESSAGES;
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { toast } from '../../use-toast';
 import { resendVerificationEmailByToken } from '@/actions/signup';
-import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 import { FormProvider, useForm } from 'react-hook-form';
 const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
 
@@ -75,20 +74,15 @@ export const EmailVerificationDrawer = ({
 
       const result = await resendVerificationEmailByToken(newToken ?? token);
 
-      if (result?.error) {
+      setNewToken(result?.token);
+      setOpen(true);
+    } catch (error) {
+      if (error instanceof Error) {
         toast({
           variant: 'destructive',
-          description: result.error,
+          description: error.message,
         });
-      } else {
-        setNewToken(result?.token);
-        setOpen(true);
       }
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        description: TOAST_ERROR_MESSAGES.UNKNOWN_ERROR,
-      });
     }
   };
 

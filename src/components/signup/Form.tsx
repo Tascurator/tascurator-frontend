@@ -15,10 +15,10 @@ import { toast } from '@/components/ui/use-toast';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
-import { CONSTRAINTS } from '@/constants/constraints';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 import { EmailSentDrawer } from '../ui/drawers/auth/AuthenticationDrawer';
-
+import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
+import { CONSTRAINTS } from '@/constants/constraints';
 const {
   PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
@@ -30,9 +30,17 @@ const {
 
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
+interface ITokenData {
+  id: string;
+  email: string;
+  token: string;
+  expiresAt: Date;
+}
+
 const Form = () => {
   const [open, setOpen] = useState(false);
-  const [sentEmail, setSentEmail] = useState(false);
+  const [tokenData, setTokenData] = useState({} as ITokenData);
+  const [emailSent, setEmailSent] = useState(false);
 
   const formControls = useForm<TSignupSchema>({
     resolver: zodResolver(signupSchema),
@@ -104,35 +112,41 @@ const Form = () => {
 
   const onSubmit = async (formData: TSignupSchema) => {
     try {
-      // If the email has not been sent yet, sign up the user
-      if (!sentEmail) {
-        /**
-         * Wait for 1 second for user experience purposes
-         */
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const result = await signup(formData);
-
-        if (result?.error) {
-          toast({
-            variant: 'destructive',
-            description: result.error,
-          });
-          setSentEmail(false);
-        } else {
-          setOpen(true);
-          setSentEmail(true);
-        }
+      // if email is already sent, resend the email
+      if (
+        emailSent &&
+        tokenData &&
+        isWithin30MinutesOfEmailSent(tokenData.expiresAt)
+      ) {
+        // if email is already sent and within 30 minutes, show error message
+        toast({
+          variant: 'destructive',
+          description: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED_COOLDOWN,
+        });
+      } else if (emailSent) {
+        const newTokenData = await resendVerificationEmailByEmail(
+          formData.email,
+        );
+        setTokenData(newTokenData);
+        setOpen(true);
       } else {
-        setOpen(false);
-        await resendVerificationEmailByEmail(formData.email);
+        // if email is not sent, sign up
+        await signup(formData);
+        setEmailSent(true);
         setOpen(true);
       }
     } catch (error) {
-      toast({
-        variant: 'destructive',
-        description: TOAST_ERROR_MESSAGES.SIGNUP_UNKNOWN_ERROR,
-      });
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 

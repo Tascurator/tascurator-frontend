@@ -29,6 +29,7 @@ export const SERVER_ERROR_MESSAGES = {
   INVALID_TOKEN_RESET_PASSWORD:
     'Invalid or expired token. Please try resetting your password again.',
   INVALID_TOKEN_VERIFICATION: 'Invalid token. Please try signing up.',
+  COOL_DOWN_EMAIL_VERIFICATION: 'Please wait 30 minutes before trying again.',
   EXPIRED_TOKEN_VERIFICATION:
     'The token has expired. Please resend the email and verify your account again.',
   NOT_EXISTING_USER: 'Email does not exist.',
