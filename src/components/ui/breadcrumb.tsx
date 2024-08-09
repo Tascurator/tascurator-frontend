@@ -65,7 +65,7 @@ const BreadcrumbList = forwardRef<
   <ol
     ref={ref}
     className={cn(
-      'flex flex-wrap items-center break-words text-sm text-white',
+      'flex items-center break-words text-sm text-white',
       className,
     )}
     {...props}
@@ -108,7 +108,11 @@ const BreadcrumbLink = forwardRef<
   const Comp = asChild ? Slot : 'a';
 
   return (
-    <Comp ref={ref} className={cn('transition-colors', className)} {...props} />
+    <Comp
+      ref={ref}
+      className={cn('hover:opacity-70 transition duration-300', className)}
+      {...props}
+    />
   );
 });
 BreadcrumbLink.displayName = 'BreadcrumbLink';
@@ -128,7 +132,7 @@ const BreadcrumbPage = forwardRef<
     role="link"
     aria-disabled="true"
     aria-current="page"
-    className={cn('font-normal text-2xl', className)}
+    className={cn('font-normal text-xl', className)}
     {...props}
   />
 ));
@@ -148,7 +152,7 @@ const BreadcrumbSeparator = ({
   <li
     role="presentation"
     aria-hidden="true"
-    className={cn('[&>svg]:size-6', className)}
+    className={cn('[&>svg]:size-5', className)}
     {...props}
   >
     {children ?? <ChevronRight />}
