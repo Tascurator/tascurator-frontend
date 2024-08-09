@@ -8,12 +8,10 @@ import {
 } from '@/utils/prisma-helpers';
 import { hashPassword } from '@/utils/password-hashing';
 import { sendVerificationEmail } from '@/utils/send-email';
-import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 const {
   CREDENTIAL_FIELDS_INVALID,
   EXISTING_EMAIL,
-  COOL_DOWN_EMAIL_VERIFICATION,
   INVALID_TOKEN_VERIFICATION,
 } = SERVER_ERROR_MESSAGES;
 
@@ -52,15 +50,9 @@ export const resendVerificationEmailByToken = async (token: string) => {
     throw new Error(INVALID_TOKEN_VERIFICATION);
   }
 
-  // Check if the token is still valid and 30 minutes have passed since the last email was sent
-  if (existingToken && isWithin30MinutesOfEmailSent(existingToken.expiresAt)) {
-    throw new Error(COOL_DOWN_EMAIL_VERIFICATION);
-  }
-
   const tokenData = await sendVerificationEmail(existingToken.email);
-  const newToken = tokenData.token;
 
-  return { token: newToken };
+  return tokenData;
 };
 
 export const resendVerificationEmailByEmail = async (email: string) => {

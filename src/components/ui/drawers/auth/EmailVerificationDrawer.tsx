@@ -1,19 +1,22 @@
 'use client';
 import { newVerification } from '@/actions/new-verification';
 import { useCallback, useEffect, useState } from 'react';
-import { ERROR_MESSAGES } from '@/constants/error-messages';
 import {
   SuccessVerificationDrawer,
   ExpiredVerificationTokenDrawer,
   EmailSentDrawer,
 } from '@/components/ui/drawers/auth/AuthenticationDrawer';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
-const { GENERAL_ERROR } = ERROR_MESSAGES;
-import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { toast } from '../../use-toast';
 import { resendVerificationEmailByToken } from '@/actions/signup';
 import { FormProvider, useForm } from 'react-hook-form';
+import { ERROR_MESSAGES } from '@/constants/error-messages';
+const { GENERAL_ERROR } = ERROR_MESSAGES;
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
+import { ITokenData } from '@/types/commons';
+import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 interface IEmailVerificationDrawer {
   token: string;
@@ -26,7 +29,7 @@ export const EmailVerificationDrawer = ({
   const [error, setError] = useState<string | null>();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [newToken, setNewToken] = useState<string | null>();
+  const [newToken, setNewToken] = useState<ITokenData | null>(null);
 
   const onLoadSubmit = useCallback(() => {
     /**
@@ -61,7 +64,7 @@ export const EmailVerificationDrawer = ({
   useEffect(() => {
     if (!token) return;
     onLoadSubmit();
-  }, [onLoadSubmit]);
+  }, [token, onLoadSubmit]);
 
   const formControls = useForm();
 
@@ -72,10 +75,20 @@ export const EmailVerificationDrawer = ({
        */
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const result = await resendVerificationEmailByToken(newToken ?? token);
+      if (newToken && isWithin30MinutesOfEmailSent(newToken.expiresAt)) {
+        // if email is already sent within 30 minutes, show error message
+        toast({
+          variant: 'destructive',
+          description: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED_COOLDOWN,
+        });
+      } else {
+        const newTokenData = await resendVerificationEmailByToken(
+          newToken?.token ?? token,
+        );
 
-      setNewToken(result?.token);
-      setOpen(true);
+        setNewToken(newTokenData);
+        setOpen(true);
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast({
