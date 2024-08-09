@@ -222,6 +222,7 @@ export const SetupStepper = ({
           type="setupCategories"
           shareHouseId=""
           onsubmitCategoryData={addCategory}
+          categoryData={getValues().categories}
         />
         <p className="flex justify-end">
           {getValues().categories.length}/{CATEGORY_MAX_AMOUNT}

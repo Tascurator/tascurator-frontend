@@ -11,11 +11,9 @@ interface IHeaderTitleButtonProps {
   shareHouseId: string;
   title: string;
   type: 'categories' | 'tenants' | 'setupCategories' | 'setupTenants';
-  // todo: fix any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // onsubmitData?: any;
   onsubmitTenantData?: (data: ITenant) => void;
   onsubmitCategoryData?: (data: ICategory) => void;
+  categoryData?: ICategory[] | undefined;
 }
 
 /**
@@ -31,6 +29,7 @@ export const ShareHouseManagementHead = ({
   type,
   onsubmitTenantData,
   onsubmitCategoryData,
+  categoryData,
 }: IHeaderTitleButtonProps) => {
   const [openTaskDrawer, setOpenTaskDrawer] = useState(false);
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
@@ -75,6 +74,7 @@ export const ShareHouseManagementHead = ({
           editOpen={openSetupCategoryDrawer}
           setEditOpen={setOpenSetupCategoryDrawer}
           addCategory={onsubmitCategoryData as (category: ICategory) => void}
+          categoryData={categoryData}
         />
         <SetupTenantInvitationDrawer
           open={openSetupTenantDrawer}
