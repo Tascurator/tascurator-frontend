@@ -14,6 +14,7 @@ interface IHeaderTitleButtonProps {
   onsubmitTenantData?: (data: ITenant) => void;
   onsubmitCategoryData?: (data: ICategory) => void;
   categoryData?: ICategory[] | undefined;
+  tenantData?: ITenant[] | undefined;
 }
 
 /**
@@ -30,6 +31,7 @@ export const ShareHouseManagementHead = ({
   onsubmitTenantData,
   onsubmitCategoryData,
   categoryData,
+  tenantData,
 }: IHeaderTitleButtonProps) => {
   const [openTaskDrawer, setOpenTaskDrawer] = useState(false);
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
@@ -80,6 +82,7 @@ export const ShareHouseManagementHead = ({
           open={openSetupTenantDrawer}
           setOpen={setOpenSetupTenantDrawer}
           addTenant={onsubmitTenantData as (tenant: ITenant) => void}
+          tenantData={tenantData}
         />
       </div>
     </>

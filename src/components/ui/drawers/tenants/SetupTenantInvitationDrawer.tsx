@@ -6,6 +6,7 @@ import {
 } from '@/constants/schema';
 import { TenantInvitationDrawerContent } from '@/components/ui/drawers/tenants/TenantInvitationDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ISetupTenantInvitationDrawer {
   tenant?: ITenant;
@@ -13,6 +14,7 @@ interface ISetupTenantInvitationDrawer {
   setOpen: (open: boolean) => void;
   addTenant?: (tenant: ITenant) => void;
   editTenant?: (tenantId: string, tenant: ITenant) => void;
+  tenantData?: ITenant[];
 }
 
 /**
@@ -24,23 +26,46 @@ export const SetupTenantInvitationDrawer = ({
   setOpen,
   addTenant,
   editTenant,
+  tenantData,
 }: ISetupTenantInvitationDrawer) => {
   const formControls = useForm<TTenantInvitationSchema>({
     resolver: zodResolver(tenantInvitationSchema),
     mode: 'onBlur',
     defaultValues: tenant,
   });
+  const { toast } = useToast();
 
   const { reset } = formControls;
 
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = (data) => {
-    // Please add the logic to handle the tenant data for a new share house
-    // console.log(data);
-
     const newTenant: ITenant = {
       id: self.crypto.randomUUID(),
       ...data,
     };
+    const isDuplicateName = tenantData?.some(
+      (tenant) => tenant.name === newTenant.name,
+    );
+
+    const isDuplicateEmail = tenantData?.some(
+      (tenant) => tenant.email === newTenant.email,
+    );
+
+    if (isDuplicateName) {
+      toast({
+        variant: 'destructive',
+        description: `Tenant name already exists`,
+      });
+      return;
+    }
+
+    if (isDuplicateEmail) {
+      toast({
+        variant: 'destructive',
+        description: `Tenant email already exists`,
+      });
+      return;
+    }
+
     if (addTenant) {
       addTenant(newTenant);
     }

@@ -306,6 +306,7 @@ export const SetupStepper = ({
           type="setupTenants"
           shareHouseId=""
           onsubmitTenantData={addTenant}
+          tenantData={getValues().tenants}
         />
         <p className="flex justify-end">
           {getValues().tenants.length}/{TENANT_MAX_AMOUNT}
