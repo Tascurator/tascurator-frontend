@@ -11,10 +11,12 @@ import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
 import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
 import { Session } from 'next-auth';
 import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
+import { TPrismaShareHouse } from '@/types/server';
 
 export type THonoEnv = {
   Variables: {
     session: Session;
+    sharehouses: TPrismaShareHouse[];
   };
 };
 
