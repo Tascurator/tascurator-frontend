@@ -322,6 +322,7 @@ export const SetupStepper = ({
                   type="setup"
                   onDelete={deleteTenant}
                   onUpdate={updateTenantInfo}
+                  tenantData={getValues().tenants}
                 />
               </li>
             ))}

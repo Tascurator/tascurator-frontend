@@ -42,12 +42,19 @@ export const SetupTenantInvitationDrawer = ({
       id: self.crypto.randomUUID(),
       ...data,
     };
+
+    // for editing tenant id
+    const editingTenantId = tenant?.id;
+
+    // duplicate check
     const isDuplicateName = tenantData?.some(
-      (tenant) => tenant.name === newTenant.name,
+      (tenant) =>
+        tenant.id !== editingTenantId && tenant.name === newTenant.name,
     );
 
     const isDuplicateEmail = tenantData?.some(
-      (tenant) => tenant.email === newTenant.email,
+      (tenant) =>
+        tenant.id !== editingTenantId && tenant.email === newTenant.email,
     );
 
     if (isDuplicateName) {

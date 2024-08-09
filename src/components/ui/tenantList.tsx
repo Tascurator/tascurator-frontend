@@ -25,6 +25,7 @@ interface ITenantListItemProps {
   type?: string;
   onDelete?: (id: string) => void;
   onUpdate?: (tenantId: string, tenant: ITenant) => void;
+  tenantData?: ITenant[];
 }
 
 /**
@@ -48,6 +49,7 @@ const TenantListItem = ({
   type,
   onDelete,
   onUpdate,
+  tenantData,
 }: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -97,6 +99,7 @@ const TenantListItem = ({
             open={openEdit}
             setOpen={setOpenEdit}
             editTenant={onUpdate}
+            tenantData={tenantData}
           />
         ) : (
           <TenantInvitationDrawer
