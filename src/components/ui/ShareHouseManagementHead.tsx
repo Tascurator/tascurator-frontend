@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 import { TenantInvitationDrawer } from '@/components/ui/drawers/tenants/TenantInvitationDrawer';
 import { CategoryCreationDrawer } from './drawers/categories/CategoryCreationDrawer';
+import { cn } from '@/lib/utils';
 
 interface IHeaderTitleButtonProps {
   shareHouseId: string;
   title: string;
   type: 'categories' | 'tenants';
+  isMaxAmount: boolean;
 }
 
 /**
@@ -21,6 +23,7 @@ export const ShareHouseManagementHead = ({
   shareHouseId,
   title,
   type,
+  isMaxAmount,
 }: IHeaderTitleButtonProps) => {
   const [openTaskDrawer, setOpenTaskDrawer] = useState(false);
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
@@ -38,9 +41,12 @@ export const ShareHouseManagementHead = ({
       <div className="flex justify-between items-center mt-6">
         <p>{title}</p>
         <CirclePlus
-          className={'stroke-primary cursor-pointer'}
+          className={cn(
+            'stroke-primary cursor-pointer',
+            isMaxAmount && 'stroke-slate-300 cursor-not-allowed',
+          )}
           type={type}
-          onClick={handleClick}
+          onClick={!isMaxAmount ? handleClick : undefined}
         />
       </div>
       <div className="h-0">

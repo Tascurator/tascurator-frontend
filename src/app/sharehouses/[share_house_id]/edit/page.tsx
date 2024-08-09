@@ -41,6 +41,14 @@ const EditShareHousePage = async ({
     new Date(shareHouseManagement.nextRotationStartDate),
   );
 
+  // Determine if the number of categories has reached the maximum
+  const isMaxAmountOfCategory =
+    shareHouseManagement.categories.length === CONSTRAINTS.CATEGORY_MAX_AMOUNT;
+
+  // Determine if the number of tenants has reached the maximum
+  const isMaxAmountOfTenant =
+    shareHouseManagement.tenants.length === CONSTRAINTS.TENANT_MAX_AMOUNT;
+
   return (
     <>
       <EditTabsManager>
@@ -60,6 +68,7 @@ const EditShareHousePage = async ({
             shareHouseId={share_house_id}
             title={'Categories'}
             type={'categories'}
+            isMaxAmount={isMaxAmountOfCategory}
           />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.categories.length}/
@@ -110,6 +119,7 @@ const EditShareHousePage = async ({
             shareHouseId={share_house_id}
             title={'Tenants'}
             type={'tenants'}
+            isMaxAmount={isMaxAmountOfTenant}
           />
           <div className="flex items-center justify-end mt-4 mb-2 text-base">
             {shareHouseManagement.tenants.length}/
