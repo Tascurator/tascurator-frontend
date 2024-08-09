@@ -36,6 +36,7 @@ export default {
 
           // Check if the password is correct
           const passwordValid = await bcrypt.compare(password, user.password);
+          if (!passwordValid) return null;
 
           // If the user has not verified their email, throw an error
           if (!user.emailVerified) {
@@ -52,7 +53,7 @@ export default {
             }
           }
 
-          if (passwordValid) return user;
+          return user;
         }
 
         return null;
