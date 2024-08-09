@@ -26,7 +26,7 @@ export default function DashboardTabsManager({
   };
 
   return (
-    <div className="relative z-10 p-6">
+    <div className="relative z-10 px-6 pt-4">
       <Tabs defaultValue={tab ? tab : 'current'} onValueChange={handleTab}>
         <TabsList>
           <TabsTrigger value="current">Current</TabsTrigger>

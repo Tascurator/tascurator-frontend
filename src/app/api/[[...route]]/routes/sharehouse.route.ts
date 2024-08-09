@@ -73,6 +73,7 @@ const app = new Hono()
         );
 
       const shareHouseData = {
+        name: shareHouseWithOtherTables.name,
         nextRotationStartDate:
           shareHouseWithOtherTables.assignmentSheet.endDate.toISOString(),
         tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
