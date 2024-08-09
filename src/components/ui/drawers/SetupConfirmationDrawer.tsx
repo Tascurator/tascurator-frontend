@@ -9,11 +9,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
-import { useState } from 'react';
-import { SubmitHandler, UseFormReturn } from 'react-hook-form';
-import { TShareHouseCreationSchema } from '@/constants/schema';
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
+import {
+  TShareHouseConfirmSchema,
+  TShareHouseCreationSchema,
+} from '@/constants/schema';
 import { formatDate } from '@/utils/dates';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
+import { api } from '@/lib/hono';
+import { revalidatePage } from '@/actions/revalidation';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 interface ISetupConfirmationDrawer {
   open: boolean;
@@ -26,31 +32,78 @@ export const SetupConfirmationDrawer = ({
   setOpen,
   form,
 }: ISetupConfirmationDrawer) => {
-  const { handleSubmit, getValues } = form;
+  const { watch } = form;
+  const data = watch();
+  const {
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<TShareHouseConfirmSchema>();
 
-  const data = getValues();
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setValue('name', data.name);
+    setValue('startDate', data.startDate);
+    setValue('rotationCycle', data.rotationCycle);
+    setValue(
+      'categories',
+      data.categories.map((category) => {
+        return {
+          name: category.name,
+          tasks: category.tasks.map((task) => {
+            return {
+              title: task.title,
+              description: task.description,
+            };
+          }),
+        };
+      }),
+    );
+    setValue(
+      'tenants',
+      data.tenants.map((tenant) => {
+        return {
+          name: tenant.name,
+          email: tenant.email,
+        };
+      }),
+    );
+  });
 
-  const onSubmit: SubmitHandler<TShareHouseCreationSchema> = async () => {
-    setIsLoading(true);
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<TShareHouseConfirmSchema> = async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsLoading(false);
+      const res = await api.sharehouse.$post({ json: data });
+
+      const newData = await res.json();
+      console.log(newData);
+      if ('error' in newData) {
+        throw new Error(newData.error);
+      }
+      console.log(newData);
       setOpen(false);
       toast({
         variant: 'default',
         description: TOAST_TEXTS.success,
       });
+      revalidatePage('/sharehouses');
+      router.push('/sharehouses');
     } catch (error) {
-      console.error(error);
-      setIsLoading(false);
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: error.message,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading ? <LoadingSpinner isLoading={true} /> : ''}
-      <Drawer open={open} onOpenChange={setOpen} modal={!isLoading}>
+      {isSubmitting && <LoadingSpinner isLoading={true} />}
+      <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* <DrawerClose /> */}
