@@ -14,10 +14,11 @@ import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
-import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 import { EmailSentDrawer } from '../ui/drawers/auth/AuthenticationDrawer';
 import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
+import { ITokenData } from '@/types/commons';
+import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
 const {
   PASSWORD_MIN_LENGTH,
@@ -27,19 +28,11 @@ const {
   PASSWORD_MIN_SPECIAL_CHARACTERS,
   PASSWORD_MIN_NUMBERS,
 } = CONSTRAINTS;
-
 const { minLength, length } = PASSWORD_CONSTRAINTS;
-
-interface ITokenData {
-  id: string;
-  email: string;
-  token: string;
-  expiresAt: Date;
-}
 
 const Form = () => {
   const [open, setOpen] = useState(false);
-  const [tokenData, setTokenData] = useState({} as ITokenData);
+  const [tokenData, setTokenData] = useState<ITokenData | null>(null);
   const [emailSent, setEmailSent] = useState(false);
 
   const formControls = useForm<TSignupSchema>({
