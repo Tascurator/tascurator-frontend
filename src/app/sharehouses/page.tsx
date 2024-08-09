@@ -41,6 +41,13 @@ const ShareHousesPage = async () => {
             <FloatingActionButton />
           </Link>
         </div>
+
+        {shareHouses.length === 0 && (
+          <div className="flex items-center justify-center">
+            No share houses
+          </div>
+        )}
+
         {shareHouses.map((shareHouse) => (
           <div
             className="bg-primary-lightest rounded-md mb-4 px-4 pt-4 shadow-lg"
