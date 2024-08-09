@@ -45,6 +45,10 @@ const EditShareHousePage = async ({
   const isMaxAmountOfCategory =
     shareHouseManagement.categories.length === CONSTRAINTS.CATEGORY_MAX_AMOUNT;
 
+  // Determine if the number of categories has reached the minimum
+  const isMinAmountOfCategory =
+    shareHouseManagement.categories.length === CONSTRAINTS.CATEGORY_MIN_AMOUNT;
+
   // Determine if the number of tenants has reached the maximum
   const isMaxAmountOfTenant =
     shareHouseManagement.tenants.length === CONSTRAINTS.TENANT_MAX_AMOUNT;
@@ -82,7 +86,10 @@ const EditShareHousePage = async ({
               key={category.id}
             >
               <AccordionItem value={`item-${category.id}`}>
-                <AccordionCategoryItem category={category} />
+                <AccordionCategoryItem
+                  category={category}
+                  isMinAmountOfCategory={isMinAmountOfCategory}
+                />
 
                 <AccordionContent
                   className={'space-y-4 bg-primary-lightest p-0'}

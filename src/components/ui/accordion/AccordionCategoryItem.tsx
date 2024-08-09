@@ -14,6 +14,7 @@ import { AccordionTrigger } from '../accordion';
 import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
+import { cn } from '@/lib/utils';
 
 /**
  * Constants used in the dropdown menu.
@@ -31,6 +32,7 @@ interface IUserActionsDropdownMenuProps {
   setOpen: (value: boolean) => void;
   setDrawerOpen: (value: boolean) => void;
   setUserAction: (value: TUserAction) => void;
+  isMinAmountOfCategory: boolean;
 }
 
 /**
@@ -42,10 +44,17 @@ const UserActionsDropdownMenu = ({
   setOpen,
   setDrawerOpen,
   setUserAction,
+  isMinAmountOfCategory,
 }: IUserActionsDropdownMenuProps) => {
   const handleItemClick = (item: TUserAction) => {
-    setUserAction(item);
-    setDrawerOpen(true);
+    if (
+      (!isMinAmountOfCategory && item === 'delete') ||
+      item === 'add' ||
+      item === 'edit'
+    ) {
+      setUserAction(item);
+      setDrawerOpen(true);
+    }
   };
 
   return (
@@ -73,6 +82,10 @@ const UserActionsDropdownMenu = ({
           <DropdownMenuItemWithIcon
             icon={DELETE_CATEGORY.icon}
             onClick={() => handleItemClick('delete')}
+            className={cn(
+              isMinAmountOfCategory &&
+                '[&>*]:text-slate-300 text-slate-300 cursor-not-allowed',
+            )}
           >
             {DELETE_CATEGORY.text}
           </DropdownMenuItemWithIcon>
@@ -84,6 +97,7 @@ const UserActionsDropdownMenu = ({
 
 interface IAccordionCategoryItemProps {
   category: ICategory;
+  isMinAmountOfCategory: boolean;
 }
 
 /**
@@ -94,6 +108,7 @@ interface IAccordionCategoryItemProps {
  */
 export const AccordionCategoryItem = ({
   category,
+  isMinAmountOfCategory,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -134,6 +149,7 @@ export const AccordionCategoryItem = ({
         setOpen={setIsDropdownOpen}
         setDrawerOpen={setIsDrawerOpen}
         setUserAction={setUserAction}
+        isMinAmountOfCategory={isMinAmountOfCategory}
       />
 
       {/* Category name edit drawer */}
