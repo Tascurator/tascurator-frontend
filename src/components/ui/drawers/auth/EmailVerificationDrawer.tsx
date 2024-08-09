@@ -17,6 +17,7 @@ const { EXPIRED_TOKEN_VERIFICATION } = SERVER_ERROR_MESSAGES;
 import { ITokenData } from '@/types/commons';
 import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+const { EMAIL_NOT_VERIFIED_COOLDOWN, UNKNOWN_ERROR } = TOAST_ERROR_MESSAGES;
 
 interface IEmailVerificationDrawer {
   token: string;
@@ -29,7 +30,7 @@ export const EmailVerificationDrawer = ({
   const [error, setError] = useState<string | null>();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [newToken, setNewToken] = useState<ITokenData | null>(null);
+  const [newToken, setNewToken] = useState<ITokenData | undefined>();
 
   const onLoadSubmit = useCallback(() => {
     /**
@@ -79,21 +80,27 @@ export const EmailVerificationDrawer = ({
         // if email is already sent within 30 minutes, show error message
         toast({
           variant: 'destructive',
-          description: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED_COOLDOWN,
+          description: EMAIL_NOT_VERIFIED_COOLDOWN,
         });
       } else {
-        const newTokenData = await resendVerificationEmailByToken(
+        const result = await resendVerificationEmailByToken(
           newToken?.token ?? token,
         );
-
-        setNewToken(newTokenData);
-        setOpen(true);
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        } else {
+          setNewToken(result?.tokenData);
+          setOpen(true);
+        }
       }
     } catch (error) {
       if (error instanceof Error) {
         toast({
           variant: 'destructive',
-          description: error.message,
+          description: UNKNOWN_ERROR,
         });
       }
     }

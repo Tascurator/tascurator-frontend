@@ -14,11 +14,12 @@ import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { toast } from '@/components/ui/use-toast';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
-import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 import { EmailSentDrawer } from '../ui/drawers/auth/AuthenticationDrawer';
 import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
 import { ITokenData } from '@/types/commons';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+const { EMAIL_NOT_VERIFIED_COOLDOWN, UNKNOWN_ERROR } = TOAST_ERROR_MESSAGES;
 import { CONSTRAINTS } from '@/constants/constraints';
 const {
   PASSWORD_MIN_LENGTH,
@@ -119,7 +120,7 @@ const Form = () => {
         // if email is already sent and within 30 minutes, show error message
         toast({
           variant: 'destructive',
-          description: TOAST_ERROR_MESSAGES.EMAIL_NOT_VERIFIED_COOLDOWN,
+          description: EMAIL_NOT_VERIFIED_COOLDOWN,
         });
       } else if (emailSent) {
         // if email is already sent but not within 30 minutes, resend the email
@@ -130,15 +131,22 @@ const Form = () => {
         setOpen(true);
       } else {
         // if email is not sent, sign up
-        await signup(formData);
-        setEmailSent(true);
-        setOpen(true);
+        const result = await signup(formData);
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        } else {
+          setEmailSent(true);
+          setOpen(true);
+        }
       }
     } catch (error) {
       if (error instanceof Error) {
         toast({
           variant: 'destructive',
-          description: error.message,
+          description: UNKNOWN_ERROR,
         });
       }
     }
