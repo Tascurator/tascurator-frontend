@@ -119,7 +119,7 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
     const getCategoryById = (id: string) => {
       for (const sharehouse of sanitizedSharehouses) {
         const category = findById(sharehouse.RotationAssignment.categories, id);
-        if (category) return category;
+        if (category) return { shareHouseId: sharehouse.id, category };
       }
       return null;
     };
@@ -128,7 +128,12 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
       for (const sharehouse of sanitizedSharehouses) {
         for (const category of sharehouse.RotationAssignment.categories) {
           const task = findById(category.tasks, id);
-          if (task) return task;
+          if (task)
+            return {
+              shareHouseId: sharehouse.id,
+              categoryId: category.id,
+              task,
+            };
         }
       }
       return null;
@@ -139,7 +144,10 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
         for (const tenantPlaceholder of sharehouse.RotationAssignment
           .tenantPlaceholders) {
           if (tenantPlaceholder.tenant?.id === id) {
-            return tenantPlaceholder.tenant;
+            return {
+              shareHouseId: sharehouse.id,
+              tenant: tenantPlaceholder.tenant,
+            };
           }
         }
       }
