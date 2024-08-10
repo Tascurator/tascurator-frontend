@@ -37,9 +37,10 @@ const app = new Hono<THonoEnv>()
           404,
         );
 
-      const { assignmentSheet, RotationAssignment } = doesShareHouseExist;
+      const { assignmentSheet, RotationAssignment, name } = doesShareHouseExist;
 
       const shareHouseData = {
+        name,
         nextRotationStartDate: assignmentSheet.endDate.toISOString(),
         tenants: RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {

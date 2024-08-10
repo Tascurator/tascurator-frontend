@@ -1,4 +1,5 @@
 // import {Header} from '@/components/ui/header';
+import { Header } from '@/components/ui/header';
 import { ICardContentProps } from '@/types/commons';
 import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
@@ -9,7 +10,6 @@ import { formatDate, convertToPDT } from '@/utils/dates';
 export interface IShareHousePageProps {
   params: {
     share_house_id: string;
-    shareHouseName: string;
     currentStartDate: string;
     currentEndDate: string;
     progressPercent: number;
@@ -21,7 +21,7 @@ export interface IShareHousePageProps {
 }
 
 const ShareHousePage = async ({
-  params: { share_house_id, shareHouseName },
+  params: { share_house_id },
 }: IShareHousePageProps) => {
   const res = await api.rotation[':shareHouseId'].$get(
     { param: { shareHouseId: share_house_id } },
@@ -40,29 +40,35 @@ const ShareHousePage = async ({
   }
 
   return (
-    <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
-      <DashboardTabsManager>
-        <div className="text-2xl flex justify-center mt-4">
-          {shareHouseName}
-        </div>
-        <LandlordDashboardTabContent
-          tabType="current"
-          progressPercent={data.current.progressRate}
-          startDate={formatDate(convertToPDT(new Date(data.current.startDate)))}
-          endDate={formatDate(convertToPDT(new Date(data.current.endDate)))}
-          cardContents={data.current.categories as ICardContentProps[]}
-          shareHouseId={share_house_id}
-        />
-        <LandlordDashboardTabContent
-          tabType="next"
-          progressPercent={0}
-          startDate={formatDate(convertToPDT(new Date(data.next.startDate)))}
-          endDate={formatDate(convertToPDT(new Date(data.next.endDate)))}
-          cardContents={data.next.categories as ICardContentProps[]}
-          shareHouseId={share_house_id}
-        />
-      </DashboardTabsManager>
-    </div>
+    <>
+      <Header
+        type={'HeaderItemWithDropDown'}
+        pageTitle={data.current.name}
+        sharehouseId={share_house_id}
+      />
+      <div className="relative before:absolute before:top-0 before:left-0 before:bg-primary-lightest before:h-80 sm:before:h-96 before:w-full ">
+        <DashboardTabsManager>
+          <LandlordDashboardTabContent
+            tabType="current"
+            progressPercent={data.current.progressRate}
+            startDate={formatDate(
+              convertToPDT(new Date(data.current.startDate)),
+            )}
+            endDate={formatDate(convertToPDT(new Date(data.current.endDate)))}
+            cardContents={data.current.categories as ICardContentProps[]}
+            shareHouseId={share_house_id}
+          />
+          <LandlordDashboardTabContent
+            tabType="next"
+            progressPercent={0}
+            startDate={formatDate(convertToPDT(new Date(data.next.startDate)))}
+            endDate={formatDate(convertToPDT(new Date(data.next.endDate)))}
+            cardContents={data.next.categories as ICardContentProps[]}
+            shareHouseId={share_house_id}
+          />
+        </DashboardTabsManager>
+      </div>
+    </>
   );
 };
 

@@ -4,11 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function DashboardTabsManager({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const EditTabsManager = ({ children }: { children: React.ReactNode }) => {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const pathname = usePathname();
@@ -26,14 +22,19 @@ export default function DashboardTabsManager({
   };
 
   return (
-    <div className="relative z-10 px-6 pt-4">
-      <Tabs defaultValue={tab ? tab : 'current'} onValueChange={handleTab}>
-        <TabsList>
-          <TabsTrigger value="current">Current</TabsTrigger>
-          <TabsTrigger value="next">Next</TabsTrigger>
-        </TabsList>
-        {children}
-      </Tabs>
-    </div>
+    <Tabs
+      defaultValue={tab ? tab : 'Tasks'}
+      onValueChange={handleTab}
+      className="mt-4 mb-6"
+    >
+      <TabsList>
+        <TabsTrigger value="Tasks">Tasks</TabsTrigger>
+        <TabsTrigger value="Schedule">Schedule</TabsTrigger>
+        <TabsTrigger value="Tenants">Tenants</TabsTrigger>
+      </TabsList>
+      {children}
+    </Tabs>
   );
-}
+};
+
+export { EditTabsManager };
