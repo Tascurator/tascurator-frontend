@@ -17,7 +17,7 @@ import {
   TPrismaTenant,
   TSanitizedPrismaShareHouse,
 } from '@/types/server';
-import { sharehousesLoaderMiddleware } from './middlewares/sharehouses-loader.middleware';
+import { sharehousesLoaderMiddleware } from '@/app/api/[[...route]]/middlewares/shareHouses-loader.middleware';
 
 export type THonoEnv = {
   Variables: {
