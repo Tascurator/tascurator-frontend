@@ -5,8 +5,9 @@ import { categoryCreationSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { THonoEnv } from '@/app/api/[[...route]]/route';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Updates a category's name by its ID
@@ -20,20 +21,19 @@ const app = new Hono()
         const categoryId = c.req.param('categoryId');
         const data = c.req.valid('json');
 
-        const category = await prisma.category.findUnique({
-          where: {
-            id: categoryId,
-          },
-          include: {
-            rotationAssignment: true,
-          },
-        });
+        const doesCategoryExist = c.var.getCategoryById(categoryId);
 
-        if (!category)
+        /**
+         * Ensure only the associated landlord can update the category
+         */
+        if (doesCategoryExist === null) {
           return c.json(
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
             404,
           );
+        }
+
+        const { shareHouseId, category } = doesCategoryExist;
 
         if (data.name === category.name)
           return c.json(
@@ -41,17 +41,10 @@ const app = new Hono()
             200,
           );
 
-        const shareHouseId = category.rotationAssignment.shareHouseId;
-
         // Check if the sharehouse has a category with the same name
-        const categoryWithSameName = await prisma.category.findFirst({
-          where: {
-            name: data.name,
-            rotationAssignment: {
-              shareHouseId: shareHouseId,
-            },
-          },
-        });
+        const categoryWithSameName = c.var
+          .getCategoriesBySharehouseId(shareHouseId)
+          .find((c) => c.name === data.name);
 
         if (categoryWithSameName)
           return c.json(
@@ -101,22 +94,22 @@ const app = new Hono()
   .delete('/:categoryId', async (c) => {
     try {
       const categoryId = c.req.param('categoryId');
-      const category = await prisma.category.findUnique({
-        where: {
-          id: categoryId,
-        },
-      });
-      if (!category)
+
+      const doesCategoryExist = c.var.getCategoryById(categoryId);
+
+      /**
+       * Ensure only the associated landlord can update the category
+       */
+      if (doesCategoryExist === null) {
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
           404,
         );
+      }
 
-      const categories = await prisma.category.findMany({
-        where: {
-          rotationAssignmentId: category.rotationAssignmentId,
-        },
-      });
+      const categories = c.var.getCategoriesBySharehouseId(
+        doesCategoryExist.shareHouseId,
+      );
 
       if (categories.length <= 1)
         return c.json(
@@ -161,28 +154,21 @@ const app = new Hono()
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
-        const rotationAssignment = await prisma.rotationAssignment.findUnique({
-          where: {
-            shareHouseId: shareHouseId,
-          },
-          include: {
-            categories: true,
-          },
-        });
+        const doesShareHouseExist = c.var.getSharehouseById(shareHouseId);
 
-        if (!rotationAssignment) {
+        /**
+         * Ensure only the associated landlord can create the category for the sharehouse
+         */
+        if (doesShareHouseExist === null) {
           return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.NOT_FOUND('rotationAssignment'),
-            },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
             404,
           );
         }
 
-        if (
-          rotationAssignment.categories.length >=
-          CONSTRAINTS.CATEGORY_MAX_AMOUNT
-        ) {
+        const categories = c.var.getCategoriesBySharehouseId(shareHouseId);
+
+        if (categories.length >= CONSTRAINTS.CATEGORY_MAX_AMOUNT) {
           return c.json(
             {
               error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(
@@ -195,14 +181,9 @@ const app = new Hono()
         }
 
         // Check if the sharehouse has a category with the same name
-        const categoryWithSameName = await prisma.category.findFirst({
-          where: {
-            name: data.name,
-            rotationAssignment: {
-              shareHouseId: shareHouseId,
-            },
-          },
-        });
+        const categoryWithSameName = categories.find(
+          (c) => c.name === data.name,
+        );
 
         if (categoryWithSameName)
           return c.json(
@@ -221,7 +202,7 @@ const app = new Hono()
             name: data.name,
             rotationAssignment: {
               connect: {
-                id: rotationAssignment.id,
+                id: doesShareHouseExist.RotationAssignment.id,
               },
             },
             tasks: {
