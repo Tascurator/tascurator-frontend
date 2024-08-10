@@ -4,11 +4,11 @@ import { THonoEnv } from '@/app/api/[[...route]]/route';
 import { TSanitizedPrismaShareHouse } from '@/types/server';
 
 /**
- * Finds an object in an array by a specific key and value.
+ * Finds an object in an array by the 'id' key.
  *
  * @template T - The type of the objects in the array. Must extend `Record<string, unknown>`.
- * @param {T[]} array - The array of objects to search through.
- * @param {string} id - The value to search for, typically an ID.
+ * @param array - The array of objects to search through.
+ * @param id - The value of the 'id' key to search for.
  * @returns {T | null} - The object that matches the search criteria, or `null` if not found.
  *
  * @example
@@ -26,7 +26,10 @@ const findById = <T extends Record<string, unknown>>(
   id: string,
 ): T | null => array.find((item) => item['id'] === id) ?? null;
 
-export const automaticRotationMiddleware = createMiddleware<THonoEnv>(
+/**
+ * Middleware that loads all share houses that the logged-in landlord owns.
+ */
+export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
   async (c, next) => {
     const landlordId = c.get('session').user.id;
 
@@ -137,10 +140,6 @@ export const automaticRotationMiddleware = createMiddleware<THonoEnv>(
     c.set('getCategoryById', getCategoryById);
     c.set('getTaskById', getTaskById);
     c.set('getTenantById', getTenantById);
-
-    /**
-     * TODO: Implement the automatic rotation logic here
-     */
 
     await next();
   },
