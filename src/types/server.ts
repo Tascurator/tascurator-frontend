@@ -120,6 +120,7 @@ export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
     assignmentSheet: true;
     RotationAssignment: {
       select: {
+        id: true;
         rotationCycle: true;
         categories: {
           include: { tasks: true };
@@ -137,10 +138,24 @@ export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
 /**
  * Type representing the ShareHouse object with only the assignmentSheet and RotationAssignment included.
  */
-export type TShareHouseAssignmentData = Pick<
-  TPrismaShareHouse,
-  'assignmentSheet' | 'RotationAssignment'
->;
+export type TShareHouseAssignmentData = Prisma.ShareHouseGetPayload<{
+  select: {
+    assignmentSheet: true;
+    RotationAssignment: {
+      select: {
+        rotationCycle: true;
+        categories: {
+          include: { tasks: true };
+        };
+        tenantPlaceholders: {
+          include: {
+            tenant: true;
+          };
+        };
+      };
+    };
+  };
+}>;
 
 /**
  * Type representing the Prisma Category object with the tasks included.
@@ -176,7 +191,7 @@ export type TSanitizedPrismaShareHouse = Pick<
   RotationAssignment: NonNullable<TPrismaShareHouse['RotationAssignment']>;
   assignmentSheet: Pick<
     TPrismaShareHouse['assignmentSheet'],
-    'startDate' | 'endDate'
+    'id' | 'startDate' | 'endDate'
   > & {
     assignedData: IAssignedData;
   };

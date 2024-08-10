@@ -42,6 +42,7 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
         assignmentSheet: true,
         RotationAssignment: {
           select: {
+            id: true,
             rotationCycle: true,
             categories: {
               include: {
