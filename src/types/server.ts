@@ -171,7 +171,13 @@ export type TPrismaTenant = Prisma.TenantGetPayload<NonNullable<unknown>>;
  */
 export type TSanitizedPrismaShareHouse = Pick<
   TPrismaShareHouse,
-  'id' | 'name' | 'createdAt' | 'assignmentSheet'
+  'id' | 'name' | 'createdAt'
 > & {
   RotationAssignment: NonNullable<TPrismaShareHouse['RotationAssignment']>;
+  assignmentSheet: Pick<
+    TPrismaShareHouse['assignmentSheet'],
+    'startDate' | 'endDate'
+  > & {
+    assignedData: IAssignedData;
+  };
 };

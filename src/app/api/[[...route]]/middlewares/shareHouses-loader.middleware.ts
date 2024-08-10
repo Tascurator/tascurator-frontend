@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 import prisma from '@/lib/prisma';
 import { THonoEnv } from '@/app/api/[[...route]]/route';
-import { TSanitizedPrismaShareHouse } from '@/types/server';
+import { IAssignedData, TSanitizedPrismaShareHouse } from '@/types/server';
 
 /**
  * Finds an object in an array by the 'id' key.
@@ -78,7 +78,11 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
           id,
           name,
           createdAt,
-          assignmentSheet,
+          assignmentSheet: {
+            ...assignmentSheet,
+            assignedData:
+              assignmentSheet.assignedData as unknown as IAssignedData,
+          },
           RotationAssignment,
         };
       })
