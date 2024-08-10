@@ -37,6 +37,7 @@ export const SetupTaskCreationDrawer = ({
       description: task?.description || '',
     },
   });
+  const { reset } = formControls;
 
   const onSubmit: SubmitHandler<TTaskSchema> = (data) => {
     const newTask = {
@@ -46,6 +47,7 @@ export const SetupTaskCreationDrawer = ({
       description: data.description || '',
     };
     onUpsertTask(newTask);
+    reset();
     setConfirmOpen(false);
   };
 
