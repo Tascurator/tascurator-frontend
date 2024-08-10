@@ -38,7 +38,9 @@ export type THonoEnv = {
     ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'][0]['tasks'];
     getTenantsBySharehouseId: (
       sharehouseId: string,
-    ) => TSanitizedPrismaShareHouse['RotationAssignment']['tenantPlaceholders'];
+    ) => NonNullable<
+      TSanitizedPrismaShareHouse['RotationAssignment']['tenantPlaceholders'][0]['tenant']
+    >[];
     getSharehouseById: (id: string) => TSanitizedPrismaShareHouse | null;
     getCategoryById: (id: string) => {
       shareHouseId: string;

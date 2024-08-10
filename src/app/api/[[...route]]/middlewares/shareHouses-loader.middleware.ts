@@ -114,7 +114,11 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
 
     const getTenantsBySharehouseId = (sharehouseId: string) => {
       const sharehouse = findById(sanitizedSharehouses, sharehouseId);
-      return sharehouse?.RotationAssignment.tenantPlaceholders ?? [];
+      return (
+        sharehouse?.RotationAssignment.tenantPlaceholders
+          .map((tenantPlaceholder) => tenantPlaceholder.tenant ?? null)
+          .filter((tenant) => tenant !== null) ?? []
+      );
     };
 
     const getSharehouseById = (id: string) =>
