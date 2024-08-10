@@ -30,6 +30,15 @@ export type THonoEnv = {
     getAssignmentSheetBySharehouseId: (
       sharehouseId: string,
     ) => TSanitizedPrismaShareHouse['assignmentSheet'] | null;
+    getCategoriesBySharehouseId: (
+      sharehouseId: string,
+    ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'];
+    getTasksByCategoryId: (
+      categoryId: string,
+    ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'][0]['tasks'];
+    getTenantsBySharehouseId: (
+      sharehouseId: string,
+    ) => TSanitizedPrismaShareHouse['RotationAssignment']['tenantPlaceholders'];
     getSharehouseById: (id: string) => TSanitizedPrismaShareHouse | null;
     getCategoryById: (id: string) => TPrismaCategory | null;
     getTaskById: (id: string) => TPrismaTask | null;

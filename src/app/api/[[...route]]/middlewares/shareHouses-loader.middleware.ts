@@ -95,6 +95,24 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
     const getAssignmentSheetBySharehouseId = (sharehouseId: string) =>
       findById(sanitizedSharehouses, sharehouseId)?.assignmentSheet ?? null;
 
+    const getCategoriesBySharehouseId = (sharehouseId: string) =>
+      findById(sanitizedSharehouses, sharehouseId)?.RotationAssignment
+        .categories ?? [];
+
+    const getTasksByCategoryId = (categoryId: string) => {
+      for (const sharehouse of sanitizedSharehouses) {
+        for (const category of sharehouse.RotationAssignment.categories) {
+          if (category.id === categoryId) return category.tasks;
+        }
+      }
+      return [];
+    };
+
+    const getTenantsBySharehouseId = (sharehouseId: string) => {
+      const sharehouse = findById(sanitizedSharehouses, sharehouseId);
+      return sharehouse?.RotationAssignment.tenantPlaceholders ?? [];
+    };
+
     const getSharehouseById = (id: string) =>
       findById(sanitizedSharehouses, id);
 
@@ -136,6 +154,9 @@ export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
       getRotationAssignmentBySharehouseId,
     );
     c.set('getAssignmentSheetBySharehouseId', getAssignmentSheetBySharehouseId);
+    c.set('getCategoriesBySharehouseId', getCategoriesBySharehouseId);
+    c.set('getTasksByCategoryId', getTasksByCategoryId);
+    c.set('getTenantsBySharehouseId', getTenantsBySharehouseId);
     c.set('getSharehouseById', getSharehouseById);
     c.set('getCategoryById', getCategoryById);
     c.set('getTaskById', getTaskById);
