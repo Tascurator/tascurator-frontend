@@ -71,7 +71,7 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
     const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = sharehouses
       .map(({ id, name, createdAt, assignmentSheet, RotationAssignment }) => {
         /**
-         * Check if the share house, RotationAssignment or AssignmentSheet is not found
+         * Check if the RotationAssignment is not found
          */
         if (!RotationAssignment) return null;
 
