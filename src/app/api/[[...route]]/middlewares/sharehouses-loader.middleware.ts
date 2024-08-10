@@ -29,7 +29,7 @@ const findById = <T extends Record<string, unknown>>(
 /**
  * Middleware that loads all share houses that the logged-in landlord owns.
  */
-export const shareHousesLoaderMiddleware = createMiddleware<THonoEnv>(
+export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
   async (c, next) => {
     const landlordId = c.get('session').user.id;
 

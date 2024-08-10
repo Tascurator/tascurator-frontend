@@ -17,7 +17,7 @@ import {
   TPrismaTenant,
   TSanitizedPrismaShareHouse,
 } from '@/types/server';
-import { shareHousesLoaderMiddleware } from './middlewares/shareHouses-loader.middleware';
+import { sharehousesLoaderMiddleware } from './middlewares/sharehouses-loader.middleware';
 
 export type THonoEnv = {
   Variables: {
@@ -72,7 +72,7 @@ const routes = app
    * Protected routes that require the user to be logged in.
    */
   .use(protectedRouteMiddleware)
-  .use(shareHousesLoaderMiddleware)
+  .use(sharehousesLoaderMiddleware)
   .route('/sharehouse', sharehouseRoute)
   .route('/sharehouses', sharehousesRoute)
   .route('/rotation', rotationRoute)
