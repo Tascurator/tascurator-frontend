@@ -114,6 +114,9 @@ export type TRotationScheduleForecast = {
  */
 export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
   select: {
+    id: true;
+    name: true;
+    createdAt: true;
     assignmentSheet: true;
     RotationAssignment: {
       select: {
@@ -130,6 +133,14 @@ export type TPrismaShareHouse = Prisma.ShareHouseGetPayload<{
     };
   };
 }>;
+
+/**
+ * Type representing the ShareHouse object with only the assignmentSheet and RotationAssignment included.
+ */
+export type TShareHouseAssignmentData = Pick<
+  TPrismaShareHouse,
+  'assignmentSheet' | 'RotationAssignment'
+>;
 
 /**
  * Type representing the Prisma Category object with the tasks included.
@@ -151,24 +162,16 @@ export type TPrismaTenantPlaceholder = Prisma.TenantPlaceholderGetPayload<{
 }>;
 
 /**
- * Type representing the ShareHouse object with RotationAssignment, Categories, Tasks, TenantPlaceholders and Tenants included.
+ * Type representing the Prisma Tenant object.
  */
-export type TPrismaShareHouseWithOtherTables = Prisma.ShareHouseGetPayload<{
-  include: {
-    RotationAssignment: {
-      include: {
-        rotationCycle: true;
-        categories: {
-          include: {
-            tasks: true;
-          };
-        };
-        tenantPlaceholders: {
-          include: {
-            tenant: true;
-          };
-        };
-      };
-    };
-  };
-}>;
+export type TPrismaTenant = Prisma.TenantGetPayload<NonNullable<unknown>>;
+
+/**
+ * Type representing the ShareHouse object but non-nullable for RotationAssignment.
+ */
+export type TSanitizedPrismaShareHouse = Pick<
+  TPrismaShareHouse,
+  'id' | 'name' | 'createdAt' | 'assignmentSheet'
+> & {
+  RotationAssignment: NonNullable<TPrismaShareHouse['RotationAssignment']>;
+};
