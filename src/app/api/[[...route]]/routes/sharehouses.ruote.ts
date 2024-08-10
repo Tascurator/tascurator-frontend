@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 
 const app = new Hono<THonoEnv>()
 

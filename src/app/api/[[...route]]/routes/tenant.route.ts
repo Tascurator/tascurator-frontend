@@ -8,7 +8,7 @@ import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { AssignedData } from '@/services/AssignedData';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 
 const app = new Hono<THonoEnv>()
 

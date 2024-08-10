@@ -14,7 +14,7 @@ import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 
 const app = new Hono<THonoEnv>()
 

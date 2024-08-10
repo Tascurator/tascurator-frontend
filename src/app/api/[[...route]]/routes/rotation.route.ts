@@ -6,7 +6,7 @@ import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
 import { AssignedData } from '@/services/AssignedData';
 import { addDays } from '@/utils/dates';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 
 type TCategoryData = {
   id: string | null;

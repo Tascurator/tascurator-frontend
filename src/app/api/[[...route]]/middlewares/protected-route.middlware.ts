@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 import { auth } from '@/lib/auth';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 /**

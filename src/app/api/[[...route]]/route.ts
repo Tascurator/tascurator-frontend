@@ -9,54 +9,9 @@ import categoryRoute from '@/app/api/[[...route]]/routes/category.route';
 import taskRoute from '@/app/api/[[...route]]/routes/task.route';
 import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
 import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
-import { Session } from 'next-auth';
 import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
-import {
-  TPrismaCategory,
-  TPrismaTask,
-  TPrismaTenant,
-  TSanitizedPrismaShareHouse,
-} from '@/types/server';
 import { sharehousesLoaderMiddleware } from '@/app/api/[[...route]]/middlewares/shareHouses-loader.middleware';
-
-export type THonoEnv = {
-  Variables: {
-    session: Session;
-    sharehouses: TSanitizedPrismaShareHouse[];
-
-    getRotationAssignmentBySharehouseId: (
-      sharehouseId: string,
-    ) => TSanitizedPrismaShareHouse['RotationAssignment'] | null;
-    getAssignmentSheetBySharehouseId: (
-      sharehouseId: string,
-    ) => TSanitizedPrismaShareHouse['assignmentSheet'] | null;
-    getCategoriesBySharehouseId: (
-      sharehouseId: string,
-    ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'];
-    getTasksByCategoryId: (
-      categoryId: string,
-    ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'][0]['tasks'];
-    getTenantsBySharehouseId: (
-      sharehouseId: string,
-    ) => NonNullable<
-      TSanitizedPrismaShareHouse['RotationAssignment']['tenantPlaceholders'][0]['tenant']
-    >[];
-    getSharehouseById: (id: string) => TSanitizedPrismaShareHouse | null;
-    getCategoryById: (id: string) => {
-      shareHouseId: string;
-      category: TPrismaCategory;
-    } | null;
-    getTaskById: (id: string) => {
-      shareHouseId: string;
-      categoryId: string;
-      task: TPrismaTask;
-    } | null;
-    getTenantById: (id: string) => {
-      shareHouseId: string;
-      tenant: TPrismaTenant;
-    } | null;
-  };
-};
+import { THonoEnv } from '@/types/hono-env';
 
 const app = new Hono<THonoEnv>();
 

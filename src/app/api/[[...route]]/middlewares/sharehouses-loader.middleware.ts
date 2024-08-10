@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 import prisma from '@/lib/prisma';
-import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { THonoEnv } from '@/types/hono-env';
 import { IAssignedData, TSanitizedPrismaShareHouse } from '@/types/server';
 
 /**
