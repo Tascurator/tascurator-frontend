@@ -1,6 +1,30 @@
 import { createMiddleware } from 'hono/factory';
 import prisma from '@/lib/prisma';
 import { THonoEnv } from '@/app/api/[[...route]]/route';
+import { TSanitizedPrismaShareHouse } from '@/types/server';
+
+/**
+ * Finds an object in an array by a specific key and value.
+ *
+ * @template T - The type of the objects in the array. Must extend `Record<string, unknown>`.
+ * @param {T[]} array - The array of objects to search through.
+ * @param {string} id - The value to search for, typically an ID.
+ * @returns {T | null} - The object that matches the search criteria, or `null` if not found.
+ *
+ * @example
+ * const users = [
+ *   { id: '1', name: 'Alice' },
+ *   { id: '2', name: 'Bob' },
+ *   { id: '3', name: 'Charlie' },
+ * ];
+ *
+ * const user = findById(users, '2'); // Returns { id: '2', name: 'Bob' }
+ * const nonExistentUser = findById(users, '4'); // Returns null
+ */
+const findById = <T extends Record<string, unknown>>(
+  array: T[],
+  id: string,
+): T | null => array.find((item) => item['id'] === id) ?? null;
 
 export const automaticRotationMiddleware = createMiddleware<THonoEnv>(
   async (c, next) => {
@@ -38,9 +62,81 @@ export const automaticRotationMiddleware = createMiddleware<THonoEnv>(
     });
 
     /**
+     * Create a sanitized version of the share houses
+     */
+    const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = sharehouses
+      .map(({ id, name, createdAt, assignmentSheet, RotationAssignment }) => {
+        /**
+         * Check if the share house, RotationAssignment or AssignmentSheet is not found
+         */
+        if (!RotationAssignment) return null;
+
+        return {
+          id,
+          name,
+          createdAt,
+          assignmentSheet,
+          RotationAssignment,
+        };
+      })
+      .filter((sharehouse) => sharehouse !== null);
+
+    /**
      * Set the share houses in the context
      */
-    c.set('sharehouses', sharehouses);
+    c.set('sharehouses', sanitizedSharehouses);
+
+    const getRotationAssignmentBySharehouseId = (sharehouseId: string) =>
+      findById(sanitizedSharehouses, sharehouseId)?.RotationAssignment ?? null;
+
+    const getAssignmentSheetBySharehouseId = (sharehouseId: string) =>
+      findById(sanitizedSharehouses, sharehouseId)?.assignmentSheet ?? null;
+
+    const getSharehouseById = (id: string) =>
+      findById(sanitizedSharehouses, id);
+
+    const getCategoryById = (id: string) => {
+      for (const sharehouse of sanitizedSharehouses) {
+        const category = findById(sharehouse.RotationAssignment.categories, id);
+        if (category) return category;
+      }
+      return null;
+    };
+
+    const getTaskById = (id: string) => {
+      for (const sharehouse of sanitizedSharehouses) {
+        for (const category of sharehouse.RotationAssignment.categories) {
+          const task = findById(category.tasks, id);
+          if (task) return task;
+        }
+      }
+      return null;
+    };
+
+    const getTenantById = (id: string) => {
+      for (const sharehouse of sanitizedSharehouses) {
+        for (const tenantPlaceholder of sharehouse.RotationAssignment
+          .tenantPlaceholders) {
+          if (tenantPlaceholder.tenant?.id === id) {
+            return tenantPlaceholder.tenant;
+          }
+        }
+      }
+      return null;
+    };
+
+    /**
+     * Set the helper functions in the context
+     */
+    c.set(
+      'getRotationAssignmentBySharehouseId',
+      getRotationAssignmentBySharehouseId,
+    );
+    c.set('getAssignmentSheetBySharehouseId', getAssignmentSheetBySharehouseId);
+    c.set('getSharehouseById', getSharehouseById);
+    c.set('getCategoryById', getCategoryById);
+    c.set('getTaskById', getTaskById);
+    c.set('getTenantById', getTenantById);
 
     /**
      * TODO: Implement the automatic rotation logic here

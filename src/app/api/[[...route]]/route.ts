@@ -11,12 +11,28 @@ import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
 import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
 import { Session } from 'next-auth';
 import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
-import { TPrismaShareHouse } from '@/types/server';
+import {
+  TPrismaCategory,
+  TPrismaTask,
+  TPrismaTenant,
+  TSanitizedPrismaShareHouse,
+} from '@/types/server';
 
 export type THonoEnv = {
   Variables: {
     session: Session;
-    sharehouses: TPrismaShareHouse[];
+    sharehouses: TSanitizedPrismaShareHouse[];
+
+    getRotationAssignmentBySharehouseId: (
+      sharehouseId: string,
+    ) => TSanitizedPrismaShareHouse['RotationAssignment'] | null;
+    getAssignmentSheetBySharehouseId: (
+      sharehouseId: string,
+    ) => TSanitizedPrismaShareHouse['assignmentSheet'] | null;
+    getSharehouseById: (id: string) => TSanitizedPrismaShareHouse | null;
+    getCategoryById: (id: string) => TPrismaCategory | null;
+    getTaskById: (id: string) => TPrismaTask | null;
+    getTenantById: (id: string) => TPrismaTenant | null;
   };
 };
 
