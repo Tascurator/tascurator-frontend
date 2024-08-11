@@ -257,6 +257,7 @@ export const SetupStepper = ({
                 categoryData={getValues().categories}
                 onUpsertTask={upsertTask}
                 onDelete={deleteCategory}
+                taskAmount={category.tasks.length}
               />
               <AccordionContent className="space-y-4 bg-primary-lightest p-0">
                 {category.tasks.map((task) => (
