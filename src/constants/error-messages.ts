@@ -20,4 +20,5 @@ export const ERROR_MESSAGES = {
 
   //Static error messages
   EMAIL_INVALID: 'Invalid email address.',
+  GENERAL_ERROR: 'Something went wrong. Please try again.',
 };

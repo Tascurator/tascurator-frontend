@@ -38,6 +38,12 @@ export const CONSTRAINTS = {
   ROTATION_WEEKLY: 7,
   ROTATION_FORTNIGHTLY: 14,
 
+  // Verification email token expiration time
+  VERIFICATION_EMAIL_TOKEN_EXPIRATION_TIME: 3 * 60 * 60 * 1000, // 3 hours
+
+  // Check email token expiration time before sending a new one
+  VERIFICATION_EMAIL_RESEND_COOLDOWN_TIME: 30 * 60 * 1000, // 30 minutes
+
   // Password reset token expiration time
   PASSWORD_RESET_TOKEN_EXPIRATION_TIME: 3 * 60 * 60 * 1000, // 3 hours
 };

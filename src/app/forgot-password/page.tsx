@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { getPasswordResetTokenDataByToken } from '@/utils/prisma-helpers';
 import { ResetPasswordForm } from '@/components/forgot-password/ResetPasswordForm';
 import { isTokenValid } from '@/utils/tokens';
-import { InvalidTokenToast } from '@/components/forgot-password/InvalidTokenToast';
+import { InvalidTokenToast } from '@/components/ui/InvalidTokenToast';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 interface IForgotPasswordPageProps {
   searchParams: {
@@ -78,7 +79,11 @@ const ForgotPasswordPage = async ({
       </div>
 
       {/* Display error toast if token is invalid or expired */}
-      {expired && <InvalidTokenToast />}
+      {expired && (
+        <InvalidTokenToast
+          errorMessage={SERVER_ERROR_MESSAGES.INVALID_TOKEN_RESET_PASSWORD}
+        />
+      )}
     </div>
   );
 };
