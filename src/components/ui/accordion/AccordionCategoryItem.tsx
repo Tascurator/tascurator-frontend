@@ -17,7 +17,7 @@ import { ICategory, ITask } from '@/types/commons';
 import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
 import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
 import { SetupNameEditionDrawer } from '@/components/ui/drawers/names/SetupNameEditionDrawer';
-
+import { CONSTRAINTS } from '@/constants/constraints';
 /**
  * Constants used in the dropdown menu.
  */
@@ -86,6 +86,7 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionCategoryItemProps {
+  taskAmount: number;
   category: ICategory;
   type?: string;
 
@@ -102,6 +103,7 @@ interface IAccordionCategoryItemProps {
  * <AccordionCategoryItem id={"1"} name={'Kitchen'} category={'Kitchen'} />
  */
 export const AccordionCategoryItem = ({
+  taskAmount,
   category,
   type,
   onUpsertTask,
@@ -136,7 +138,12 @@ export const AccordionCategoryItem = ({
   return (
     <div className={'flex rounded-xl'}>
       <div className="flex items-center w-full">
-        <AccordionTrigger>{category.name}</AccordionTrigger>
+        <AccordionTrigger>
+          <span className="line-clamp-2">{category.name}</span>
+          <span className="flex-grow pl-2 text-sm font-normal">
+            ({taskAmount}/{CONSTRAINTS.TASK_MAX_AMOUNT})
+          </span>
+        </AccordionTrigger>
         <button
           className={
             'flex justify-center items-center p-4 hover:cursor-pointer'

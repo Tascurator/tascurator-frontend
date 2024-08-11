@@ -72,35 +72,41 @@ const EditShareHousePage = async ({
               {shareHouseManagement.categories.length}/
               {CONSTRAINTS.CATEGORY_MAX_AMOUNT}
             </div>
-            {shareHouseManagement.categories.map((category) => (
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                key={category.id}
-              >
-                <AccordionItem value={`item-${category.id}`} className="mt-2">
-                  <AccordionCategoryItem category={category} />
+            {shareHouseManagement.categories.map((category) => {
+              const taskAmount = category.tasks.length;
+              return (
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="w-full"
+                  key={category.id}
+                >
+                  <AccordionItem value={`item-${category.id}`} className="mt-2">
+                    <AccordionCategoryItem
+                      category={category}
+                      taskAmount={taskAmount}
+                    />
 
-                  <AccordionContent
-                    className={'space-y-4 bg-primary-lightest p-0'}
-                  >
-                    {category.tasks.map((task) => (
-                      <AccordionTaskItem
-                        key={task.id}
-                        id={task.id}
-                        category={{
-                          id: category.id,
-                          name: category.name,
-                        }}
-                        title={task.title}
-                        description={task.description}
-                      />
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ))}
+                    <AccordionContent
+                      className={'space-y-4 bg-primary-lightest p-0'}
+                    >
+                      {category.tasks.map((task) => (
+                        <AccordionTaskItem
+                          key={task.id}
+                          id={task.id}
+                          category={{
+                            id: category.id,
+                            name: category.name,
+                          }}
+                          title={task.title}
+                          description={task.description}
+                        />
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              );
+            })}
           </TabsContent>
 
           {/* Schedule */}

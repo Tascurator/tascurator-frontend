@@ -39,4 +39,14 @@ export const EMAILS: IEmails = {
       <p>Your password has been successfully reset.<br/>Click here to login: <a href="${callbackUrl}">${callbackUrl}</a></p>
     `,
   },
+  /**
+   * For sign-up confirmation email.
+   */
+  SIGNUP_CONFIRMATION: {
+    subject: 'Confirm your email address',
+    html: (callbackUrl: string) => `
+        <h2>Tascurator</h2>
+        <p>Click the link below to confirm your email address.<br/><a href="${callbackUrl}">${callbackUrl}</a></p>
+      `,
+  },
 };

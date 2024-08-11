@@ -19,7 +19,8 @@ import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
-const { INVALID_TOKEN, COMPLETION_ERROR } = SERVER_ERROR_MESSAGES;
+const { INVALID_TOKEN_RESET_PASSWORD, COMPLETION_ERROR } =
+  SERVER_ERROR_MESSAGES;
 
 /**
  * Send email to the landlord with a link to reset their password
@@ -79,7 +80,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
    * If the token does not exist or is expired, throw an error
    */
   if (!tokenData || !isTokenValid(token, tokenData.expiresAt)) {
-    throw new Error(INVALID_TOKEN);
+    throw new Error(INVALID_TOKEN_RESET_PASSWORD);
   }
 
   try {
