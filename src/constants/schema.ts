@@ -8,8 +8,8 @@ const {
   TENANT_MAX_AMOUNT,
   TENANT_NAME_MIN_LENGTH,
   TENANT_NAME_MAX_LENGTH,
-  // TASK_MIN_AMOUNT,
-  // TASK_MAX_AMOUNT,
+  TASK_MIN_AMOUNT,
+  TASK_MAX_AMOUNT,
   TASK_TITLE_MIN_LENGTH,
   TASK_TITLE_MAX_LENGTH,
   TASK_DESCRIPTION_MIN_LENGTH,
@@ -177,56 +177,63 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
       categoryCreationSchema.pick({ name: true }).extend({
         id: z.string().trim().uuid(),
 
-        tasks: z.array(
-          // .array(taskCreationSchema.omit({ categoryId: true }))
-          // .array(taskCreationSchema)
-          z.object({
-            id: z.string().trim().uuid(),
-            title: z
-              .string()
-              .min(
-                TASK_TITLE_MIN_LENGTH,
-                minLength('Title', TASK_TITLE_MIN_LENGTH),
-              )
-              .max(
-                TASK_TITLE_MAX_LENGTH,
-                maxLength('Title', TASK_TITLE_MAX_LENGTH),
-              ),
-            description: z
-              .string()
-              .refine(
-                taskDescriptionLengthMinValidate,
-                minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-              )
-              .refine(
-                taskDescriptionLengthMaxValidate,
-                maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-              ),
-          }),
-        ),
+        tasks: z
+          .array(
+            // .array(taskCreationSchema.omit({ categoryId: true }))
+            // .array(taskCreationSchema)
+            z.object({
+              id: z.string().trim().uuid(),
+              title: z
+                .string()
+                .min(
+                  TASK_TITLE_MIN_LENGTH,
+                  minLength('Title', TASK_TITLE_MIN_LENGTH),
+                )
+                .max(
+                  TASK_TITLE_MAX_LENGTH,
+                  maxLength('Title', TASK_TITLE_MAX_LENGTH),
+                ),
+              description: z
+                .string()
+                .refine(
+                  taskDescriptionLengthMinValidate,
+                  minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+                )
+                .refine(
+                  taskDescriptionLengthMaxValidate,
+                  maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+                ),
+            }),
+          )
+
+          .min(TASK_MIN_AMOUNT)
+
+          .max(TASK_MAX_AMOUNT),
       }),
     )
     .min(CATEGORY_MIN_AMOUNT)
     .max(CATEGORY_MAX_AMOUNT),
-  tasks: z.array(
-    z.object({
-      id: z.string().trim().uuid(),
-      title: z
-        .string()
-        .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
-        .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-      description: z
-        .string()
-        .refine(
-          taskDescriptionLengthMinValidate,
-          minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-        )
-        .refine(
-          taskDescriptionLengthMaxValidate,
-          maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-        ),
-    }),
-  ),
+  // tasks: z.array(
+  //   z.object({
+  //     id: z.string().trim().uuid(),
+  //     title: z
+  //       .string()
+  //       .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
+  //       .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
+  //     description: z
+  //       .string()
+  //       .refine(
+  //         taskDescriptionLengthMinValidate,
+  //         minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+  //       )
+  //       .refine(
+  //         taskDescriptionLengthMaxValidate,
+  //         maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+  //       ),
+  //   }),
+  // )
+  // .min(TASK_MIN_AMOUNT, `You must have at least ${TASK_MIN_AMOUNT} task(s)`)
+  // .max(TASK_MAX_AMOUNT, `You can have at most ${TASK_MAX_AMOUNT} task(s)`),
   tenants: z
     .array(
       tenantInvitationSchema.pick({ name: true, email: true }).extend({

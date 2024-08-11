@@ -80,7 +80,6 @@ export const SetupStepper = ({
             description: 'Share house name already exists',
             variant: 'destructive',
           });
-          // setValue('name', '', { shouldValidate: true });
         }
       });
     } else if (currentStep === 2) {
@@ -92,7 +91,6 @@ export const SetupStepper = ({
     }
     if (isValid && currentStep === maxSteps) {
       setOpen(true);
-      // console.log('getValues()', getValues());
     }
     if (isValid && currentStep < maxSteps) {
       setCurrentStep(currentStep + 1);
@@ -282,12 +280,17 @@ export const SetupStepper = ({
         {categories.length < 0 && (
           <p className="text-center">{categories.length}</p>
         )}
+        {/* error */}
+        {/* {errors.categories && Array.isArray(errors.categories) && errors.categories.map((categoryError, index) => (
+          categoryError.tasks.message && (
+            <p key={index} className="text-red-500 text-sm">{categoryError.tasks.message}</p>
+          )
+        ))} */}
       </SetupContents>
     );
   };
 
   const addTenant = (tenant: ITenant) => {
-    console.log('⭐️tenant', tenant);
     setValue('tenants', [...getValues().tenants, tenant], {
       shouldValidate: true,
     });
