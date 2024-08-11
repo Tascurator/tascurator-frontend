@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { logout } from '@/actions/logout';
-import { LoadingSpinner } from '../loadingSpinner';
+import { LoadingSpinner } from '../../loadingSpinner';
 import { useState } from 'react';
 
 interface ILogOutDrawer {
