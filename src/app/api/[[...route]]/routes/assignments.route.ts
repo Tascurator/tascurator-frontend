@@ -109,8 +109,8 @@ const app = new Hono()
        */
       const assignedData = new AssignedData(
         assignmentSheet.assignedData,
-        doesAssignmentSheetExist.startDate,
-        doesAssignmentSheetExist.endDate,
+        assignmentSheet.startDate,
+        assignmentSheet.endDate,
       );
 
       const rotationScheduleForecast: TRotationScheduleForecast = {
