@@ -90,8 +90,8 @@ interface IAccordionCategoryItemProps {
   category: ICategory;
   type?: string;
 
-  onUpsertTask: (task: ITask) => void;
-  onUpdateName: (id: string, newName: string) => void;
+  onUpsertTask?: (task: ITask) => void;
+  onUpdateName?: (id: string, newName: string) => void;
   categoryData?: ICategory[];
   onDelete?: (id: string) => void;
 }
@@ -132,7 +132,21 @@ export const AccordionCategoryItem = ({
   const [userAction, setUserAction] = useState<TUserAction>('edit');
 
   const handleUpdateName = (newName: string) => {
-    onUpdateName(category.id, newName);
+    if (onUpdateName) {
+      onUpdateName(category.id, newName);
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(category.id);
+    }
+  };
+
+  const handleUpsertTask = (task: ITask) => {
+    if (onUpsertTask) {
+      onUpsertTask(task);
+    }
   };
 
   return (
@@ -168,7 +182,7 @@ export const AccordionCategoryItem = ({
             category={category}
             editOpen={isDrawerOpen && userAction === 'add'}
             setEditOpen={setIsDrawerOpen}
-            onUpsertTask={onUpsertTask}
+            onUpsertTask={handleUpsertTask}
           />
 
           {/* Category name edit drawer */}
@@ -188,7 +202,7 @@ export const AccordionCategoryItem = ({
             deleteItem={category.name}
             open={isDrawerOpen && userAction === 'delete'}
             setOpen={setIsDrawerOpen}
-            onDelete={() => (onDelete ? onDelete(category.id) : {})}
+            onDelete={handleDelete}
           />
         </>
       ) : (

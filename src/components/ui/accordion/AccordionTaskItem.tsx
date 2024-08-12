@@ -81,8 +81,8 @@ interface IAccordionTaskItemProps {
   title: string;
   description: string;
   category: ICategoryWithoutTasks;
-  onUpsertTask: (task: ITask) => void;
-  onDelete: (taskId: string) => void;
+  onUpsertTask?: (task: ITask) => void;
+  onDelete?: (taskId: string) => void;
 }
 
 /**
@@ -119,8 +119,16 @@ export const AccordionTaskItem = ({
    */
   const [userAction, setUserAction] = useState<TUserAction>('edit');
 
-  const handleAddTask = (task: ITask) => {
-    onUpsertTask(task);
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(id);
+    }
+  };
+
+  const handleUpsertTask = (task: ITask) => {
+    if (onUpsertTask) {
+      onUpsertTask(task);
+    }
   };
 
   return (
@@ -155,7 +163,7 @@ export const AccordionTaskItem = ({
             }}
             editOpen={isDrawerOpen && userAction === 'edit'}
             setEditOpen={setIsDrawerOpen}
-            onUpsertTask={handleAddTask}
+            onUpsertTask={handleUpsertTask}
           />
 
           {/* Task deletion drawer */}
@@ -164,7 +172,7 @@ export const AccordionTaskItem = ({
             open={isDrawerOpen && userAction === 'delete'}
             setOpen={setIsDrawerOpen}
             taskId={id}
-            onDelete={onDelete}
+            onDelete={handleDelete}
           />
         </>
       ) : (
