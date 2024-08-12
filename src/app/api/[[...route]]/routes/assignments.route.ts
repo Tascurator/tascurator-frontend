@@ -17,7 +17,7 @@ const app = new Hono()
 
   /**
    * Retrieves the categories assigned to a tenant for a given assignment sheet, including the categories expected to be assigned in the next 3 future rotations.
-   * @route GET /api/tenant/:assignmentSheetId/:tenantId
+   * @route GET /api/assignments/:assignmentSheetId/:tenantId
    */
   .get('/:assignmentSheetId/:tenantId', async (c) => {
     const assignmentSheetId = c.req.param('assignmentSheetId');
@@ -205,7 +205,7 @@ const app = new Hono()
 
   /**
    * Updates the tasks' completion status for a tenant for a given assignment sheet
-   * @route PATCH /api/tenant/:assignmentSheetId/:tenantId
+   * @route PATCH /api/assignments/:assignmentSheetId/:tenantId
    */
   .patch(
     '/:assignmentSheetId/:tenantId',
