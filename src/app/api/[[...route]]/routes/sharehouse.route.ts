@@ -8,75 +8,41 @@ import {
   shareHouseCreationSchema,
   shareHouseNameSchema,
 } from '@/constants/schema';
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
+import { THonoEnv } from '@/types/hono-env';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Retrieves the categories, tasks, rotation cycles, and tenants of a shareHouse by its ID
    * @route GET /api/shareHouse/:shareHouseId
    */
-  .get('/:shareHouseId', async (c) => {
+  .get('/:shareHouseId', (c) => {
     const shareHouseId = c.req.param('shareHouseId');
 
     try {
-      const shareHouseWithOtherTables = await prisma.shareHouse.findUnique({
-        where: {
-          id: shareHouseId,
-        },
-        include: {
-          RotationAssignment: {
-            include: {
-              tenantPlaceholders: {
-                include: {
-                  tenant: true,
-                },
-                orderBy: [
-                  { tenant: { createdAt: 'asc' } },
-                  { tenant: { id: 'asc' } },
-                ],
-              },
-              categories: {
-                include: {
-                  tasks: {
-                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-                  },
-                },
-                orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-              },
-            },
-          },
-          assignmentSheet: {
-            select: {
-              endDate: true,
-            },
-          },
-        },
-      });
+      const doesShareHouseExist = c.var.getSharehouseById(shareHouseId);
 
-      if (!shareHouseWithOtherTables)
+      /**
+       * Ensure only the associated landlord can view the share house data
+       */
+      if (!doesShareHouseExist)
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
           404,
         );
 
-      if (!shareHouseWithOtherTables.RotationAssignment)
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-          500,
-        );
+      const { assignmentSheet, RotationAssignment, name } = doesShareHouseExist;
 
       const shareHouseData = {
-        name: shareHouseWithOtherTables.name,
-        nextRotationStartDate:
-          shareHouseWithOtherTables.assignmentSheet.endDate.toISOString(),
-        tenants: shareHouseWithOtherTables.RotationAssignment.tenantPlaceholders
+        name,
+        nextRotationStartDate: assignmentSheet.endDate.toISOString(),
+        tenants: RotationAssignment.tenantPlaceholders
           .map((tenantPlaceholder) => {
             if (tenantPlaceholder.tenant) {
               return {
@@ -90,21 +56,18 @@ const app = new Hono()
           })
           .filter((tenantPlaceholder) => tenantPlaceholder !== null),
 
-        rotationCycle:
-          shareHouseWithOtherTables.RotationAssignment.rotationCycle,
-        categories: shareHouseWithOtherTables.RotationAssignment.categories.map(
-          (category) => ({
-            id: category.id,
-            name: category.name,
-            tasks: category.tasks.map((task) => ({
-              id: task.id,
-              title: task.title,
-              description: task.description,
-              createdAt: task.createdAt,
-            })),
-            createdAt: category.createdAt,
-          }),
-        ),
+        rotationCycle: RotationAssignment.rotationCycle,
+        categories: RotationAssignment.categories.map((category) => ({
+          id: category.id,
+          name: category.name,
+          tasks: category.tasks.map((task) => ({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            createdAt: task.createdAt,
+          })),
+          createdAt: category.createdAt,
+        })),
       };
 
       return c.json(shareHouseData);
@@ -135,26 +98,14 @@ const app = new Hono()
     zValidator('json', shareHouseNameSchema),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-        const landlordId = session.user.id;
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
-        const shareHouse = await prisma.shareHouse.findUnique({
-          where: {
-            id: shareHouseId,
-          },
-        });
+        const shareHouse = c.var.getSharehouseById(shareHouseId);
 
+        /**
+         * Ensure only the associated landlord can update the share house
+         */
         if (!shareHouse)
           return c.json(
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
@@ -168,14 +119,7 @@ const app = new Hono()
           );
 
         // Check if the landlord has a share house with the same name
-        const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
-          where: {
-            name: data.name,
-            landlordId: landlordId,
-          },
-        });
-
-        if (ShareHouseWithSameName)
+        if (c.get('sharehouses').find((s) => s.name === data.name))
           return c.json(
             {
               error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
@@ -223,12 +167,12 @@ const app = new Hono()
   .delete('/:shareHouseId', async (c) => {
     try {
       const shareHouseId = c.req.param('shareHouseId');
-      const shareHouse = await prisma.shareHouse.findUnique({
-        where: {
-          id: shareHouseId,
-        },
-      });
 
+      const shareHouse = c.var.getSharehouseById(shareHouseId);
+
+      /**
+       * Ensure only the associated landlord can delete the share house
+       */
       if (!shareHouse)
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
@@ -301,43 +245,13 @@ const app = new Hono()
    */
   .post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
     try {
-      const session = await auth();
-
-      if (!session) {
-        return c.json(
-          {
-            error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-          },
-          401,
-        );
-      }
-      const landlordId = session.user.id;
+      const landlordId = c.get('session').user.id;
       const data = c.req.valid('json');
 
-      const landlord = await prisma.landlord.findUnique({
-        where: {
-          id: landlordId,
-        },
-        include: {
-          shareHouses: true,
-        },
-      });
-
-      if (!landlord)
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('landlord') },
-          404,
-        );
+      const shareHouses = c.get('sharehouses');
 
       // Check if the landlord has a share house with the same name
-      const ShareHouseWithSameName = await prisma.shareHouse.findFirst({
-        where: {
-          name: data.name,
-          landlordId: landlordId,
-        },
-      });
-
-      if (ShareHouseWithSameName)
+      if (shareHouses.find((s) => s.name === data.name))
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
@@ -349,7 +263,7 @@ const app = new Hono()
           400,
         );
 
-      if (landlord.shareHouses.length > CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
+      if (shareHouses.length >= CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT)
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.MAX_LIMIT_REACHED(

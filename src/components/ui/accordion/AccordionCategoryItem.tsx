@@ -14,6 +14,7 @@ import { AccordionTrigger } from '../accordion';
 import { TaskCreationDrawer } from '../drawers/tasks/TaskCreationDrawer';
 import { DeleteConfirmationDrawer } from '../drawers/deletions/with-checkbox/DeleteConfirmationDrawer';
 import type { ICategory } from '@/types/commons';
+import { CONSTRAINTS } from '@/constants/constraints';
 import { cn } from '@/lib/utils';
 
 /**
@@ -96,6 +97,7 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionCategoryItemProps {
+  taskAmount: number;
   category: ICategory;
   isMinAmountOfCategory: boolean;
 }
@@ -107,6 +109,7 @@ interface IAccordionCategoryItemProps {
  * <AccordionCategoryItem id={"1"} name={'Kitchen'} category={'Kitchen'} />
  */
 export const AccordionCategoryItem = ({
+  taskAmount,
   category,
   isMinAmountOfCategory,
 }: IAccordionCategoryItemProps) => {
@@ -133,7 +136,12 @@ export const AccordionCategoryItem = ({
   return (
     <div className={'flex rounded-xl'}>
       <div className="flex items-center w-full">
-        <AccordionTrigger>{category.name}</AccordionTrigger>
+        <AccordionTrigger>
+          <span className="line-clamp-2">{category.name}</span>
+          <span className="flex-grow pl-2 text-sm font-normal">
+            ({taskAmount}/{CONSTRAINTS.TASK_MAX_AMOUNT})
+          </span>
+        </AccordionTrigger>
         <button
           className={
             'flex justify-center items-center p-4 hover:cursor-pointer'

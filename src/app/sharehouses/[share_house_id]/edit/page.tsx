@@ -15,6 +15,7 @@ import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { EditTabsManager } from '@/components/edit/EditTabsManager';
 import { convertToPDT, formatDate } from '@/utils/dates';
+import { headers } from 'next/headers';
 
 interface IEditShareHousePageProps {
   params: {
@@ -25,11 +26,18 @@ interface IEditShareHousePageProps {
 const EditShareHousePage = async ({
   params: { share_house_id },
 }: IEditShareHousePageProps) => {
-  const res = await api.sharehouse[':shareHouseId'].$get({
-    param: {
-      shareHouseId: share_house_id,
+  const res = await api.sharehouse[':shareHouseId'].$get(
+    {
+      param: {
+        shareHouseId: share_house_id,
+      },
     },
-  });
+    {
+      headers: {
+        cookie: headers().get('cookie') || '', // Add cookies to headers
+      },
+    },
+  );
 
   const shareHouseManagement = await res.json();
 
@@ -85,38 +93,42 @@ const EditShareHousePage = async ({
               {shareHouseManagement.categories.length}/
               {CONSTRAINTS.CATEGORY_MAX_AMOUNT}
             </div>
-            {shareHouseManagement.categories.map((category) => (
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                key={category.id}
-              >
-                <AccordionItem value={`item-${category.id}`} className="mt-2">
-                  <AccordionCategoryItem
-                    category={category}
-                    isMinAmountOfCategory={isMinAmountOfCategory}
-                  />
+            {shareHouseManagement.categories.map((category) => {
+              const taskAmount = category.tasks.length;
+              return (
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="w-full"
+                  key={category.id}
+                >
+                  <AccordionItem value={`item-${category.id}`} className="mt-2">
+                    <AccordionCategoryItem
+                      category={category}
+                      taskAmount={taskAmount}
+                      isMinAmountOfCategory={isMinAmountOfCategory}
+                    />
 
-                  <AccordionContent
-                    className={'space-y-4 bg-primary-lightest p-0'}
-                  >
-                    {category.tasks.map((task) => (
-                      <AccordionTaskItem
-                        key={task.id}
-                        id={task.id}
-                        category={{
-                          id: category.id,
-                          name: category.name,
-                        }}
-                        title={task.title}
-                        description={task.description}
-                      />
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ))}
+                    <AccordionContent
+                      className={'space-y-4 bg-primary-lightest p-0'}
+                    >
+                      {category.tasks.map((task) => (
+                        <AccordionTaskItem
+                          key={task.id}
+                          id={task.id}
+                          category={{
+                            id: category.id,
+                            name: category.name,
+                          }}
+                          title={task.title}
+                          description={task.description}
+                        />
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              );
+            })}
           </TabsContent>
 
           {/* Schedule */}

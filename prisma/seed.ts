@@ -12,6 +12,7 @@ const createLandlord = async () => {
     data: {
       email: 'hoge@tascurator.com',
       password: hashedPassword,
+      emailVerified: new Date(),
     },
   });
 };

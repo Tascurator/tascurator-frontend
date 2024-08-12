@@ -2,19 +2,25 @@
 
 import { useEffect, useState } from 'react';
 
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema, TSignupSchema } from '@/constants/schema';
+import { signup, resendVerificationEmailByEmail } from '@/actions/signup';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/formMessage';
 
 import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '../ui/loadingSpinner';
+import { LoadingSpinner } from '@/components/ui/loadingSpinner';
+import { toast } from '@/components/ui/use-toast';
 
 import { ValidationListItem } from '@/components/ui/ValidationListItem';
+import { EmailSentDrawer } from '../ui/drawers/auth/AuthenticationDrawer';
+import { isWithin30MinutesOfEmailSent } from '@/utils/validate-expiration-time';
+import { ITokenData } from '@/types/commons';
 import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
+import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
+const { EMAIL_NOT_VERIFIED_COOLDOWN, UNKNOWN_ERROR } = TOAST_ERROR_MESSAGES;
 import { CONSTRAINTS } from '@/constants/constraints';
-
 const {
   PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
@@ -23,32 +29,33 @@ const {
   PASSWORD_MIN_SPECIAL_CHARACTERS,
   PASSWORD_MIN_NUMBERS,
 } = CONSTRAINTS;
-
 const { minLength, length } = PASSWORD_CONSTRAINTS;
 
 const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [tokenData, setTokenData] = useState<ITokenData | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-    trigger,
-    watch,
-  } = useForm<TSignupSchema>({
+  const formControls = useForm<TSignupSchema>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: '',
       password: '',
     },
+    mode: 'onBlur',
   });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+    watch,
+  } = formControls;
 
   const password = watch('password');
 
   const [conditions, setConditions] = useState({
     length: false,
-    // minLength: false,
-    // maxLength: true,
     uppercase: false,
     lowercase: false,
     specialChar: false,
@@ -97,72 +104,105 @@ const Form = () => {
     },
   ];
 
-  // TODO: Implement the proper sign up logic
   const onSubmit = async (formData: TSignupSchema) => {
-    setIsLoading(true);
-
     try {
-      const isValid = await trigger(['email', 'password']);
-      if (isValid) {
-        console.log('Form data:', formData);
+      /**
+       * Wait for 1 second for user experience purposes
+       */
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // await signup(formData);
-
-        setIsLoading(false);
+      // if email is already sent, resend the email
+      if (
+        emailSent &&
+        tokenData &&
+        isWithin30MinutesOfEmailSent(tokenData.expiresAt)
+      ) {
+        // if email is already sent and within 30 minutes, show error message
+        toast({
+          variant: 'destructive',
+          description: EMAIL_NOT_VERIFIED_COOLDOWN,
+        });
+      } else if (emailSent) {
+        // if email is already sent but not within 30 minutes, resend the email
+        const newTokenData = await resendVerificationEmailByEmail(
+          formData.email,
+        );
+        setTokenData(newTokenData);
+        setOpen(true);
+      } else {
+        // if email is not sent, sign up
+        const result = await signup(formData);
+        if (result?.error) {
+          toast({
+            variant: 'destructive',
+            description: result.error,
+          });
+        } else {
+          setEmailSent(true);
+          setOpen(true);
+        }
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        toast({
+          variant: 'destructive',
+          description: UNKNOWN_ERROR,
+        });
+      }
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={true} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
-      <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
-        <div className={'flex flex-col mb-4'}>
-          <Input
-            id="email"
-            type="email"
-            label="Email"
-            {...register('email')}
-            variant={errors.email ? 'destructive' : 'default'}
-            autoComplete="email"
-            required
-          />
-          {errors.email?.message && (
-            <FormMessage message={errors.email.message} />
-          )}
-        </div>
-        <div className={'flex flex-col mb-3'}>
-          <Input
-            id="password"
-            type="password"
-            label="Password"
-            {...register('password')}
-            variant={errors.password ? 'destructive' : 'default'}
-            autoComplete="new-password"
-            required
-          />
-          {errors.password?.message && (
-            <FormMessage message={errors.password.message} />
-          )}
-        </div>
-        <ul className={'mb-8'}>
-          {ValidationListItems.map((item, index) => (
-            <ValidationListItem
-              key={index}
-              condition={item.condition}
-              constraint={item.constraint}
+      <FormProvider {...formControls}>
+        <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
+          <div className={'flex flex-col mb-4'}>
+            <Input
+              id="email"
+              type="email"
+              label="Email"
+              {...register('email')}
+              variant={errors.email ? 'destructive' : 'default'}
+              autoComplete="email"
+              required
+              disabled={emailSent}
             />
-          ))}
-        </ul>
-        <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
-          Sign up
-        </Button>
-      </form>
+            {errors.email?.message && (
+              <FormMessage message={errors.email.message} />
+            )}
+          </div>
+          <div className={'flex flex-col mb-3'}>
+            <Input
+              id="password"
+              type="password"
+              label="Password"
+              {...register('password')}
+              variant={errors.password ? 'destructive' : 'default'}
+              autoComplete="new-password"
+              required
+              disabled={emailSent}
+            />
+            {errors.password?.message && (
+              <FormMessage message={errors.password.message} />
+            )}
+          </div>
+          <ul className={'mb-8'}>
+            {ValidationListItems.map((item, index) => (
+              <ValidationListItem
+                key={index}
+                condition={item.condition}
+                constraint={item.constraint}
+              />
+            ))}
+          </ul>
+          <Button type="submit" disabled={!isValid} className={'mx-auto mb-4'}>
+            Sign up
+          </Button>
+          <EmailSentDrawer open={open} setOpen={setOpen} onSubmit={onSubmit} />
+        </form>
+      </FormProvider>
     </>
   );
 };

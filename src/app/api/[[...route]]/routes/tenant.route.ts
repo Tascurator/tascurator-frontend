@@ -4,14 +4,13 @@ import { Tenant } from '@prisma/client';
 import { tenantInvitationSchema } from '@/constants/schema';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
-import { auth } from '@/lib/auth';
 import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { AssignedData } from '@/services/AssignedData';
-import { IAssignedData } from '@/types/server';
+import { THonoEnv } from '@/types/hono-env';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Updates the tenant name by its ID
@@ -22,45 +21,21 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema.pick({ name: true })),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const tenantId = c.req.param('tenantId');
         const data = c.req.valid('json');
 
-        const tenant = await prisma.tenant.findUnique({
-          where: {
-            id: tenantId,
-          },
-          include: {
-            tenantPlaceholders: {
-              include: {
-                rotationAssignment: {
-                  include: {
-                    shareHouse: true,
-                  },
-                },
-              },
-            },
-          },
-        });
+        const doesTenantExist = c.var.getTenantById(tenantId);
 
-        if (!tenant)
+        /**
+         * Ensure only the associated landlord can update the tenant
+         */
+        if (!doesTenantExist)
           return c.json(
             { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
             404,
           );
 
-        const shareHouseId =
-          tenant.tenantPlaceholders[0]?.rotationAssignment.shareHouse.id;
+        const { shareHouseId, tenant } = doesTenantExist;
 
         if (data.name === tenant.name)
           return c.json(
@@ -69,20 +44,9 @@ const app = new Hono()
           );
 
         // Check if the sharehouse has a tenant with the same name
-        const tenantWithSameName = await prisma.tenant.findFirst({
-          where: {
-            name: data.name,
-            tenantPlaceholders: {
-              some: {
-                rotationAssignment: {
-                  shareHouseId: shareHouseId,
-                },
-              },
-            },
-          },
-        });
+        const tenants = c.var.getTenantsBySharehouseId(shareHouseId);
 
-        if (tenantWithSameName)
+        if (tenants.some((t) => t.name === data.name))
           return c.json(
             {
               error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
@@ -129,50 +93,38 @@ const app = new Hono()
     try {
       const tenantId = c.req.param('tenantId');
 
+      /**
+       * Get the tenant by its ID
+       */
+      const doesTenantExist = c.var.getTenantById(tenantId);
+
+      /**
+       * Return 404 if the tenant is not found
+       */
+      if (!doesTenantExist) {
+        return c.json(
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('tenant') },
+          404,
+        );
+      }
+
+      /**
+       * Get the share house that associated with the tenant
+       */
+      const shareHouse = c.var.getSharehouseById(doesTenantExist.shareHouseId);
+
+      /**
+       * Return 500 if the share house is not found
+       */
+      if (!shareHouse) {
+        return c.json({
+          error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house'),
+        });
+      }
+
+      const { assignmentSheet, RotationAssignment } = shareHouse;
+
       const result = await prisma.$transaction(async (prisma) => {
-        /**
-         * Get the tenant by its ID
-         */
-        const tenant = await prisma.tenant.findUnique({
-          where: {
-            id: tenantId,
-          },
-        });
-
-        /**
-         * Throw an error if the tenant is not found
-         */
-        if (!tenant) {
-          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('tenant'));
-        }
-
-        /**
-         * Get the tenant placeholder by the tenant ID
-         */
-        const assignmentSheet = await prisma.tenantPlaceholder.findFirst({
-          where: {
-            tenantId: tenantId,
-          },
-          include: {
-            rotationAssignment: {
-              include: {
-                shareHouse: {
-                  include: {
-                    assignmentSheet: true,
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        /**
-         * Throw an error if the tenant placeholder is not found
-         */
-        if (!assignmentSheet) {
-          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet'));
-        }
-
         /**
          * Delete the tenant by its tenant ID
          */
@@ -186,10 +138,9 @@ const app = new Hono()
          * Instantiate the AssignedData class with the assigned data
          */
         const assignedData = new AssignedData(
-          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet
-            .assignedData as unknown as IAssignedData,
-          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet.startDate,
-          assignmentSheet.rotationAssignment.shareHouse.assignmentSheet.endDate,
+          assignmentSheet.assignedData,
+          assignmentSheet.startDate,
+          assignmentSheet.endDate,
         );
 
         /**
@@ -203,7 +154,7 @@ const app = new Hono()
         const currentTenantPlaceholders =
           await prisma.tenantPlaceholder.findMany({
             where: {
-              rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+              rotationAssignmentId: RotationAssignment.id,
             },
             orderBy: {
               index: 'asc',
@@ -289,7 +240,7 @@ const app = new Hono()
             await prisma.tenantPlaceholder.update({
               where: {
                 rotationAssignmentId_index: {
-                  rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+                  rotationAssignmentId: RotationAssignment.id,
                   index: currentTenantPlaceholders[i].index,
                 },
               },
@@ -305,7 +256,7 @@ const app = new Hono()
               await prisma.tenantPlaceholder.update({
                 where: {
                   rotationAssignmentId_index: {
-                    rotationAssignmentId: assignmentSheet.rotationAssignmentId,
+                    rotationAssignmentId: RotationAssignment.id,
                     index: newTenant.index,
                   },
                 },
@@ -344,35 +295,14 @@ const app = new Hono()
     zValidator('json', tenantInvitationSchema),
     async (c) => {
       try {
-        const session = await auth();
-
-        if (!session) {
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.AUTH_REQUIRED,
-            },
-            401,
-          );
-        }
-
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
         const sanitizedEmail = data.email.toLowerCase();
-        const existingTenant = await prisma.tenant.findFirst({
-          where: {
-            email: sanitizedEmail,
-            tenantPlaceholders: {
-              some: {
-                rotationAssignment: {
-                  shareHouseId: shareHouseId,
-                },
-              },
-            },
-          },
-        });
 
-        if (existingTenant)
+        const tenants = c.var.getTenantsBySharehouseId(shareHouseId);
+
+        if (tenants.some((tenant) => tenant.email === sanitizedEmail))
           return c.json(
             {
               error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
@@ -384,48 +314,16 @@ const app = new Hono()
             400,
           );
 
-        const sharehouse = await prisma.shareHouse.findUnique({
-          where: {
-            id: shareHouseId,
-          },
-          include: {
-            RotationAssignment: {
-              include: {
-                tenantPlaceholders: {
-                  include: {
-                    tenant: true,
-                  },
-                  orderBy: {
-                    index: 'asc',
-                  },
-                },
-              },
-            },
-            assignmentSheet: true,
-          },
-        });
+        const sharehouse = c.var.getSharehouseById(shareHouseId);
 
         if (!sharehouse) {
-          return c.json({ error: 'ShareHouse not found' }, 404);
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            404,
+          );
         }
 
         const { RotationAssignment, assignmentSheet } = sharehouse;
-
-        if (!RotationAssignment || !assignmentSheet)
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.NOT_FOUND(
-                'share house, rotationAssignment, or assignmentSheet',
-              ),
-            },
-            404,
-          );
-
-        const tenants = RotationAssignment.tenantPlaceholders.map(
-          (tenantPlaceholder) => {
-            return tenantPlaceholder.tenant;
-          },
-        );
 
         if (tenants.length >= CONSTRAINTS.TENANT_MAX_AMOUNT) {
           return c.json(
@@ -440,18 +338,7 @@ const app = new Hono()
         }
 
         // Check if the sharehouse has a tenant with the same name
-        const tenantWithSameName = await prisma.tenant.findFirst({
-          where: {
-            name: data.name,
-            tenantPlaceholders: {
-              some: {
-                rotationAssignment: {
-                  shareHouseId: shareHouseId,
-                },
-              },
-            },
-          },
-        });
+        const tenantWithSameName = tenants.find((t) => t.name === data.name);
 
         if (tenantWithSameName)
           return c.json(
