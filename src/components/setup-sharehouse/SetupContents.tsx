@@ -24,7 +24,7 @@ export const SetupContents = ({
   onOpen,
 }: ISetupContentsProps) => {
   return (
-    <div className="flex-1 flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between min-h-[calc(100dvh-56px)]">
       <div>
         <h1 className="my-4">{title}</h1>
         <Stepper currentStep={currentStep} maxSteps={maxSteps} />
