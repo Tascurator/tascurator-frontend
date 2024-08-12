@@ -24,7 +24,7 @@ const app = new Hono()
     const tenantId = c.req.param('tenantId');
 
     try {
-      const assignmentSheet = await prisma.assignmentSheet.findUnique({
+      const doesAssignmentSheetExist = await prisma.assignmentSheet.findUnique({
         where: {
           id: assignmentSheetId,
         },
@@ -63,9 +63,9 @@ const app = new Hono()
        * Return an internal server error if the related resources are not found.
        */
       if (
-        !assignmentSheet ||
-        !assignmentSheet.ShareHouse ||
-        !assignmentSheet.ShareHouse.RotationAssignment
+        !doesAssignmentSheetExist ||
+        !doesAssignmentSheetExist.ShareHouse ||
+        !doesAssignmentSheetExist.ShareHouse.RotationAssignment
       ) {
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
@@ -77,7 +77,7 @@ const app = new Hono()
        * Check if the tenant exists in the share house.
        */
       if (
-        !assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders.some(
+        !doesAssignmentSheetExist.ShareHouse.RotationAssignment.tenantPlaceholders.some(
           (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
         )
       ) {
@@ -91,23 +91,26 @@ const app = new Hono()
        * Recreate the AssignedData for the share house if the current date is after the end date of the current AssignedData.
        */
       const sanitizedSharehouse: TSanitizedPrismaShareHouse = {
-        ...assignmentSheet.ShareHouse,
+        ...doesAssignmentSheetExist.ShareHouse,
         assignmentSheet: {
-          ...assignmentSheet,
+          ...doesAssignmentSheetExist,
           assignedData:
-            assignmentSheet.assignedData as unknown as IAssignedData,
+            doesAssignmentSheetExist.assignedData as unknown as IAssignedData,
         },
-        RotationAssignment: assignmentSheet.ShareHouse.RotationAssignment,
+        RotationAssignment:
+          doesAssignmentSheetExist.ShareHouse.RotationAssignment,
       };
-      await automaticRotation([sanitizedSharehouse]);
+      await automaticRotation(sanitizedSharehouse);
+
+      const { assignmentSheet, RotationAssignment } = sanitizedSharehouse;
 
       /**
        * Create an AssignedData instance from the assignedData in the assignmentSheet.
        */
       const assignedData = new AssignedData(
-        assignmentSheet.assignedData as unknown as IAssignedData,
-        assignmentSheet.startDate,
-        assignmentSheet.endDate,
+        assignmentSheet.assignedData,
+        doesAssignmentSheetExist.startDate,
+        doesAssignmentSheetExist.endDate,
       );
 
       const rotationScheduleForecast: TRotationScheduleForecast = {
@@ -162,9 +165,9 @@ const app = new Hono()
         nextAssignedData = (
           nextAssignedData ?? assignedData
         ).createNextRotation(
-          assignmentSheet.ShareHouse.RotationAssignment.categories,
-          assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders,
-          assignmentSheet.ShareHouse.RotationAssignment.rotationCycle,
+          RotationAssignment.categories,
+          RotationAssignment.tenantPlaceholders,
+          RotationAssignment.rotationCycle,
         );
 
         const nextAssignedCategories =

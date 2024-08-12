@@ -16,9 +16,11 @@ import { Prisma } from '@prisma/client';
  * @param sharehouses - The share houses to rotate
  */
 export const automaticRotation = async (
-  sharehouses: TSanitizedPrismaShareHouse[],
+  sharehouses: TSanitizedPrismaShareHouse | TSanitizedPrismaShareHouse[],
 ) => {
-  for (const sharehouse of sharehouses) {
+  for (const sharehouse of ([] as TSanitizedPrismaShareHouse[]).concat(
+    sharehouses,
+  )) {
     const today = getToday();
     const endDate = convertToPDT(sharehouse.assignmentSheet.endDate);
 
@@ -79,7 +81,15 @@ export const automaticRotation = async (
       });
 
       /**
-       * Update each tenant with the extra assigned count
+       * Apply the new assignment sheet data to the share house
+       */
+      sharehouse.assignmentSheet.startDate = assignedData.getStartDate();
+      sharehouse.assignmentSheet.endDate = assignedData.getEndDate();
+      sharehouse.assignmentSheet.assignedData = assignedData.getAssignedData();
+
+      /**
+       * Update each tenant with the extra assigned count.
+       * Also, (automatically) apply the updated extra assigned count to the tenant placeholders in the share house.
        */
       for (const tenantPlaceholder of tenantPlaceholders) {
         const { tenant, tenantId } = tenantPlaceholder;
