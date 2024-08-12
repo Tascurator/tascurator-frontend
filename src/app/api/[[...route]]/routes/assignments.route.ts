@@ -4,9 +4,15 @@ import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { AssignedData } from '@/services/AssignedData';
 import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
 import { addDays } from '@/utils/dates';
+import {
+  IAssignedData,
+  TRotationScheduleForecast,
+  TSanitizedPrismaShareHouse,
+} from '@/types/server';
 import { zValidator } from '@hono/zod-validator';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 import { Prisma } from '@prisma/client';
+import { automaticRotation } from '@/utils/automatic-rotation';
 
 const app = new Hono()
 
@@ -26,8 +32,10 @@ const app = new Hono()
         include: {
           ShareHouse: {
             include: {
+              assignmentSheet: true,
               RotationAssignment: {
                 select: {
+                  id: true,
                   rotationCycle: true,
                   categories: {
                     include: {
@@ -79,6 +87,20 @@ const app = new Hono()
           404,
         );
       }
+
+      /**
+       * Recreate the AssignedData for the share house if the current date is after the end date of the current AssignedData.
+       */
+      const sanitizedSharehouse: TSanitizedPrismaShareHouse = {
+        ...assignmentSheet.ShareHouse,
+        assignmentSheet: {
+          ...assignmentSheet,
+          assignedData:
+            assignmentSheet.assignedData as unknown as IAssignedData,
+        },
+        RotationAssignment: assignmentSheet.ShareHouse.RotationAssignment,
+      };
+      await automaticRotation([sanitizedSharehouse]);
 
       /**
        * Create an AssignedData instance from the assignedData in the assignmentSheet.
