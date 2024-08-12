@@ -164,6 +164,7 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
 /**
  * The schema for the shareHouse creation form
+ * It is used to new sharehouse
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   id: z.string().trim().uuid(),
@@ -176,11 +177,8 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
     .array(
       categoryCreationSchema.pick({ name: true }).extend({
         id: z.string().trim().uuid(),
-
         tasks: z
           .array(
-            // .array(taskCreationSchema.omit({ categoryId: true }))
-            // .array(taskCreationSchema)
             z.object({
               id: z.string().trim().uuid(),
               title: z
@@ -205,35 +203,12 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
                 ),
             }),
           )
-
           .min(TASK_MIN_AMOUNT)
-
           .max(TASK_MAX_AMOUNT),
       }),
     )
     .min(CATEGORY_MIN_AMOUNT)
     .max(CATEGORY_MAX_AMOUNT),
-  // tasks: z.array(
-  //   z.object({
-  //     id: z.string().trim().uuid(),
-  //     title: z
-  //       .string()
-  //       .min(TASK_TITLE_MIN_LENGTH, minLength('Title', TASK_TITLE_MIN_LENGTH))
-  //       .max(TASK_TITLE_MAX_LENGTH, maxLength('Title', TASK_TITLE_MAX_LENGTH)),
-  //     description: z
-  //       .string()
-  //       .refine(
-  //         taskDescriptionLengthMinValidate,
-  //         minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
-  //       )
-  //       .refine(
-  //         taskDescriptionLengthMaxValidate,
-  //         maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
-  //       ),
-  //   }),
-  // )
-  // .min(TASK_MIN_AMOUNT, `You must have at least ${TASK_MIN_AMOUNT} task(s)`)
-  // .max(TASK_MAX_AMOUNT, `You can have at most ${TASK_MAX_AMOUNT} task(s)`),
   tenants: z
     .array(
       tenantInvitationSchema.pick({ name: true, email: true }).extend({
@@ -247,6 +222,10 @@ export type TShareHouseCreationSchema = z.infer<
   typeof shareHouseCreationSchema
 >;
 
+/**
+ * The schema for the shareHouse confirmation form
+ * It is used to send the sharehouse data to the backend
+ **/
 export const shareHouseConfirmSchema = shareHouseCreationSchema
   .omit({
     id: true,
