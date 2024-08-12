@@ -7,7 +7,7 @@ export const SERVER_ERROR_MESSAGES = {
   COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
   CONSOLE_COMPLETION_ERROR: (action: string) => `Error ${action}.`,
   DELETE_NOT_ALLOWED: (entity: string) =>
-    `You cannot delete this ${entity} at least one ${entity} must remain.`,
+    `You cannot delete this ${entity}; at least one ${entity} must remain.`,
   DUPLICATE_ENTRY: (entity: string) =>
     `This ${entity} is already taken and cannot be reused.`,
   EMPTY_ARRAY: (entity: string) =>
