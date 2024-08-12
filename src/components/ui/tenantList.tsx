@@ -112,7 +112,6 @@ const TenantListItem = ({
 
         {type === 'setup' ? (
           <SetupDeleteConfirmationDrawer
-            id={tenant.id}
             idType={'tenant'}
             deleteItem={tenant.name}
             open={openDelete}
