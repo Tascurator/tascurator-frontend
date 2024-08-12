@@ -2,13 +2,12 @@ import { Hono } from 'hono';
 import prisma from '@/lib/prisma';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { AssignedData } from '@/services/AssignedData';
-import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
-import { addDays } from '@/utils/dates';
 import {
   IAssignedData,
   TRotationScheduleForecast,
   TSanitizedPrismaShareHouse,
 } from '@/types/server';
+import { addDays, convertToPDT, getToday } from '@/utils/dates';
 import { zValidator } from '@hono/zod-validator';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 import { Prisma } from '@prisma/client';
@@ -277,6 +276,18 @@ const app = new Hono()
         ) {
           return c.json(
             { error: SERVER_ERROR_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
+            400,
+          );
+        }
+
+        /**
+         * Check if the end date of the AssignedData has already passed.
+         * If the end date has passed, return an error.
+         * If not, proceed with updating the task completion status.
+         */
+        if (getToday() >= convertToPDT(assignedData.getEndDate())) {
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.PAST_END_DATE_ERROR },
             400,
           );
         }
