@@ -41,8 +41,8 @@ const EditShareHousePage = async ({
 
   const shareHouseManagement = await res.json();
 
-  // Check for error in data and display it if found
   if ('error' in shareHouseManagement) {
+    // Check for error in data and display it if found
     throw new Error(shareHouseManagement.error);
   }
 
@@ -95,6 +95,15 @@ const EditShareHousePage = async ({
             </div>
             {shareHouseManagement.categories.map((category) => {
               const taskAmount = category.tasks.length;
+              const isMaxAmountOfTask =
+                category.tasks.length === CONSTRAINTS.TASK_MAX_AMOUNT;
+              const isMinAmountOfTask =
+                category.tasks.length === CONSTRAINTS.TASK_MIN_AMOUNT;
+
+              // console.log("category", category);
+              console.log('isMaxAmountOfTask', isMaxAmountOfTask);
+              console.log('isMinAmountOfTask', isMinAmountOfTask);
+
               return (
                 <Accordion
                   type="single"
@@ -107,6 +116,7 @@ const EditShareHousePage = async ({
                       category={category}
                       taskAmount={taskAmount}
                       isMinAmountOfCategory={isMinAmountOfCategory}
+                      isMaxAmountOfTask={isMaxAmountOfTask}
                     />
 
                     <AccordionContent

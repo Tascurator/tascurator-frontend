@@ -34,6 +34,7 @@ interface IUserActionsDropdownMenuProps {
   setDrawerOpen: (value: boolean) => void;
   setUserAction: (value: TUserAction) => void;
   isMinAmountOfCategory: boolean;
+  isMaxAmountOfTask: boolean;
 }
 
 /**
@@ -46,11 +47,12 @@ const UserActionsDropdownMenu = ({
   setDrawerOpen,
   setUserAction,
   isMinAmountOfCategory,
+  isMaxAmountOfTask,
 }: IUserActionsDropdownMenuProps) => {
   const handleItemClick = (item: TUserAction) => {
     if (
       (!isMinAmountOfCategory && item === 'delete') ||
-      item === 'add' ||
+      (!isMaxAmountOfTask && item === 'add') ||
       item === 'edit'
     ) {
       setUserAction(item);
@@ -75,6 +77,10 @@ const UserActionsDropdownMenu = ({
           <DropdownMenuItemWithIcon
             icon={ADD_TASK.icon}
             onClick={() => handleItemClick('add')}
+            className={cn(
+              isMaxAmountOfTask &&
+                '[&>*]:text-slate-300 text-slate-300 cursor-not-allowed',
+            )}
           >
             {ADD_TASK.text}
           </DropdownMenuItemWithIcon>
@@ -100,6 +106,7 @@ interface IAccordionCategoryItemProps {
   taskAmount: number;
   category: ICategory;
   isMinAmountOfCategory: boolean;
+  isMaxAmountOfTask: boolean;
 }
 
 /**
@@ -112,6 +119,7 @@ export const AccordionCategoryItem = ({
   taskAmount,
   category,
   isMinAmountOfCategory,
+  isMaxAmountOfTask,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -158,6 +166,7 @@ export const AccordionCategoryItem = ({
         setDrawerOpen={setIsDrawerOpen}
         setUserAction={setUserAction}
         isMinAmountOfCategory={isMinAmountOfCategory}
+        isMaxAmountOfTask={isMaxAmountOfTask}
       />
 
       {/* Category name edit drawer */}
