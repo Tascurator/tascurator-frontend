@@ -71,7 +71,6 @@ export const SetupStepper = ({
   const handleNext = async () => {
     let isValid = false;
     if (currentStep === 1) {
-      console.log(sharehouses);
       isValid = await trigger(['name']);
       sharehouses.map((sharehouse) => {
         if (sharehouse.name === getValues().name) {
@@ -298,12 +297,6 @@ export const SetupStepper = ({
         {categories.length < 0 && (
           <p className="text-center">{categories.length}</p>
         )}
-        {/* error */}
-        {/* {errors.categories && Array.isArray(errors.categories) && errors.categories.map((categoryError, index) => (
-          categoryError.tasks.message && (
-            <p key={index} className="text-red-500 text-sm">{categoryError.tasks.message}</p>
-          )
-        ))} */}
         {isCategoryErrorArray(errors.categories) &&
           errors.categories.map(
             (categoryError, index) =>
@@ -313,11 +306,6 @@ export const SetupStepper = ({
                 </p>
               ),
           )}
-        {/* {errors.categories && Array.isArray(errors.categories) && errors.categories.map((categoryError, index) => (
-          categoryError.tasks.message && (
-            <p key={index} className="text-red-500 text-sm">{categoryError.tasks.message}</p>
-          )
-        ))} */}
       </SetupContents>
     );
   };
@@ -326,7 +314,6 @@ export const SetupStepper = ({
     setValue('tenants', [...getValues().tenants, tenant], {
       shouldValidate: true,
     });
-    console.log('getValues().tenants', getValues().tenants);
   };
 
   const updateTenantInfo = (tenantId: string, newTenant: ITenant) => {
@@ -390,6 +377,26 @@ export const SetupStepper = ({
 
   // step4
   const scheduleSetting = () => {
+    const startDate = getValues().startDate
+      ? new Date(getValues().startDate)
+      : undefined;
+
+    const setDatePicker = (date: Date) => {
+      setValue('startDate', date.toISOString(), {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    };
+
+    const setRotationCycle = (repeat: number) => {
+      setValue('rotationCycle', repeat, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    };
+
     return (
       <>
         <SetupContents
@@ -401,12 +408,11 @@ export const SetupStepper = ({
         >
           <div className="mb-6">
             <p className="mb-6">Start date</p>
-            <DatePicker
-              onChange={(date) => setValue('startDate', date.toISOString())}
-            />
+            <DatePicker onChange={setDatePicker} selectedDate={startDate} />
           </div>
           <ScheduleSetting
-            onChange={(data) => setValue('rotationCycle', data)}
+            onChange={setRotationCycle}
+            selectedOption={getValues().rotationCycle as 7 | 14}
           />
           {errors.startDate && (
             <p className="text-red-500 text-sm">{errors.startDate.message}</p>

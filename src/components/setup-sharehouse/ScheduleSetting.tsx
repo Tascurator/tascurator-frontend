@@ -4,22 +4,20 @@ import { useForm } from 'react-hook-form';
 
 interface IScheduleSettingProps {
   onChange: (repeat: number) => void;
+  selectedOption: 7 | 14;
 }
 
-export const ScheduleSetting = ({ onChange }: IScheduleSettingProps) => {
-  interface FormValues {
-    repeat: 7 | 14;
-  }
-
-  const { register, setValue, watch } = useForm<FormValues>({
+export const ScheduleSetting = ({
+  onChange,
+  selectedOption,
+}: IScheduleSettingProps) => {
+  const { register, setValue } = useForm({
     defaultValues: {
       repeat: 7,
     },
   });
 
-  const selectedOption = watch('repeat');
-
-  const handleButtonClick = (option: FormValues['repeat']) => {
+  const handleButtonClick = (option: 7 | 14) => {
     setValue('repeat', option, { shouldValidate: true });
     onChange(option);
   };

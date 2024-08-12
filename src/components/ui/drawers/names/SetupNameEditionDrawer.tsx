@@ -41,8 +41,6 @@ export const SetupNameEditionDrawer = ({
   const { getValues } = formControls;
 
   const onSubmit: SubmitHandler<TNameEditionDrawerSchema> = () => {
-    console.log('categoryData', categoryData);
-
     //duplicate check
     if (type === 'category') {
       const newName = getValues().name;

@@ -31,11 +31,17 @@ export const SetupTaskCreationDrawer = ({
   const formControls = useForm<TTaskSchema>({
     resolver: zodResolver(task ? taskUpdateSchema : taskCreationSchema),
     mode: 'onBlur',
-    defaultValues: {
-      categoryId: category?.id,
-      title: task?.title || '',
-      description: task?.description || '',
-    },
+    defaultValues: task
+      ? {
+          categoryId: category?.id,
+          title: task.title || '',
+          description: task.description || '',
+        }
+      : {
+          categoryId: category?.id,
+          title: '',
+          description: '',
+        },
   });
   const { reset } = formControls;
 
@@ -47,7 +53,9 @@ export const SetupTaskCreationDrawer = ({
       description: data.description || '',
     };
     onUpsertTask(newTask);
-    reset();
+    if (!task) {
+      reset();
+    }
     setConfirmOpen(false);
   };
 

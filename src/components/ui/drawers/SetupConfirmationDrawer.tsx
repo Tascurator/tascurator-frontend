@@ -78,11 +78,9 @@ export const SetupConfirmationDrawer = ({
       const res = await api.sharehouse.$post({ json: data });
 
       const newData = await res.json();
-      console.log(newData);
       if ('error' in newData) {
         throw new Error(newData.error);
       }
-      console.log(newData);
       setOpen(false);
       toast({
         variant: 'default',

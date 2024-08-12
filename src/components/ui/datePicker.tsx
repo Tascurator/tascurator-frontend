@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { format, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ import {
 
 interface IDatePickerProps {
   onChange: (date: Date) => void;
+  selectedDate: Date | undefined;
 }
 /**
  * The DatePicker component is used to create a date picker component.
@@ -23,10 +24,8 @@ interface IDatePickerProps {
  * <DatePicker />
  */
 
-export function DatePicker({ onChange }: IDatePickerProps) {
-  const [date, setDate] = useState<Date | undefined>(() =>
-    startOfDay(new Date()),
-  );
+export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
+  const [date, setDate] = useState<Date | undefined>(selectedDate);
 
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);

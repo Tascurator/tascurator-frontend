@@ -23,7 +23,6 @@ export const SetupTaskDeletionDrawer = ({
 
   const onSubmit = () => {
     // Please add the logic to handle the task deletion for a new share house
-    console.log(taskId);
     onDelete(taskId);
   };
 
