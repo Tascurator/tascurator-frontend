@@ -12,6 +12,7 @@ import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
 import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
 import { sharehousesLoaderMiddleware } from '@/app/api/[[...route]]/middlewares/sharehouses-loader.middleware';
 import { THonoEnv } from '@/types/hono-env';
+import { automaticRotationMiddleware } from '@/app/api/[[...route]]/middlewares/automatic-rotation.middleware';
 
 const app = new Hono<THonoEnv>();
 
@@ -28,6 +29,7 @@ const routes = app
    */
   .use(protectedRouteMiddleware)
   .use(sharehousesLoaderMiddleware)
+  .use(automaticRotationMiddleware)
   .route('/sharehouse', sharehouseRoute)
   .route('/sharehouses', sharehousesRoute)
   .route('/rotation', rotationRoute)
