@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { useToast } from '@/components/ui/use-toast';
+// import { ErrorMessage } from "@hookform/error-message"
 
 // comment out the following imports
 import {
@@ -27,6 +28,7 @@ import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
+// const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT, TASK_MAX_AMOUNT } = CONSTRAINTS;
 
 interface ISetupStepperProps {
   initialStep: number;
@@ -222,6 +224,22 @@ export const SetupStepper = ({
 
   // step2
   const categorySetting = () => {
+    interface ITaskError {
+      message: string;
+    }
+
+    interface ICategoryError {
+      tasks: ITaskError;
+    }
+
+    // interface FormErrors {
+    //   categories?: ICategoryError[];
+    // }
+
+    function isCategoryErrorArray(value: unknown): value is ICategoryError[] {
+      return Array.isArray(value) && value.every((item) => 'tasks' in item);
+    }
+
     return (
       <SetupContents
         title="Create new category and task"
@@ -281,6 +299,20 @@ export const SetupStepper = ({
           <p className="text-center">{categories.length}</p>
         )}
         {/* error */}
+        {/* {errors.categories && Array.isArray(errors.categories) && errors.categories.map((categoryError, index) => (
+          categoryError.tasks.message && (
+            <p key={index} className="text-red-500 text-sm">{categoryError.tasks.message}</p>
+          )
+        ))} */}
+        {isCategoryErrorArray(errors.categories) &&
+          errors.categories.map(
+            (categoryError, index) =>
+              categoryError?.tasks?.message && (
+                <p key={index} className="text-red-500 text-sm">
+                  {categoryError.tasks.message}
+                </p>
+              ),
+          )}
         {/* {errors.categories && Array.isArray(errors.categories) && errors.categories.map((categoryError, index) => (
           categoryError.tasks.message && (
             <p key={index} className="text-red-500 text-sm">{categoryError.tasks.message}</p>
