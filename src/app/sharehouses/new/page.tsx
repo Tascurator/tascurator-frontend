@@ -6,6 +6,7 @@ import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
 
 const NewSharehousePage = async () => {
+  // Define categories and tenants
   const categories: ICategory[] = DefaultCategory;
   const tenants: ITenant[] = [];
 
@@ -27,8 +28,6 @@ const NewSharehousePage = async () => {
 
   // Extract 'shareHouses' from data
   const { shareHouses } = data;
-
-  // console.log(shareHouses);
 
   return (
     <>

@@ -28,7 +28,6 @@ export const SetupContents = ({
       <div>
         <h1 className="my-4">{title}</h1>
         <Stepper currentStep={currentStep} maxSteps={maxSteps} />
-
         {children}
       </div>
       <div className="flex justify-center gap-4 py-4">

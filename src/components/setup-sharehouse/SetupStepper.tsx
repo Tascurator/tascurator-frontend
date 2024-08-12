@@ -16,7 +16,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { useToast } from '@/components/ui/use-toast';
-// import { ErrorMessage } from "@hookform/error-message"
 
 // comment out the following imports
 import {
@@ -28,7 +27,6 @@ import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
-// const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT, TASK_MAX_AMOUNT } = CONSTRAINTS;
 
 interface ISetupStepperProps {
   initialStep: number;
@@ -99,7 +97,7 @@ export const SetupStepper = ({
     }
   };
 
-  // step1
+  // step1: share house name
   const shareHouseNameSetting = () => {
     return (
       <SetupContents
@@ -123,6 +121,7 @@ export const SetupStepper = ({
     );
   };
 
+  // a function to add a new category
   const addCategory = (category: ICategory) => {
     const transformedCategory = {
       id: category.id,
@@ -136,10 +135,11 @@ export const SetupStepper = ({
 
     // Update the categories in the form state
     const newCategories = [...getValues().categories, transformedCategory];
+    // Update the form state with the new categories
     setValue('categories', newCategories, { shouldValidate: true });
-    console.log('getValues().categories', newCategories);
   };
 
+  // a function to add a new task
   const upsertTask = (task: ITask) => {
     const upsertTasks = getValues().categories.map((category) => {
       if (category.id === task.categoryId) {
