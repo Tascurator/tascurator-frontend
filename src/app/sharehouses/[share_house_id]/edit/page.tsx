@@ -95,14 +95,12 @@ const EditShareHousePage = async ({
             </div>
             {shareHouseManagement.categories.map((category) => {
               const taskAmount = category.tasks.length;
+              // Determine if the number of tasks has reached the maximum
               const isMaxAmountOfTask =
                 category.tasks.length === CONSTRAINTS.TASK_MAX_AMOUNT;
+              // Determine if the number of tasks has reached the minimum
               const isMinAmountOfTask =
                 category.tasks.length === CONSTRAINTS.TASK_MIN_AMOUNT;
-
-              // console.log("category", category);
-              console.log('isMaxAmountOfTask', isMaxAmountOfTask);
-              console.log('isMinAmountOfTask', isMinAmountOfTask);
 
               return (
                 <Accordion
@@ -132,6 +130,7 @@ const EditShareHousePage = async ({
                           }}
                           title={task.title}
                           description={task.description}
+                          isMinAmountOfTask={isMinAmountOfTask}
                         />
                       ))}
                     </AccordionContent>
