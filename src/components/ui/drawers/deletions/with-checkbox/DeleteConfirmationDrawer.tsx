@@ -98,10 +98,12 @@ export const DeleteConfirmationDrawer = ({
         variant: 'default',
         description: TOAST_TEXTS.success,
       });
-      revalidatePage(path);
-      setOpen(false);
       if (idType === 'sharehouse') {
         router.push('/sharehouses');
+        router.refresh();
+      } else {
+        revalidatePage(path);
+        setOpen(false);
       }
     } catch (error) {
       if (error instanceof Error) {
