@@ -8,7 +8,7 @@ import { CategoryCreationDrawerContent } from '@/components/ui/drawers/categorie
 import { useState } from 'react';
 import { ICategory } from '@/types/commons';
 import { useToast } from '@/components/ui/use-toast';
-// import { randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
 
 interface ISetupCategoryCreationDrawer {
   editOpen: boolean;
@@ -22,7 +22,6 @@ interface ISetupCategoryCreationDrawer {
  * A drawer component to create a category for the setup page
  */
 export const SetupCategoryCreationDrawer = ({
-  // shareHouseId,
   editOpen,
   setEditOpen,
   addCategory,
@@ -46,11 +45,11 @@ export const SetupCategoryCreationDrawer = ({
 
   const onSubmit: SubmitHandler<TCategoryCreationSchema> = (data) => {
     const newCategory = {
-      id: self.crypto.randomUUID(),
+      id: randomUUID(),
       name: data.name,
       tasks: [
         {
-          id: self.crypto.randomUUID(),
+          id: randomUUID(),
           title: data.task.title,
           description: data.task.description,
         },

@@ -7,6 +7,7 @@ import {
   TTaskSchema,
 } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useState } from 'react';
+import { randomUUID } from 'crypto';
 
 interface ISetupTaskCreationDrawer {
   task?: ITask;
@@ -41,7 +42,7 @@ export const SetupTaskCreationDrawer = ({
 
   const onSubmit: SubmitHandler<TTaskSchema> = (data) => {
     const newTask = {
-      id: task?.id || self.crypto.randomUUID(),
+      id: task?.id || randomUUID(),
       categoryId: category.id,
       title: data.title || '',
       description: data.description || '',
