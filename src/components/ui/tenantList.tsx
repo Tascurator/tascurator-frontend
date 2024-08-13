@@ -94,38 +94,38 @@ const TenantListItem = ({
         </DropdownMenu>
 
         {type === 'setup' ? (
-          <SetupTenantInvitationDrawer
-            tenant={tenant}
-            open={openEdit}
-            setOpen={setOpenEdit}
-            editTenant={onUpdate}
-            tenantData={tenantData}
-          />
+          <>
+            <SetupTenantInvitationDrawer
+              tenant={tenant}
+              open={openEdit}
+              setOpen={setOpenEdit}
+              editTenant={onUpdate}
+              tenantData={tenantData}
+            />
+            <SetupDeleteConfirmationDrawer
+              idType={'tenant'}
+              deleteItem={tenant.name}
+              open={openDelete}
+              setOpen={setOpenDelete}
+              onDelete={() => (onDelete ? onDelete(tenant.id) : {})}
+            />
+          </>
         ) : (
-          <TenantInvitationDrawer
-            shareHouseId={shareHouseId}
-            tenant={tenant}
-            open={openEdit}
-            setOpen={setOpenEdit}
-          />
-        )}
-
-        {type === 'setup' ? (
-          <SetupDeleteConfirmationDrawer
-            idType={'tenant'}
-            deleteItem={tenant.name}
-            open={openDelete}
-            setOpen={setOpenDelete}
-            onDelete={() => (onDelete ? onDelete(tenant.id) : {})}
-          />
-        ) : (
-          <DeleteConfirmationDrawer
-            id={tenant.id}
-            idType={'tenant'}
-            deleteItem={tenant.name}
-            open={openDelete}
-            setOpen={setOpenDelete}
-          />
+          <>
+            <TenantInvitationDrawer
+              shareHouseId={shareHouseId}
+              tenant={tenant}
+              open={openEdit}
+              setOpen={setOpenEdit}
+            />
+            <DeleteConfirmationDrawer
+              id={tenant.id}
+              idType={'tenant'}
+              deleteItem={tenant.name}
+              open={openDelete}
+              setOpen={setOpenDelete}
+            />
+          </>
         )}
       </div>
     </div>
