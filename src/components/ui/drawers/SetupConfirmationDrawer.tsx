@@ -20,6 +20,7 @@ import { api } from '@/lib/hono';
 import { revalidatePage } from '@/actions/revalidation';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { convertToUTC } from '@/utils/dates';
 
 interface ISetupConfirmationDrawer {
   open: boolean;
@@ -42,7 +43,8 @@ export const SetupConfirmationDrawer = ({
 
   useEffect(() => {
     setValue('name', data.name);
-    setValue('startDate', data.startDate);
+    setValue('startDate', convertToUTC(new Date(data.startDate)).toISOString());
+    // setValue('startDate', data.startDate);
     setValue('rotationCycle', data.rotationCycle);
     setValue(
       'categories',

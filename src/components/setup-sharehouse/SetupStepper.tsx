@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/accordion';
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
+import { convertToPDT } from '@/utils/dates';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
 
@@ -35,7 +36,6 @@ interface ISetupStepperProps {
   categories: ICategory[];
   sharehouses: IShareHouse[];
 }
-
 export const SetupStepper = ({
   initialStep,
   maxSteps,
@@ -70,23 +70,30 @@ export const SetupStepper = ({
   const handleBack = () => setCurrentStep(currentStep - 1);
   const handleNext = async () => {
     let isValid = false;
-    if (currentStep === 1) {
-      isValid = await trigger(['name']);
-      sharehouses.map((sharehouse) => {
-        if (sharehouse.name === getValues().name) {
-          isValid = false;
-          toast({
-            description: 'Share house name already exists',
-            variant: 'destructive',
-          });
-        }
-      });
-    } else if (currentStep === 2) {
-      isValid = await trigger(['categories']);
-    } else if (currentStep === 3) {
-      isValid = await trigger(['tenants']);
-    } else if (currentStep === 4) {
-      isValid = await trigger(['startDate', 'rotationCycle']);
+    switch (currentStep) {
+      case 1:
+        isValid = await trigger(['name']);
+        sharehouses.map((sharehouse) => {
+          if (sharehouse.name === getValues().name) {
+            isValid = false;
+            toast({
+              description: 'Share house name already exists',
+              variant: 'destructive',
+            });
+          }
+        });
+        break;
+      case 2:
+        isValid = await trigger(['categories']);
+        break;
+      case 3:
+        isValid = await trigger(['tenants']);
+        break;
+      case 4:
+        isValid = await trigger(['startDate', 'rotationCycle']);
+        break;
+      default:
+        break;
     }
     if (isValid && currentStep === maxSteps) {
       setOpen(true);
@@ -218,7 +225,7 @@ export const SetupStepper = ({
     /**
      * Delete the task from the associated category
      */
-    const updatedCategories = getValues().categories.map((category) => {
+    const updatedCategories = categories.map((category) => {
       return {
         ...category,
         tasks: category.tasks.filter((task) => task.id !== taskId),
@@ -388,7 +395,7 @@ export const SetupStepper = ({
   const scheduleSetting = () => {
     // Get the start date from the form state
     const startDate = getValues().startDate
-      ? new Date(getValues().startDate)
+      ? convertToPDT(new Date(getValues().startDate))
       : undefined;
 
     const setDatePicker = (date: Date) => {
