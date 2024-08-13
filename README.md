@@ -1,6 +1,10 @@
-# Tascurator
+<div align="center">
+	<img src="public/logo.svg" alt="Tascurator Logo" width="120" />
+</div>
 
-Tascurator is a web application designed to streamline the management of cleaning duties in a share house.
+<br>
+
+**Tascurator** is a web application designed to streamline the management of cleaning duties in a share house.
 It offers a user-friendly platform for landlords to effortlessly create tasks with detailed instructions, invite tenants, and track progress.
 Tenants can quickly access, update, and report on their tasks, ensuring a well-organized living environment.
 
