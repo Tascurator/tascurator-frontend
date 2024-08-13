@@ -100,7 +100,9 @@ export const DeleteConfirmationDrawer = ({
       });
       revalidatePage(path);
       setOpen(false);
-      router.push('/sharehouses');
+      if (idType === 'sharehouse') {
+        router.push('/sharehouses');
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast({
