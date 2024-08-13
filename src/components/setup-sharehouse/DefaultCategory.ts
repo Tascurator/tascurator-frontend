@@ -1,57 +1,75 @@
 import { ICategory } from '@/types/commons';
+import { randomUUID } from 'crypto';
 
 export const DefaultCategory: ICategory[] = [
   {
-    id: 'bde250a4-116a-4641-b0f0-2718abf34bc5',
+    id: randomUUID(),
     name: 'Kitchen',
     tasks: [
       {
-        id: 'b54f7377-b6c3-44df-8eeb-93fe10516c24',
-        title: 'Mop the floor',
+        id: randomUUID(),
+        title: 'Clean the sink',
         description:
-          'Your task is to mop the floor. You can use the mop in the storage room.',
+          '<li><ul>Scrub the sink with a sponge and bathroom cleaner. <u>Rinse thoroughly.</u></ul></li>',
       },
       {
-        id: 'c3d177b8-b65e-454d-b65f-830c451a70ce',
-        title: 'Clean the oven',
+        id: randomUUID(),
+        title: 'Clean the countertops',
         description:
-          'Your task is to clean the oven. Make sure to use the oven cleaner and a sponge.',
+          '<li><ul>Wipe down the countertops with a cloth and a mild cleaner.</ul></li>',
+      },
+      {
+        id: randomUUID(),
+        title: 'Clean the stovetop',
+        description:
+          '<li><ul>Remove the grates and clean them with a sponge and soapy water.</ul></li>',
       },
     ],
   },
   {
-    id: '5acfa1d1-1c52-4b49-b03d-c9781302bb39',
+    id: randomUUID(),
+    name: 'Living Room',
+    tasks: [
+      {
+        id: randomUUID(),
+        title: 'Vacuum the floor',
+        description: '<li><ul>Move furniture to vacuum underneath.</ul></li>',
+      },
+      {
+        id: randomUUID(),
+        title: 'Dust the furniture',
+        description:
+          '<li><ul>Use a microfiber cloth to dust the furniture.</ul></li>',
+      },
+      {
+        id: randomUUID(),
+        title: 'Clean the windows',
+        description:
+          '<li><ul>Wipe down the windows with a cloth and window cleaner.</ul></li>',
+      },
+    ],
+  },
+  {
+    id: randomUUID(),
     name: 'Bathroom',
     tasks: [
       {
-        id: '5c438fc9-e2d6-470a-bcae-53cbbff783fe',
-        title: 'Toilet',
+        id: randomUUID(),
+        title: 'Clean the toilet',
         description:
-          'Your task is to clean the toilet. Make sure to use the toilet brush and disinfectant.',
+          '<li><ul>Scrub the toilet bowl with a toilet brush and toilet cleaner.</ul></li>',
       },
       {
-        id: '504c0f05-297c-4118-9842-b6c81633a0dd',
-        title: 'Scrub the tiles',
+        id: randomUUID(),
+        title: 'Clean the shower',
         description:
-          'Your task is to scrub the shower tiles. Use the tile cleaner and a brush to remove any soap scum and mildew.',
-      },
-    ],
-  },
-  {
-    id: '7a487d0e-e843-4478-984f-b1cb213a0647',
-    name: 'Liging Room',
-    tasks: [
-      {
-        id: '8747433e-afd4-4e41-9ae7-8847d2a5949d',
-        title: 'Vacuum the carpet',
-        description:
-          'Your task is to vacuum the carpet. Make sure to move the furniture and get into the corners.',
+          '<li><ul>Scrub the shower walls with a sponge and bathroom cleaner.</ul></li>',
       },
       {
-        id: 'b353c7f9-a364-4ec8-8231-4ae276301c46',
-        title: 'Dust the shelves',
+        id: randomUUID(),
+        title: 'Clean the sink',
         description:
-          'Your task is to dust the shelves. Use a microfiber cloth to remove any dust and dirt.',
+          '<li><ul>Scrub the sink with a sponge and bathroom cleaner. <u>Rinse thoroughly.</u></ul></li>',
       },
     ],
   },

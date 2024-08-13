@@ -25,7 +25,6 @@ import {
 } from '@/components/ui/accordion';
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
-import { convertToPDT } from '@/utils/dates';
 
 const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
 
@@ -306,9 +305,6 @@ export const SetupStepper = ({
         {errors.categories && (
           <p className="text-red-500 text-sm">{errors.categories.message}</p>
         )}
-        {categories.length < 0 && (
-          <p className="text-center">{categories.length}</p>
-        )}
         {isCategoryErrorArray(errors.categories) &&
           errors.categories.map(
             (categoryError, index) =>
@@ -395,7 +391,7 @@ export const SetupStepper = ({
   const scheduleSetting = () => {
     // Get the start date from the form state
     const startDate = getValues().startDate
-      ? convertToPDT(new Date(getValues().startDate))
+      ? new Date(getValues().startDate)
       : undefined;
 
     const setDatePicker = (date: Date) => {

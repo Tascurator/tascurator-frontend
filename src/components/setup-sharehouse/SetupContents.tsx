@@ -10,7 +10,6 @@ interface ISetupContentsProps {
   onBack?: () => void;
   children?: ReactNode;
   isNextDisabled?: boolean;
-  onOpen?: () => void;
 }
 
 export const SetupContents = ({
@@ -21,7 +20,6 @@ export const SetupContents = ({
   onBack,
   children,
   isNextDisabled,
-  onOpen,
 }: ISetupContentsProps) => {
   return (
     <div className="flex flex-col justify-between min-h-[calc(100dvh-56px)]">
@@ -36,15 +34,9 @@ export const SetupContents = ({
             Back
           </Button>
         )}
-        {onOpen ? (
-          <Button onClick={onOpen} disabled={isNextDisabled}>
-            Next
-          </Button>
-        ) : (
-          <Button onClick={onNext} disabled={isNextDisabled}>
-            Next
-          </Button>
-        )}
+        <Button onClick={onNext} disabled={isNextDisabled}>
+          Next
+        </Button>
       </div>
     </div>
   );
