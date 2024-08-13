@@ -122,11 +122,7 @@ const app = new Hono<THonoEnv>()
         if (c.get('sharehouses').find((s) => s.name === data.name))
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'share house',
-                'landlord',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
             },
             400,
           );
@@ -254,11 +250,7 @@ const app = new Hono<THonoEnv>()
       if (shareHouses.find((s) => s.name === data.name))
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'share house',
-              'landlord',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
           },
           400,
         );
@@ -282,11 +274,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedCategoryName)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'category',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('category name'),
           },
           400,
         );
@@ -299,11 +287,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedTenantName)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'tenant',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant name'),
           },
           400,
         );
@@ -315,11 +299,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedTenantEmail)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'email',
-              'tenant',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant email'),
           },
           400,
         );
