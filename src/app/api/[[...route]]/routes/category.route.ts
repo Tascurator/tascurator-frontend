@@ -49,11 +49,7 @@ const app = new Hono<THonoEnv>()
         if (categoryWithSameName)
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'category',
-                'share house',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('category name'),
             },
             400,
           );
@@ -188,11 +184,7 @@ const app = new Hono<THonoEnv>()
         if (categoryWithSameName)
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'category',
-                'share house',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('category name'),
             },
             400,
           );

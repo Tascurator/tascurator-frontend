@@ -49,11 +49,7 @@ const app = new Hono<THonoEnv>()
         if (tenants.some((t) => t.name === data.name))
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'tenant',
-                'share house',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant name'),
             },
             400,
           );
@@ -305,11 +301,7 @@ const app = new Hono<THonoEnv>()
         if (tenants.some((tenant) => tenant.email === sanitizedEmail))
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'email',
-                'tenant',
-                'share house',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant email'),
             },
             400,
           );
@@ -343,11 +335,7 @@ const app = new Hono<THonoEnv>()
         if (tenantWithSameName)
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'tenant',
-                'share house',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant name'),
             },
             400,
           );
