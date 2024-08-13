@@ -1,10 +1,10 @@
 import { RotationCycle } from '@/types/commons';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
-import { TPrismaShareHouse, IAssignedData } from '@/types/server';
+import { IAssignedData, TShareHouseAssignmentData } from '@/types/server';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('AssignedData class', () => {
-  let sharehouse: TPrismaShareHouse;
+  let sharehouse: TShareHouseAssignmentData;
   let initialAssignedData: InitialAssignedData;
 
   beforeEach(() => {

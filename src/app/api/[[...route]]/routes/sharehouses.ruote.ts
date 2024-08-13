@@ -1,78 +1,48 @@
 import { Hono } from 'hono';
 
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import prisma from '@/lib/prisma';
-import { auth } from '@/lib/auth';
-import type { IAssignedData } from '@/types/server';
+import { THonoEnv } from '@/types/hono-env';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Retrieve all share houses with their progress rate
    * @route GET /api/sharehouses
    */
-  .get('/', async (c) => {
+  .get('/', (c) => {
     try {
-      const session = await auth();
+      const shareHouses = c.get('sharehouses');
 
-      if (!session)
-        return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
+      const shareHousesWithProgress = shareHouses.map((shareHouse) => {
+        const assignedData = shareHouse.assignmentSheet.assignedData;
 
-      const shareHouses = await prisma.landlord.findUnique({
-        where: { id: session.user.id },
-        include: {
-          shareHouses: {
-            include: {
-              assignmentSheet: {
-                select: {
-                  assignedData: true,
-                },
-              },
-            },
-            orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-          },
-        },
-      });
+        const isCompletedValues: boolean[] = [];
 
-      if (!shareHouses)
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-          500,
-        );
-
-      const shareHousesWithProgress = shareHouses.shareHouses.map(
-        (shareHouse) => {
-          const assignedData = shareHouse.assignmentSheet
-            .assignedData as unknown as IAssignedData;
-
-          const isCompletedValues: boolean[] = [];
-
-          if (assignedData) {
-            for (const assignment of assignedData.assignments) {
-              if (assignment.tasks) {
-                for (const task of assignment.tasks) {
-                  isCompletedValues.push(task.isCompleted);
-                }
+        if (assignedData) {
+          for (const assignment of assignedData.assignments) {
+            if (assignment.tasks) {
+              for (const task of assignment.tasks) {
+                isCompletedValues.push(task.isCompleted);
               }
             }
           }
+        }
 
-          const completedValues = isCompletedValues.filter(
-            (value) => value === true,
-          );
-          const progressRate = Number(
-            ((completedValues.length / isCompletedValues.length) * 100).toFixed(
-              1,
-            ),
-          );
+        const completedValues = isCompletedValues.filter(
+          (value) => value === true,
+        );
+        const progressRate = Number(
+          ((completedValues.length / isCompletedValues.length) * 100).toFixed(
+            1,
+          ),
+        );
 
-          return {
-            id: shareHouse.id,
-            name: shareHouse.name,
-            progress: Number.isNaN(progressRate) ? 0 : progressRate,
-          };
-        },
-      );
+        return {
+          id: shareHouse.id,
+          name: shareHouse.name,
+          progress: Number.isNaN(progressRate) ? 0 : progressRate,
+        };
+      });
 
       return c.json({ shareHouses: shareHousesWithProgress });
     } catch (error) {

@@ -15,6 +15,7 @@ import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { EditTabsManager } from '@/components/edit/EditTabsManager';
 import { convertToPDT, formatDate } from '@/utils/dates';
+import { headers } from 'next/headers';
 
 interface IEditShareHousePageProps {
   params: {
@@ -25,11 +26,18 @@ interface IEditShareHousePageProps {
 const EditShareHousePage = async ({
   params: { share_house_id },
 }: IEditShareHousePageProps) => {
-  const res = await api.sharehouse[':shareHouseId'].$get({
-    param: {
-      shareHouseId: share_house_id,
+  const res = await api.sharehouse[':shareHouseId'].$get(
+    {
+      param: {
+        shareHouseId: share_house_id,
+      },
     },
-  });
+    {
+      headers: {
+        cookie: headers().get('cookie') || '', // Add cookies to headers
+      },
+    },
+  );
 
   const shareHouseManagement = await res.json();
 

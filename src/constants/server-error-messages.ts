@@ -7,9 +7,9 @@ export const SERVER_ERROR_MESSAGES = {
   COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
   CONSOLE_COMPLETION_ERROR: (action: string) => `Error ${action}.`,
   DELETE_NOT_ALLOWED: (entity: string) =>
-    `You are not allowed to delete this ${entity}.`,
-  DUPLICATE_ENTRY: (field: string, entity: string, context: string) =>
-    `A ${entity} with the same ${field} already exists in the ${context}.`,
+    `You cannot delete this ${entity}; at least one ${entity} must remain.`,
+  DUPLICATE_ENTRY: (entity: string) =>
+    `This ${entity} is already taken and cannot be reused.`,
   EMPTY_ARRAY: (entity: string) =>
     `The provided ${entity} array is empty. Please include at least one ${entity}.`,
   INTERNAL_SERVER_ERROR:
