@@ -166,6 +166,7 @@ export const SetupStepper = ({
     setValue('categories', upsertTasks, { shouldValidate: true });
   };
 
+  // a function to update the category name
   const updateCategoryName = (categoryId: string, newName: string) => {
     const newCategories = getValues().categories.map((category) =>
       category.id === categoryId ? { ...category, name: newName } : category,
@@ -173,22 +174,28 @@ export const SetupStepper = ({
     setValue('categories', newCategories, { shouldValidate: true });
   };
 
+  // a function to delete a category
   const deleteCategory = (categoryId: string) => {
     if (getValues().categories.length <= CONSTRAINTS.CATEGORY_MIN_AMOUNT)
       return;
 
+    // Remove the category from the form state
     const newCategories = getValues().categories.filter(
       (category) => category.id !== categoryId,
     );
     setValue('categories', newCategories, { shouldValidate: true });
   };
 
+  // a function to delete a task
   const deleteTask = (taskId: string) => {
+    // Get the categories from the form state
     const categories = getValues().categories;
+    // Find the category that contains the task
     const category = categories.find(
+      // Check if the task exists in the category
       (c) => c.tasks.findIndex((t) => t.id === taskId) !== -1,
     );
-
+    // Return if the category is not found
     if (!category) return;
 
     /**
@@ -221,20 +228,18 @@ export const SetupStepper = ({
     setValue('categories', updatedCategories, { shouldValidate: true });
   };
 
-  // step2
+  // step2: category and task
   const categorySetting = () => {
+    // Custom type guard to check if the error object is an array of category errors
     interface ITaskError {
       message: string;
     }
-
+    // Custom type guard to check if the error object is an array of category errors
     interface ICategoryError {
       tasks: ITaskError;
     }
 
-    // interface FormErrors {
-    //   categories?: ICategoryError[];
-    // }
-
+    // Custom type guard to check if the error object is an array of category errors
     function isCategoryErrorArray(value: unknown): value is ICategoryError[] {
       return Array.isArray(value) && value.every((item) => 'tasks' in item);
     }
@@ -310,19 +315,23 @@ export const SetupStepper = ({
     );
   };
 
+  // a function to add a new tenant
   const addTenant = (tenant: ITenant) => {
     setValue('tenants', [...getValues().tenants, tenant], {
       shouldValidate: true,
     });
   };
 
+  // a function to update the tenant
   const updateTenantInfo = (tenantId: string, newTenant: ITenant) => {
+    // Update the tenant in the form state
+    // Find the tenant to update
     const newTenants = getValues().tenants.map((tenant) =>
       tenant.id === tenantId ? newTenant : tenant,
     );
     setValue('tenants', newTenants, { shouldValidate: true });
   };
-
+  // a function to delete a tenant
   const deleteTenant = (tenantId: string) => {
     const newTenants = getValues().tenants.filter(
       (tenant) => tenant.id !== tenantId,
@@ -377,6 +386,7 @@ export const SetupStepper = ({
 
   // step4
   const scheduleSetting = () => {
+    // Get the start date from the form state
     const startDate = getValues().startDate
       ? new Date(getValues().startDate)
       : undefined;
