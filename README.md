@@ -25,18 +25,18 @@ Tenants can quickly access, update, and report on their tasks, ensuring a well-o
 
 ## Tech Stack
 
-- **Language**: TypeScript 5.5
-- **Frameworks**: Next.js 14 (App router), Hono (for API router)
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Form Handling**: React Hook Form, zod
-- **Authentication**: Auth.js
-- **Database**: Vercel Postgres
-- **ORM**: Prisma
-- **Email Services**: Resend, React Email
-- **Testing**: Vitest
-- **Linting/Formatting**: ESLint, Prettier, Commitlint
-- **Deployment**: Vercel
+- **Language**: [TypeScript 5.5](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/)
+- **Frameworks**: [Next.js 14](https://nextjs.org/blog/next-14) (with [App Router](https://nextjs.org/docs/app)), [Hono](https://hono.dev/) (for [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers))
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/), [zod](https://zod.dev/)
+- **Authentication**: [Auth.js](https://authjs.dev/)
+- **Database**: [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Email Services**: [Resend](https://resend.com/), [React Email](https://react.email/)
+- **Testing**: [Vitest](https://vitest.dev/)
+- **Linting/Formatting**: [ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [Commitlint](https://commitlint.js.org/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
 ## Getting Started for Developers
 
