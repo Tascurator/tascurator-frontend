@@ -80,7 +80,7 @@ export const RotationCycles = ({
 
   return (
     <>
-      {isSubmitting ? <LoadingSpinner isLoading={true} /> : ''}
+      {<LoadingSpinner isLoading={isSubmitting} />}
       {/* Schedule */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>Repeat</p>
