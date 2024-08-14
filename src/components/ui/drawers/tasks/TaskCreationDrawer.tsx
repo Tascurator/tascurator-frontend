@@ -159,6 +159,7 @@ export const TaskCreationDrawer = ({
     <FormProvider {...formControls}>
       <TaskCreationDrawerContent
         category={category}
+        task={task}
         editOpen={editOpen}
         setEditOpen={setEditOpen}
         confirmOpen={confirmOpen}
