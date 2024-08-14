@@ -15,6 +15,7 @@
     "typedoc": "typedoc",
     "test": "vitest",
     "coverage": "vitest run --coverage",
+    "email": "email dev",
     "prisma": "dotenv -e .env.local -- prisma studio",
     "prisma:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "prisma:push": "dotenv -e .env.local -- prisma db push",
