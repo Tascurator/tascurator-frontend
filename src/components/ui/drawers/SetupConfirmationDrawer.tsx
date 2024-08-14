@@ -44,7 +44,6 @@ export const SetupConfirmationDrawer = ({
   useEffect(() => {
     setValue('name', data.name);
     setValue('startDate', convertToUTC(new Date(data.startDate)).toISOString());
-    // setValue('startDate', data.startDate);
     setValue('rotationCycle', data.rotationCycle);
     setValue(
       'categories',
