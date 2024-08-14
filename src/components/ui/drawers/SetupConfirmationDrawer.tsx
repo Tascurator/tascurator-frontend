@@ -106,7 +106,6 @@ export const SetupConfirmationDrawer = ({
       <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* <DrawerClose /> */}
             <DrawerTitle>Confirm Sharehouse Setup</DrawerTitle>
             <DrawerDescription asChild>
               <div>
