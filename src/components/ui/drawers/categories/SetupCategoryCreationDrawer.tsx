@@ -8,7 +8,7 @@ import { CategoryCreationDrawerContent } from '@/components/ui/drawers/categorie
 import { useState } from 'react';
 import { ICategory } from '@/types/commons';
 import { useToast } from '@/components/ui/use-toast';
-import { randomUUID } from 'crypto';
+import { generateRandomUUID } from '@/utils/genarate-uuid';
 
 interface ISetupCategoryCreationDrawer {
   editOpen: boolean;
@@ -45,11 +45,11 @@ export const SetupCategoryCreationDrawer = ({
 
   const onSubmit: SubmitHandler<TCategoryCreationSchema> = (data) => {
     const newCategory = {
-      id: randomUUID(),
+      id: generateRandomUUID(),
       name: data.name,
       tasks: [
         {
-          id: randomUUID(),
+          id: generateRandomUUID(),
           title: data.task.title,
           description: data.task.description,
         },

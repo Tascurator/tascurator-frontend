@@ -7,8 +7,7 @@ import {
 import { TenantInvitationDrawerContent } from '@/components/ui/drawers/tenants/TenantInvitationDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/components/ui/use-toast';
-import { randomUUID } from 'crypto';
-
+import { generateRandomUUID } from '@/utils/genarate-uuid';
 interface ISetupTenantInvitationDrawer {
   tenant?: ITenant;
   open: boolean;
@@ -40,7 +39,7 @@ export const SetupTenantInvitationDrawer = ({
 
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = (data) => {
     const newTenant: ITenant = {
-      id: randomUUID(),
+      id: generateRandomUUID(),
       ...data,
     };
 
