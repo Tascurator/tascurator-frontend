@@ -28,8 +28,11 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
   const [date, setDate] = useState<Date | undefined>(selectedDate);
 
   const handleDateChange = (date: Date | undefined) => {
+    if (!date) {
+      return;
+    }
     setDate(date);
-    onChange(date as Date);
+    onChange(date);
   };
 
   /**
