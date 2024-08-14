@@ -43,7 +43,7 @@ const Form = () => {
 
   return (
     <>
-      {<LoadingSpinner isLoading={isSubmitting} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>

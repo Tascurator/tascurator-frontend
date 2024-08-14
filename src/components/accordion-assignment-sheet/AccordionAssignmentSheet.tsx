@@ -150,7 +150,7 @@ export const AccordionAssignmentSheet = ({
 
   return (
     <>
-      {<LoadingSpinner isLoading={isSubmitting} />}
+      <LoadingSpinner isLoading={isSubmitting} />
       <Accordion
         type="single"
         collapsible
