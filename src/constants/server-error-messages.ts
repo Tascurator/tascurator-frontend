@@ -36,5 +36,5 @@ export const SERVER_ERROR_MESSAGES = {
   EXISTING_EMAIL: 'Email already in use. please log in.',
   CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
   PAST_END_DATE_ERROR:
-    'The assignment sheet is outdated. Please refresh the page.',
+    'Your task details are outdated. Please refresh the page to view the latest tasks.',
 };
