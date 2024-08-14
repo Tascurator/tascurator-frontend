@@ -39,14 +39,21 @@ export const ShareHouseManagementHead = ({
   const [openSetupTenantDrawer, setOpenSetupTenantDrawer] = useState(false);
 
   const handleClick = () => {
-    if (type === 'categories') {
-      setOpenTaskDrawer(true);
-    } else if (type === 'tenants') {
-      setOpenTenantDrawer(true);
-    } else if (type === 'setupCategories') {
-      setOpenSetupCategoryDrawer(true);
-    } else if (type === 'setupTenants') {
-      setOpenSetupTenantDrawer(true);
+    switch (type) {
+      case 'categories':
+        setOpenTaskDrawer(true);
+        break;
+      case 'tenants':
+        setOpenTenantDrawer(true);
+        break;
+      case 'setupCategories':
+        setOpenSetupCategoryDrawer(true);
+        break;
+      case 'setupTenants':
+        setOpenSetupTenantDrawer(true);
+        break;
+      default:
+        break;
     }
   };
 
