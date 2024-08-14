@@ -394,6 +394,7 @@ export const SetupStepper = ({
       : undefined;
 
     const setDatePicker = (date: Date) => {
+      if (!date) return;
       setValue('startDate', date.toISOString(), {
         shouldValidate: true,
         shouldDirty: true,

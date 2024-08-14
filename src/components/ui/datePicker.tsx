@@ -32,6 +32,20 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
     onChange(date as Date);
   };
 
+  /**
+   * todo: disable past days and after one month
+   * disable dates before yesterday and after today for now
+   */
+
+  const today = () => {
+    return new Date();
+  };
+
+  const yesterday = () => {
+    const today = new Date();
+    return new Date(today.setDate(today.getDate() - 1));
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -56,6 +70,7 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
           selected={date}
           onSelect={handleDateChange}
           initialFocus
+          disabled={(date) => date < yesterday() || date > today()}
         />
       </PopoverContent>
     </Popover>
