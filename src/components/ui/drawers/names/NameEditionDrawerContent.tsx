@@ -50,7 +50,7 @@ export const NameEditionDrawerContent = ({
 
   return (
     <CommonDrawer
-      title={`Edit ${isSharehouse ? 'share house name' : 'category name'}`}
+      title={`Edit ${isSharehouse ? 'shared house name' : 'category name'}`}
       open={open}
       setOpen={setOpen}
       onSubmit={onSubmit}

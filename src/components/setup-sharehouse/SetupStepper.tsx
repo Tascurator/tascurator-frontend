@@ -111,15 +111,15 @@ export const SetupStepper = ({
   const shareHouseNameSetting = () => {
     return (
       <SetupContents
-        title="Share house name"
+        title="Shared house name"
         currentStep={currentStep}
         maxSteps={maxSteps}
         onNext={handleNext}
       >
         <div className="mb-6">
           <Input
-            label="Share house name"
-            placeholder="Enter share house name"
+            label="Shared house name"
+            placeholder="Enter shared house name"
             onError={() => errors.name?.message}
             {...register('name')}
           />

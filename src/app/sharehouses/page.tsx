@@ -51,7 +51,7 @@ const ShareHousesPage = async () => {
 
         {shareHouses.length === 0 && (
           <div className="flex items-center justify-center">
-            No share houses
+            No shared houses
           </div>
         )}
 

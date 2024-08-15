@@ -37,7 +37,7 @@ export const DeleteConfirmationDrawerContent = ({
 
   return (
     <CommonDrawer
-      title={`Delete ${idType === 'sharehouse' ? 'share house' : idType === 'category' ? 'category' : 'tenant'}`}
+      title={`Delete ${idType === 'sharehouse' ? 'shared house' : idType === 'category' ? 'category' : 'tenant'}`}
       open={open}
       setOpen={setOpen}
       onSubmit={onSubmit}

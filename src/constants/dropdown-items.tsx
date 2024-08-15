@@ -21,15 +21,15 @@ export const DROPDOWN_ITEMS: IDropdownItems = {
   // ShareHouse
   EDIT_SHAREHOUSE_NAME: {
     icon: <SquarePenIcon />,
-    text: 'Edit share house name',
+    text: 'Edit shared house name',
   },
   MANAGE_SHAREHOUSE: {
     icon: <NotebookPen />,
-    text: 'Manage share house',
+    text: 'Manage shared house',
   },
   DELETE_SHAREHOUSE: {
     icon: <Trash2Icon />,
-    text: 'Delete share house',
+    text: 'Delete shared house',
   },
 
   // Category
