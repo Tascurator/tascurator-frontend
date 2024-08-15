@@ -70,5 +70,11 @@ export const config = {
   matcher: [
     '/((?!_next/static|api/auth|api|logo.svg|_next/image|favicon.ico).*)',
   ],
+
+  /**
+   * Allow dynamic imports for the following paths.
+   * This is due to the build error caused by React Email.
+   * @see https://github.com/resend/react-email/issues/1105#issuecomment-2067406333
+   */
   unstable_allowDynamic: ['**/node_modules/@react-email*/**/*.mjs*'],
 };
