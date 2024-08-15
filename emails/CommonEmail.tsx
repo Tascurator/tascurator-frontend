@@ -12,6 +12,7 @@ import {
   Tailwind,
   Text,
 } from '@react-email/components';
+import { getBaseUrl } from '@/utils/base-url';
 
 interface ICommonEmailProps {
   type: TEmailType;
@@ -49,7 +50,7 @@ const CommonEmail = ({ type, callbackUrl }: ICommonEmailProps) => {
           <Container>
             {/* Logo */}
             <Img
-              src={'http://localhost:3000/logo.png'}
+              src={`${getBaseUrl()}/logo.png`}
               alt={'Tascurator Logo'}
               width={100}
               height={100}
