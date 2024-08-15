@@ -40,7 +40,7 @@ export const DefaultCategory: ICategory[] = [
   },
   {
     id: generateRandomUUID(),
-    name: 'Liging Room',
+    name: 'Living Room',
     tasks: [
       {
         id: generateRandomUUID(),

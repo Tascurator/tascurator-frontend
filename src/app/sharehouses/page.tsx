@@ -29,6 +29,9 @@ const ShareHousesPage = async () => {
   // Extract 'shareHouses' from data
   const { shareHouses } = data;
 
+  // Determine if the number of share houses has reached the maximum
+  const isMaxAmount = shareHouses.length === CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT;
+
   return (
     <>
       <Header type={'HeaderItemForTop'} pageTitle={''} />
@@ -37,9 +40,13 @@ const ShareHousesPage = async () => {
           {shareHouses.length}/{CONSTRAINTS.SHAREHOUSE_MAX_AMOUNT}
         </div>
         <div className="fixed z-10 bottom-6 right-6 sm:right-[calc(50%-18.5rem)]">
-          <Link href={`/sharehouses/new`}>
-            <FloatingActionButton />
-          </Link>
+          {!isMaxAmount ? (
+            <Link href={`/sharehouses/new`}>
+              <FloatingActionButton isMaxAmount={isMaxAmount} />
+            </Link>
+          ) : (
+            <FloatingActionButton isMaxAmount={isMaxAmount} />
+          )}
         </div>
 
         {shareHouses.length === 0 && (

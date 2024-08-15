@@ -1,6 +1,7 @@
 import { generateVerificationToken } from '@/utils/tokens';
 import { sendEmail } from '@/lib/resend';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { getBaseUrl } from '@/utils/base-url';
 
 export const sendVerificationEmail = async (email: string) => {
   try {
@@ -8,7 +9,7 @@ export const sendVerificationEmail = async (email: string) => {
     await sendEmail({
       to: verificationToken.email,
       type: 'SIGNUP_CONFIRMATION',
-      callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/signup?token=${verificationToken.token}`,
+      callbackUrl: `${getBaseUrl()}/signup?token=${verificationToken.token}`,
     });
     return verificationToken;
   } catch (error) {

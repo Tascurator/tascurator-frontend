@@ -41,14 +41,26 @@ const EditShareHousePage = async ({
 
   const shareHouseManagement = await res.json();
 
-  // Check for error in data and display it if found
   if ('error' in shareHouseManagement) {
+    // Check for error in data and display it if found
     throw new Error(shareHouseManagement.error);
   }
 
   const nextRotationStartDate = convertToPDT(
     new Date(shareHouseManagement.nextRotationStartDate),
   );
+
+  // Determine if the number of categories has reached the maximum
+  const isMaxAmountOfCategory =
+    shareHouseManagement.categories.length === CONSTRAINTS.CATEGORY_MAX_AMOUNT;
+
+  // Determine if the number of categories has reached the minimum
+  const isMinAmountOfCategory =
+    shareHouseManagement.categories.length === CONSTRAINTS.CATEGORY_MIN_AMOUNT;
+
+  // Determine if the number of tenants has reached the maximum
+  const isMaxAmountOfTenant =
+    shareHouseManagement.tenants.length === CONSTRAINTS.TENANT_MAX_AMOUNT;
 
   return (
     <>
@@ -75,6 +87,7 @@ const EditShareHousePage = async ({
               shareHouseId={share_house_id}
               title={'Categories'}
               type={'categories'}
+              isMaxAmount={isMaxAmountOfCategory}
             />
             <div className="flex items-center justify-end mt-4 text-base">
               {shareHouseManagement.categories.length}/
@@ -82,6 +95,13 @@ const EditShareHousePage = async ({
             </div>
             {shareHouseManagement.categories.map((category) => {
               const taskAmount = category.tasks.length;
+              // Determine if the number of tasks has reached the maximum
+              const isMaxAmountOfTask =
+                category.tasks.length === CONSTRAINTS.TASK_MAX_AMOUNT;
+              // Determine if the number of tasks has reached the minimum
+              const isMinAmountOfTask =
+                category.tasks.length === CONSTRAINTS.TASK_MIN_AMOUNT;
+
               return (
                 <Accordion
                   type="single"
@@ -93,6 +113,8 @@ const EditShareHousePage = async ({
                     <AccordionCategoryItem
                       category={category}
                       taskAmount={taskAmount}
+                      isMinAmountOfCategory={isMinAmountOfCategory}
+                      isMaxAmountOfTask={isMaxAmountOfTask}
                     />
 
                     <AccordionContent
@@ -108,6 +130,7 @@ const EditShareHousePage = async ({
                           }}
                           title={task.title}
                           description={task.description}
+                          isMinAmountOfTask={isMinAmountOfTask}
                         />
                       ))}
                     </AccordionContent>
@@ -131,6 +154,7 @@ const EditShareHousePage = async ({
               shareHouseId={share_house_id}
               title={'Tenants'}
               type={'tenants'}
+              isMaxAmount={isMaxAmountOfTenant}
             />
             <div className="flex items-center justify-end mt-4 mb-2 text-base">
               {shareHouseManagement.tenants.length}/

@@ -15,6 +15,7 @@ import { ICategoryWithoutTasks, ITask } from '@/types/commons';
 import { removeHtmlTags } from '@/utils/task-description';
 import { SetupTaskDeletionDrawer } from '@/components/ui/drawers/deletions/without-checkbox/SetupTaskDeletionDrawer';
 import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
+import { cn } from '@/lib/utils';
 
 /**
  * Constants used in the dropdown menu.
@@ -32,6 +33,7 @@ interface IUserActionsDropdownMenuProps {
   setOpen: (value: boolean) => void;
   setDrawerOpen: (value: boolean) => void;
   setUserAction: (value: TUserAction) => void;
+  isMinAmountOfTask: boolean;
 }
 
 /**
@@ -43,10 +45,13 @@ const UserActionsDropdownMenu = ({
   setOpen,
   setDrawerOpen,
   setUserAction,
+  isMinAmountOfTask,
 }: IUserActionsDropdownMenuProps) => {
   const handleItemClick = (item: TUserAction) => {
-    setUserAction(item);
-    setDrawerOpen(true);
+    if ((!isMinAmountOfTask && item === 'delete') || item === 'edit') {
+      setUserAction(item);
+      setDrawerOpen(true);
+    }
   };
 
   return (
@@ -66,6 +71,10 @@ const UserActionsDropdownMenu = ({
           <DropdownMenuItemWithIcon
             icon={DELETE_TASK.icon}
             onClick={() => handleItemClick('delete')}
+            className={cn(
+              isMinAmountOfTask &&
+                '[&>*]:text-slate-300 text-slate-300 cursor-not-allowed',
+            )}
           >
             {DELETE_TASK.text}
           </DropdownMenuItemWithIcon>
@@ -83,6 +92,7 @@ interface IAccordionTaskItemProps {
   category: ICategoryWithoutTasks;
   onUpsertTask?: (task: ITask) => void;
   onDelete?: (taskId: string) => void;
+  isMinAmountOfTask: boolean;
 }
 
 /**
@@ -99,6 +109,7 @@ export const AccordionTaskItem = ({
   description,
   onUpsertTask,
   onDelete,
+  isMinAmountOfTask,
 }: IAccordionTaskItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -149,6 +160,7 @@ export const AccordionTaskItem = ({
         setOpen={setIsDropdownOpen}
         setDrawerOpen={setIsDrawerOpen}
         setUserAction={setUserAction}
+        isMinAmountOfTask={isMinAmountOfTask}
       />
 
       {type === 'setup' ? (
