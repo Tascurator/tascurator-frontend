@@ -118,11 +118,11 @@ export const shareHouseNameSchema = z.object({
     .trim()
     .min(
       SHAREHOUSE_NAME_MIN_LENGTH,
-      minLength('ShareHouse name', SHAREHOUSE_NAME_MIN_LENGTH),
+      minLength('Shared house name', SHAREHOUSE_NAME_MIN_LENGTH),
     )
     .max(
       SHAREHOUSE_NAME_MAX_LENGTH,
-      maxLength('ShareHouse name', SHAREHOUSE_NAME_MAX_LENGTH),
+      maxLength('Shared house name', SHAREHOUSE_NAME_MAX_LENGTH),
     ),
 });
 
