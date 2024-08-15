@@ -9,6 +9,7 @@ import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { AssignedData } from '@/services/AssignedData';
 import { THonoEnv } from '@/types/hono-env';
+import { getBaseUrl } from '@/utils/base-url';
 
 const app = new Hono<THonoEnv>()
 
@@ -390,7 +391,7 @@ const app = new Hono<THonoEnv>()
               to: sanitizedEmail,
               subject: EMAILS.TENANT_INVITATION.subject,
               html: EMAILS.TENANT_INVITATION.html(
-                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
+                `${getBaseUrl()}/${assignmentSheet.id}/${newTenant.id}`,
               ),
             });
           } catch (error) {
