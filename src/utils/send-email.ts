@@ -3,6 +3,7 @@ import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 const { SIGNUP_CONFIRMATION } = EMAILS;
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { getBaseUrl } from '@/utils/base-url';
 
 export const sendVerificationEmail = async (email: string) => {
   try {
@@ -11,7 +12,7 @@ export const sendVerificationEmail = async (email: string) => {
       to: verificationToken.email,
       subject: SIGNUP_CONFIRMATION.subject,
       html: SIGNUP_CONFIRMATION.html(
-        `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/signup?token=${verificationToken.token}`,
+        `${getBaseUrl()}/signup?token=${verificationToken.token}`,
       ),
     });
     return verificationToken;
