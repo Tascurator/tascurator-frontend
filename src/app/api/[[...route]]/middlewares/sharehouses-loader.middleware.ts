@@ -2,6 +2,7 @@ import { createMiddleware } from 'hono/factory';
 import prisma from '@/lib/prisma';
 import { THonoEnv } from '@/types/hono-env';
 import { IAssignedData, TSanitizedPrismaShareHouse } from '@/types/server';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 /**
  * Finds an object in an array by the 'id' key.
@@ -34,41 +35,56 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
     const landlordId = c.get('session').user.id;
 
     /**
-     * Retrieve all share houses that the landlord owns
+     * Retrieve all share houses that the landlord owns if they exist.
      */
-    const sharehouses = await prisma.shareHouse.findMany({
-      where: { landlordId },
+    const doesLandlordExist = await prisma.landlord.findUnique({
+      where: { id: landlordId },
       include: {
-        assignmentSheet: true,
-        RotationAssignment: {
-          select: {
-            id: true,
-            rotationCycle: true,
-            categories: {
-              include: {
-                tasks: {
+        shareHouses: {
+          include: {
+            assignmentSheet: true,
+            RotationAssignment: {
+              select: {
+                id: true,
+                rotationCycle: true,
+                categories: {
+                  include: {
+                    tasks: {
+                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                    },
+                  },
                   orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
-              },
-              orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-            },
-            tenantPlaceholders: {
-              include: {
-                tenant: true,
-              },
-              orderBy: {
-                index: 'asc',
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                  orderBy: {
+                    index: 'asc',
+                  },
+                },
               },
             },
           },
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
         },
       },
     });
 
     /**
+     * Check if the landlord exists
+     * It could be that the landlord was deleted from the database, but the session still exists in the client.
+     */
+    if (!doesLandlordExist) {
+      return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
+    }
+
+    const { shareHouses } = doesLandlordExist;
+
+    /**
      * Create a sanitized version of the share houses
      */
-    const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = sharehouses
+    const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = shareHouses
       .map(({ id, name, createdAt, assignmentSheet, RotationAssignment }) => {
         /**
          * Check if the RotationAssignment is not found
@@ -113,10 +129,30 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
       return [];
     };
 
-    const getTenantsBySharehouseId = (sharehouseId: string) => {
+    const getTenantsBySharehouseId = (
+      sharehouseId: string,
+      orderBy: 'placeholderIndex' | 'tenantCreatedAt' = 'placeholderIndex',
+    ) => {
       const sharehouse = findById(sanitizedSharehouses, sharehouseId);
       return (
         sharehouse?.RotationAssignment.tenantPlaceholders
+          .sort((a, b) => {
+            /**
+             * Sort by the index of the tenant placeholder
+             * However, this is already done by the database query so just return 0
+             */
+            if (orderBy === 'placeholderIndex') return 0;
+
+            /**
+             * Check if the tenant placeholders have a tenant
+             */
+            if (!a.tenant?.createdAt || !b.tenant?.createdAt) return 0;
+
+            /**
+             * Sort by the creation date of the tenant
+             */
+            return a.tenant.createdAt.getTime() - b.tenant.createdAt.getTime();
+          })
           .map((tenantPlaceholder) => tenantPlaceholder.tenant ?? null)
           .filter((tenant) => tenant !== null) ?? []
       );
