@@ -66,6 +66,7 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
               },
             },
           },
+          orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
         },
       },
     });
