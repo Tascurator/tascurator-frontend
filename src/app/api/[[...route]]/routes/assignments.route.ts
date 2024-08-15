@@ -2,32 +2,39 @@ import { Hono } from 'hono';
 import prisma from '@/lib/prisma';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { AssignedData } from '@/services/AssignedData';
-import { IAssignedData, TRotationScheduleForecast } from '@/types/server';
-import { addDays } from '@/utils/dates';
+import {
+  IAssignedData,
+  TRotationScheduleForecast,
+  TSanitizedPrismaShareHouse,
+} from '@/types/server';
+import { addDays, convertToPDT, getToday } from '@/utils/dates';
 import { zValidator } from '@hono/zod-validator';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 import { Prisma } from '@prisma/client';
+import { automaticRotation } from '@/utils/automatic-rotation';
 
 const app = new Hono()
 
   /**
    * Retrieves the categories assigned to a tenant for a given assignment sheet, including the categories expected to be assigned in the next 3 future rotations.
-   * @route GET /api/tenant/:assignmentSheetId/:tenantId
+   * @route GET /api/assignments/:assignmentSheetId/:tenantId
    */
   .get('/:assignmentSheetId/:tenantId', async (c) => {
     const assignmentSheetId = c.req.param('assignmentSheetId');
     const tenantId = c.req.param('tenantId');
 
     try {
-      const assignmentSheet = await prisma.assignmentSheet.findUnique({
+      const doesAssignmentSheetExist = await prisma.assignmentSheet.findUnique({
         where: {
           id: assignmentSheetId,
         },
         include: {
           ShareHouse: {
             include: {
+              assignmentSheet: true,
               RotationAssignment: {
                 select: {
+                  id: true,
                   rotationCycle: true,
                   categories: {
                     include: {
@@ -56,9 +63,9 @@ const app = new Hono()
        * Return an internal server error if the related resources are not found.
        */
       if (
-        !assignmentSheet ||
-        !assignmentSheet.ShareHouse ||
-        !assignmentSheet.ShareHouse.RotationAssignment
+        !doesAssignmentSheetExist ||
+        !doesAssignmentSheetExist.ShareHouse ||
+        !doesAssignmentSheetExist.ShareHouse.RotationAssignment
       ) {
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('assignmentSheet') },
@@ -70,7 +77,7 @@ const app = new Hono()
        * Check if the tenant exists in the share house.
        */
       if (
-        !assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders.some(
+        !doesAssignmentSheetExist.ShareHouse.RotationAssignment.tenantPlaceholders.some(
           (tenantPlaceholder) => tenantPlaceholder.tenantId === tenantId,
         )
       ) {
@@ -81,10 +88,27 @@ const app = new Hono()
       }
 
       /**
+       * Recreate the AssignedData for the share house if the current date is after the end date of the current AssignedData.
+       */
+      const sanitizedSharehouse: TSanitizedPrismaShareHouse = {
+        ...doesAssignmentSheetExist.ShareHouse,
+        assignmentSheet: {
+          ...doesAssignmentSheetExist,
+          assignedData:
+            doesAssignmentSheetExist.assignedData as unknown as IAssignedData,
+        },
+        RotationAssignment:
+          doesAssignmentSheetExist.ShareHouse.RotationAssignment,
+      };
+      await automaticRotation(sanitizedSharehouse);
+
+      const { assignmentSheet, RotationAssignment } = sanitizedSharehouse;
+
+      /**
        * Create an AssignedData instance from the assignedData in the assignmentSheet.
        */
       const assignedData = new AssignedData(
-        assignmentSheet.assignedData as unknown as IAssignedData,
+        assignmentSheet.assignedData,
         assignmentSheet.startDate,
         assignmentSheet.endDate,
       );
@@ -141,9 +165,9 @@ const app = new Hono()
         nextAssignedData = (
           nextAssignedData ?? assignedData
         ).createNextRotation(
-          assignmentSheet.ShareHouse.RotationAssignment.categories,
-          assignmentSheet.ShareHouse.RotationAssignment.tenantPlaceholders,
-          assignmentSheet.ShareHouse.RotationAssignment.rotationCycle,
+          RotationAssignment.categories,
+          RotationAssignment.tenantPlaceholders,
+          RotationAssignment.rotationCycle,
         );
 
         const nextAssignedCategories =
@@ -184,7 +208,7 @@ const app = new Hono()
 
   /**
    * Updates the tasks' completion status for a tenant for a given assignment sheet
-   * @route PATCH /api/tenant/:assignmentSheetId/:tenantId
+   * @route PATCH /api/assignments/:assignmentSheetId/:tenantId
    */
   .patch(
     '/:assignmentSheetId/:tenantId',
@@ -255,6 +279,18 @@ const app = new Hono()
         ) {
           return c.json(
             { error: SERVER_ERROR_MESSAGES.UNASSIGNED_TASK_UPDATE_ERROR },
+            400,
+          );
+        }
+
+        /**
+         * Check if the end date of the AssignedData has already passed.
+         * If the end date has passed, return an error.
+         * If not, proceed with updating the task completion status.
+         */
+        if (getToday() >= convertToPDT(assignedData.getEndDate())) {
+          return c.json(
+            { error: SERVER_ERROR_MESSAGES.PAST_END_DATE_ERROR },
             400,
           );
         }

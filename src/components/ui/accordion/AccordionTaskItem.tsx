@@ -1,5 +1,4 @@
 'use client';
-
 import { EllipsisIcon } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -10,10 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TaskCreationDrawer } from '@/components/ui/drawers/tasks/TaskCreationDrawer';
-import { TaskDeletionDrawer } from '../drawers/deletions/without-checkbox/TaskDeletionDrawer';
+import { TaskDeletionDrawer } from '@/components/ui/drawers/deletions/without-checkbox/TaskDeletionDrawer';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
-import { ICategoryWithoutTasks } from '@/types/commons';
+import { ICategoryWithoutTasks, ITask } from '@/types/commons';
 import { removeHtmlTags } from '@/utils/task-description';
+import { SetupTaskDeletionDrawer } from '@/components/ui/drawers/deletions/without-checkbox/SetupTaskDeletionDrawer';
+import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTaskCreationDrawer';
 import { cn } from '@/lib/utils';
 
 /**
@@ -84,10 +85,13 @@ const UserActionsDropdownMenu = ({
 };
 
 interface IAccordionTaskItemProps {
+  type?: string;
   id: string;
   title: string;
   description: string;
   category: ICategoryWithoutTasks;
+  onUpsertTask?: (task: ITask) => void;
+  onDelete?: (taskId: string) => void;
   isMinAmountOfTask: boolean;
 }
 
@@ -98,10 +102,13 @@ interface IAccordionTaskItemProps {
  * <AccordionTaskItem id="1" category="Category" title="Task title" description="Task description" />
  */
 export const AccordionTaskItem = ({
+  type,
   id,
   category,
   title,
   description,
+  onUpsertTask,
+  onDelete,
   isMinAmountOfTask,
 }: IAccordionTaskItemProps) => {
   /**
@@ -122,6 +129,18 @@ export const AccordionTaskItem = ({
    * delete: The drawer to delete a task
    */
   const [userAction, setUserAction] = useState<TUserAction>('edit');
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(id);
+    }
+  };
+
+  const handleUpsertTask = (task: ITask) => {
+    if (onUpsertTask) {
+      onUpsertTask(task);
+    }
+  };
 
   return (
     <div className={'bg-white flex rounded-xl'}>
@@ -144,25 +163,53 @@ export const AccordionTaskItem = ({
         isMinAmountOfTask={isMinAmountOfTask}
       />
 
-      {/* Task creation drawer */}
-      <TaskCreationDrawer
-        category={category}
-        task={{
-          id,
-          title,
-          description,
-        }}
-        editOpen={isDrawerOpen && userAction === 'edit'}
-        setEditOpen={setIsDrawerOpen}
-      />
+      {type === 'setup' ? (
+        <>
+          {/* Task creation drawer */}
+          <SetupTaskCreationDrawer
+            category={category}
+            task={{
+              id,
+              title,
+              description,
+            }}
+            editOpen={isDrawerOpen && userAction === 'edit'}
+            setEditOpen={setIsDrawerOpen}
+            onUpsertTask={handleUpsertTask}
+          />
 
-      {/* Task deletion drawer */}
-      <TaskDeletionDrawer
-        title={title}
-        open={isDrawerOpen && userAction === 'delete'}
-        setOpen={setIsDrawerOpen}
-        taskId={id}
-      />
+          {/* Task deletion drawer */}
+          <SetupTaskDeletionDrawer
+            title={title}
+            open={isDrawerOpen && userAction === 'delete'}
+            setOpen={setIsDrawerOpen}
+            taskId={id}
+            onDelete={handleDelete}
+          />
+        </>
+      ) : (
+        <>
+          {/* Task creation drawer */}
+          <TaskCreationDrawer
+            category={category}
+            task={{
+              id,
+              title,
+              description,
+            }}
+            editOpen={isDrawerOpen && userAction === 'edit'}
+            setEditOpen={setIsDrawerOpen}
+          />
+
+          {/* Task deletion drawer */}
+          <TaskDeletionDrawer
+            title={title}
+            open={isDrawerOpen && userAction === 'delete'}
+            setOpen={setIsDrawerOpen}
+            taskId={id}
+          />
+        </>
+      )}
     </div>
   );
 };

@@ -42,24 +42,26 @@ export const DeleteConfirmationDrawerContent = ({
       setOpen={setOpen}
       onSubmit={onSubmit}
     >
-      <DrawerDescription className={'mt-8'}>
-        This action cannot be undone. Are you sure you want to proceed with the
-        deletion?
-        <div className="flex items-center my-4">
-          <label className="flex items-center cursor-pointer">
-            <Checkbox
-              checked={isChecked}
-              onCheckedChange={handleCheckboxChange}
-              className="mr-4"
-            />
-            <div className="flex">
-              <p className="font-medium">
-                {`Yes, I want to delete "`}
-                <span className="text-red-600 px-1">{deleteItem}</span>
-                {`".`}
-              </p>
-            </div>
-          </label>
+      <DrawerDescription asChild>
+        <div>
+          This action cannot be undone. Are you sure you want to proceed with
+          the deletion?
+          <div className="flex items-center mt-4">
+            <label className="flex items-center cursor-pointer">
+              <Checkbox
+                checked={isChecked}
+                onCheckedChange={handleCheckboxChange}
+                className="mr-4"
+              />
+              <div className="flex">
+                <p className="font-medium">
+                  {`Yes, I want to delete "`}
+                  <span className="text-red-600 px-1">{deleteItem}</span>
+                  {`".`}
+                </p>
+              </div>
+            </label>
+          </div>
         </div>
       </DrawerDescription>
       <DrawerFooter>

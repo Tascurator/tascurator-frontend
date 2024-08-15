@@ -42,15 +42,17 @@ export const ConfirmCategoryDrawerContent = ({
       className={'h-[90%]'}
       onSubmit={onSubmit}
     >
-      <DrawerDescription className={'flex-1'}>
-        <div
-          className={
-            'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
-          }
-        >
-          {watch('name')}
+      <DrawerDescription className={'flex-1'} asChild>
+        <div>
+          <div
+            className={
+              'w-fit text-base px-2 py-1 mb-2 rounded-full text-gray-500 bg-slate-100'
+            }
+          >
+            {watch('name')}
+          </div>
+          <TaskDescriptionRendererForCategory />
         </div>
-        <TaskDescriptionRendererForCategory />
       </DrawerDescription>
       <DrawerFooter>
         <Button

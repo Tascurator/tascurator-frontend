@@ -5,7 +5,7 @@ import { zValidator } from '@hono/zod-validator';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
-  shareHouseCreationSchema,
+  shareHouseConfirmSchema,
   shareHouseNameSchema,
 } from '@/constants/schema';
 import prisma from '@/lib/prisma';
@@ -122,11 +122,7 @@ const app = new Hono<THonoEnv>()
         if (c.get('sharehouses').find((s) => s.name === data.name))
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-                'name',
-                'share house',
-                'landlord',
-              ),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
             },
             400,
           );
@@ -243,7 +239,7 @@ const app = new Hono<THonoEnv>()
    * Creates a shareHouse
    * @route POST /api/shareHouse
    */
-  .post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
+  .post('/', zValidator('json', shareHouseConfirmSchema), async (c) => {
     try {
       const landlordId = c.get('session').user.id;
       const data = c.req.valid('json');
@@ -254,11 +250,7 @@ const app = new Hono<THonoEnv>()
       if (shareHouses.find((s) => s.name === data.name))
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'share house',
-              'landlord',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
           },
           400,
         );
@@ -282,11 +274,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedCategoryName)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'category',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('category name'),
           },
           400,
         );
@@ -299,11 +287,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedTenantName)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'name',
-              'tenant',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant name'),
           },
           400,
         );
@@ -315,11 +299,7 @@ const app = new Hono<THonoEnv>()
       if (isDuplicatedTenantEmail)
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY(
-              'email',
-              'tenant',
-              'provided data',
-            ),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('tenant email'),
           },
           400,
         );
@@ -448,15 +428,12 @@ const app = new Hono<THonoEnv>()
                 `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
               ),
             });
+
+            await new Promise((resolve) => setTimeout(resolve, 650));
           }
         } catch (error) {
           console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
-            },
-            500,
-          );
+          throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
         }
 
         return {
