@@ -70,4 +70,5 @@ export const config = {
   matcher: [
     '/((?!_next/static|api/auth|api|logo.svg|_next/image|favicon.ico).*)',
   ],
+  unstable_allowDynamic: ['**/node_modules/@react-email*/**/*.mjs*'],
 };
