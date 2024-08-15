@@ -129,10 +129,30 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
       return [];
     };
 
-    const getTenantsBySharehouseId = (sharehouseId: string) => {
+    const getTenantsBySharehouseId = (
+      sharehouseId: string,
+      orderBy: 'placeholderIndex' | 'tenantCreatedAt' = 'placeholderIndex',
+    ) => {
       const sharehouse = findById(sanitizedSharehouses, sharehouseId);
       return (
         sharehouse?.RotationAssignment.tenantPlaceholders
+          .sort((a, b) => {
+            /**
+             * Sort by the index of the tenant placeholder
+             * However, this is already done by the database query so just return 0
+             */
+            if (orderBy === 'placeholderIndex') return 0;
+
+            /**
+             * Check if the tenant placeholders have a tenant
+             */
+            if (!a.tenant?.createdAt || !b.tenant?.createdAt) return 0;
+
+            /**
+             * Sort by the creation date of the tenant
+             */
+            return a.tenant.createdAt.getTime() - b.tenant.createdAt.getTime();
+          })
           .map((tenantPlaceholder) => tenantPlaceholder.tenant ?? null)
           .filter((tenant) => tenant !== null) ?? []
       );

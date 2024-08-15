@@ -25,6 +25,7 @@ export type THonoEnv = {
     ) => TSanitizedPrismaShareHouse['RotationAssignment']['categories'][0]['tasks'];
     getTenantsBySharehouseId: (
       sharehouseId: string,
+      orderBy?: 'placeholderIndex' | 'tenantCreatedAt',
     ) => NonNullable<
       TSanitizedPrismaShareHouse['RotationAssignment']['tenantPlaceholders'][0]['tenant']
     >[];

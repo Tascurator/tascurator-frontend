@@ -37,37 +37,20 @@ const app = new Hono<THonoEnv>()
           404,
         );
 
+      const tenants = c.var.getTenantsBySharehouseId(
+        shareHouseId,
+        'tenantCreatedAt',
+      );
+      const categories = c.var.getCategoriesBySharehouseId(shareHouseId);
+
       const { assignmentSheet, RotationAssignment, name } = doesShareHouseExist;
 
       const shareHouseData = {
         name,
         nextRotationStartDate: assignmentSheet.endDate.toISOString(),
-        tenants: RotationAssignment.tenantPlaceholders
-          .map((tenantPlaceholder) => {
-            if (tenantPlaceholder.tenant) {
-              return {
-                id: tenantPlaceholder.tenant.id,
-                name: tenantPlaceholder.tenant.name,
-                email: tenantPlaceholder.tenant.email,
-                createdAt: tenantPlaceholder.tenant.createdAt,
-              };
-            }
-            return null;
-          })
-          .filter((tenantPlaceholder) => tenantPlaceholder !== null),
-
+        tenants,
         rotationCycle: RotationAssignment.rotationCycle,
-        categories: RotationAssignment.categories.map((category) => ({
-          id: category.id,
-          name: category.name,
-          tasks: category.tasks.map((task) => ({
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            createdAt: task.createdAt,
-          })),
-          createdAt: category.createdAt,
-        })),
+        categories,
       };
 
       return c.json(shareHouseData);
