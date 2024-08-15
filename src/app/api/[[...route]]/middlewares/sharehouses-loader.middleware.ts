@@ -2,6 +2,7 @@ import { createMiddleware } from 'hono/factory';
 import prisma from '@/lib/prisma';
 import { THonoEnv } from '@/types/hono-env';
 import { IAssignedData, TSanitizedPrismaShareHouse } from '@/types/server';
+import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 /**
  * Finds an object in an array by the 'id' key.
@@ -34,30 +35,34 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
     const landlordId = c.get('session').user.id;
 
     /**
-     * Retrieve all share houses that the landlord owns
+     * Retrieve all share houses that the landlord owns if they exist.
      */
-    const sharehouses = await prisma.shareHouse.findMany({
-      where: { landlordId },
+    const doesLandlordExist = await prisma.landlord.findUnique({
+      where: { id: landlordId },
       include: {
-        assignmentSheet: true,
-        RotationAssignment: {
-          select: {
-            id: true,
-            rotationCycle: true,
-            categories: {
-              include: {
-                tasks: {
+        shareHouses: {
+          include: {
+            assignmentSheet: true,
+            RotationAssignment: {
+              select: {
+                id: true,
+                rotationCycle: true,
+                categories: {
+                  include: {
+                    tasks: {
+                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                    },
+                  },
                   orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
                 },
-              },
-              orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-            },
-            tenantPlaceholders: {
-              include: {
-                tenant: true,
-              },
-              orderBy: {
-                index: 'asc',
+                tenantPlaceholders: {
+                  include: {
+                    tenant: true,
+                  },
+                  orderBy: {
+                    index: 'asc',
+                  },
+                },
               },
             },
           },
@@ -66,9 +71,19 @@ export const sharehousesLoaderMiddleware = createMiddleware<THonoEnv>(
     });
 
     /**
+     * Check if the landlord exists
+     * It could be that the landlord was deleted from the database, but the session still exists in the client.
+     */
+    if (!doesLandlordExist) {
+      return c.json({ error: SERVER_ERROR_MESSAGES.UNAUTHORIZED }, 401);
+    }
+
+    const { shareHouses } = doesLandlordExist;
+
+    /**
      * Create a sanitized version of the share houses
      */
-    const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = sharehouses
+    const sanitizedSharehouses: TSanitizedPrismaShareHouse[] = shareHouses
       .map(({ id, name, createdAt, assignmentSheet, RotationAssignment }) => {
         /**
          * Check if the RotationAssignment is not found
