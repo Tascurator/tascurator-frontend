@@ -249,6 +249,9 @@ export const SetupStepper = ({
       return Array.isArray(value) && value.every((item) => 'tasks' in item);
     }
 
+    // Determine if the number of categories has reached the maximum
+    const isMaxAmount = getValues().categories.length === CATEGORY_MAX_AMOUNT;
+
     return (
       <SetupContents
         title="Create new category and task"
@@ -263,6 +266,7 @@ export const SetupStepper = ({
           shareHouseId=""
           onsubmitCategoryData={addCategory}
           categoryData={getValues().categories}
+          isMaxAmount={isMaxAmount}
         />
         <p className="flex justify-end">
           {getValues().categories.length}/{CATEGORY_MAX_AMOUNT}
@@ -343,6 +347,9 @@ export const SetupStepper = ({
 
   // step3
   const tenantSetting = () => {
+    // Determine if the number of tenants has reached the maximum
+    const isMaxAmount = getValues().tenants.length === TENANT_MAX_AMOUNT;
+
     return (
       <SetupContents
         title="Invite tenants"
@@ -357,6 +364,7 @@ export const SetupStepper = ({
           shareHouseId=""
           onsubmitTenantData={addTenant}
           tenantData={getValues().tenants}
+          isMaxAmount={isMaxAmount}
         />
         <p className="flex justify-end">
           {getValues().tenants.length}/{TENANT_MAX_AMOUNT}
