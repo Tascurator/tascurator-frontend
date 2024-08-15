@@ -35,4 +35,6 @@ export const SERVER_ERROR_MESSAGES = {
   NOT_EXISTING_USER: 'Email does not exist.',
   EXISTING_EMAIL: 'Email already in use. please log in.',
   CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
+  PAST_END_DATE_ERROR:
+    'Your task details are outdated. Please refresh the page to view the latest tasks.',
 };
