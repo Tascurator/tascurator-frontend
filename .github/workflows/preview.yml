@@ -29,9 +29,13 @@ jobs:
       - name: Run Tests
         run: npm test
 
-  Deploy-Preview:
+  Deploy-Staging-Preview:
+    if: ${{ github.ref == 'refs/heads/develop' }}
     needs: Run-Tests
     runs-on: ubuntu-latest
+    environment:
+      name: Staging Preview Deployment
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -39,17 +43,24 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
-      - name: Set Environment Name for Staging Preview Deployment
-        if: ${{ github.ref == 'refs/heads/develop' }}
-        run: echo "env_name=Staging Preview Deployment" >> $GITHUB_OUTPUT
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: echo "url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
 
-      - name: Set Environment Name for Feature Preview Deployment
-        if: ${{ github.ref != 'refs/heads/develop' }}
-        run: echo "env_name=Feature Preview Deployment" >> $GITHUB_OUTPUT
+  Deploy-Feature-Preview:
+    if: ${{ github.ref != 'refs/heads/develop' }}
+    needs: Run-Tests
+    runs-on: ubuntu-latest
+    environment:
+      name: Feature Preview Deployment
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
 
       - name: Deploy Project Artifacts to Vercel
         id: deploy
         run: echo "url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
-    environment:
-      name: ${{ needs.Deploy-Preview.outputs.env_name }}
-      url: ${{ steps.deploy.outputs.url }}
