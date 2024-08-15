@@ -27,7 +27,11 @@ export const TaskDeletionDrawerContent = ({
       onSubmit={onSubmit}
     >
       <DrawerDescription asChild>
-        <p className={'mt-8'}>You want to delete &quot;{title}&quot; ?</p>
+        <div>
+          {`You want to delete "`}
+          <span className="font-medium text-red-600 px-1">{title}</span>
+          {`" ?`}
+        </div>
       </DrawerDescription>
       <DrawerFooter className={'flex justify-between'}>
         <DrawerClose asChild>

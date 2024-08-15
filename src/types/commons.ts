@@ -13,6 +13,7 @@ export interface ITask {
   id: string;
   title: string;
   description: string;
+  categoryId?: string;
 }
 
 /**
@@ -59,4 +60,14 @@ export interface ICardContentProps {
 export enum RotationCycle {
   Weekly = 7,
   Fortnightly = 14,
+}
+
+/**
+ * The object structure for verification email token data
+ */
+export interface ITokenData {
+  id: string;
+  email: string;
+  token: string;
+  expiresAt: Date;
 }

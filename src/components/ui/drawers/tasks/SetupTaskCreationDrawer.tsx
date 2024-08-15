@@ -7,12 +7,14 @@ import {
   TTaskSchema,
 } from '@/components/ui/drawers/tasks/TaskCreationDrawerContent';
 import { useState } from 'react';
+import { generateRandomUUID } from '@/utils/genarate-uuid';
 
 interface ISetupTaskCreationDrawer {
   task?: ITask;
   category: ICategoryWithoutTasks;
   editOpen: boolean;
   setEditOpen: (value: boolean) => void;
+  onUpsertTask: (task: ITask) => void;
 }
 
 /**
@@ -23,6 +25,7 @@ export const SetupTaskCreationDrawer = ({
   task,
   editOpen,
   setEditOpen,
+  onUpsertTask,
 }: ISetupTaskCreationDrawer) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -35,16 +38,27 @@ export const SetupTaskCreationDrawer = ({
       description: task?.description || '',
     },
   });
+  const { reset } = formControls;
 
   const onSubmit: SubmitHandler<TTaskSchema> = (data) => {
-    // Please add the logic to handle the tenant data for a new share house
-    console.log(data);
+    const newTask = {
+      id: task?.id || generateRandomUUID(),
+      categoryId: category.id,
+      title: data.title || '',
+      description: data.description || '',
+    };
+    onUpsertTask(newTask);
+    if (!task) {
+      reset();
+    }
+    setConfirmOpen(false);
   };
 
   return (
     <FormProvider {...formControls}>
       <TaskCreationDrawerContent
         category={category}
+        task={task}
         editOpen={editOpen}
         setEditOpen={setEditOpen}
         confirmOpen={confirmOpen}

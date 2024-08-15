@@ -78,5 +78,3 @@ export const LandlordDashboard = ({
     </>
   );
 };
-
-// export { LandlordDashboard };

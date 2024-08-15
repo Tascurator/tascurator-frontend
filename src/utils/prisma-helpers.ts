@@ -19,6 +19,23 @@ export const getLandlordByEmail = async (email: string) => {
 };
 
 /**
+ * Get a landlord by ID
+ *
+ * @param id - The ID of the landlord
+ * @returns A promise that resolves with the landlord
+ */
+export const getLandlordById = async (id: string) => {
+  try {
+    const user = await prisma.landlord.findUnique({
+      where: { id },
+    });
+    return user;
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
  * Get a password reset token by email address
  *
  * @param email - The email address of the landlord
@@ -50,6 +67,40 @@ export const getPasswordResetTokenDataByToken = async (token: string) => {
       },
     });
   } catch {
+    return null;
+  }
+};
+
+/**
+ * Get the verification token by email address
+ *
+ * @param email - The email address of the landlord
+ * @returns A promise that resolves with the verification email token
+ */
+export const getVerificationTokenByEmail = async (email: string) => {
+  try {
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { email },
+    });
+    return verificationToken;
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * Get the verification token data for a given token
+ *
+ * @param token - The token to search for
+ * @returns A promise that resolves with the verification email token data
+ */
+export const getVerificationTokenDataByToken = async (token: string) => {
+  try {
+    const verificationToken = await prisma.verificationToken.findUnique({
+      where: { token },
+    });
+    return verificationToken;
+  } catch (error) {
     return null;
   }
 };

@@ -14,7 +14,7 @@ import { PASSWORD_CONSTRAINTS } from '@/constants/password-constraints';
 import { CONSTRAINTS } from '@/constants/constraints';
 
 import { toast } from '@/components/ui/use-toast';
-import { PasswordChangedDrawer } from '@/components/ui/drawers/AuthenticationDrawer';
+import { PasswordChangedDrawer } from '@/components/ui/drawers/auth/AuthenticationDrawer';
 import { resetPassword } from '@/actions/forgot-password';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 

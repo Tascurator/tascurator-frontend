@@ -6,11 +6,15 @@ import {
 } from '@/constants/schema';
 import { TenantInvitationDrawerContent } from '@/components/ui/drawers/tenants/TenantInvitationDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { useToast } from '@/components/ui/use-toast';
+import { generateRandomUUID } from '@/utils/genarate-uuid';
 interface ISetupTenantInvitationDrawer {
   tenant?: ITenant;
   open: boolean;
   setOpen: (open: boolean) => void;
+  addTenant?: (tenant: ITenant) => void;
+  editTenant?: (tenantId: string, tenant: ITenant) => void;
+  tenantData?: ITenant[];
 }
 
 /**
@@ -20,16 +24,63 @@ export const SetupTenantInvitationDrawer = ({
   tenant,
   open,
   setOpen,
+  addTenant,
+  editTenant,
+  tenantData,
 }: ISetupTenantInvitationDrawer) => {
   const formControls = useForm<TTenantInvitationSchema>({
     resolver: zodResolver(tenantInvitationSchema),
     mode: 'onBlur',
     defaultValues: tenant,
   });
+  const { toast } = useToast();
+
+  const { reset } = formControls;
 
   const onSubmit: SubmitHandler<TTenantInvitationSchema> = (data) => {
-    // Please add the logic to handle the tenant data for a new share house
-    console.log(data);
+    const newTenant: ITenant = {
+      id: generateRandomUUID(),
+      ...data,
+    };
+
+    // for editing tenant id
+    const editingTenantId = tenant?.id;
+
+    // duplicate check
+    const isDuplicateName = tenantData?.some(
+      (tenant) =>
+        tenant.id !== editingTenantId && tenant.name === newTenant.name,
+    );
+
+    const isDuplicateEmail = tenantData?.some(
+      (tenant) =>
+        tenant.id !== editingTenantId && tenant.email === newTenant.email,
+    );
+
+    if (isDuplicateName) {
+      toast({
+        variant: 'destructive',
+        description: `Tenant name already exists`,
+      });
+      return;
+    }
+
+    if (isDuplicateEmail) {
+      toast({
+        variant: 'destructive',
+        description: `Tenant email already exists`,
+      });
+      return;
+    }
+
+    if (addTenant) {
+      addTenant(newTenant);
+    }
+    if (editTenant && tenant) {
+      editTenant(tenant.id, newTenant);
+    }
+    setOpen(false);
+    reset();
   };
 
   return (

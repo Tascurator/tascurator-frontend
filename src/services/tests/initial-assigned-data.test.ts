@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { RotationCycle } from '@/types/commons';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
-import { TPrismaShareHouse, IAssignedData } from '@/types/server';
+import { IAssignedData, TShareHouseAssignmentData } from '@/types/server';
 import { addDays } from '@/utils/dates';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
 export const createSharehouse = (
-  overrides: Partial<TPrismaShareHouse> = {},
-): TPrismaShareHouse => ({
+  overrides: Partial<TShareHouseAssignmentData> = {},
+): TShareHouseAssignmentData => ({
   assignmentSheet: {
     id: '1',
     startDate: new Date('2025-01-01T00:00:00Z'),
@@ -52,7 +52,7 @@ export const createSharehouse = (
 });
 
 describe('InitialAssignedData class', () => {
-  let sharehouse: TPrismaShareHouse;
+  let sharehouse: TShareHouseAssignmentData;
   let startDate: Date;
   const rotationCycle = RotationCycle.Weekly;
 
@@ -99,7 +99,7 @@ describe('InitialAssignedData class', () => {
   };
 
   it('should throw an error if sharehouse or rotation assignment is missing', () => {
-    const invalidSharehouse = {} as TPrismaShareHouse;
+    const invalidSharehouse = {} as TShareHouseAssignmentData;
     expectError(
       () =>
         new InitialAssignedData(invalidSharehouse, startDate, rotationCycle),

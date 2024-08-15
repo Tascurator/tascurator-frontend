@@ -1,6 +1,6 @@
 import { addDays } from '@/utils/dates';
 import { AssignedData } from '@/services/AssignedData';
-import { TPrismaShareHouse } from '@/types/server';
+import { TShareHouseAssignmentData } from '@/types/server';
 import { RotationCycle } from '@/types/commons';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 
@@ -9,10 +9,10 @@ import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
  * Automatically generates the initial assigned data for the first rotation cycle once instantiated.
  */
 export class InitialAssignedData extends AssignedData {
-  private readonly sharehouse: TPrismaShareHouse;
+  private readonly sharehouse: TShareHouseAssignmentData;
 
   constructor(
-    sharehouse: TPrismaShareHouse,
+    sharehouse: TShareHouseAssignmentData,
     startDate: Date,
     rotationCycle: RotationCycle,
   ) {

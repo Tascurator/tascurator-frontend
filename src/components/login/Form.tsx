@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginSchema } from '@/constants/schema';
@@ -15,45 +14,36 @@ import Link from 'next/link';
 import { TOAST_ERROR_MESSAGES } from '@/constants/toast-texts';
 
 const Form = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    trigger,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<TLoginSchema>({
     resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
   });
 
   const onSubmit = async (formData: TLoginSchema) => {
-    setIsLoading(true);
-
     try {
-      const isValid = await trigger(['email', 'password']);
-      if (isValid) {
-        const result = await login(formData);
+      const result = await login(formData);
 
-        if (result?.error) {
-          toast({
-            variant: 'destructive',
-            description: result.error,
-          });
-        }
-        setIsLoading(false);
+      if (result?.error) {
+        toast({
+          variant: 'destructive',
+          description: result.error,
+        });
       }
     } catch (error) {
       toast({
         variant: 'destructive',
         description: TOAST_ERROR_MESSAGES.LOGIN_UNKNOWN_ERROR,
       });
-      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner isLoading={isLoading} />}
+      <LoadingSpinner isLoading={isSubmitting} />
 
       <form onSubmit={handleSubmit(onSubmit)} className={'flex flex-col'}>
         <div className={'flex flex-col mb-4'}>
@@ -85,14 +75,24 @@ const Form = () => {
           )}
         </div>
         <div className="flex justify-end">
-          <Button type="button" variant={'link'} className={'mb-8 justify-end'}>
+          <Button
+            type="button"
+            variant={'link'}
+            className={'mb-8 justify-end'}
+            asChild
+          >
             <Link href="/forgot-password">Forgot password?</Link>
           </Button>
         </div>
         <Button type="submit" className={'mx-auto mb-4'} disabled={!isValid}>
           Log in
         </Button>
-        <Button type="button" className={'mx-auto'} variant={'secondary'}>
+        <Button
+          type="button"
+          className={'mx-auto'}
+          variant={'secondary'}
+          asChild
+        >
           <Link href="/signup">Sign up</Link>
         </Button>
       </form>

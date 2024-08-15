@@ -4,11 +4,11 @@ import { zValidator } from '@hono/zod-validator';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { rotationCycleUpdateSchema } from '@/constants/schema';
 import prisma from '@/lib/prisma';
-import type { IAssignedData } from '@/types/server';
 import { AssignedData } from '@/services/AssignedData';
 import { addDays } from '@/utils/dates';
+import { THonoEnv } from '@/types/hono-env';
 
-type CategoryData = {
+type TCategoryData = {
   id: string | null;
   name: string | null;
   maxTasks: number | null;
@@ -19,41 +19,19 @@ type CategoryData = {
   };
 };
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Retrieves both the current and next rotation cycle data of a sharehouse by its ID
    * @route GET /api/rotation/:shareHouseId
    */
-  .get('/:shareHouseId', async (c) => {
+  .get('/:shareHouseId', (c) => {
     const shareHouseId = c.req.param('shareHouseId');
     try {
-      const shareHouse = await prisma.shareHouse.findUnique({
-        where: {
-          id: shareHouseId,
-        },
-        include: {
-          assignmentSheet: true,
-          RotationAssignment: {
-            select: {
-              rotationCycle: true,
-              categories: {
-                include: {
-                  tasks: true,
-                },
-              },
-              tenantPlaceholders: {
-                include: {
-                  tenant: true,
-                },
-              },
-            },
-          },
-        },
-      });
+      const shareHouse = c.var.getSharehouseById(shareHouseId);
 
       /**
-       * Return 404 if sharehouse not found
+       * Ensure only the associated landlord can view the rotation cycle data
        */
       if (!shareHouse) {
         return c.json(
@@ -64,24 +42,13 @@ const app = new Hono()
         );
       }
 
-      /**
-       * Return 500 if RotationAssignment or AssignmentSheet not found
-       */
-      if (!shareHouse.RotationAssignment || !shareHouse.assignmentSheet) {
-        return c.json(
-          { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-          500,
-        );
-      }
-
       // Current rotation data
-      const assignedData = shareHouse.assignmentSheet
-        .assignedData as unknown as IAssignedData;
+      const assignedData = shareHouse.assignmentSheet.assignedData;
 
       let totalTasks = 0;
       let totalCompletedTasks = 0;
 
-      const categories: CategoryData[] = assignedData.assignments
+      const categories: TCategoryData[] = assignedData.assignments
         .map((assignment) => {
           const maxTasks = assignment.tasks ? assignment.tasks.length : null;
           const completedTasks = assignment.tasks
@@ -135,7 +102,7 @@ const app = new Hono()
        * Create an AssignedData instance for the current rotation cycle.
        */
       const assignedDataInstance = new AssignedData(
-        shareHouse.assignmentSheet.assignedData as unknown as IAssignedData,
+        shareHouse.assignmentSheet.assignedData,
         shareHouse.assignmentSheet.startDate,
         shareHouse.assignmentSheet.endDate,
       );
@@ -214,17 +181,10 @@ const app = new Hono()
         const shareHouseId = c.req.param('shareHouseId');
         const data = c.req.valid('json');
 
-        const shareHouse = await prisma.shareHouse.findUnique({
-          where: {
-            id: shareHouseId,
-          },
-          include: {
-            RotationAssignment: true,
-          },
-        });
+        const shareHouse = c.var.getSharehouseById(shareHouseId);
 
         /**
-         * Return 404 if sharehouse not found
+         * Ensure only the associated landlord can update the rotation cycle
          */
         if (!shareHouse) {
           return c.json(
@@ -232,12 +192,6 @@ const app = new Hono()
             404,
           );
         }
-
-        if (!shareHouse.RotationAssignment)
-          return c.json(
-            { error: SERVER_ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-            500,
-          );
 
         const updateRotationCycle = await prisma.rotationAssignment.update({
           where: {

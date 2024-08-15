@@ -14,12 +14,18 @@ import { DeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with
 import { useState } from 'react';
 import { DROPDOWN_ITEMS } from '@/constants/dropdown-items';
 import type { ITenant } from '@/types/commons';
+import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
+import { SetupTenantInvitationDrawer } from '@/components/ui/drawers/tenants/SetupTenantInvitationDrawer';
 
 const { EDIT_TENANT, DELETE_TENANT } = DROPDOWN_ITEMS;
 
 interface ITenantListItemProps {
   shareHouseId: string;
   tenant: ITenant;
+  type?: string;
+  onDelete?: (id: string) => void;
+  onUpdate?: (tenantId: string, tenant: ITenant) => void;
+  tenantData?: ITenant[];
 }
 
 /**
@@ -37,7 +43,14 @@ interface ITenantListItemProps {
  * <TenantListItem tenant={tenant} />
  * ```
  */
-const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
+const TenantListItem = ({
+  shareHouseId,
+  tenant,
+  type,
+  onDelete,
+  onUpdate,
+  tenantData,
+}: ITenantListItemProps) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -79,19 +92,41 @@ const TenantListItem = ({ shareHouseId, tenant }: ITenantListItemProps) => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <TenantInvitationDrawer
-          shareHouseId={shareHouseId}
-          tenant={tenant}
-          open={openEdit}
-          setOpen={setOpenEdit}
-        />
-        <DeleteConfirmationDrawer
-          id={tenant.id}
-          idType={'tenant'}
-          deleteItem={tenant.name}
-          open={openDelete}
-          setOpen={setOpenDelete}
-        />
+
+        {type === 'setup' ? (
+          <>
+            <SetupTenantInvitationDrawer
+              tenant={tenant}
+              open={openEdit}
+              setOpen={setOpenEdit}
+              editTenant={onUpdate}
+              tenantData={tenantData}
+            />
+            <SetupDeleteConfirmationDrawer
+              idType={'tenant'}
+              deleteItem={tenant.name}
+              open={openDelete}
+              setOpen={setOpenDelete}
+              onDelete={() => (onDelete ? onDelete(tenant.id) : {})}
+            />
+          </>
+        ) : (
+          <>
+            <TenantInvitationDrawer
+              shareHouseId={shareHouseId}
+              tenant={tenant}
+              open={openEdit}
+              setOpen={setOpenEdit}
+            />
+            <DeleteConfirmationDrawer
+              id={tenant.id}
+              idType={'tenant'}
+              deleteItem={tenant.name}
+              open={openDelete}
+              setOpen={setOpenDelete}
+            />
+          </>
+        )}
       </div>
     </div>
   );

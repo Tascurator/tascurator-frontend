@@ -11,7 +11,7 @@ import {
   TPrismaTenantPlaceholder,
 } from '@/types/server';
 import { addDays } from '@/utils/dates';
-import { RotationCycle } from '@/types/commons';
+import { ITenant, RotationCycle } from '@/types/commons';
 
 /**
  * Represents the assigned data for a specific rotation period based on a given assignedData.
@@ -48,6 +48,25 @@ export class AssignedData {
    */
   public getAssignments = (): TAssignedCategory[] =>
     this.assignedData.assignments;
+
+  /**
+   * Returns the tenant placeholders with tenants in the current rotation
+   */
+  public getTenantPlaceholders = (): {
+    index: number;
+    tenant: Omit<ITenant, 'email'> | null;
+  }[] => {
+    return this.assignedData.assignments
+      .map((assignment) => {
+        if (assignment.tenantPlaceholderId === null) return null;
+
+        return {
+          index: assignment.tenantPlaceholderId,
+          tenant: assignment.tenant,
+        };
+      })
+      .filter((placeholder) => placeholder !== null);
+  };
 
   /**
    * Retrieves the tenants in the current rotation

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { format, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -13,16 +13,41 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
+interface IDatePickerProps {
+  onChange: (date: Date) => void;
+  selectedDate: Date | undefined;
+}
 /**
  * The DatePicker component is used to create a date picker component.
  *
  * @example
  * <DatePicker />
  */
-export function DatePicker() {
-  const [date, setDate] = useState<Date | undefined>(() =>
-    startOfDay(new Date()),
-  );
+
+export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
+  const [date, setDate] = useState<Date | undefined>(selectedDate);
+
+  const handleDateChange = (date: Date | undefined) => {
+    if (!date) {
+      return;
+    }
+    setDate(date);
+    onChange(date);
+  };
+
+  /**
+   * todo: disable past days and after one month
+   * disable dates before yesterday and after today for now
+   */
+
+  const today = () => {
+    return new Date();
+  };
+
+  const yesterday = () => {
+    const today = new Date();
+    return new Date(today.setDate(today.getDate() - 1));
+  };
 
   return (
     <Popover>
@@ -46,8 +71,9 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleDateChange}
           initialFocus
+          disabled={(date) => date < yesterday() || date > today()}
         />
       </PopoverContent>
     </Popover>

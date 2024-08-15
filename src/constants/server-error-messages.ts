@@ -7,9 +7,9 @@ export const SERVER_ERROR_MESSAGES = {
   COMPLETION_ERROR: (action: string) => `An error occurred while ${action}.`,
   CONSOLE_COMPLETION_ERROR: (action: string) => `Error ${action}.`,
   DELETE_NOT_ALLOWED: (entity: string) =>
-    `You are not allowed to delete this ${entity}.`,
-  DUPLICATE_ENTRY: (field: string, entity: string, context: string) =>
-    `A ${entity} with the same ${field} already exists in the ${context}.`,
+    `You cannot delete this ${entity}; at least one ${entity} must remain.`,
+  DUPLICATE_ENTRY: (entity: string) =>
+    `This ${entity} is already taken and cannot be reused.`,
   EMPTY_ARRAY: (entity: string) =>
     `The provided ${entity} array is empty. Please include at least one ${entity}.`,
   INTERNAL_SERVER_ERROR:
@@ -26,6 +26,13 @@ export const SERVER_ERROR_MESSAGES = {
     'An error occurred while sending the email. Please try again later.',
   ENV_KEYS_MISSING: (keys: string[]) =>
     `The following environment key(s) are missing: ${keys.join(', ')}.`,
-  INVALID_TOKEN:
+  INVALID_TOKEN_RESET_PASSWORD:
     'Invalid or expired token. Please try resetting your password again.',
+  INVALID_TOKEN_VERIFICATION: 'Invalid token. Please try signing up.',
+  COOL_DOWN_EMAIL_VERIFICATION: 'Please wait 30 minutes before trying again.',
+  EXPIRED_TOKEN_VERIFICATION:
+    'The token has expired. Please resend the email and verify your account again.',
+  NOT_EXISTING_USER: 'Email does not exist.',
+  EXISTING_EMAIL: 'Email already in use. please log in.',
+  CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
 };

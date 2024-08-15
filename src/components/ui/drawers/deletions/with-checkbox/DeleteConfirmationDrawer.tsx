@@ -5,6 +5,7 @@ import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { revalidatePage } from '@/actions/revalidation';
 import { usePathname } from 'next/navigation';
 import { DeleteConfirmationDrawerContent } from '@/components/ui/drawers/deletions/with-checkbox/DeleteConfirmationDrawerContent';
+import { useRouter } from 'next/navigation';
 
 interface IDeleteConfirmationDrawerProps {
   id: string;
@@ -45,6 +46,7 @@ export const DeleteConfirmationDrawer = ({
 }: IDeleteConfirmationDrawerProps) => {
   const path = usePathname();
   const formControls = useForm();
+  const router = useRouter();
 
   const onSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -96,8 +98,13 @@ export const DeleteConfirmationDrawer = ({
         variant: 'default',
         description: TOAST_TEXTS.success,
       });
-      revalidatePage(path);
-      setOpen(false);
+      if (idType === 'sharehouse') {
+        router.push('/sharehouses');
+        router.refresh();
+      } else {
+        revalidatePage(path);
+        setOpen(false);
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast({

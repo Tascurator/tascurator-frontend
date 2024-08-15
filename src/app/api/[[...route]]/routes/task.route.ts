@@ -5,8 +5,9 @@ import { taskCreationSchema, taskUpdateSchema } from '@/constants/schema';
 import { CONSTRAINTS } from '@/constants/constraints';
 import prisma from '@/lib/prisma';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { THonoEnv } from '@/types/hono-env';
 
-const app = new Hono()
+const app = new Hono<THonoEnv>()
 
   /**
    * Updates a task's title or description by its ID
@@ -20,14 +21,15 @@ const app = new Hono()
       if (!data || Object.keys(data).length === 0)
         return c.json({ error: SERVER_ERROR_MESSAGES.NO_DATA_PROVIDED }, 400);
 
-      const task = await prisma.task.findUnique({
-        where: {
-          id: taskId,
-        },
-      });
+      const doesTaskExist = c.var.getTaskById(taskId);
 
-      if (!task)
+      /**
+       * Ensure only the associated landlord can update the task
+       */
+      if (!doesTaskExist)
         return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
+
+      const { task } = doesTaskExist;
 
       if (data.title === task.title)
         return c.json({ message: SERVER_ERROR_MESSAGES.CHANGE_SAME_NAME }, 200);
@@ -65,21 +67,20 @@ const app = new Hono()
   .post('/', zValidator('json', taskCreationSchema), async (c) => {
     try {
       const data = c.req.valid('json');
-      const category = await prisma.category.findUnique({
-        where: {
-          id: data.categoryId,
-        },
-        include: {
-          tasks: true,
-        },
-      });
 
-      if (!category) {
+      const doesCategoryExist = c.var.getCategoryById(data.categoryId);
+
+      /**
+       * Ensure only the associated landlord can create a task for the category
+       */
+      if (!doesCategoryExist) {
         return c.json(
           { error: SERVER_ERROR_MESSAGES.NOT_FOUND('category') },
           404,
         );
       }
+
+      const { category } = doesCategoryExist;
 
       if (category.tasks.length >= CONSTRAINTS.TASK_MAX_AMOUNT)
         return c.json(
@@ -122,20 +123,16 @@ const app = new Hono()
   .delete('/:taskId', async (c) => {
     try {
       const taskId = c.req.param('taskId');
-      const task = await prisma.task.findUnique({
-        where: {
-          id: taskId,
-        },
-      });
 
-      if (!task)
+      const doesTaskExist = c.var.getTaskById(taskId);
+
+      /**
+       * Ensure only the associated landlord can delete the task
+       */
+      if (!doesTaskExist)
         return c.json({ error: SERVER_ERROR_MESSAGES.NOT_FOUND('task') }, 404);
 
-      const tasks = await prisma.task.findMany({
-        where: {
-          categoryId: task.categoryId,
-        },
-      });
+      const tasks = c.var.getTasksByCategoryId(doesTaskExist.categoryId);
 
       if (tasks.length <= 1)
         return c.json(
