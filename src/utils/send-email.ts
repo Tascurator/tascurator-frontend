@@ -3,7 +3,7 @@ import { sendEmail } from '@/lib/resend';
 import { EMAILS } from '@/constants/emails';
 const { SIGNUP_CONFIRMATION } = EMAILS;
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-import { getBaseUrl } from './base-url';
+import { getBaseUrl } from '@/utils/base-url';
 
 export const sendVerificationEmail = async (email: string) => {
   try {
