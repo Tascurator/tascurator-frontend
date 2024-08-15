@@ -12,12 +12,9 @@ import {
   getPasswordResetTokenDataByToken,
 } from '@/utils/prisma-helpers';
 import { sendEmail } from '@/lib/resend';
-import { EMAILS } from '@/constants/emails';
 import prisma from '@/lib/prisma';
 import { hashPassword } from '@/utils/password-hashing';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
-
-const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
 const { INVALID_TOKEN_RESET_PASSWORD, COMPLETION_ERROR } =
   SERVER_ERROR_MESSAGES;
@@ -51,10 +48,8 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
    */
   await sendEmail({
     to: data.email,
-    subject: PASSWORD_RESET.subject,
-    html: PASSWORD_RESET.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/forgot-password?token=${token.token}`,
-    ),
+    type: 'PASSWORD_RESET',
+    callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL}/forgot-password?token=${token.token}`,
   });
 };
 
@@ -126,9 +121,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
 export const sendPasswordResetSuccessEmail = async (email: string) => {
   await sendEmail({
     to: email,
-    subject: PASSWORD_RESET_SUCCESS.subject,
-    html: PASSWORD_RESET_SUCCESS.html(
-      `${process.env.NEXT_PUBLIC_APPLICATION_URL}/login`,
-    ),
+    type: 'PASSWORD_RESET_SUCCESS',
+    callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL}/login`,
   });
 };

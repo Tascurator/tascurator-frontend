@@ -13,7 +13,6 @@ import { addDays } from '@/utils/dates';
 import type { Category, Tenant } from '@prisma/client';
 import { InitialAssignedData } from '@/services/InitialAssignedData';
 import { sendEmail } from '@/lib/resend';
-import { EMAILS } from '@/constants/emails';
 import { THonoEnv } from '@/types/hono-env';
 
 const app = new Hono<THonoEnv>()
@@ -423,10 +422,8 @@ const app = new Hono<THonoEnv>()
           for (const tenant of createdTenants) {
             await sendEmail({
               to: tenant.email,
-              subject: EMAILS.TENANT_INVITATION.subject,
-              html: EMAILS.TENANT_INVITATION.html(
-                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
-              ),
+              type: 'TENANT_INVITATION',
+              callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
             });
           }
         } catch (error) {

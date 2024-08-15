@@ -5,7 +5,6 @@ import { tenantInvitationSchema } from '@/constants/schema';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import prisma from '@/lib/prisma';
 import { sendEmail } from '@/lib/resend';
-import { EMAILS } from '@/constants/emails';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { AssignedData } from '@/services/AssignedData';
 import { THonoEnv } from '@/types/hono-env';
@@ -388,10 +387,8 @@ const app = new Hono<THonoEnv>()
           try {
             await sendEmail({
               to: sanitizedEmail,
-              subject: EMAILS.TENANT_INVITATION.subject,
-              html: EMAILS.TENANT_INVITATION.html(
-                `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
-              ),
+              type: 'TENANT_INVITATION',
+              callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${assignmentSheet.id}/${newTenant.id}`,
             });
           } catch (error) {
             console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);

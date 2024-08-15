@@ -1,5 +1,7 @@
 import { Resend } from 'resend';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
+import { EMAILS, TEmailType } from '@/constants/emails';
+import CommonEmail from '../../emails/CommonEmail';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const senderEmail = process.env.RESEND_SENDER_EMAIL;
@@ -7,18 +9,18 @@ const senderName = process.env.RESEND_SENDER_NAME;
 
 interface ISendEmailProps {
   to: string;
-  subject: string;
-  html: string;
+  type: TEmailType;
+  callbackUrl: string;
 }
 
 /**
  * Send an email using the Resend API
  *
  * @param to - The email address of the recipient
- * @param subject - The subject of the email
- * @param html - The HTML content of the email
+ * @param type - The type of the email to send: 'TENANT_INVITATION', 'PASSWORD_RESET', 'PASSWORD_RESET_SUCCESS', 'SIGNUP_CONFIRMATION'
+ * @param callbackUrl - The URL to redirect the user to when they click the button in the email
  */
-export const sendEmail = async ({ to, subject, html }: ISendEmailProps) => {
+export const sendEmail = async ({ to, type, callbackUrl }: ISendEmailProps) => {
   /**
    * Check if the sender email or name is missing in the environment variables.
    */
@@ -37,8 +39,8 @@ export const sendEmail = async ({ to, subject, html }: ISendEmailProps) => {
   const { data, error } = await resend.emails.send({
     from: `${senderName} <${senderEmail}>`,
     to,
-    subject,
-    html,
+    subject: EMAILS[type].subject,
+    react: <CommonEmail type={type} callbackUrl={callbackUrl} />,
   });
 
   /**
