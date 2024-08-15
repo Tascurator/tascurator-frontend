@@ -1,5 +1,6 @@
 import { hc } from 'hono/client';
 import { type AppType } from '@/app/api/[[...route]]/route';
+import { getBaseUrl } from '@/utils/base-url';
 
 /**
  * Creates a Hono client to work with RPC
@@ -9,7 +10,7 @@ import { type AppType } from '@/app/api/[[...route]]/route';
  *
  * @see https://hono.dev/docs/guides/rpc
  */
-const client = hc<AppType>(process.env.NEXT_PUBLIC_APPLICATION_URL!, {
+const client = hc<AppType>(getBaseUrl(), {
   fetch: (input: RequestInfo | URL, requestInit?: RequestInit) =>
     fetch(input, {
       cache: 'no-store', // Opt-out of data caching
