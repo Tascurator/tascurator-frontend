@@ -164,8 +164,10 @@ export type TTenantInvitationSchema = z.infer<typeof tenantInvitationSchema>;
 
 /**
  * The schema for the shareHouse creation form
+ * It is used to new sharehouse
  */
 export const shareHouseCreationSchema = shareHouseNameSchema.extend({
+  id: z.string().trim().uuid(),
   startDate: z.string().trim().datetime(),
   rotationCycle: z.union([
     z.literal(ROTATION_WEEKLY),
@@ -173,21 +175,102 @@ export const shareHouseCreationSchema = shareHouseNameSchema.extend({
   ]),
   categories: z
     .array(
-      categoryCreationSchema.extend({
+      categoryCreationSchema.pick({ name: true }).extend({
+        id: z.string().trim().uuid(),
         tasks: z
-          .array(taskCreationSchema.omit({ categoryId: true }))
+          .array(
+            z.object({
+              id: z.string().trim().uuid(),
+              title: z
+                .string()
+                .min(
+                  TASK_TITLE_MIN_LENGTH,
+                  minLength('Title', TASK_TITLE_MIN_LENGTH),
+                )
+                .max(
+                  TASK_TITLE_MAX_LENGTH,
+                  maxLength('Title', TASK_TITLE_MAX_LENGTH),
+                ),
+              description: z
+                .string()
+                .refine(
+                  taskDescriptionLengthMinValidate,
+                  minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+                )
+                .refine(
+                  taskDescriptionLengthMaxValidate,
+                  maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+                ),
+            }),
+          )
           .min(TASK_MIN_AMOUNT)
           .max(TASK_MAX_AMOUNT),
       }),
     )
     .min(CATEGORY_MIN_AMOUNT)
     .max(CATEGORY_MAX_AMOUNT),
-  tenants: z.array(tenantInvitationSchema).max(TENANT_MAX_AMOUNT),
+  tenants: z
+    .array(
+      tenantInvitationSchema.pick({ name: true, email: true }).extend({
+        id: z.string().trim().uuid(),
+      }),
+    )
+    .max(TENANT_MAX_AMOUNT),
 });
 
 export type TShareHouseCreationSchema = z.infer<
   typeof shareHouseCreationSchema
 >;
+
+/**
+ * The schema for the shareHouse confirmation form
+ * It is used to send the sharehouse data to the backend
+ **/
+export const shareHouseConfirmSchema = shareHouseCreationSchema
+  .omit({
+    id: true,
+    categories: true,
+    tasks: true,
+    tenants: true,
+  })
+  .extend({
+    categories: z
+      .array(
+        categoryCreationSchema.pick({ name: true }).extend({
+          tasks: z.array(
+            z.object({
+              title: z
+                .string()
+                .min(
+                  TASK_TITLE_MIN_LENGTH,
+                  minLength('Title', TASK_TITLE_MIN_LENGTH),
+                )
+                .max(
+                  TASK_TITLE_MAX_LENGTH,
+                  maxLength('Title', TASK_TITLE_MAX_LENGTH),
+                ),
+              description: z
+                .string()
+                .refine(
+                  taskDescriptionLengthMinValidate,
+                  minLength('Description', TASK_DESCRIPTION_MIN_LENGTH),
+                )
+                .refine(
+                  taskDescriptionLengthMaxValidate,
+                  maxLength('Description', TASK_DESCRIPTION_MAX_LENGTH),
+                ),
+            }),
+          ),
+        }),
+      )
+      .min(CATEGORY_MIN_AMOUNT)
+      .max(CATEGORY_MAX_AMOUNT),
+    tenants: z
+      .array(tenantInvitationSchema.pick({ name: true, email: true }))
+      .max(TENANT_MAX_AMOUNT),
+  });
+
+export type TShareHouseConfirmSchema = z.infer<typeof shareHouseConfirmSchema>;
 
 /**
  * The schema for the rotation cycle update form

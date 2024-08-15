@@ -5,13 +5,16 @@ import {
   TNameEditionDrawerSchema,
 } from '@/components/ui/drawers/names/NameEditionDrawerContent';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ICategory } from '@/types/commons';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ISetupNameEditionDrawer {
   name: string;
   open: boolean;
   setOpen: (value: boolean) => void;
   type: 'sharehouse' | 'category';
-  id?: string;
+  onUpdateName: (newName: string) => void;
+  categoryData?: ICategory[];
 }
 
 /**
@@ -22,10 +25,11 @@ export const SetupNameEditionDrawer = ({
   open,
   setOpen,
   type,
-  id,
+  onUpdateName,
+  categoryData,
 }: ISetupNameEditionDrawer) => {
   const schema = getNameEditionDrawerSchema(type);
-
+  const { toast } = useToast();
   const formControls = useForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',
@@ -34,9 +38,25 @@ export const SetupNameEditionDrawer = ({
     },
   });
 
-  const onSubmit: SubmitHandler<TNameEditionDrawerSchema> = (data) => {
-    // Please add the logic to handle the data for a new share house
-    console.log(id, data);
+  const { getValues } = formControls;
+
+  const onSubmit: SubmitHandler<TNameEditionDrawerSchema> = () => {
+    //duplicate check
+    if (type === 'category') {
+      const newName = getValues().name;
+      const isDuplicate = categoryData?.some(
+        (category) => category.name === newName,
+      );
+      if (isDuplicate) {
+        toast({
+          description: 'Category name already exists',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+    onUpdateName(getValues().name);
+    setOpen(false);
   };
 
   return (

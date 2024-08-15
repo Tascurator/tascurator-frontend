@@ -5,7 +5,7 @@ import { zValidator } from '@hono/zod-validator';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import {
-  shareHouseCreationSchema,
+  shareHouseConfirmSchema,
   shareHouseNameSchema,
 } from '@/constants/schema';
 import prisma from '@/lib/prisma';
@@ -238,7 +238,7 @@ const app = new Hono<THonoEnv>()
    * Creates a shareHouse
    * @route POST /api/shareHouse
    */
-  .post('/', zValidator('json', shareHouseCreationSchema), async (c) => {
+  .post('/', zValidator('json', shareHouseConfirmSchema), async (c) => {
     try {
       const landlordId = c.get('session').user.id;
       const data = c.req.valid('json');
@@ -425,15 +425,12 @@ const app = new Hono<THonoEnv>()
               type: 'TENANT_INVITATION',
               callbackUrl: `${process.env.NEXT_PUBLIC_APPLICATION_URL!}/${newAssignmentSheet.id}/${tenant.id}`,
             });
+
+            await new Promise((resolve) => setTimeout(resolve, 650));
           }
         } catch (error) {
           console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
-          return c.json(
-            {
-              error: SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR,
-            },
-            500,
-          );
+          throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
         }
 
         return {
