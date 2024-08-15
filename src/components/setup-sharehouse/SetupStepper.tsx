@@ -25,7 +25,13 @@ import {
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
 
-const { CATEGORY_MAX_AMOUNT, TENANT_MAX_AMOUNT } = CONSTRAINTS;
+const {
+  CATEGORY_MAX_AMOUNT,
+  CATEGORY_MIN_AMOUNT,
+  TENANT_MAX_AMOUNT,
+  TASK_MAX_AMOUNT,
+  TASK_MIN_AMOUNT,
+} = CONSTRAINTS;
 
 interface ISetupStepperProps {
   initialStep: number;
@@ -249,6 +255,14 @@ export const SetupStepper = ({
       return Array.isArray(value) && value.every((item) => 'tasks' in item);
     }
 
+    // Determine if the number of categories has reached the maximum
+    const isMaxAmountOfCategory =
+      getValues().categories.length === CATEGORY_MAX_AMOUNT;
+
+    // Determine if the number of categories has reached the minimum
+    const isMinAmountOfCategory =
+      getValues().categories.length === CATEGORY_MIN_AMOUNT;
+
     return (
       <SetupContents
         title="Create new category and task"
@@ -263,44 +277,55 @@ export const SetupStepper = ({
           shareHouseId=""
           onsubmitCategoryData={addCategory}
           categoryData={getValues().categories}
+          isMaxAmount={isMaxAmountOfCategory}
         />
         <p className="flex justify-end">
           {getValues().categories.length}/{CATEGORY_MAX_AMOUNT}
         </p>
-        {getValues().categories.map((category) => (
-          <Accordion
-            type="single"
-            collapsible
-            className="w-full"
-            key={category.id}
-          >
-            <AccordionItem value={`item-${category.id}`}>
-              <AccordionCategoryItem
-                category={category}
-                type="setup"
-                onUpdateName={updateCategoryName}
-                categoryData={getValues().categories}
-                onUpsertTask={upsertTask}
-                onDelete={deleteCategory}
-                taskAmount={category.tasks.length}
-              />
-              <AccordionContent className="space-y-4 bg-primary-lightest p-0">
-                {category.tasks.map((task) => (
-                  <AccordionTaskItem
-                    type="setup"
-                    key={task.id}
-                    id={task.id}
-                    category={category}
-                    title={task.title}
-                    description={task.description}
-                    onUpsertTask={upsertTask}
-                    onDelete={deleteTask}
-                  />
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        ))}
+        {getValues().categories.map((category) => {
+          // Determine if the number of tasks has reached the maximum
+          const isMaxAmountOfTask = category.tasks.length === TASK_MAX_AMOUNT;
+          // Determine if the number of tasks has reached the minimum
+          const isMinAmountOfTask = category.tasks.length === TASK_MIN_AMOUNT;
+
+          return (
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full"
+              key={category.id}
+            >
+              <AccordionItem value={`item-${category.id}`}>
+                <AccordionCategoryItem
+                  category={category}
+                  type="setup"
+                  onUpdateName={updateCategoryName}
+                  categoryData={getValues().categories}
+                  onUpsertTask={upsertTask}
+                  onDelete={deleteCategory}
+                  taskAmount={category.tasks.length}
+                  isMinAmountOfCategory={isMinAmountOfCategory}
+                  isMaxAmountOfTask={isMaxAmountOfTask}
+                />
+                <AccordionContent className="space-y-4 bg-primary-lightest p-0">
+                  {category.tasks.map((task) => (
+                    <AccordionTaskItem
+                      type="setup"
+                      key={task.id}
+                      id={task.id}
+                      category={category}
+                      title={task.title}
+                      description={task.description}
+                      onUpsertTask={upsertTask}
+                      onDelete={deleteTask}
+                      isMinAmountOfTask={isMinAmountOfTask}
+                    />
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          );
+        })}
         {errors.categories && (
           <p className="text-red-500 text-sm">{errors.categories.message}</p>
         )}
@@ -343,6 +368,9 @@ export const SetupStepper = ({
 
   // step3
   const tenantSetting = () => {
+    // Determine if the number of tenants has reached the maximum
+    const isMaxAmount = getValues().tenants.length === TENANT_MAX_AMOUNT;
+
     return (
       <SetupContents
         title="Invite tenants"
@@ -357,6 +385,7 @@ export const SetupStepper = ({
           shareHouseId=""
           onsubmitTenantData={addTenant}
           tenantData={getValues().tenants}
+          isMaxAmount={isMaxAmount}
         />
         <p className="flex justify-end">
           {getValues().tenants.length}/{TENANT_MAX_AMOUNT}

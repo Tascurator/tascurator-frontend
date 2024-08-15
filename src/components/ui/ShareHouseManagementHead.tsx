@@ -6,6 +6,7 @@ import { CategoryCreationDrawer } from './drawers/categories/CategoryCreationDra
 import { SetupCategoryCreationDrawer } from '@/components/ui/drawers/categories/SetupCategoryCreationDrawer';
 import { SetupTenantInvitationDrawer } from '@/components/ui/drawers/tenants/SetupTenantInvitationDrawer';
 import { ICategory, ITenant } from '@/types/commons';
+import { cn } from '@/lib/utils';
 
 interface IHeaderTitleButtonProps {
   shareHouseId: string;
@@ -15,6 +16,7 @@ interface IHeaderTitleButtonProps {
   onsubmitCategoryData?: (data: ICategory) => void;
   categoryData?: ICategory[] | undefined;
   tenantData?: ITenant[] | undefined;
+  isMaxAmount: boolean;
 }
 
 /**
@@ -32,6 +34,7 @@ export const ShareHouseManagementHead = ({
   onsubmitCategoryData,
   categoryData,
   tenantData,
+  isMaxAmount,
 }: IHeaderTitleButtonProps) => {
   const [openTaskDrawer, setOpenTaskDrawer] = useState(false);
   const [openTenantDrawer, setOpenTenantDrawer] = useState(false);
@@ -62,9 +65,12 @@ export const ShareHouseManagementHead = ({
       <div className="flex justify-between items-center mt-6">
         <p>{title}</p>
         <CirclePlus
-          className={'stroke-primary cursor-pointer'}
+          className={cn(
+            'stroke-primary cursor-pointer',
+            isMaxAmount && 'stroke-slate-300 cursor-not-allowed',
+          )}
           type={type}
-          onClick={handleClick}
+          onClick={!isMaxAmount ? handleClick : undefined}
         />
       </div>
       <div className="h-0">

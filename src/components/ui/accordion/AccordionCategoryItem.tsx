@@ -18,6 +18,7 @@ import { SetupTaskCreationDrawer } from '@/components/ui/drawers/tasks/SetupTask
 import { SetupDeleteConfirmationDrawer } from '@/components/ui/drawers/deletions/with-checkbox/SetupDeleteConfirmationDrawer';
 import { SetupNameEditionDrawer } from '@/components/ui/drawers/names/SetupNameEditionDrawer';
 import { CONSTRAINTS } from '@/constants/constraints';
+import { cn } from '@/lib/utils';
 /**
  * Constants used in the dropdown menu.
  */
@@ -34,6 +35,8 @@ interface IUserActionsDropdownMenuProps {
   setOpen: (value: boolean) => void;
   setDrawerOpen: (value: boolean) => void;
   setUserAction: (value: TUserAction) => void;
+  isMinAmountOfCategory: boolean;
+  isMaxAmountOfTask: boolean;
 }
 
 /**
@@ -45,10 +48,18 @@ const UserActionsDropdownMenu = ({
   setOpen,
   setDrawerOpen,
   setUserAction,
+  isMinAmountOfCategory,
+  isMaxAmountOfTask,
 }: IUserActionsDropdownMenuProps) => {
   const handleItemClick = (item: TUserAction) => {
-    setUserAction(item);
-    setDrawerOpen(true);
+    if (
+      (!isMinAmountOfCategory && item === 'delete') ||
+      (!isMaxAmountOfTask && item === 'add') ||
+      item === 'edit'
+    ) {
+      setUserAction(item);
+      setDrawerOpen(true);
+    }
   };
 
   return (
@@ -68,6 +79,10 @@ const UserActionsDropdownMenu = ({
           <DropdownMenuItemWithIcon
             icon={ADD_TASK.icon}
             onClick={() => handleItemClick('add')}
+            className={cn(
+              isMaxAmountOfTask &&
+                '[&>*]:text-slate-300 text-slate-300 cursor-not-allowed',
+            )}
           >
             {ADD_TASK.text}
           </DropdownMenuItemWithIcon>
@@ -76,6 +91,10 @@ const UserActionsDropdownMenu = ({
           <DropdownMenuItemWithIcon
             icon={DELETE_CATEGORY.icon}
             onClick={() => handleItemClick('delete')}
+            className={cn(
+              isMinAmountOfCategory &&
+                '[&>*]:text-slate-300 text-slate-300 cursor-not-allowed',
+            )}
           >
             {DELETE_CATEGORY.text}
           </DropdownMenuItemWithIcon>
@@ -94,6 +113,8 @@ interface IAccordionCategoryItemProps {
   onUpdateName?: (id: string, newName: string) => void;
   categoryData?: ICategory[];
   onDelete?: (id: string) => void;
+  isMinAmountOfCategory: boolean;
+  isMaxAmountOfTask: boolean;
 }
 
 /**
@@ -110,6 +131,8 @@ export const AccordionCategoryItem = ({
   onUpdateName,
   onDelete,
   categoryData,
+  isMinAmountOfCategory,
+  isMaxAmountOfTask,
 }: IAccordionCategoryItemProps) => {
   /**
    * State to manage the dropdown menu open state.
@@ -173,6 +196,8 @@ export const AccordionCategoryItem = ({
         setOpen={setIsDropdownOpen}
         setDrawerOpen={setIsDrawerOpen}
         setUserAction={setUserAction}
+        isMinAmountOfCategory={isMinAmountOfCategory}
+        isMaxAmountOfTask={isMaxAmountOfTask}
       />
 
       {type === 'setup' ? (
