@@ -18,6 +18,12 @@ interface ICommonEmailProps {
   callbackUrl: string;
 }
 
+/**
+ * Common email template for all emails.
+ *
+ * @param type - The type of the email to send: 'TENANT_INVITATION', 'PASSWORD_RESET', 'PASSWORD_RESET_SUCCESS', 'SIGNUP_CONFIRMATION'
+ * @param callbackUrl - The URL to redirect the user to when they click the button in the email
+ */
 const CommonEmail = ({ type, callbackUrl }: ICommonEmailProps) => {
   const template = EMAILS[type];
 
