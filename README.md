@@ -4,7 +4,7 @@
 
 <br>
 
-**Tascurator** is a web application designed to streamline the management of cleaning duties in a share house.
+**Tascurator** is a web application designed to streamline the management of cleaning duties in a shared house.
 It offers a user-friendly platform for landlords to effortlessly create tasks with detailed instructions, invite tenants, and track progress.
 Tenants can quickly access, update, and report on their tasks, ensuring a well-organized living environment.
 
@@ -14,8 +14,8 @@ Tenants can quickly access, update, and report on their tasks, ensuring a well-o
 
 - **Task Management**: Create and assign tasks that have detailed instructions, ensuring tenants understand their responsibilities.
 - **Task Instructions**: Write detailed instructions or guidelines for each task using Markdown, which tenants can view on their screen. This eliminates the need for landlords to individually explain tasks to tenants.
-- **Tenant Management**: Invite tenants to join the share house and manage their participation via their emails.
-- **Progress Tracking**: Monitor the status of each task and tenant at a glance. Landlords with multiple share houses can view the progress of each house through a centralized dashboard.
+- **Tenant Management**: Invite tenants to join the shared house and manage their participation via their emails.
+- **Progress Tracking**: Monitor the status of each task and tenant at a glance. Landlords with multiple shared houses can view the progress of each house through a centralized dashboard.
 - **Rotation Scheduling**: Set how often tasks are rotated among tenants—either every 1 or 2 weeks—to ensure a fair distribution of duties.
 - **Automatic Assignments**: Task assignments are automatically updated based on the set rotation schedule, ensuring the workload is regularly distributed without manual intervention.
 - **Fair Task Distribution**: The system balances task assignments by considering each tenant’s history, ensuring no tenant is overloaded with extra duties.
