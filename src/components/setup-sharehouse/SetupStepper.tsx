@@ -81,7 +81,7 @@ export const SetupStepper = ({
           if (sharehouse.name === getValues().name) {
             isValid = false;
             toast({
-              description: 'Share house name already exists',
+              description: 'Shared house name already exists',
               variant: 'destructive',
             });
           }
