@@ -12,7 +12,7 @@ Tenants can quickly access, update, and report on their tasks, ensuring a well-o
 
 ### For landlords:
 
-- **Task Management**: Create and assign tasks to tenants with ease.
+- **Task Management**: Create and assign tasks that have detailed instructions, ensuring tenants understand their responsibilities.
 - **Task Instructions**: Write detailed instructions or guidelines for each task using Markdown, which tenants can view on their screen. This eliminates the need for landlords to individually explain tasks to tenants.
 - **Tenant Management**: Invite tenants to join the share house and manage their participation via their emails.
 - **Progress Tracking**: Monitor the status of each task and tenant at a glance. Landlords with multiple share houses can view the progress of each house through a centralized dashboard.
