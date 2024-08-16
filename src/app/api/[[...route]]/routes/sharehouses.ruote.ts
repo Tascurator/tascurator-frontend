@@ -48,14 +48,14 @@ const app = new Hono<THonoEnv>()
     } catch (error) {
       console.error(
         SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
-          'fetching data for all share houses the landlord has',
+          'fetching data for all shared houses the landlord has',
         ),
         error,
       );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'fetching data for all share houses the landlord has',
+            'fetching data for all shared houses the landlord has',
           ),
         },
         500,

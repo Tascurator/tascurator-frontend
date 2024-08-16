@@ -157,7 +157,7 @@ const app = new Hono<THonoEnv>()
          */
         if (doesShareHouseExist === null) {
           return c.json(
-            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('shared house') },
             404,
           );
         }

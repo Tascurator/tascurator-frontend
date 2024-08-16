@@ -18,13 +18,13 @@ export const automaticRotationMiddleware = createMiddleware<THonoEnv>(
     } catch (error) {
       console.error(
         CONSOLE_COMPLETION_ERROR(
-          "automatically rotating each share houses's AssignedData",
+          "automatically rotating each shared houses's AssignedData",
         ),
         error,
       );
       return c.json(
         {
-          error: COMPLETION_ERROR("rotating each share house's AssignedData"),
+          error: COMPLETION_ERROR("rotating each shared house's AssignedData"),
         },
         500,
       );
