@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -30,7 +31,6 @@ const tz = 'America/Vancouver';
 export const getToday = (): Date => {
   // set start of day to 12:00 AM
   const now = dayjs().tz(tz).startOf('day');
-  console.log('Vancouver time', now.format());
   return now.toDate();
 };
 
