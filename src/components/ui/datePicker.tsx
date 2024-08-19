@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -12,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { formatDate } from '@/utils/dates';
 
 interface IDatePickerProps {
   onChange: (date: Date) => void;
@@ -60,7 +60,7 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
           )}
         >
           {date ? (
-            format(date, 'yyyy/MM/dd')
+            formatDate(date)
           ) : (
             <span className="text-gray-500">Pick a date</span>
           )}
