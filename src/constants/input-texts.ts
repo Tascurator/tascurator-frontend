@@ -21,7 +21,7 @@ export const INPUT_TEXTS = {
   // ShareHouse
   SHAREHOUSE_NAME: {
     label: 'Name',
-    placeholder: 'Sample share house',
+    placeholder: 'Sample shared house',
   },
 
   // Category
