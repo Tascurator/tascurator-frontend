@@ -5,7 +5,9 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// set the default timezone to Vancouver
+/**
+ * The timezone for Vancouver, British Columbia.
+ */
 const tz = 'America/Vancouver';
 
 /**
@@ -29,9 +31,7 @@ const tz = 'America/Vancouver';
  */
 
 export const getToday = (): Date => {
-  // set start of day to 12:00 AM
-  const now = dayjs().tz(tz).startOf('day');
-  return now.toDate();
+  return dayjs().tz(tz).startOf('day').toDate();
 };
 
 /**
@@ -53,8 +53,7 @@ export const getToday = (): Date => {
  */
 
 export const addDays = (date: Date, days: number): Date => {
-  const result = dayjs(date).add(days, 'day').toDate();
-  return result;
+  return dayjs(date).add(days, 'day').toDate();
 };
 
 /**
@@ -74,8 +73,7 @@ export const addDays = (date: Date, days: number): Date => {
  * - https://day.js.org/docs/en/manipulate/utc#docsNav
  */
 export const convertToUTC = (date: Date): Date => {
-  const utcTime = dayjs(date).utc().toDate();
-  return utcTime;
+  return dayjs(date).utc().toDate();
 };
 
 /**
@@ -96,8 +94,7 @@ export const convertToUTC = (date: Date): Date => {
  */
 
 export const convertToPDT = (date: Date): Date => {
-  const pdtTime = dayjs(date).tz(tz).toDate();
-  return pdtTime;
+  return dayjs(date).tz(tz).toDate();
 };
 
 /**
@@ -117,6 +114,5 @@ export const convertToPDT = (date: Date): Date => {
  */
 
 export const formatDate = (date: Date): string => {
-  const formattedDate = dayjs(date).format('YYYY/MM/DD');
-  return formattedDate;
+  return dayjs(date).format('YYYY/MM/DD');
 };
