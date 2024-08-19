@@ -8,7 +8,7 @@ dayjs.extend(timezone);
 /**
  * The timezone for Vancouver, British Columbia.
  */
-const tz = 'America/Vancouver';
+export const VANCOUVER_TIMEZONE = 'America/Vancouver';
 
 /**
  * Get the current date in the Pacific Time Zone (Vancouver).
@@ -29,9 +29,8 @@ const tz = 'America/Vancouver';
  * @see
  *  - https://day.js.org/docs/en/timezone/timezone
  */
-
 export const getToday = (): Date => {
-  return dayjs().tz(tz).startOf('day').toDate();
+  return dayjs().tz(VANCOUVER_TIMEZONE).startOf('day').toDate();
 };
 
 /**
@@ -51,7 +50,6 @@ export const getToday = (): Date => {
  * @see
  *  - https://day.js.org/docs/en/manipulate/add#docsNav
  */
-
 export const addDays = (date: Date, days: number): Date => {
   return dayjs(date).add(days, 'day').toDate();
 };
@@ -92,9 +90,8 @@ export const convertToUTC = (date: Date): Date => {
  * @see
  * - https://day.js.org/docs/en/plugin/timezone#docsNav
  */
-
 export const convertToPDT = (date: Date): Date => {
-  return dayjs(date).tz(tz).toDate();
+  return dayjs(date).tz(VANCOUVER_TIMEZONE).toDate();
 };
 
 /**
@@ -112,7 +109,6 @@ export const convertToPDT = (date: Date): Date => {
  * @see
  * - https://day.js.org/docs/en/display/format#docsNav
  */
-
 export const formatDate = (date: Date): string => {
   return dayjs(date).format('YYYY/MM/DD');
 };
