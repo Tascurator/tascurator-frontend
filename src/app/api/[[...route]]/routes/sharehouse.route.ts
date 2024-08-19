@@ -33,7 +33,7 @@ const app = new Hono<THonoEnv>()
        */
       if (!doesShareHouseExist)
         return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('shared house') },
           404,
         );
 
@@ -57,14 +57,14 @@ const app = new Hono<THonoEnv>()
     } catch (error) {
       console.error(
         SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
-          'fetching data for the share house',
+          'fetching data for the shared house',
         ),
         error,
       );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'fetching data for the share house',
+            'fetching data for the shared house',
           ),
         },
         500,
@@ -91,7 +91,7 @@ const app = new Hono<THonoEnv>()
          */
         if (!shareHouse)
           return c.json(
-            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+            { error: SERVER_ERROR_MESSAGES.NOT_FOUND('shared house') },
             404,
           );
 
@@ -105,7 +105,7 @@ const app = new Hono<THonoEnv>()
         if (c.get('sharehouses').find((s) => s.name === data.name))
           return c.json(
             {
-              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
+              error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('shared house name'),
             },
             400,
           );
@@ -123,14 +123,14 @@ const app = new Hono<THonoEnv>()
       } catch (error) {
         console.error(
           SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
-            'updating data for the share house',
+            'updating data for the shared house',
           ),
           error,
         );
         return c.json(
           {
             error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-              'updating data for the share house',
+              'updating data for the shared house',
             ),
           },
           500,
@@ -154,7 +154,7 @@ const app = new Hono<THonoEnv>()
        */
       if (!shareHouse)
         return c.json(
-          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('share house') },
+          { error: SERVER_ERROR_MESSAGES.NOT_FOUND('shared house') },
           404,
         );
 
@@ -203,14 +203,14 @@ const app = new Hono<THonoEnv>()
     } catch (error) {
       console.error(
         SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
-          'deleting the share house',
+          'deleting the shared house',
         ),
         error,
       );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'deleting the share house',
+            'deleting the shared house',
           ),
         },
         500,
@@ -233,7 +233,7 @@ const app = new Hono<THonoEnv>()
       if (shareHouses.find((s) => s.name === data.name))
         return c.json(
           {
-            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('share house name'),
+            error: SERVER_ERROR_MESSAGES.DUPLICATE_ENTRY('shared house name'),
           },
           400,
         );
@@ -429,14 +429,14 @@ const app = new Hono<THonoEnv>()
     } catch (error) {
       console.error(
         SERVER_ERROR_MESSAGES.CONSOLE_COMPLETION_ERROR(
-          'creating data for the share house',
+          'creating data for the shared house',
         ),
         error,
       );
       return c.json(
         {
           error: SERVER_ERROR_MESSAGES.COMPLETION_ERROR(
-            'creating data for the share house',
+            'creating data for the shared house',
           ),
         },
         500,
