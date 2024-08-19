@@ -12,13 +12,10 @@ import {
   getPasswordResetTokenDataByToken,
 } from '@/utils/prisma-helpers';
 import { sendEmail } from '@/lib/resend';
-import { EMAILS } from '@/constants/emails';
 import prisma from '@/lib/prisma';
 import { hashPassword } from '@/utils/password-hashing';
 import { SERVER_ERROR_MESSAGES } from '@/constants/server-error-messages';
 import { getBaseUrl } from '@/utils/base-url';
-
-const { PASSWORD_RESET, PASSWORD_RESET_SUCCESS } = EMAILS;
 
 const { INVALID_TOKEN_RESET_PASSWORD, COMPLETION_ERROR } =
   SERVER_ERROR_MESSAGES;
@@ -52,10 +49,8 @@ export const sendForgotPasswordEmail = async (data: TForgotPassword) => {
    */
   await sendEmail({
     to: data.email,
-    subject: PASSWORD_RESET.subject,
-    html: PASSWORD_RESET.html(
-      `${getBaseUrl()}/forgot-password?token=${token.token}`,
-    ),
+    type: 'PASSWORD_RESET',
+    callbackUrl: `${getBaseUrl()}/forgot-password?token=${token.token}`,
   });
 };
 
@@ -127,7 +122,7 @@ export const resetPassword = async (token: string, data: TResetPassword) => {
 export const sendPasswordResetSuccessEmail = async (email: string) => {
   await sendEmail({
     to: email,
-    subject: PASSWORD_RESET_SUCCESS.subject,
-    html: PASSWORD_RESET_SUCCESS.html(`${getBaseUrl()}/login`),
+    type: 'PASSWORD_RESET_SUCCESS',
+    callbackUrl: `${getBaseUrl()}/login`,
   });
 };
