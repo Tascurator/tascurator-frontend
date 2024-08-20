@@ -5,7 +5,7 @@ import { api } from '@/lib/hono';
 import { headers } from 'next/headers';
 import DashboardTabsManager from '@/components/landlord-dashboard/DashboardTabsManager';
 import LandlordDashboardTabContent from '@/components/landlord-dashboard/LandlordDashboardTabContent';
-import { formatDate, convertToPDT } from '@/utils/dates';
+import { formatDate, convertToPacificTime } from '@/utils/dates';
 
 export interface IShareHousePageProps {
   params: {
@@ -52,17 +52,23 @@ const ShareHousePage = async ({
             tabType="current"
             progressPercent={data.current.progressRate}
             startDate={formatDate(
-              convertToPDT(new Date(data.current.startDate)),
+              convertToPacificTime(new Date(data.current.startDate)),
             )}
-            endDate={formatDate(convertToPDT(new Date(data.current.endDate)))}
+            endDate={formatDate(
+              convertToPacificTime(new Date(data.current.endDate)),
+            )}
             cardContents={data.current.categories as ICardContentProps[]}
             shareHouseId={share_house_id}
           />
           <LandlordDashboardTabContent
             tabType="next"
             progressPercent={0}
-            startDate={formatDate(convertToPDT(new Date(data.next.startDate)))}
-            endDate={formatDate(convertToPDT(new Date(data.next.endDate)))}
+            startDate={formatDate(
+              convertToPacificTime(new Date(data.next.startDate)),
+            )}
+            endDate={formatDate(
+              convertToPacificTime(new Date(data.next.endDate)),
+            )}
             cardContents={data.next.categories as ICardContentProps[]}
             shareHouseId={share_house_id}
           />

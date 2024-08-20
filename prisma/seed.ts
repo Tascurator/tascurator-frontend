@@ -18,7 +18,7 @@ const createLandlord = async () => {
 };
 
 const createAssignmentSheet = async () => {
-  const todayInUTC = convertToUTC(getToday());
+  const todayInUTC = convertToUTC(getToday()).toDate();
 
   return prisma.assignmentSheet.create({
     data: {

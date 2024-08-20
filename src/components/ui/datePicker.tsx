@@ -1,7 +1,4 @@
-'use client';
-
 import { useState } from 'react';
-import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -12,10 +9,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  addDays,
+  convertToPacificTime,
+  formatDate,
+  getToday,
+  VANCOUVER_TIMEZONE,
+} from '@/utils/dates';
+import dayjs from 'dayjs';
 
 interface IDatePickerProps {
   onChange: (date: Date) => void;
-  selectedDate: Date | undefined;
+  selectedDate: Date;
 }
 /**
  * The DatePicker component is used to create a date picker component.
@@ -25,29 +30,31 @@ interface IDatePickerProps {
  */
 
 export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
-  const [date, setDate] = useState<Date | undefined>(selectedDate);
+  const [date, setDate] = useState<Date>(selectedDate);
 
   const handleDateChange = (date: Date | undefined) => {
-    if (!date) {
-      return;
-    }
-    setDate(date);
-    onChange(date);
+    /**
+     * Landlord always needs to select a date.
+     */
+    if (!date) return;
+
+    /**
+     * Convert the date to the Vancouver timezone, since the DayPicker uses the local timezone.
+     *
+     * @credit https://github.com/gpbl/react-day-picker/discussions/1149#discussioncomment-9500300
+     */
+    const manipulated = dayjs(date)
+      .local()
+      .tz(VANCOUVER_TIMEZONE, true)
+      .toDate();
+
+    setDate(manipulated);
+    onChange(manipulated);
   };
 
-  /**
-   * todo: disable past days and after one month
-   * disable dates before yesterday and after today for now
-   */
+  const today = () => getToday();
 
-  const today = () => {
-    return new Date();
-  };
-
-  const yesterday = () => {
-    const today = new Date();
-    return new Date(today.setDate(today.getDate() - 1));
-  };
+  const yesterday = () => addDays(today(), -1);
 
   return (
     <Popover>
@@ -56,11 +63,11 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
           variant={'outline'}
           className={cn(
             'w-full px-3 py-[11px] justify-between text-left font-normal rounded-xl border-slate-400 border flex text-gray-500 bg-white hover:bg-slate-50 hover:text-black',
-            !date && 'text-muted-foreground ',
+            !date && 'text-muted-foreground',
           )}
         >
           {date ? (
-            format(date, 'yyyy/MM/dd')
+            formatDate(convertToPacificTime(date))
           ) : (
             <span className="text-gray-500">Pick a date</span>
           )}
@@ -70,10 +77,11 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
+          selected={date && dayjs(date).tz(VANCOUVER_TIMEZONE).local().toDate()}
           onSelect={handleDateChange}
           initialFocus
-          disabled={(date) => date < yesterday() || date > today()}
+          disabled={(date) => date <= yesterday() || date > today()}
+          today={today()}
         />
       </PopoverContent>
     </Popover>
