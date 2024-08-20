@@ -1,7 +1,7 @@
 import { AccordionAssignmentSheet } from '@/components/accordion-assignment-sheet/AccordionAssignmentSheet';
 import { AccordionAssignmentSheetFuture } from '@/components/accordion-assignment-sheet/AccordionAssignmentSheetFuture';
 import { api } from '@/lib/hono';
-import { convertToPDT, formatDate } from '@/utils/dates';
+import { convertToPacificTime, formatDate } from '@/utils/dates';
 import { notFound } from 'next/navigation';
 
 interface IAssignmentSheetPageProps {
@@ -41,8 +41,12 @@ const AssignmentSheetPage = async ({
       <div className="px-6">
         {/* Current rotation */}
         <AccordionAssignmentSheet
-          startDate={formatDate(convertToPDT(new Date(rotations[1].startDate)))}
-          endDate={formatDate(convertToPDT(new Date(rotations[1].endDate)))}
+          startDate={formatDate(
+            convertToPacificTime(new Date(rotations[1].startDate)),
+          )}
+          endDate={formatDate(
+            convertToPacificTime(new Date(rotations[1].endDate)),
+          )}
           categories={rotations[1].categories}
           assignmentSheetId={assignment_sheet_id}
           tenantId={tenant_id}
@@ -54,8 +58,12 @@ const AssignmentSheetPage = async ({
           .map(([key, rotation]) => (
             <AccordionAssignmentSheetFuture
               key={key}
-              startDate={formatDate(convertToPDT(new Date(rotation.startDate)))}
-              endDate={formatDate(convertToPDT(new Date(rotation.endDate)))}
+              startDate={formatDate(
+                convertToPacificTime(new Date(rotation.startDate)),
+              )}
+              endDate={formatDate(
+                convertToPacificTime(new Date(rotation.endDate)),
+              )}
               categories={rotation.categories}
             />
           ))}

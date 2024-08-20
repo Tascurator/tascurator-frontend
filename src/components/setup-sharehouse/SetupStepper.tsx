@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/accordion';
 import { AccordionTaskItem } from '@/components/ui/accordion/AccordionTaskItem';
 import { AccordionCategoryItem } from '@/components/ui/accordion/AccordionCategoryItem';
+import { convertToUTC, getToday } from '@/utils/dates';
 
 const {
   CATEGORY_MAX_AMOUNT,
@@ -53,7 +54,7 @@ export const SetupStepper = ({
       name: '',
       categories,
       tenants,
-      startDate: new Date().toISOString(),
+      startDate: getToday().toISOString(),
       rotationCycle: 7,
     },
     mode: 'onBlur',
@@ -417,10 +418,7 @@ export const SetupStepper = ({
 
   // step4
   const scheduleSetting = () => {
-    // Get the start date from the form state
-    const startDate = getValues().startDate
-      ? new Date(getValues().startDate)
-      : undefined;
+    const startDate = convertToUTC(new Date(getValues().startDate)).toDate();
 
     const setDatePicker = (date: Date) => {
       if (!date) return;

@@ -1,39 +1,35 @@
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 /**
- * Returns the offset in hours between the Pacific Daylight Time (PDT) time zone and UTC based on the given date.
- *
- * @param date - The date to check for Daylight Saving Time
- *
- * @credits
- *   - https://stackoverflow.com/a/11888430
- *   - https://medium.com/make-it-heady/javascript-handle-date-in-any-timezone-with-daylight-saving-check-182657009310
+ * The timezone for Vancouver, British Columbia.
  */
-const getPDTOffset = (date: Date): number => {
-  const stdTimezoneOffset = () => {
-    const jan = new Date(date.getFullYear(), 0, 1);
-    const jul = new Date(date.getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-  };
-
-  const isDstObserved = (today: Date) => {
-    return today.getTimezoneOffset() < stdTimezoneOffset();
-  };
-
-  // PDT is UTC-7 during Daylight Saving Time, and UTC-8 otherwise
-  if (isDstObserved(date)) {
-    return -7;
-  }
-  return -8;
-};
+export const VANCOUVER_TIMEZONE = 'America/Vancouver';
 
 /**
- * Get current date in the Pacific Daylight Time (PDT) time zone.
- * The time is set to 12:00 AM (midnight).
+ * Get the current date in the Pacific Time Zone (Vancouver).
+ *
+ * @returns The current date in Vancouver time
+ *
+ * @example
+ * const today = getToday();
+ * console.log(today); // 2021-10-01T07:00:00.000Z
+ * it considers the daylight saving time (PDT) and returns the date in Vancouver time.
+ *
+ * const pdt = dayjs.tz('2024-03-10T10:00:00', 'America/Vancouver');
+ * console.log(pdt.format()); // 2024-03-10T10:00:00-07:00
+ * const pst = dayjs.tz('2024-11-03T10:00:00', 'America/Vancouver');
+ * console.log(pst.format()); // 2024-11-03T10:00:00-08:00
+ *
+ * @see
+ *  - https://day.js.org/docs/en/timezone/timezone
  */
 export const getToday = (): Date => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-
-  return convertToPDT(now);
+  return dayjs().tz(VANCOUVER_TIMEZONE).startOf('day').toDate();
 };
 
 /**
@@ -41,56 +37,73 @@ export const getToday = (): Date => {
  *
  * @param date - The initial date (startDate)
  * @param days - The number of days to add
+ *
+ * @returns The new date after adding the specified number of days
+ *
+ * @example
+ * const date = dayjs('2021-10-01T00:00:00Z').toDate();
+ * const newDate = addDays(date, 7);
+ * console.log(newDate); // 2021-10-08T00:00:00.000Z
+ *
+ * @see
+ *  - https://day.js.org/docs/en/manipulate/add#docsNav
  */
 export const addDays = (date: Date, days: number): Date => {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
+  return dayjs(date).add(days, 'day').toDate();
 };
 
 /**
- * Convert Pacific Time to UTC+0 time.
+ * Convert a date to UTC time.
  *
  * @param date - The date to convert
+ *
+ * @returns The date in UTC time
+ *
  * @example
  * const pdtDate = new Date('2021-09-30T17:00:00Z');
  * const utcDate = convertToUTC(pdtDate);
  * console.log(utcDate); // 2021-10-01T00:00:00.000Z
+ *
+ * @see
+ * - https://day.js.org/docs/en/manipulate/utc#docsNav
  */
-export const convertToUTC = (date: Date): Date => {
-  const pdtOffset = getPDTOffset(date);
-  const utcTime = date.getTime() - pdtOffset * 60 * 60 * 1000;
-  return new Date(utcTime);
+export const convertToUTC = (date: Date): Dayjs => {
+  return dayjs(date).utc();
 };
 
 /**
- * Convert UTC+0 time to Pacific Time.
+ * Convert a date to Pacific Time (PT).
  *
  * @param date - The date to convert
+ *
+ * @returns The date in Pacific Time (PST/PDT)
+ *
  * @example
- *  const utcDate = new Date('2021-10-01T00:00:00Z');
- *  const pdtDate = convertToPDT(utcDate);
- *  console.log(pdtDate); // 2021-09-30T17:00:00.000Z
+ * const utcDate = new Date('2021-10-01T00:00:00Z');
+ * const pdtDate = convertToPDT(utcDate);
+ * console.log(pdtDate); // 2021-09-30T17:00:00.000Z
+ *
+ * @see
+ * - https://day.js.org/docs/en/plugin/timezone#docsNav
  */
-export const convertToPDT = (date: Date): Date => {
-  const pdtOffset = getPDTOffset(date);
-  const pdtTime = date.getTime() + pdtOffset * 60 * 60 * 1000;
-  return new Date(pdtTime);
+export const convertToPacificTime = (date: Date): Dayjs => {
+  return dayjs.utc(date).tz(VANCOUVER_TIMEZONE);
 };
 
 /**
- * Format a date as a string in the format "YYYY/MM/DD".
  *
- * @param date - The date to format
+ * @param date
+ *
+ * @returns The formatted date in the format "YYYY/MM/DD"
+ *
  * @example
  * const date = new Date('2021-10-01T00:00:00Z');
  * const formattedDate = formatDate(date);
  * console.log(formattedDate); // 2021/10/01
+ *
+ * @see
+ * - https://day.js.org/docs/en/display/format#docsNav
  */
-export const formatDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}/${month}/${day}`;
+export const formatDate = (date: Dayjs): string => {
+  return date.format('YYYY/MM/DD');
 };

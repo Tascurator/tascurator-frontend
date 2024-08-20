@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { convertToPDT, getToday } from '@/utils/dates';
+import { convertToPacificTime, getToday } from '@/utils/dates';
 import { AssignedData } from '@/services/AssignedData';
 import { TSanitizedPrismaShareHouse } from '@/types/server';
 import { Prisma } from '@prisma/client';
@@ -22,7 +22,9 @@ export const automaticRotation = async (
     sharehouses,
   )) {
     const today = getToday();
-    const endDate = convertToPDT(sharehouse.assignmentSheet.endDate);
+    const endDate = convertToPacificTime(
+      sharehouse.assignmentSheet.endDate,
+    ).toDate();
 
     /**
      * Check if it's time to rotate the assignments.
