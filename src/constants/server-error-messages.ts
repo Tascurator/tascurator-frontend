@@ -37,4 +37,6 @@ export const SERVER_ERROR_MESSAGES = {
   CREDENTIAL_FIELDS_INVALID: 'Invalid fields',
   PAST_END_DATE_ERROR:
     'Your task details are outdated. Please refresh the page to view the latest tasks.',
+  DEVELOPMENT_ONLY_ROUTE:
+    'This route is only available in development environments.',
 };

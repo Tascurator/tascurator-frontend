@@ -13,6 +13,7 @@ import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/pro
 import { sharehousesLoaderMiddleware } from '@/app/api/[[...route]]/middlewares/sharehouses-loader.middleware';
 import { THonoEnv } from '@/types/hono-env';
 import { automaticRotationMiddleware } from '@/app/api/[[...route]]/middlewares/automatic-rotation.middleware';
+import { developmentOnlyRouteMiddleware } from '@/app/api/[[...route]]/middlewares/development-only-route.middleware';
 
 const app = new Hono<THonoEnv>();
 
@@ -39,9 +40,9 @@ const routes = app
 
   /**
    * This is a test route to check if the user is logged in.
-   * TODO: Remove this route before deploying to production.
+   * @note Only for development environment
    */
-  .get('/whoami', async (c) => {
+  .get('/whoami', developmentOnlyRouteMiddleware, async (c) => {
     const landlord = await prisma.landlord.findUnique({
       where: { id: c.get('session').user.id },
     });
