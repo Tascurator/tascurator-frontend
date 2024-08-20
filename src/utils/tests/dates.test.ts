@@ -37,35 +37,35 @@ describe('Date Utilities', () => {
     expect(date.format()).toBe('2024-07-31T17:00:00-07:00');
   });
 
-  describe('should convert a PDT time to UTC time (-7 hrs)', () => {
+  describe('should convert a PDT time to UTC time (+7 hrs)', () => {
     it('should convert 2024/03/10 10:00:00 PDT to 2024/03/10 17:00:00 UTC', () => {
       const pdtDate = convertToPDT(new Date('2024-03-10T10:00:00-07:00'));
-      const utcDate = pdtDate.toISOString();
-      expect(utcDate).toBe('2024-03-10T17:00:00.000Z');
+      const utcDate = convertToUTC(pdtDate.toDate());
+      expect(utcDate.toISOString()).toBe('2024-03-10T17:00:00.000Z');
     });
   });
 
-  describe('should convert a PST time to UTC time (-8 hrs)', () => {
+  describe('should convert a PST time to UTC time (+8 hrs)', () => {
     it('should convert 2024/11/03 10:00:00 PST to 2024/11/03 18:00:00 UTC', () => {
       const pstDate = convertToPDT(new Date('2024-11-03T10:00:00-08:00'));
-      const utcDate = pstDate.toISOString();
-      expect(utcDate).toBe('2024-11-03T18:00:00.000Z');
+      const utcDate = convertToUTC(pstDate.toDate());
+      expect(utcDate.toISOString()).toBe('2024-11-03T18:00:00.000Z');
     });
   });
 
   describe('should convert a UTC time to PDT time (-7 hrs)', () => {
-    it('should convert 2024/11/03 00:00:00 UTC to 2024/11/02 17:00:00 PST', () => {
+    it('should convert 2024/11/03 00:00:00 UTC to 2024/11/02 17:00:00 PDT', () => {
       const utcDate = new Date('2024-11-03T00:00:00Z');
-      const pstDate = convertToPDT(utcDate);
-      expect(pstDate.format()).toBe('2024-11-02T17:00:00-07:00');
+      const pdtDate = convertToPDT(utcDate);
+      expect(pdtDate.format()).toBe('2024-11-02T17:00:00-07:00');
     });
   });
 
   describe('should convert a UTC time to PST time (-8 hrs)', () => {
-    it('should convert 2024/03/10 00:00:00 UTC to 2024/03/09 16:00:00 PDT', () => {
+    it('should convert 2024/03/10 00:00:00 UTC to 2024/03/09 16:00:00 PST', () => {
       const utcDate = new Date('2024-03-10T00:00:00Z');
-      const pdtDate = convertToPDT(utcDate);
-      expect(pdtDate.format()).toBe('2024-03-09T16:00:00-08:00');
+      const pstDate = convertToPDT(utcDate);
+      expect(pstDate.format()).toBe('2024-03-09T16:00:00-08:00');
     });
   });
 
