@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   description:
     'An app that streamlines the management of cleaning duties in shared houses, offering automated task rotation and progress tracking for tenants and landlords.',
   metadataBase: new URL(getBaseUrl()),
+  openGraph: {
+    url: getBaseUrl(),
+    type: 'website',
+    siteName: 'Tascurator',
+  },
 };
 
 export default function RootLayout({
