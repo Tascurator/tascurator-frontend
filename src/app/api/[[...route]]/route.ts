@@ -9,7 +9,7 @@ import categoryRoute from '@/app/api/[[...route]]/routes/category.route';
 import taskRoute from '@/app/api/[[...route]]/routes/task.route';
 import tenantRoute from '@/app/api/[[...route]]/routes/tenant.route';
 import assignmentsRoute from '@/app/api/[[...route]]/routes/assignments.route';
-import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middlware';
+import { protectedRouteMiddleware } from '@/app/api/[[...route]]/middlewares/protected-route.middleware';
 import { sharehousesLoaderMiddleware } from '@/app/api/[[...route]]/middlewares/sharehouses-loader.middleware';
 import { THonoEnv } from '@/types/hono-env';
 import { automaticRotationMiddleware } from '@/app/api/[[...route]]/middlewares/automatic-rotation.middleware';
