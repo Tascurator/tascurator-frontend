@@ -13,8 +13,7 @@ export const VANCOUVER_TIMEZONE = 'America/Vancouver';
 /**
  * Get the current date in the Pacific Time Zone (Vancouver).
  *
- * @returns
- * The current date in Vancouver time
+ * @returns The current date in Vancouver time
  *
  * @example
  * const today = getToday();
@@ -39,8 +38,7 @@ export const getToday = (): Date => {
  * @param date - The initial date (startDate)
  * @param days - The number of days to add
  *
- * @returns
- * The new date after adding the specified number of days
+ * @returns The new date after adding the specified number of days
  *
  * @example
  * const date = dayjs('2021-10-01T00:00:00Z').toDate();
@@ -59,8 +57,7 @@ export const addDays = (date: Date, days: number): Date => {
  *
  * @param date - The date to convert
  *
- * @returns
- * The date in UTC time
+ * @returns The date in UTC time
  *
  * @example
  * const pdtDate = new Date('2021-09-30T17:00:00Z');
@@ -75,12 +72,11 @@ export const convertToUTC = (date: Date): Dayjs => {
 };
 
 /**
- * Convert a date to Pacific Time (PDT).
+ * Convert a date to Pacific Time (PT).
  *
  * @param date - The date to convert
  *
- * @returns
- * The date in Pacific Time (PDT)
+ * @returns The date in Pacific Time (PST/PDT)
  *
  * @example
  * const utcDate = new Date('2021-10-01T00:00:00Z');
@@ -90,7 +86,7 @@ export const convertToUTC = (date: Date): Dayjs => {
  * @see
  * - https://day.js.org/docs/en/plugin/timezone#docsNav
  */
-export const convertToPDT = (date: Date): Dayjs => {
+export const convertToPacificTime = (date: Date): Dayjs => {
   return dayjs.utc(date).tz(VANCOUVER_TIMEZONE);
 };
 
@@ -98,8 +94,7 @@ export const convertToPDT = (date: Date): Dayjs => {
  *
  * @param date
  *
- * @returns
- * The formatted date in the format "YYYY/MM/DD"
+ * @returns The formatted date in the format "YYYY/MM/DD"
  *
  * @example
  * const date = new Date('2021-10-01T00:00:00Z');

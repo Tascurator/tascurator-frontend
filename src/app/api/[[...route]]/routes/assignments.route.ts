@@ -7,7 +7,7 @@ import {
   TRotationScheduleForecast,
   TSanitizedPrismaShareHouse,
 } from '@/types/server';
-import { addDays, convertToPDT, getToday } from '@/utils/dates';
+import { addDays, convertToPacificTime, getToday } from '@/utils/dates';
 import { zValidator } from '@hono/zod-validator';
 import { taskCompletionUpdateSchema } from '@/constants/schema';
 import { Prisma } from '@prisma/client';
@@ -288,7 +288,9 @@ const app = new Hono()
          * If the end date has passed, return an error.
          * If not, proceed with updating the task completion status.
          */
-        if (getToday() >= convertToPDT(assignedData.getEndDate()).toDate()) {
+        if (
+          getToday() >= convertToPacificTime(assignedData.getEndDate()).toDate()
+        ) {
           return c.json(
             { error: SERVER_ERROR_MESSAGES.PAST_END_DATE_ERROR },
             400,

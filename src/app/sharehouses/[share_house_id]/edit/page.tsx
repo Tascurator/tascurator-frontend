@@ -14,7 +14,7 @@ import { RotationCycles } from '@/components/sharehouses-management/RotationCycl
 import { api } from '@/lib/hono';
 import { CONSTRAINTS } from '@/constants/constraints';
 import { EditTabsManager } from '@/components/edit/EditTabsManager';
-import { convertToPDT, formatDate } from '@/utils/dates';
+import { convertToPacificTime, formatDate } from '@/utils/dates';
 import { headers } from 'next/headers';
 
 interface IEditShareHousePageProps {
@@ -46,7 +46,7 @@ const EditShareHousePage = async ({
     throw new Error(shareHouseManagement.error);
   }
 
-  const nextRotationStartDate = convertToPDT(
+  const nextRotationStartDate = convertToPacificTime(
     new Date(shareHouseManagement.nextRotationStartDate),
   );
 

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/popover';
 import {
   addDays,
-  convertToPDT,
+  convertToPacificTime,
   formatDate,
   getToday,
   VANCOUVER_TIMEZONE,
@@ -67,7 +67,7 @@ export function DatePicker({ onChange, selectedDate }: IDatePickerProps) {
           )}
         >
           {date ? (
-            formatDate(convertToPDT(date))
+            formatDate(convertToPacificTime(date))
           ) : (
             <span className="text-gray-500">Pick a date</span>
           )}
