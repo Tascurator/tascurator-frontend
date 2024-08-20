@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { SessionProvider } from 'next-auth/react';
+import { getBaseUrl } from '@/utils/base-url';
 
 const roboto = Roboto({ weight: ['400', '500'], subsets: ['latin'] });
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   title: 'Tascurator',
   description:
     'An app that streamlines the management of cleaning duties in shared houses, offering automated task rotation and progress tracking for tenants and landlords.',
+  metadataBase: new URL(getBaseUrl()),
 };
 
 export default function RootLayout({
