@@ -112,7 +112,7 @@ export const SetupStepper = ({
   const shareHouseNameSetting = () => {
     return (
       <SetupContents
-        title="Shared house name"
+        title="Enter shared house name"
         currentStep={currentStep}
         maxSteps={maxSteps}
         onNext={handleNext}
@@ -266,7 +266,7 @@ export const SetupStepper = ({
 
     return (
       <SetupContents
-        title="Create new category and task"
+        title="Create new categories and tasks"
         currentStep={currentStep}
         maxSteps={maxSteps}
         onNext={handleNext}
@@ -440,7 +440,7 @@ export const SetupStepper = ({
     return (
       <>
         <SetupContents
-          title="Setup rotation cycle"
+          title="Set schedule"
           currentStep={currentStep}
           maxSteps={maxSteps}
           onNext={handleNext}
