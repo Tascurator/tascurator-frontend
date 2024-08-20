@@ -22,7 +22,7 @@ export const automaticRotation = async (
     sharehouses,
   )) {
     const today = getToday();
-    const endDate = convertToPDT(sharehouse.assignmentSheet.endDate);
+    const endDate = convertToPDT(sharehouse.assignmentSheet.endDate).toDate();
 
     /**
      * Check if it's time to rotate the assignments.

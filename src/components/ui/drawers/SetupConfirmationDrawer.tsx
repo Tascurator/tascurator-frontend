@@ -14,7 +14,7 @@ import {
   TShareHouseConfirmSchema,
   TShareHouseCreationSchema,
 } from '@/constants/schema';
-import { formatDate } from '@/utils/dates';
+import { convertToPDT, formatDate } from '@/utils/dates';
 import { TOAST_TEXTS } from '@/constants/toast-texts';
 import { api } from '@/lib/hono';
 import { revalidatePage } from '@/actions/revalidation';
@@ -116,7 +116,7 @@ export const SetupConfirmationDrawer = ({
                   Start date
                 </div>
                 <p className="text-xl">
-                  {formatDate(new Date(data.startDate))}
+                  {formatDate(convertToPDT(new Date(data.startDate)))}
                 </p>
                 <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
                   Rotation cycle

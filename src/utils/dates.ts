@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
@@ -70,8 +70,8 @@ export const addDays = (date: Date, days: number): Date => {
  * @see
  * - https://day.js.org/docs/en/manipulate/utc#docsNav
  */
-export const convertToUTC = (date: Date): Date => {
-  return dayjs(date).utc().toDate();
+export const convertToUTC = (date: Date): Dayjs => {
+  return dayjs(date).utc();
 };
 
 /**
@@ -90,8 +90,8 @@ export const convertToUTC = (date: Date): Date => {
  * @see
  * - https://day.js.org/docs/en/plugin/timezone#docsNav
  */
-export const convertToPDT = (date: Date): Date => {
-  return dayjs(date).tz(VANCOUVER_TIMEZONE).toDate();
+export const convertToPDT = (date: Date): Dayjs => {
+  return dayjs.utc(date).tz(VANCOUVER_TIMEZONE);
 };
 
 /**
@@ -109,6 +109,6 @@ export const convertToPDT = (date: Date): Date => {
  * @see
  * - https://day.js.org/docs/en/display/format#docsNav
  */
-export const formatDate = (date: Date): string => {
-  return dayjs(date).format('YYYY/MM/DD');
+export const formatDate = (date: Dayjs): string => {
+  return date.format('YYYY/MM/DD');
 };
