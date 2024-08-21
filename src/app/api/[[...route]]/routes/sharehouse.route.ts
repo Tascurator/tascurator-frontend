@@ -287,143 +287,149 @@ const app = new Hono<THonoEnv>()
           400,
         );
 
-      const transaction = await prisma.$transaction(async (prisma) => {
-        const startDate = new Date(data.startDate);
-        const endDate = addDays(startDate, data.rotationCycle);
+      const transaction = await prisma.$transaction(
+        async (prisma) => {
+          const startDate = new Date(data.startDate);
+          const endDate = addDays(startDate, data.rotationCycle);
 
-        const newAssignmentSheet = await prisma.assignmentSheet.create({
-          data: {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            assignedData: '',
-          },
-        });
-
-        const newShareHouse = await prisma.shareHouse.create({
-          data: {
-            name: data.name,
-            landlordId: landlordId,
-            assignmentSheetId: newAssignmentSheet.id,
-          },
-        });
-
-        const newRotationAssignment = await prisma.rotationAssignment.create({
-          data: {
-            shareHouseId: newShareHouse.id,
-            rotationCycle: data.rotationCycle,
-          },
-        });
-
-        const createdCategories: Category[] = [];
-        for (const categoryData of data.categories) {
-          const newCategory = await prisma.category.create({
+          const newAssignmentSheet = await prisma.assignmentSheet.create({
             data: {
-              name: categoryData.name,
-              rotationAssignmentId: newRotationAssignment.id,
-              tasks: {
-                create: categoryData.tasks.map((task) => ({
-                  title: task.title,
-                  description: task.description,
-                })),
-              },
+              startDate: startDate.toISOString(),
+              endDate: endDate.toISOString(),
+              assignedData: '',
             },
           });
-          createdCategories.push(newCategory);
-        }
 
-        const createdTenants: Tenant[] = [];
-        for (let i = 0; i < data.tenants.length; i++) {
-          const tenantData = data.tenants[i];
-          const newTenant = await prisma.tenant.create({
+          const newShareHouse = await prisma.shareHouse.create({
             data: {
-              name: tenantData.name,
-              email: tenantData.email,
-              extraAssignedCount: 0,
-              tenantPlaceholders: {
-                create: {
-                  rotationAssignmentId: newRotationAssignment.id,
-                  index: i,
+              name: data.name,
+              landlordId: landlordId,
+              assignmentSheetId: newAssignmentSheet.id,
+            },
+          });
+
+          const newRotationAssignment = await prisma.rotationAssignment.create({
+            data: {
+              shareHouseId: newShareHouse.id,
+              rotationCycle: data.rotationCycle,
+            },
+          });
+
+          const createdCategories: Category[] = [];
+          for (const categoryData of data.categories) {
+            const newCategory = await prisma.category.create({
+              data: {
+                name: categoryData.name,
+                rotationAssignmentId: newRotationAssignment.id,
+                tasks: {
+                  create: categoryData.tasks.map((task) => ({
+                    title: task.title,
+                    description: task.description,
+                  })),
                 },
               },
-            },
-          });
-          createdTenants.push(newTenant);
-        }
+            });
+            createdCategories.push(newCategory);
+          }
 
-        const sharehouse = await prisma.shareHouse.findUnique({
-          where: { id: newShareHouse.id },
-          select: {
-            assignmentSheet: true,
-            RotationAssignment: {
-              select: {
-                rotationCycle: true,
-                categories: {
-                  include: {
-                    tasks: {
-                      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+          const createdTenants: Tenant[] = [];
+          for (let i = 0; i < data.tenants.length; i++) {
+            const tenantData = data.tenants[i];
+            const newTenant = await prisma.tenant.create({
+              data: {
+                name: tenantData.name,
+                email: tenantData.email,
+                extraAssignedCount: 0,
+                tenantPlaceholders: {
+                  create: {
+                    rotationAssignmentId: newRotationAssignment.id,
+                    index: i,
+                  },
+                },
+              },
+            });
+            createdTenants.push(newTenant);
+          }
+
+          const sharehouse = await prisma.shareHouse.findUnique({
+            where: { id: newShareHouse.id },
+            select: {
+              assignmentSheet: true,
+              RotationAssignment: {
+                select: {
+                  rotationCycle: true,
+                  categories: {
+                    include: {
+                      tasks: {
+                        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                      },
+                    },
+                    orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+                  },
+                  tenantPlaceholders: {
+                    include: {
+                      tenant: true,
+                    },
+                    orderBy: {
+                      index: 'asc',
                     },
                   },
-                  orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-                },
-                tenantPlaceholders: {
-                  include: {
-                    tenant: true,
-                  },
-                  orderBy: {
-                    index: 'asc',
-                  },
                 },
               },
             },
-          },
-        });
+          });
 
-        if (!sharehouse || !sharehouse.RotationAssignment) {
-          throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('shareHouse'));
-        }
-
-        const newInitialAssignedData = new InitialAssignedData(
-          sharehouse,
-          startDate,
-          data.rotationCycle,
-        );
-
-        const assignedData = newInitialAssignedData.getAssignedData();
-
-        await prisma.assignmentSheet.update({
-          where: {
-            id: newAssignmentSheet.id,
-          },
-          data: {
-            assignedData: assignedData as unknown as Prisma.JsonArray,
-          },
-        });
-
-        /**
-         * Send emails to each tenant with their personalized link
-         */
-        try {
-          for (const tenant of createdTenants) {
-            await sendEmail({
-              to: tenant.email,
-              type: 'TENANT_INVITATION',
-              callbackUrl: `${getBaseUrl()}/${newAssignmentSheet.id}/${tenant.id}`,
-            });
-
-            await new Promise((resolve) => setTimeout(resolve, 650));
+          if (!sharehouse || !sharehouse.RotationAssignment) {
+            throw new Error(SERVER_ERROR_MESSAGES.NOT_FOUND('shareHouse'));
           }
-        } catch (error) {
-          console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
-          throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
-        }
 
-        return {
-          shareHouse: newShareHouse,
-          rotationAssignment: newRotationAssignment,
-          categories: createdCategories,
-          tenants: createdTenants,
-        };
-      });
+          const newInitialAssignedData = new InitialAssignedData(
+            sharehouse,
+            startDate,
+            data.rotationCycle,
+          );
+
+          const assignedData = newInitialAssignedData.getAssignedData();
+
+          await prisma.assignmentSheet.update({
+            where: {
+              id: newAssignmentSheet.id,
+            },
+            data: {
+              assignedData: assignedData as unknown as Prisma.JsonArray,
+            },
+          });
+
+          /**
+           * Send emails to each tenant with their personalized link
+           */
+          try {
+            for (const tenant of createdTenants) {
+              await sendEmail({
+                to: tenant.email,
+                type: 'TENANT_INVITATION',
+                callbackUrl: `${getBaseUrl()}/${newAssignmentSheet.id}/${tenant.id}`,
+              });
+
+              await new Promise((resolve) => setTimeout(resolve, 650));
+            }
+          } catch (error) {
+            console.error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR, error);
+            throw new Error(SERVER_ERROR_MESSAGES.EMAIL_SEND_ERROR);
+          }
+
+          return {
+            shareHouse: newShareHouse,
+            rotationAssignment: newRotationAssignment,
+            categories: createdCategories,
+            tenants: createdTenants,
+          };
+        },
+        {
+          maxWait: 15000, // Wait up to 15 seconds for a connection
+          timeout: 15000, // Allow the transaction to run for up to 15 seconds
+        },
+      );
 
       return c.json(transaction, 201);
     } catch (error) {
