@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Tascurator',
   },
+  robots: 'noindex, nofollow',
 };
 
 export default function RootLayout({
