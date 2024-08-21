@@ -401,6 +401,23 @@ const app = new Hono<THonoEnv>()
           });
 
           /**
+           * Update each tenant with the extra assigned count.
+           */
+          for (const tenantPlaceholder of sharehouse.RotationAssignment
+            .tenantPlaceholders) {
+            const { tenant, tenantId } = tenantPlaceholder;
+
+            if (!tenant || !tenantId) continue;
+
+            await prisma.tenant.update({
+              where: { id: tenantId },
+              data: {
+                extraAssignedCount: tenant.extraAssignedCount,
+              },
+            });
+          }
+
+          /**
            * Send emails to each tenant with their personalized link
            */
           try {
