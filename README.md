@@ -72,3 +72,7 @@ https://tascurator.github.io/tascurator-frontend/](https://tascurator.github.io/
   - Role: Frontend Developer
 - **Kai Koide** - [@KaiKoide](https://github.com/KaiKoide)
   - Role: Backend Developer
+
+## License
+
+Tascurator is open-sourced and licensed under the [MIT License](https://github.com/Tascurator/tascurator-frontend/blob/docs/develop/LICENSE).
