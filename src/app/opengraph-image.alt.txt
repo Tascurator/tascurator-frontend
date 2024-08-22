@@ -1,0 +1,1 @@
+Tascurator is an application designed to streamline the management of cleaning duties in a shared house.

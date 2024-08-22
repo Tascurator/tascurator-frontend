@@ -23,14 +23,14 @@ const EditTabsManager = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Tabs
-      defaultValue={tab ? tab : 'Tasks'}
+      defaultValue={tab ? tab : 'tasks'}
       onValueChange={handleTab}
       className="mt-4 mb-6"
     >
       <TabsList>
-        <TabsTrigger value="Tasks">Tasks</TabsTrigger>
-        <TabsTrigger value="Schedule">Schedule</TabsTrigger>
-        <TabsTrigger value="Tenants">Tenants</TabsTrigger>
+        <TabsTrigger value="tasks">Tasks</TabsTrigger>
+        <TabsTrigger value="schedule">Schedule</TabsTrigger>
+        <TabsTrigger value="tenants">Tenants</TabsTrigger>
       </TabsList>
       {children}
     </Tabs>

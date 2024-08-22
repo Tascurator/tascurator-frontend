@@ -24,7 +24,7 @@ export const ScheduleSetting = ({
 
   return (
     <>
-      <p>Repeat</p>
+      <p>Rotation cycle</p>
       <div className="flex flex-col items-center justify-between mt-6">
         <div className="flex justify-between gap-4 w-full">
           <Button

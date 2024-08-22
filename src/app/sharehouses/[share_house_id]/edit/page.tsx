@@ -82,7 +82,7 @@ const EditShareHousePage = async ({
             </p>
           </div>
           {/* Tasks */}
-          <TabsContent value="Tasks">
+          <TabsContent value="tasks">
             <ShareHouseManagementHead
               shareHouseId={share_house_id}
               title={'Categories'}
@@ -141,7 +141,7 @@ const EditShareHousePage = async ({
           </TabsContent>
 
           {/* Schedule */}
-          <TabsContent value="Schedule">
+          <TabsContent value="schedule">
             <RotationCycles
               shareHouseId={share_house_id}
               rotationCycle={shareHouseManagement.rotationCycle}
@@ -149,7 +149,7 @@ const EditShareHousePage = async ({
           </TabsContent>
 
           {/* Tenants */}
-          <TabsContent value="Tenants">
+          <TabsContent value="tenants">
             <ShareHouseManagementHead
               shareHouseId={share_house_id}
               title={'Tenants'}

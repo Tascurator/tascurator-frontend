@@ -105,7 +105,7 @@ export const SetupConfirmationDrawer = ({
       <Drawer open={open} onOpenChange={setOpen} modal={!isSubmitting}>
         <DrawerContent asChild>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DrawerTitle>Confirm Shared house Setup</DrawerTitle>
+            <DrawerTitle>Confirm Shared House Setup</DrawerTitle>
             <DrawerDescription asChild>
               <div>
                 <div className="bg-primary-lightest rounded-sm text-base px-2 my-3">
